@@ -1,10 +1,29 @@
 <template>
   <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <img class="logo" align="left" src= "./assets/pong_logo.png"> 
+    <router-link to="/">
+      <!-- Home -->
+      <img class="icon" src="./assets/home.png">
+    </router-link> 
+    <router-link to="/game">
+      <!-- Game -->
+      <img class="icon" src="./assets/game.png">
+    </router-link> 
+    <router-link to="/chat">
+      <!-- Chat -->
+      <img class="icon" src="./assets/chat.png">
+    </router-link> 
+    <router-link to="/profile">
+      <!-- My Profile -->
+      <img class="icon" src="./assets/avatar.png">
+    </router-link>
   </div>
-  <router-view />
+    <router-view/>
 </template>
+
+<script>
+
+</script>
 
 <style>
 #app {
@@ -15,13 +34,39 @@
   color: #2c3e50;
 }
 
+.logo {
+  margin: 10px 10px;
+  max-width: 15%;
+}
+
 #nav {
   padding: 30px;
+  overflow: hidden;
+}
+
+.icon {
+  /* display: inline-block; */
+  margin: 10px 10px;
+  width: 100px;
+  height: 100px;
+  border: 2px solid black;
+}
+
+.logo {
+  display: inline-block;
+  margin: 10px 10px;
+  max-width: 15%;
 }
 
 #nav a {
+  /* margin: 10px 10px; */
   font-weight: bold;
-  color: #2c3e50;
+  color: #2c3e50; 
+  float: left;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
 }
 
 #nav a.router-link-exact-active {
