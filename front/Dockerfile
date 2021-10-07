@@ -1,17 +1,16 @@
 FROM node:16
 
-RUN mkdir -p /app
-
 WORKDIR /app
+
+COPY package*.json /app
+
+RUN npm install -g npm@latest \
+	&& npm install \
+	&& npm install -g @vue/cli \
+	&& npm install --save axios
 
 COPY . /app
 
-RUN npm install -g npm@latest
-
-RUN npm install
-
-RUN npm install -g @vue/cli@latest
+CMD ["npm", "run", "serve"]
 
 EXPOSE 8080
-
-CMD ["npm", "run", "serve"]

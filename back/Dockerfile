@@ -1,17 +1,16 @@
 FROM node:16
 
-RUN mkdir -p /app
-
 WORKDIR /app
+
+COPY package*.json /app
+
+RUN npm install -g npm@latest \
+	&& npm install \
+	&& npm install -g @nestjs/cli \
+	&& npm install --save @nestjs/common @nestjs/core @nestjs/typeorm typeorm pg
 
 COPY . /app
 
-RUN npm install -g npm@latest
-
-RUN npm install
-
-RUN npm install -g @nestjs/cli
+CMD ["nest", "start", "--watch"]
 
 EXPOSE 3000
-
-CMD ["nest", "start", "--watch"]
