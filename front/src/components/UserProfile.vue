@@ -1,25 +1,60 @@
 <template>
-  <div class="user-profile">
-    <h1>{{ msg }}</h1>
-    <img src="../assets/avatar.png" />
-    <h3>
-      Name: blabla <br />
-      other info <br />
-      ...
-    </h3>
+  <div v-if="currentUser.id" class="edit-form">
+    <h4>User</h4>
+    <h3> {{ currentUser.firstName }} {{ currentUser.lastName }}</h3>
+    <button class="badge badge-danger mr-2" @click="deleteUser">
+      Delete
+    </button>
+
+    <p>{{ message }}</p>
+  </div>
+
+  <div v-else>
+    <br />
+    <p>Please click on a User...</p>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import UserDataService from "@/services/UserDataService";
+import User from "@/types/User";
+import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
-  name: "UserProfile",
-  props: {
-    msg: {
-      type: String,
-      required: false,
+  name: "User",
+  data() {
+    return {
+      currentUser: {} as User,
+      message: "",
+    };
+  },
+  methods: {
+    getUser(id: number) {
+      UserDataService.get(id)
+        .then((response: ResponseData) => {
+          this.currentUser = response.data;
+          console.log(response.data);
+        })
+        .catch((e: Error) => {
+          console.log(e);
+        });
     },
+
+    deleteUser() {
+      UserDataService.delete(this.currentUser.id)
+        .then((response: ResponseData) => {
+          console.log(response.data);
+          this.$router.push({ name: "Users" });
+        })
+        .catch((e: Error) => {
+          console.log(e);
+        });
+    },
+  },
+  mounted() {
+    this.message = "";
+    this.getUser(Number(this.$route.params.id));
   },
 });
 </script>

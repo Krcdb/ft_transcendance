@@ -2,21 +2,19 @@
   <div id="nav">
     <img class="logo" align="left" src="./assets/pong_logo.png" />
     <router-link to="/">
-      <!-- Home -->
       <img class="icon" src="./assets/home.png" />
     </router-link>
     <router-link to="/game">
-      <!-- Game -->
       <img class="icon" src="./assets/game.png" />
     </router-link>
     <router-link to="/chat">
-      <!-- Chat -->
       <img class="icon" src="./assets/chat.png" />
     </router-link>
     <router-link to="/profile">
-      <!-- My Profile -->
       <img class="icon" src="./assets/avatar.png" />
     </router-link>
+    <router-link to="/users"> Users </router-link>
+    <router-link to="/create-user"> Create User </router-link>
   </div>
   <router-view />
 </template>

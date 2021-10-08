@@ -19,12 +19,22 @@ const routes = [
   {
     path: "/profile",
     name: "My Profile",
-    component: () => import("../views/Profile.vue"),
+    component: () => import("../components/UserProfile.vue"),
   },
   {
-    path: "/create_user",
-    name: "Create User",
-    component: () => import("../views/CreateNewUser.vue"),
+    path: "/users",
+    name: "users",
+    component: () => import("../components/UsersList.vue"),
+  },
+  {
+    path: "/users/:id",
+    name: "user-details",
+    component: () => import("../components/UserProfile.vue"),
+  },
+  {
+    path: "/create-user",
+    name: "create-user",
+    component: () => import("../components/CreateUser.vue"),
   },
 ];
 
