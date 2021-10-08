@@ -1,10 +1,8 @@
 <template>
   <div v-if="currentUser.id" class="edit-form">
     <h4>User</h4>
-    <h3> {{ currentUser.firstName }} {{ currentUser.lastName }}</h3>
-    <button class="badge badge-danger mr-2" @click="deleteUser">
-      Delete
-    </button>
+    <h3>{{ currentUser.firstName }} {{ currentUser.lastName }}</h3>
+    <button class="badge badge-danger mr-2" @click="deleteUser">Delete</button>
 
     <p>{{ message }}</p>
   </div>

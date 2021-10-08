@@ -45,10 +45,8 @@ export default defineComponent({
   data() {
     return {
       user: {
-        // id: 0,
         firstName: "",
         lastName: "",
-        // isActive: false,
       } as User,
       submitted: false,
     };
