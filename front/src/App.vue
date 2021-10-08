@@ -1,29 +1,25 @@
 <template>
   <div id="nav">
-    <img class="logo" align="left" src= "./assets/pong_logo.png"> 
+    <img class="logo" align="left" src="./assets/pong_logo.png" />
     <router-link to="/">
       <!-- Home -->
-      <img class="icon" src="./assets/home.png">
-    </router-link> 
+      <img class="icon" src="./assets/home.png" />
+    </router-link>
     <router-link to="/game">
       <!-- Game -->
-      <img class="icon" src="./assets/game.png">
-    </router-link> 
+      <img class="icon" src="./assets/game.png" />
+    </router-link>
     <router-link to="/chat">
       <!-- Chat -->
-      <img class="icon" src="./assets/chat.png">
-    </router-link> 
+      <img class="icon" src="./assets/chat.png" />
+    </router-link>
     <router-link to="/profile">
       <!-- My Profile -->
-      <img class="icon" src="./assets/avatar.png">
+      <img class="icon" src="./assets/avatar.png" />
     </router-link>
   </div>
-    <router-view/>
+  <router-view />
 </template>
-
-<script>
-
-</script>
 
 <style>
 #app {
@@ -61,7 +57,7 @@
 #nav a {
   /* margin: 10px 10px; */
   font-weight: bold;
-  color: #2c3e50; 
+  color: #2c3e50;
   float: left;
   text-align: center;
   padding: 14px 16px;
