@@ -6,16 +6,16 @@ class TutorialDataService {
     return http.get("/users");
   }
 
-  get(id: number): Promise<any> {
-    return http.get(`/users/${id}`);
+  get(userName: string): Promise<any> {
+    return http.get(`/users/${userName}`);
   }
 
   create(data: any): Promise<any> {
     return http.post("/users", data);
   }
 
-  delete(id: number): Promise<any> {
-    return http.delete(`/users/${id}`);
+  delete(userName: string): Promise<any> {
+    return http.delete(`/users/${userName}`);
   }
 }
 

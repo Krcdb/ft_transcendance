@@ -3,21 +3,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { Connection } from 'typeorm';
+import { Connection, getConnectionOptions } from 'typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'postgres',
-      port: 5432,
-      username: 'admin',
-      password: 'admin',
-      database: 'postgres',
-      synchronize: true,
-      autoLoadEntities: true,
-    }), UsersModule,
-  ],
+  imports: [TypeOrmModule.forRootAsync({
+    useFactory: async () =>
+      Object.assign(await getConnectionOptions(), {
+        autoLoadEntities: true,
+      }),
+  }), UsersModule],
   controllers: [AppController],
   providers: [AppService],
 })

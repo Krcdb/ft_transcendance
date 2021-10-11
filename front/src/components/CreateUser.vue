@@ -2,25 +2,14 @@
   <div class="submit-form">
     <div v-if="!submitted">
       <div class="form-group">
-        <label for="firstName">firstName</label>
+        <label for="userName">User Name:</label>
         <input
           type="text"
           class="form-control"
-          id="firstName"
+          id="userName"
           required
-          v-model="user.firstName"
-          name="firstName"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="lastName">lastName</label>
-        <input
-          class="form-control"
-          id="lastName"
-          required
-          v-model="user.lastName"
-          name="lastName"
+          v-model="user.userName"
+          name="userName"
         />
       </div>
 
@@ -28,8 +17,11 @@
     </div>
 
     <div v-else>
-      <h4>You submitted successfully!</h4>
+      <h4>The user was successfully created !</h4>
       <button class="btn btn-success" @click="newUser">Add</button>
+    </div>
+    <div>
+      <h4>{{ info }}</h4>
     </div>
   </div>
 </template>
@@ -45,8 +37,7 @@ export default defineComponent({
   data() {
     return {
       user: {
-        firstName: "",
-        lastName: "",
+        userName: "",
       } as User,
       submitted: false,
     };
@@ -54,17 +45,16 @@ export default defineComponent({
   methods: {
     saveUser() {
       let data = {
-        firstName: this.user.firstName,
-        lastName: this.user.lastName,
+        userName: this.user.userName,
       };
       UserDataService.create(data)
         .then((response) => {
           console.log(response);
           this.submitted = true;
         })
-        .catch((e: Error) => {
-          console.log(e);
-        });
+        .catch((error) => {
+          console.log(error);
+      });
     },
 
     newUser() {

@@ -1,7 +1,7 @@
 <template>
-  <div v-if="currentUser.id" class="edit-form">
+  <div v-if="currentUser.userName" class="edit-form">
     <h4>User</h4>
-    <h3>{{ currentUser.firstName }} {{ currentUser.lastName }}</h3>
+    <h3>{{ currentUser.userName }}</h3>
     <button class="badge badge-danger mr-2" @click="deleteUser">Delete</button>
 
     <p>{{ message }}</p>
@@ -28,8 +28,8 @@ export default defineComponent({
     };
   },
   methods: {
-    getUser(id: number) {
-      UserDataService.get(id)
+    getUser(userName: string) {
+      UserDataService.get(userName)
         .then((response: ResponseData) => {
           this.currentUser = response.data;
           console.log(response.data);
@@ -40,7 +40,7 @@ export default defineComponent({
     },
 
     deleteUser() {
-      UserDataService.delete(this.currentUser.id)
+      UserDataService.delete(this.currentUser.userName)
         .then((response: ResponseData) => {
           console.log(response.data);
           this.$router.push({ name: "Users" });
@@ -52,7 +52,7 @@ export default defineComponent({
   },
   mounted() {
     this.message = "";
-    this.getUser(Number(this.$route.params.id));
+    this.getUser(String(this.$route.params.userName));
   },
 });
 </script>
