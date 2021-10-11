@@ -16,30 +16,11 @@
 <style scoped>
 .navbar {
   display: flex;
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  width: 100%;
-  font-size: 2vmin;
 }
 .logo {
   display: inline-block;
-  vertical-align: top;
+  object-fit: contain;
   max-width: 15%;
-  height: auto;
-  margin-right: 20px;
-  margin-top: 15px;
-}
-.navbar > a {
-  display: block;
-  color: black;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
 }
 
 ul {
@@ -54,7 +35,6 @@ li {
 li a {
   display: block;
   color: black;
-  text-align: center;
   padding: 14px 16px;
   text-decoration: none;
 }
