@@ -19,14 +19,15 @@ export default {
     name: "chat", 
     setup() {
     return {
-        messages: "";
+        messages: ""
+
         };
     },
 
     methods: {
         getMessages() {
           let data =  {
-              userName: this.chat.currentMessage,
+    //              userName: this.chat.currentMessage,
           }
         }
     }
