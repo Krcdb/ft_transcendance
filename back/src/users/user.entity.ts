@@ -7,4 +7,7 @@ export class User {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column({nullable: true})
+  avatar: string;
 }

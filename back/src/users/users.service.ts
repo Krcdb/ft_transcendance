@@ -13,8 +13,6 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> | Promise<void> {
-      // if (this.usersRepository.findOne(createUserDto.userName))
-      //   return ;
       const user = new User();
       user.userName = createUserDto.userName;
       return this.usersRepository.save(user).catch((e) => {
@@ -27,11 +25,23 @@ export class UsersService {
       });
   }
 
+  public async setAvatar(userName: string, avatarUrl: string){
+    this.usersRepository.update(userName, {avatar: avatarUrl});
+ }
+
+  async getAvatar(userName: string) : Promise<String>  {
+    return this.usersRepository.findOne(userName).then((user) => { return user.avatar; });
+  }
+
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
   async findOne(userName: string): Promise<User> {
+    return this.usersRepository.findOne(userName);
+  }
+
+  async findOneAgain(userName: string): Promise<User> {
     return this.usersRepository.findOne(userName);
   }
 
