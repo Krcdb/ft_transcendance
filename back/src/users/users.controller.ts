@@ -1,4 +1,5 @@
-
+// // import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+// import { HttpException } from '@nestjs/common';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
@@ -18,9 +19,12 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string): Promise<User> {
-    return this.usersService.findOne(id);
+  @Get(':userName')
+  findOne(@Param('userName') userName: string): Promise<User> {
+    const user = this.usersService.findOne(userName);
+    if (!user)
+      throw new NotFoundException();
+    return user;
   }
 
   @Delete(':id')

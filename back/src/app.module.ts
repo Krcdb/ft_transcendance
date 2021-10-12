@@ -3,8 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { Connection } from 'typeorm';
-
+import { Connection, getConnectionOptions } from 'typeorm';
+// import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+import { HttpExceptionFilter } from '@nestjs/common';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -19,7 +20,12 @@ import { Connection } from 'typeorm';
     }), UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: AppService,
+      useClass: HttpExceptionFilter
+    }
+  ],
 })
 export class AppModule {
   constructor(private connection: Connection) {}

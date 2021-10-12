@@ -7,15 +7,15 @@
   <div id="bar"></div>
 </template>
 
-<script lang="js">
-export default {
-  const userBar = document.querySelector('#bar');
+// <script lang="js">
+// export default {
+//   const userBar = document.querySelector('#bar');
 
-  document.addEventListener('mousemove', ($event, userBar) => {
-    userBar.style.top = $event.y / window.innerHeight * 100 + "%";
-    console.log($event.y / window.innerHeight * 100 + "%");
-  });
-}
+//   document.addEventListener('mousemove', ($event, userBar) => {
+//     userBar.style.top = $event.y / window.innerHeight * 100 + "%";
+//     console.log($event.y / window.innerHeight * 100 + "%");
+//   });
+// }
 
 
 </script>
