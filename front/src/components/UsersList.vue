@@ -10,20 +10,20 @@
           :key="index"
           @click="setActiveuser(user, index)"
         >
-          {{ user.firstName }} {{ user.lastName }}
+          {{ user.userName }}
         </li>
       </ul>
     </div>
     <div class="col-md-6">
-      <div v-if="currentuser.id">
+      <div v-if="currentuser.userName">
         <h4>User</h4>
         <div>
           <label><strong>Name:</strong></label>
-          {{ currentuser.firstName }} {{ currentuser.lastName }}
+          {{ currentuser.userName }}
         </div>
 
         <router-link
-          :to="'/users/' + currentuser.id"
+          :to="'/users/' + currentuser.userName"
           class="badge badge-warning"
           >Click here</router-link
         >

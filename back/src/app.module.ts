@@ -4,28 +4,23 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { Connection, getConnectionOptions } from 'typeorm';
-// import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
-import { HttpExceptionFilter } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
+
 @Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'postgres',
-      port: 5432,
-      username: 'admin',
-      password: 'admin',
-      database: 'postgres',
-      synchronize: true,
-      autoLoadEntities: true,
-    }), UsersModule,
-  ],
+  imports: [TypeOrmModule.forRootAsync({
+    useFactory: async () =>
+      Object.assign(await getConnectionOptions(), {
+        autoLoadEntities: true,
+      }),
+  }), UsersModule],
   controllers: [AppController],
-  providers: [
-    {
-      provide: AppService,
-      useClass: HttpExceptionFilter
-    }
-  ],
+  providers: [AppService],
+  // providers: [
+  //   {
+  //     provide: AppService,
+  //     useClass: HttpException
+  //   }
+  // ],
 })
 export class AppModule {
   constructor(private connection: Connection) {}
