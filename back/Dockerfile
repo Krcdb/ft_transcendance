@@ -8,7 +8,9 @@ RUN npm install -g npm@latest \
 	&& npm install \
 	&& npm install -g @nestjs/cli \
 	&& npm install --save @nestjs/common @nestjs/core @nestjs/typeorm typeorm pg \
-	&& npm install class-validator
+	&& npm install --save class-validator \
+	&& npm install --save @nestjs/passport passport passport-local \
+	&& npm install --save-dev @types/passport-local
 	# && npm install --save @nestjs/passport passport passport-local \
 	# && npm install --save-dev @types/passport-local
 

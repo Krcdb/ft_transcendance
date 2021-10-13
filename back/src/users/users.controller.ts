@@ -1,31 +1,31 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Res } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
-
-// export class UserNameTaken extends HttpException {
-//   constructor() { super('User Name is already taken', HttpStatus.CONFLICT) }
-// }
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<User> | Promise<void> {
-    // console.log('hey');
-    // const allUsers = this.usersService.findAll();
-    // for (let i in allUsers)
-    // {
-    //   console.log(allUsers[i].userName + ' // ' + createUserDto.userName);
-    //   if (allUsers[i].userName === createUserDto.userName)
-    //   {
-    //     console.log(createUserDto.userName + ': User name taken');
-    //     throw new UserNameTaken();
-    //   }
-    // }
-    return this.usersService.create(createUserDto);
-  }
+  // create(@Body() createUserDto: CreateUserDto): Promise<User> | Promise<void> {
+  //   return this.usersService.create(createUserDto);
+  // }
+
+  // @Post('/create-user')
+  async addUser(@Res() res, @Body() createUserDto: CreateUserDto) {
+    if (await this.usersService.userAlreadyExists(createUserDto)){
+        return res.status(HttpStatus.OK).json({
+            message: "User already exists"
+        })
+    }
+    const user = await this.usersService.create(createUserDto);
+    return res.status(HttpStatus.CREATED).json({
+        message: "User has been created successfully",
+        user
+    })
+}
 
   @Get()
   findAll(): Promise<User[]> {
@@ -35,11 +35,6 @@ export class UsersController {
   @Get(':userName')
   findOne(@Param('userName') userName: string): Promise<User> {
     const user = this.usersService.findOne(userName);
-    // if (!user)
-    // {
-    //   console.log('nope');
-    //   throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-    // }
     return user;
   }
 

@@ -17,18 +17,18 @@ export class UsersService {
       // if (this.usersRepository.findOne(createUserDto.userName))
       //   return ;
       // await this.validateUserName(createUserDto.userName);
-      if (this.validateUserName(createUserDto.userName) == false)
-        throw new HttpException('User Name is already taken', HttpStatus.CONFLICT);
+      // if (this.validateUserName(createUserDto.userName) == false)
+      //   throw new HttpException('User Name is already taken', HttpStatus.CONFLICT);
       const user = new User();
       user.userName = createUserDto.userName;
-      return this.usersRepository.save(user).catch((e) => {
-        if (this.usersRepository.findOne(user.userName)) {
-          throw new BadRequestException(
-            'This User Name already exist, please try with another one.',
-          );
-        }
-        return e;
-      });
+      return this.usersRepository.save(user);//.catch((e) => {
+      //   if (this.usersRepository.findOne(user.userName)) {
+      //     throw new BadRequestException(
+      //       'This User Name already exist, please try with another one.',
+      //     );
+      //   }
+      //   return e;
+      // });
   }
 
   async findAll(): Promise<User[]> {
@@ -50,15 +50,11 @@ export class UsersService {
     await this.usersRepository.delete(userName);
   }
 
-  validateUserName(userName: string) {
-    const user = this.usersRepository.findOne(userName);
+  async userAlreadyExists(createUserDTO: CreateUserDto): Promise<any> {
+    const user = await this.usersRepository.findOne({ userName: createUserDTO.userName });
     if (user)
-    {
-      console.log('user already in db');
-      return false;
-    }
-    console.log('user not in db');
-    return true;
-  }
+      return true;
+    return false;
+}
 }
 
