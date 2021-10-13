@@ -12,7 +12,7 @@
           name="userName"
         />
       </div>
-
+      <br />
       <button @click="saveUser" class="btn btn-success">Submit</button>
     </div>
 
@@ -54,7 +54,7 @@ export default defineComponent({
         })
         .catch((error) => {
           console.log(error);
-      });
+        });
     },
 
     newUser() {

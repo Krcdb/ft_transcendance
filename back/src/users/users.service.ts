@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { BadRequestException } from '@nestjs/common';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import * as fs from 'fs';
 
 @Injectable()
 export class UsersService {
@@ -14,11 +15,6 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> | Promise<void> {
-      // if (this.usersRepository.findOne(createUserDto.userName))
-      //   return ;
-      // await this.validateUserName(createUserDto.userName);
-      // if (this.validateUserName(createUserDto.userName) == false)
-      //   throw new HttpException('User Name is already taken', HttpStatus.CONFLICT);
       const user = new User();
       user.userName = createUserDto.userName;
       return this.usersRepository.save(user);//.catch((e) => {
@@ -29,6 +25,25 @@ export class UsersService {
       //   }
       //   return e;
       // });
+  }
+
+  async DeleteOldAvatarFile (userName: string) {
+    const myAvatar = await this.usersRepository.findOne(userName).then((user) => { return user.avatar;});
+    if (myAvatar)
+    {
+      fs.unlink("avatars/" + myAvatar, (err) => {
+        if (err) throw err;
+      });
+    }
+  }
+
+  public async setAvatar(userName: string, avatarUrl: string): Promise<void>  {
+    this.DeleteOldAvatarFile(userName);
+    await this.usersRepository.update(userName, {avatar: avatarUrl});
+ }
+
+  async getAvatar(userName: string) : Promise<String>  {
+    return this.usersRepository.findOne(userName).then((user) => { return user.avatar; });
   }
 
   async findAll(): Promise<User[]> {
@@ -46,7 +61,12 @@ export class UsersService {
     // return this.usersRepository.findOne(userName);
   }
 
+  async findOneAgain(userName: string): Promise<User> {
+    return this.usersRepository.findOne(userName);
+  }
+
   async remove(userName: string): Promise<void> {
+    this.DeleteOldAvatarFile(userName);
     await this.usersRepository.delete(userName);
   }
 
@@ -56,5 +76,9 @@ export class UsersService {
       return true;
     return false;
 }
-}
 
+  async removeAvatar(userName: string): Promise<void> {
+    this.DeleteOldAvatarFile(userName);
+    await this.usersRepository.update(userName, {avatar: null});
+  }
+}
