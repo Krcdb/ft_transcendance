@@ -1,5 +1,5 @@
 <template>
-    <canvas id="myCanvas" width="700" height="400"></canvas>
+    <canvas id="game-canvas" width="700" height="400"></canvas>
 </template>
 
 <script lang="ts">
@@ -12,10 +12,6 @@ export default defineComponent({
         	socket: {} as any,
 			ctx: {} as any,
 			vueCanvas: {} as any,
-			position: {
-        		x: 0,
-        		y: 0,
-        	}
       	};
     },
     mounted() {

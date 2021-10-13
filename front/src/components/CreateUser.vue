@@ -28,8 +28,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import UserDataService from "@/services/UserDataService";
-import User from "@/types/User";
+import UserDataService from "../services/UserDataService";
+import User from "../types/User";
 // import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({

@@ -2,14 +2,14 @@
   	<div class="game">
     	<h1>This will be the Game page</h1>
     	<br />
-		<game-canvas/>
+		    <game-canvas/>
     	<img src="../assets/pong_img.png" />
   	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import GameCanvas from "@/components/GameCanvas.vue";
+import GameCanvas from "../components/Game/GameCanvas.vue"
 
 export default defineComponent({
   components: {

@@ -11,7 +11,7 @@ const routes = [
     name: "Game",
 	component: () => import("../views/Game.vue"),
 	children: [
-		{path: "/games-canvas", name: "GameCanvas", component: () => import("../components/GameCanvas.vue")}
+		{path: "/games-canvas", name: "GameCanvas", component: () => import("../components/Game/GameCanvas.vue")}
 	]
   },
   {
