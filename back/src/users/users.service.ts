@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { BadRequestException } from '@nestjs/common';
+import * as fs from 'fs';
 
 @Injectable()
 export class UsersService {
@@ -25,8 +26,19 @@ export class UsersService {
       });
   }
 
-  public async setAvatar(userName: string, avatarUrl: string){
-    this.usersRepository.update(userName, {avatar: avatarUrl});
+  async DeleteOldAvatarFile (userName: string) {
+    const myAvatar = await this.usersRepository.findOne(userName).then((user) => { return user.avatar;});
+    if (myAvatar)
+    {
+      fs.unlink("avatars/" + myAvatar, (err) => {
+        if (err) throw err;
+      });
+    }
+  }
+
+  public async setAvatar(userName: string, avatarUrl: string): Promise<void>  {
+    this.DeleteOldAvatarFile(userName);
+    await this.usersRepository.update(userName, {avatar: avatarUrl});
  }
 
   async getAvatar(userName: string) : Promise<String>  {
@@ -47,5 +59,10 @@ export class UsersService {
 
   async remove(userName: string): Promise<void> {
     await this.usersRepository.delete(userName);
+  }
+
+  async removeAvatar(userName: string): Promise<void> {
+    this.DeleteOldAvatarFile(userName);
+    await this.usersRepository.update(userName, {avatar: null});
   }
 }
