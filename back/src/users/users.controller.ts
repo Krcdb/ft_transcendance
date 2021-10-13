@@ -9,7 +9,6 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
-  SERVER_URL:  string  =  "http://localhost:3000/";
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
