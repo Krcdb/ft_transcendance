@@ -58,6 +58,7 @@ export class UsersService {
   }
 
   async remove(userName: string): Promise<void> {
+    this.DeleteOldAvatarFile(userName);
     await this.usersRepository.delete(userName);
   }
 
