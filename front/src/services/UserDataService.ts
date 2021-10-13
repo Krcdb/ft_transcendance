@@ -18,7 +18,7 @@ class TutorialDataService {
     return http.post("/users", data);
   }
 
-  uploadAvatar(userName: string, avatar: File): Promise<any> {
+  uploadAvatar(userName: string, avatar: FormData): Promise<any> {
     return http.post(`/users/${userName}/avatar`, avatar);
   }
 

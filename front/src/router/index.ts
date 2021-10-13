@@ -36,6 +36,11 @@ const routes = [
     name: "create-user",
     component: () => import("../components/CreateUser.vue"),
   },
+  {
+    path: "/users/:userName/upload-avatar",
+    name: "upload-avatar",
+    component: () => import("../components/UploadAvatar.vue"),
+  },
 ];
 
 const router = createRouter({

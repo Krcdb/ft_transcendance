@@ -56,7 +56,7 @@ export default defineComponent({
       UserDataService.getAll()
         .then((response: ResponseData) => {
           this.users = response.data;
-          console.log(response.data);
+          // console.log(response.data);
         })
         .catch((e: Error) => {
           console.log(e);

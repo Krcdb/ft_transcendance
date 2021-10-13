@@ -20,9 +20,6 @@
       <h4>The user was successfully created !</h4>
       <button class="btn btn-success" @click="newUser">Add</button>
     </div>
-    <div>
-      <h4>{{ info }}</h4>
-    </div>
   </div>
 </template>
 
