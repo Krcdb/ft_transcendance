@@ -10,7 +10,7 @@ import NavBar from "@/components/NavBar.vue";
 export default defineComponent({
   name: "App",
   components: {
-    NavBar,
+      NavBar,
   },
 });
 </script>

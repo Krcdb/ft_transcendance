@@ -1,5 +1,16 @@
 <template>
-  <div class="chat">
-    <h1>This will be the Chat page</h1>
-  </div>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <Chat />
 </template>
+
+<script type="text/typescript">
+import { defineComponent } from "vue";
+import Chat from '@/components/chat/DefaultChat.vue';
+
+export default defineComponent({
+    name: "chat",
+    components: {
+        Chat,
+    },
+});
+</script>

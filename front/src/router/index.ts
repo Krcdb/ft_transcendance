@@ -14,7 +14,7 @@ const routes = [
   {
     path: "/chat",
     name: "Chat",
-    component: () => import("../components/chat/DefaultChat.vue"),
+    component: () => import("../views/Chat.vue"),
   },
   {
     path: "/profile",
