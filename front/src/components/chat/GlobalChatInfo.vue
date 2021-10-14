@@ -8,7 +8,7 @@
         <button type="btn btn-success" name="button" @click="refreshConnectedUsers">
             Refresh Connected Users
         </button>
-        <div class="nb-users-connected">{{ nb_users }} users are currently connected !</div>
+        <div class="nb-users-connected">{{ nbUsers }} users are currently connected !</div>
 
         <hr>
         <br>
@@ -22,30 +22,20 @@ import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 
-//import OwnerProfile from "./OwnerProfile";
-
 export default defineComponent ({
 
-    // Recuperer le profile selectionné d un autre component
+    // Recuperer le profile selectionné d un autre component [V]
     // recuperer le nombre de profile actuellement connectés
 
 
     // Default Data //
     name: "global-chat-info",
-    data() {
-        return {
-            nb_users: 0,
-            userSelected: false,
-        };
+    props: {
+        nbUsers: Number,
+        userSelected: Boolean,
     },
-
     methods: {
-        init() {
-            console.log("Selected Profile: ");
-        },
-        refreshConnectedUsers() {
-            console.log("test");
-        }
+
     },
 
     mounted() {

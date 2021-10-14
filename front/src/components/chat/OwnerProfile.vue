@@ -7,18 +7,20 @@
                 <h4 class="warning" v-if="this.users.length <= 0">No user found, create user first</h4>
             </div>
 
-            <button class="btn btn-success" name="button"
+            <button class="" name="button"
             :class="{ active: index == currentIndex} "
             v-for="(user, index) in users"
             :key="index"
             @click="selectUser(user)"
             >
+            <img :src="`https://avatars.dicebear.com/api/avataaars/${user.userName}.svg`" alt="">
             {{ user.userName }}
         </button>
     </div>
 
     <div class="Welcome-User" v-else>
-        <h3>Bienvenue: {{ this.currentUser.userName }} </h3>
+        <h3>Bienvenue: <strong> {{ this.currentUser.userName }} </strong> </h3>
+        <img :src="`https://avatars.dicebear.com/api/avataaars/${this.currentUser.userName}.svg`" alt="">
     </div>
 
 </div>
@@ -107,6 +109,13 @@ export default defineComponent({
     width: 100%;
     height: 42px;
     margin-top: 10px;
+}
+
+button img{
+    width: 24px;
+}
+.Welcome-User img {
+    width: 64px;
 }
 
 .warning {
