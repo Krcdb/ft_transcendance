@@ -3,7 +3,7 @@
     <div class="list-wrapper">
       <h3>Users List</h3>
       <router-link to="/create-user">
-          <button>Create New User</button>
+        <button>Create New User</button>
       </router-link>
       <ul class="list">
         <li
@@ -25,9 +25,8 @@
           </div>
           <div class="list-item-content">
             <router-link class="profile-link" :to="'/users/' + user.userName">
-              <h4>{{ user.userName }}</h4> 
+              <h4>{{ user.userName }}</h4>
             </router-link>
-            <!-- <h4>{{ user.userName }}</h4>             -->
           </div>
         </li>
       </ul>
@@ -55,6 +54,7 @@ export default defineComponent({
       UserDataService.getAll()
         .then((response: ResponseData) => {
           this.users = response.data;
+          this.users.sort((a, b) => (a.userName > b.userName ? 1 : -1));
           // console.log(response.data);
         })
         .catch((e: Error) => {
@@ -92,7 +92,7 @@ h3 {
 }
 .list-wrapper {
   max-width: 400px;
-  margin: 50px auto;
+  margin: auto;
 }
 .profile-link {
   color: black;

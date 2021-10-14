@@ -71,7 +71,7 @@ export default defineComponent({
         UserDataService.uploadAvatar(this.currentUser.userName, formData)
           .then(() => {
             var path = "/users/" + this.currentUser.userName;
-            this.$router.push(path);
+            window.location.assign(path);
           })
           .catch((e: Error) => {
             console.log(e);

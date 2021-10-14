@@ -19,7 +19,7 @@ export class UsersController {
   // @Post('/create-user')
   async addUser(@Res() res, @Body() createUserDto: CreateUserDto) {
     if (await this.usersService.userAlreadyExists(createUserDto)){
-        return res.status(HttpStatus.OK).json({
+        return res.status(HttpStatus.CONFLICT).json({
             message: "User already exists"
         })
     }
