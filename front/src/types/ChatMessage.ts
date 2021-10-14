@@ -1,4 +1,4 @@
 export default interface Chat {
-    messages: string[];
-    currentMessage: string,
+    message: string;
+    sender: bool;
 }
