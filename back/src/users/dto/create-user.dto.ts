@@ -5,5 +5,4 @@ export class CreateUserDto {
   // @IsAlphanumeric()
   // @Validate(UserExistsRule)
 	userName: string;
-  }
-
+}

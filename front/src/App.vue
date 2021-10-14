@@ -9,6 +9,7 @@ import NavBar from "@/components/NavBar.vue";
 
 export default defineComponent({
   name: "App",
+  // title: "Pong";
   components: {
     NavBar,
   },
@@ -22,5 +23,23 @@ export default defineComponent({
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  margin-top: 100px;
+}
+button {
+  border: none;
+  padding: 8px;
+  color: white;
+  background-color: rgb(24, 24, 24);
+  text-align: center;
+  font-size: 18px;
+  opacity: 0.9;
+  text-decoration: none;
+  margin: 5px;
+}
+button:hover {
+  opacity: 1;
+}
+ul {
+  list-style-type: none;
 }
 </style>

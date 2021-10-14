@@ -2,8 +2,14 @@
   <div v-if="currentUser.userName" class="edit-form">
     <h4>{{ currentUser.userName }}</h4>
     <p>Current avatar:</p>
-    <img v-if="currentAvatar" :src="currentAvatar" />
-    <img v-else src="../assets/avatar.png" />
+    <img
+      v-if="currentUser.avatar"
+      :src="`http://localhost:3000/users/${currentUser.userName}/avatar`"
+    />
+    <img
+      v-else
+      :src="`https://avatars.dicebear.com/api/avataaars/${currentUser.userName}.svg`"
+    />
     <div class="container">
       <form @submit.prevent="handleSubmit">
         <div class="form-group">
@@ -14,6 +20,11 @@
         </div>
       </form>
     </div>
+    <button class="deletebtn" @click="deleteAvatar">Delete Avatar</button>
+    <router-link :to="`/users/${currentUser.userName}`">
+      <button>Go back to {{ currentUser.userName }} Profile</button>
+    </router-link>
+    <p>{{ msg }}</p>
   </div>
 
   <div v-else>
@@ -33,24 +44,12 @@ export default defineComponent({
     name: "User",
   data() {
     return {
-      files: "",
-      currentAvatar: "",
+      file: "",
       currentUser: {} as User,
+      msg: "",
     };
   },
   methods: {
-    getUserAvatar(userName: string) {
-      UserDataService.getAvatar(userName)
-        .then(() => {
-          this.currentAvatar =
-            "http://localhost:3000/users/" + userName + "/avatar";
-          console.log("AVATAR");
-        })
-        .catch(() => {
-          this.currentAvatar = "";
-          console.log("Nothing");
-        });
-    },
     getUser(userName: string) {
       UserDataService.get(userName)
         .then((response: ResponseData) => {
@@ -60,26 +59,44 @@ export default defineComponent({
         .catch((e: Error) => {
           console.log(e);
         });
-      this.getUserAvatar(userName);
     },
     uploadFile(event: any) {
-      this.files = event.target.files;
+      this.file = event.target.files[0];
       console.log(event);
     },
     handleSubmit() {
-      const formData = new FormData();
-      for (const i of Object.keys(this.files)) {
-        formData.append("avatar", this.files[Number(i)]);
+      if (this.file) {
+        const formData = new FormData();
+        formData.append("avatar", this.file);
+        UserDataService.uploadAvatar(this.currentUser.userName, formData)
+          .then(() => {
+            var path = "/users/" + this.currentUser.userName;
+            this.$router.push(path);
+          })
+          .catch((e: Error) => {
+            console.log(e);
+          });
       }
-      UserDataService.uploadAvatar(this.currentUser.userName, formData)
-        .then(() => {
-          console.log("success");
-          window.location.reload();
-        })
-        .catch((e: Error) => {
-          console.log(e);
-        });
+      else
+        this.msg = "Select a File to Upload"
     },
+    deleteAvatar() {
+      if (this.currentUser.avatar)
+      {
+        UserDataService.deleteAvatar(this.currentUser.userName)
+          .then(() => {
+            console.log("success");
+            this.$router.go(0);
+          })
+          .catch((e: Error) => {
+            this.msg = e.message;
+            console.log(e);
+          });
+      }
+      else {
+        this.msg = "There is no avatar for user " + this.currentUser.userName;
+      }
+    }
   },
   mounted() {
     this.getUser(String(this.$route.params.userName));
@@ -88,24 +105,17 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* div {
-  border: 1px solid black;
-} */
 .container {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.user-info {
-  margin: 5%;
-}
-
 img {
   border: 5px solid #ddd;
   border-radius: 10px;
-  max-width: 300px;
-  max-height: 300px;
-  /* margin-right: 50%; */
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
 }
 h4 {
   font-size: 30px;
@@ -113,64 +123,7 @@ h4 {
   margin-left: auto;
   margin-right: auto;
 }
-
-button {
-  border: none;
-  padding: 8px;
-  color: white;
-  background-color: black;
-  text-align: center;
-  font-size: 18px;
-  opacity: 0.9;
-}
-button:hover {
-  opacity: 1;
-}
-.cancelbtn,
-.deletebtn {
-  float: left;
-  width: 50%;
-}
-
-/* Add a color to the cancel button */
-.cancelbtn {
-  background-color: #ccc;
-  color: black;
-}
-
-/* Add a color to the delete button */
 .deletebtn {
   background-color: #f44336;
-}
-
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: #474e5d;
-  padding-top: 50px;
-}
-.modal-content {
-  background-color: #fefefe;
-  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-}
-hr {
-  border: 1px solid #f1f1f1;
-  margin-bottom: 25px;
-}
-.close {
-  position: absolute;
-  right: 35px;
-  top: 15px;
-  font-size: 40px;
-  font-weight: bold;
-  color: #f1f1f1;
 }
 </style>

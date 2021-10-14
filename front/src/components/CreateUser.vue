@@ -21,6 +21,7 @@
       <button class="btn btn-success" @click="newUser">Add</button>
     </div>
   </div>
+  <h4>{{ msg }}</h4>
 </template>
 
 <script lang="ts">
@@ -37,25 +38,35 @@ export default defineComponent({
         userName: "",
       } as User,
       submitted: false,
+      msg: "",
     };
   },
   methods: {
     saveUser() {
-      let data = {
-        userName: this.user.userName,
-      };
-      UserDataService.create(data)
-        .then((response) => {
-          console.log(response);
-          this.submitted = true;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (this.user.userName)
+      {
+        let data = {
+          userName: this.user.userName,
+        };
+        UserDataService.create(data)
+          .then((response) => {
+            console.log(response);
+            this.submitted = true;
+            this.msg = "";
+          })
+          .catch((error) => {
+            console.log(error);
+            this.msg = error;
+          });
+      }
+      else
+        this.msg = "Please enter an User Name";
+      //  console.log("❌");
     },
 
     newUser() {
       this.submitted = false;
+      this.msg = "";
       this.user = {} as User;
     },
   },
