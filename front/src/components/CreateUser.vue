@@ -12,16 +12,13 @@
           name="userName"
         />
       </div>
-
+      <br />
       <button @click="saveUser" class="btn btn-success">Submit</button>
     </div>
 
     <div v-else>
       <h4>The user was successfully created !</h4>
       <button class="btn btn-success" @click="newUser">Add</button>
-    </div>
-    <div>
-      <h4>{{ info }}</h4>
     </div>
   </div>
 </template>
@@ -54,7 +51,7 @@ export default defineComponent({
         })
         .catch((error) => {
           console.log(error);
-      });
+        });
     },
 
     newUser() {

@@ -1,40 +1,18 @@
 <template>
   <div v-if="currentUser.userName" class="edit-form">
     <h4>{{ currentUser.userName }}</h4>
+    <p>Current avatar:</p>
+    <img v-if="currentAvatar" :src="currentAvatar" />
+    <img v-else src="../assets/avatar.png" />
     <div class="container">
-      <img v-if="currentAvatar" :src="currentAvatar" />
-      <img v-else src="../assets/avatar.png" />
-      <div class="user-info">
-        <p>Victories: 0</p>
-        <p>Losses: 0</p>
-        <p>Level: 0</p>
-        <br />
-        <router-link :to="`/users/${currentUser.userName}/upload-avatar`">
-          Change Avatar
-        </router-link>
-        <br />
-        <button onclick="document.getElementById('id01').style.display='block'">
-          Delete Profile
-        </button>
-        <div id="id01" class="modal">
-          <span
-            onclick="document.getElementById('id01').style.display='none'"
-            class="close"
-            title="Close Modal"
-            >&times;</span
-          >
-          <form class="modal-content">
-            <div class="modal-window">
-              <h1>Delete Account</h1>
-              <br />
-              <p>Are you sure you want to delete your account?</p>
-              <br />
-              <button class="cancelbtn">Cancel</button>
-              <button class="deletebtn" @click="deleteUser">Delete</button>
-            </div>
-          </form>
+      <form @submit.prevent="handleSubmit">
+        <div class="form-group">
+          <input type="file" @change="uploadFile" multiple />
         </div>
-      </div>
+        <div class="form-group">
+          <button class="btn btn-success btn-block btn-lg">Upload</button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -45,15 +23,17 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable */
 import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
-  name: "User",
+    name: "User",
   data() {
     return {
+      files: "",
       currentAvatar: "",
       currentUser: {} as User,
     };
@@ -82,19 +62,19 @@ export default defineComponent({
         });
       this.getUserAvatar(userName);
     },
-
-    // uploadUserAvatar() {
-    //   UserDataService.uploadAvatar(this.currentUser.userName, null)
-
-    // },
-
-    deleteUser() {
-      UserDataService.delete(this.currentUser.userName)
-        .then((response: ResponseData) => {
-          console.log(response.data);
-          // this.$router.push({ name: "Users" });
-          console.log(location);
-          window.location.href = "http://localhost:8080/users";
+    uploadFile(event: any) {
+      this.files = event.target.files;
+      console.log(event);
+    },
+    handleSubmit() {
+      const formData = new FormData();
+      for (const i of Object.keys(this.files)) {
+        formData.append("avatar", this.files[Number(i)]);
+      }
+      UserDataService.uploadAvatar(this.currentUser.userName, formData)
+        .then(() => {
+          console.log("success");
+          window.location.reload();
         })
         .catch((e: Error) => {
           console.log(e);
@@ -133,7 +113,7 @@ h4 {
   margin-left: auto;
   margin-right: auto;
 }
-a,
+
 button {
   border: none;
   padding: 8px;
@@ -142,10 +122,7 @@ button {
   text-align: center;
   font-size: 18px;
   opacity: 0.9;
-  text-decoration: none;
-  margin: 20px;
 }
-a:hover,
 button:hover {
   opacity: 1;
 }

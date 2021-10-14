@@ -4,6 +4,8 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { BadRequestException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
+import * as fs from 'fs';
 
 @Injectable()
 export class UsersService {
@@ -13,18 +15,35 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> | Promise<void> {
-      // if (this.usersRepository.findOne(createUserDto.userName))
-      //   return ;
       const user = new User();
       user.userName = createUserDto.userName;
-      return this.usersRepository.save(user).catch((e) => {
-        if (this.usersRepository.findOne(user.userName)) {
-          throw new BadRequestException(
-            'This User Name already exist, please try with another one.',
-          );
-        }
-        return e;
+      return this.usersRepository.save(user);//.catch((e) => {
+      //   if (this.usersRepository.findOne(user.userName)) {
+      //     throw new BadRequestException(
+      //       'This User Name already exist, please try with another one.',
+      //     );
+      //   }
+      //   return e;
+      // });
+  }
+
+  async DeleteOldAvatarFile (userName: string) {
+    const myAvatar = await this.usersRepository.findOne(userName).then((user) => { return user.avatar;});
+    if (myAvatar)
+    {
+      fs.unlink("avatars/" + myAvatar, (err) => {
+        if (err) throw err;
       });
+    }
+  }
+
+  public async setAvatar(userName: string, avatarUrl: string): Promise<void>  {
+    this.DeleteOldAvatarFile(userName);
+    await this.usersRepository.update(userName, {avatar: avatarUrl});
+ }
+
+  async getAvatar(userName: string) : Promise<String>  {
+    return this.usersRepository.findOne(userName).then((user) => { return user.avatar; });
   }
 
   async findAll(): Promise<User[]> {
@@ -32,10 +51,34 @@ export class UsersService {
   }
 
   async findOne(userName: string): Promise<User> {
+    const user = this.usersRepository.findOne(userName);
+    // if (!user)
+    // {
+    //   console.log('nope');
+    //   throw new HttpException('User doesn\'t exist', HttpStatus.NOT_FOUND);
+    // }
+    return user;
+    // return this.usersRepository.findOne(userName);
+  }
+
+  async findOneAgain(userName: string): Promise<User> {
     return this.usersRepository.findOne(userName);
   }
 
   async remove(userName: string): Promise<void> {
+    this.DeleteOldAvatarFile(userName);
     await this.usersRepository.delete(userName);
+  }
+
+  async userAlreadyExists(createUserDTO: CreateUserDto): Promise<any> {
+    const user = await this.usersRepository.findOne({ userName: createUserDTO.userName });
+    if (user)
+      return true;
+    return false;
+}
+
+  async removeAvatar(userName: string): Promise<void> {
+    this.DeleteOldAvatarFile(userName);
+    await this.usersRepository.update(userName, {avatar: null});
   }
 }

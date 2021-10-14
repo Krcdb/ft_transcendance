@@ -9,7 +9,7 @@ const routes = [
   {
     path: "/game",
     name: "Game",
-    component: () => import("../views/Game.vue"),
+    component: () => import("../components/Game.vue"),
   },
   {
     path: "/chat",
@@ -35,6 +35,11 @@ const routes = [
     path: "/create-user",
     name: "create-user",
     component: () => import("../components/CreateUser.vue"),
+  },
+  {
+    path: "/users/:userName/upload-avatar",
+    name: "upload-avatar",
+    component: () => import("../components/UploadAvatar.vue"),
   },
 ];
 
