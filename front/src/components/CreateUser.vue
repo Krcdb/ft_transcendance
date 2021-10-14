@@ -21,13 +21,13 @@
       <button class="btn btn-success" @click="newUser">Add</button>
     </div>
   </div>
+  <h4>{{ msg }}</h4>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
-// import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
   name: "create-user",
@@ -37,25 +37,29 @@ export default defineComponent({
         userName: "",
       } as User,
       submitted: false,
+      msg: "",
     };
   },
   methods: {
     saveUser() {
-      let data = {
-        userName: this.user.userName,
-      };
-      UserDataService.create(data)
-        .then((response) => {
-          console.log(response);
-          this.submitted = true;
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      if (this.user.userName) {
+        let data = {
+          userName: this.user.userName,
+        };
+        UserDataService.create(data)
+          .then(() => {
+            this.submitted = true;
+            this.msg = "";
+          })
+          .catch((error) => {
+            this.msg = error.response.data.message;
+          });
+      } else this.msg = "Please enter an User Name";
     },
 
     newUser() {
       this.submitted = false;
+      this.msg = "";
       this.user = {} as User;
     },
   },

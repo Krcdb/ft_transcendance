@@ -1,37 +1,35 @@
 <template>
   <div class="list row">
-    <div class="col-md-6">
-      <h4>Users List</h4>
-      <ul class="list-group">
+    <div class="list-wrapper">
+      <h3>Users List</h3>
+      <router-link to="/create-user">
+        <button>Create New User</button>
+      </router-link>
+      <ul class="list">
         <li
-          class="list-group-item"
+          class="list-item"
           :class="{ active: index == currentIndex }"
           v-for="(user, index) in users"
           :key="index"
           @click="setActiveuser(user, index)"
         >
-          {{ user.userName }}
+          <div class="list-img">
+            <img
+              v-if="user.avatar"
+              :src="`http://localhost:3000/users/${user.userName}/avatar`"
+            />
+            <img
+              v-else
+              :src="`https://avatars.dicebear.com/api/avataaars/${user.userName}.svg`"
+            />
+          </div>
+          <div class="list-item-content">
+            <router-link class="profile-link" :to="'/users/' + user.userName">
+              <h4>{{ user.userName }}</h4>
+            </router-link>
+          </div>
         </li>
       </ul>
-    </div>
-    <div class="col-md-6">
-      <div v-if="currentuser.userName">
-        <h4>User</h4>
-        <div>
-          <label><strong>Name:</strong></label>
-          {{ currentuser.userName }}
-        </div>
-
-        <router-link
-          :to="'/users/' + currentuser.userName"
-          class="badge badge-warning"
-          >Click here</router-link
-        >
-      </div>
-      <div v-else>
-        <br />
-        <p>Please click on a user...</p>
-      </div>
     </div>
   </div>
 </template>
@@ -56,13 +54,13 @@ export default defineComponent({
       UserDataService.getAll()
         .then((response: ResponseData) => {
           this.users = response.data;
+          this.users.sort((a, b) => (a.userName > b.userName ? 1 : -1));
           // console.log(response.data);
         })
         .catch((e: Error) => {
           console.log(e);
         });
     },
-
     refreshList() {
       this.retrieveusers();
       this.currentuser = {} as User;
@@ -80,10 +78,45 @@ export default defineComponent({
 });
 </script>
 
-<style>
-.list {
-  text-align: left;
-  max-width: 750px;
+<style scopped>
+.list-img img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+h3 {
+  font-size: 30px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+.list-wrapper {
+  max-width: 400px;
   margin: auto;
+}
+.profile-link {
+  color: black;
+  text-decoration: none;
+  font-size: 18px;
+  display: flex;
+  align-content: center;
+}
+.list {
+  background-color: white;
+  border-radius: 2px;
+  list-style: none;
+  padding: 10px 20px;
+}
+
+.list-item {
+  display: flex;
+  align-content: center;
+  margin: 10px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.list-item-content {
+  margin-left: 20px;
 }
 </style>

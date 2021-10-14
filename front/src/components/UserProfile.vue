@@ -2,18 +2,26 @@
   <div v-if="currentUser.userName" class="edit-form">
     <h4>{{ currentUser.userName }}</h4>
     <div class="container">
-      <img v-if="currentAvatar" :src="currentAvatar" />
-      <img v-else src="../assets/avatar.png" />
+      <img
+        v-if="currentUser.avatar"
+        :src="`http://localhost:3000/users/${currentUser.userName}/avatar`"
+      />
+      <img
+        v-else
+        :src="`https://avatars.dicebear.com/api/avataaars/${currentUser.userName}.svg`"
+      />
       <div class="user-info">
         <p>Victories: 0</p>
         <p>Losses: 0</p>
         <p>Level: 0</p>
         <br />
         <router-link :to="`/users/${currentUser.userName}/upload-avatar`">
-          Change Avatar
+          <button>Change Avatar</button>
         </router-link>
-        <br />
-        <button onclick="document.getElementById('id01').style.display='block'">
+        <button
+          class="deletebtnb0"
+          onclick="document.getElementById('id01').style.display='block'"
+        >
           Delete Profile
         </button>
         <div id="id01" class="modal">
@@ -29,8 +37,10 @@
               <br />
               <p>Are you sure you want to delete your account?</p>
               <br />
-              <button class="cancelbtn">Cancel</button>
-              <button class="deletebtn" @click="deleteUser">Delete</button>
+              <div class="clearfix">
+                <button class="cancelbtn">Cancel</button>
+                <button class="deletebtn" @click="deleteUser">Delete</button>
+              </div>
             </div>
           </form>
         </div>
@@ -54,23 +64,11 @@ export default defineComponent({
   name: "User",
   data() {
     return {
-      currentAvatar: "",
+      currentAatar: "",
       currentUser: {} as User,
     };
   },
   methods: {
-    getUserAvatar(userName: string) {
-      UserDataService.getAvatar(userName)
-        .then(() => {
-          this.currentAvatar =
-            "http://localhost:3000/users/" + userName + "/avatar";
-          console.log("AVATAR");
-        })
-        .catch(() => {
-          this.currentAvatar = "";
-          console.log("Nothing");
-        });
-    },
     getUser(userName: string) {
       UserDataService.get(userName)
         .then((response: ResponseData) => {
@@ -80,24 +78,17 @@ export default defineComponent({
         .catch((e: Error) => {
           console.log(e);
         });
-      this.getUserAvatar(userName);
     },
-
-    // uploadUserAvatar() {
-    //   UserDataService.uploadAvatar(this.currentUser.userName, null)
-
-    // },
-
     deleteUser() {
       UserDataService.delete(this.currentUser.userName)
         .then((response: ResponseData) => {
           console.log(response.data);
-          // this.$router.push({ name: "Users" });
-          console.log(location);
-          window.location.href = "http://localhost:8080/users";
+          console.log("DELETED");
+          // this.$router.push("/users");
         })
         .catch((e: Error) => {
           console.log(e);
+          console.log("ERROR");
         });
     },
   },
@@ -119,13 +110,12 @@ export default defineComponent({
 .user-info {
   margin: 5%;
 }
-
 img {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
   border: 5px solid #ddd;
   border-radius: 10px;
-  max-width: 300px;
-  max-height: 300px;
-  /* margin-right: 50%; */
 }
 h4 {
   font-size: 30px;
@@ -133,26 +123,11 @@ h4 {
   margin-left: auto;
   margin-right: auto;
 }
-a,
-button {
-  border: none;
-  padding: 8px;
-  color: white;
-  background-color: black;
-  text-align: center;
-  font-size: 18px;
-  opacity: 0.9;
-  text-decoration: none;
-  margin: 20px;
-}
-a:hover,
-button:hover {
-  opacity: 1;
-}
 .cancelbtn,
 .deletebtn {
   float: left;
   width: 50%;
+  margin: 0%;
 }
 
 /* Add a color to the cancel button */
@@ -162,6 +137,7 @@ button:hover {
 }
 
 /* Add a color to the delete button */
+.deletebtnb0,
 .deletebtn {
   background-color: #f44336;
 }
@@ -195,5 +171,17 @@ hr {
   font-size: 40px;
   font-weight: bold;
   color: #f1f1f1;
+}
+
+.close:hover,
+.close:focus {
+  color: #f44336;
+  cursor: pointer;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
 }
 </style>

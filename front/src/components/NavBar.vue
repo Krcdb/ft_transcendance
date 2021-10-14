@@ -6,9 +6,7 @@
       <li><router-link to="/game">Game</router-link></li>
       <li><router-link to="/chat">Chat</router-link></li>
       <li><router-link to="/users">Users</router-link></li>
-      <li class="push">
-        <router-link class="right" to="/create-user">Create User</router-link>
-      </li>
+      <!-- <li ><router-link class="right" to="/create-user">Create User</router-link></li> -->
     </ul>
   </nav>
 </template>
@@ -16,6 +14,9 @@
 <style scoped>
 .navbar {
   display: flex;
+  position: fixed;
+  background-color: white;
+  top: 0;
 }
 .logo {
   display: inline-block;
@@ -37,6 +38,11 @@ li a {
   color: black;
   padding: 14px 16px;
   text-decoration: none;
+}
+
+li a:hover {
+  background-color: rgb(206, 206, 206);
+  border-radius: 10px;
 }
 
 li a.router-link-exact-active {
