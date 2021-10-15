@@ -5,18 +5,13 @@ import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from  'multer';
 import { extname } from  'path';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  // create(@Body() createUserDto: CreateUserDto): Promise<User> | Promise<void> {
-  //   return this.usersService.create(createUserDto);
-  // }
-
-  // @Post('/create-user')
   async addUser(@Res() res, @Body() createUserDto: CreateUserDto) {
     if (await this.usersService.userAlreadyExists(createUserDto)){
         return res.status(HttpStatus.CONFLICT).json({
