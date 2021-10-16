@@ -105,7 +105,7 @@ h3 {
   background-color: white;
   border-radius: 2px;
   list-style: none;
-  padding: 10px 20px;
+  /* padding: 10px 20px; */
 }
 
 .list-item {

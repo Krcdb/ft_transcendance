@@ -1,4 +1,5 @@
-export default interface Chat {
+export default interface ChatMessage {
     message: string;
-    sender: bool;
+    owner: string;
+    sender: boolean;
 }

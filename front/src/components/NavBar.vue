@@ -1,51 +1,69 @@
 <template>
   <nav class="navbar">
-    <img class="logo" align="left" src="@/assets/pong_logo.png" />
-    <ul class="main-nav">
-      <li><router-link class="active" to="/">Home</router-link></li>
-      <li><router-link to="/game">Game</router-link></li>
-      <li><router-link to="/chat">Chat</router-link></li>
-      <li><router-link to="/users">Users</router-link></li>
-      <!-- <li ><router-link class="right" to="/create-user">Create User</router-link></li> -->
-    </ul>
+    <div class="logo-wrapper">
+      <img class="logo" align="left" src="@/assets/pong_logo.png" />
+    </div>
+    <div class="nav-wrapper">
+      <ul>
+        <li><router-link class="active" to="/">Home</router-link></li>
+        <li><router-link to="/game">Game</router-link></li>
+        <li><router-link to="/chat">Chat</router-link></li>
+        <li><router-link to="/users">Users</router-link></li>
+        <!-- <li ><router-link class="right" to="/create-user">Create User</router-link></li> -->
+      </ul>
+    </div>
   </nav>
 </template>
 
 <style scoped>
 .navbar {
   display: flex;
+  align-content: center;
   position: fixed;
-  background-color: white;
-  top: 0;
-}
-.logo {
-  display: inline-block;
+  background: white;
   object-fit: contain;
-  max-width: 15%;
+  top: 0;
+  height: 10%;
+  width: 100%;
+  left: 0;
+}
+.navbar div {
+  display: flex;
+}
+.logo-wrapper {
+  object-fit: contain;
+  /* max-width: 15%; */
+}
+.logo img{
+  /* display: inline-block; */
+  object-fit: contain;
+  max-width: fit-content;
 }
 
-ul {
+.nav-wrapper ul {
   list-style-type: none;
+  display: flex;
+  align-items: center;
 }
 
-li {
+.nav-wrapper li {
   float: left;
   font-weight: bold;
 }
 
-li a {
-  display: block;
+.nav-wrapper li a {
+  /* display: block; */
   color: black;
   padding: 14px 16px;
   text-decoration: none;
 }
 
-li a:hover {
+.nav-wrapper li a:hover {
   background-color: rgb(206, 206, 206);
   border-radius: 10px;
 }
 
-li a.router-link-exact-active {
+.nav-wrapper li a.router-link-exact-active {
   background-color: black;
   border-radius: 10px;
   color: white;

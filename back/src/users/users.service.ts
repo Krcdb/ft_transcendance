@@ -3,8 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
-import { BadRequestException } from '@nestjs/common';
-import { HttpException, HttpStatus } from '@nestjs/common';
 import * as fs from 'fs';
 
 @Injectable()
@@ -17,14 +15,7 @@ export class UsersService {
   create(createUserDto: CreateUserDto): Promise<User> | Promise<void> {
       const user = new User();
       user.userName = createUserDto.userName;
-      return this.usersRepository.save(user);//.catch((e) => {
-      //   if (this.usersRepository.findOne(user.userName)) {
-      //     throw new BadRequestException(
-      //       'This User Name already exist, please try with another one.',
-      //     );
-      //   }
-      //   return e;
-      // });
+      return this.usersRepository.save(user);
   }
 
   async DeleteOldAvatarFile (userName: string) {
@@ -52,13 +43,7 @@ export class UsersService {
 
   async findOne(userName: string): Promise<User> {
     const user = this.usersRepository.findOne(userName);
-    // if (!user)
-    // {
-    //   console.log('nope');
-    //   throw new HttpException('User doesn\'t exist', HttpStatus.NOT_FOUND);
-    // }
     return user;
-    // return this.usersRepository.findOne(userName);
   }
 
   async findOneAgain(userName: string): Promise<User> {
