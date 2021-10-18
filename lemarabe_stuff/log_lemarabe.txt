@@ -1,0 +1,10 @@
+A mettre en script pour automatiser les dumps :
+brew install postgresql
+pg_dump postgres > usersDataBase.sql
+IMPORT usersDataBase.sql
+--> en fait ca marche pas les dumps, je change de technique
+
+Using migrations instead :
+npm i -g typeorm
+typeorm migration:create
+typeorm migration:run
