@@ -1,9 +1,11 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { FortyTwoAuthGuard } from './auth/FortyTwo-auth.guard';
 // import { useContainer } from 'class-validator'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // app.useGlobalGuards(new FortyTwoAuthGuard());
   app.enableCors( {
     allowedHeaders:"*",
     origin: "*"

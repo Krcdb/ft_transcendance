@@ -12,10 +12,16 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto): Promise<User> | Promise<void> {
+  create(createUserDto: CreateUserDto): Promise<User> {
       const user = new User();
       user.userName = createUserDto.userName;
+      user.intraId = createUserDto.intraId;
       return this.usersRepository.save(user);
+  }
+
+  async findOrCreate(intraId: number, userName: string) : Promise<User> {
+    console.log(intraId, " -> ", userName);
+    return await this.findOneIntra(intraId) || await this.create({"userName": userName, "intraId": intraId});
   }
 
   async DeleteOldAvatarFile (userName: string) {
@@ -43,6 +49,11 @@ export class UsersService {
 
   async findOne(userName: string): Promise<User> {
     const user = this.usersRepository.findOne(userName);
+    return user;
+  }
+
+  async findOneIntra(intra_id: number): Promise<User> {
+    const user = this.usersRepository.findOne(intra_id);
     return user;
   }
 
