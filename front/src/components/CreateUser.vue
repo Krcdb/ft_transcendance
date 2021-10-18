@@ -28,7 +28,6 @@
 import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
-// import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
   name: "create-user",
@@ -43,25 +42,19 @@ export default defineComponent({
   },
   methods: {
     saveUser() {
-      if (this.user.userName)
-      {
+      if (this.user.userName) {
         let data = {
           userName: this.user.userName,
         };
         UserDataService.create(data)
-          .then((response) => {
-            console.log(response);
+          .then(() => {
             this.submitted = true;
             this.msg = "";
           })
           .catch((error) => {
-            console.log(error);
-            this.msg = error;
+            this.msg = error.response.data.message;
           });
-      }
-      else
-        this.msg = "Please enter an User Name";
-      //  console.log("❌");
+      } else this.msg = "Please enter an User Name";
     },
 
     newUser() {
