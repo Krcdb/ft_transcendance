@@ -5,6 +5,9 @@ export class User {
   @PrimaryColumn( {unique: true} )
   userName: string;
 
+  @Column({unique: true})
+  intraId: number;
+
   @Column({ default: true })
   isActive: boolean;
 

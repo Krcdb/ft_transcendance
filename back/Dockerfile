@@ -9,10 +9,13 @@ RUN npm install -g npm@latest \
 	&& npm install -g @nestjs/cli  \
 	&& npm install --save @nestjs/config @nestjs/common @nestjs/core @nestjs/typeorm typeorm pg \
 	&& npm install --save class-validator \
-	&& npm i --save @nestjs/passport passport \
+	&& npm install --save @nestjs/passport passport passport-local \
+	&& npm install --save-dev @types/passport-local \
 	&& npm install passport-42 \
 	&& npm i -D @types/multer @types/node \
-	&& npm i --save @nestjs/axios
+	&& npm i --save @nestjs/axios \
+	&& npm install --save-dev @types/passport-jwt \
+	&& npm install --save @nestjs/jwt passport-jwt
 
 
 COPY . /app/
