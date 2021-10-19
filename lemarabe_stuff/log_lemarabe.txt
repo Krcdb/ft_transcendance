@@ -1,3 +1,38 @@
+[19 octobre]
+Je commence a comprendre les relations entre entities sur TypeORM,
+il me manque plus que ManyToMany a voir. J'ai ecrit une entity pour
+les matches, il faudra que je la modifie selon ce que mederic a fait.
+Sinon j'ai mis au propre ma vieille liste sur un draw.io.
+
+[18 octobre]
+Database structure :
+USER entity :
+    userName (string)
+    intraId ()
+    isOnline (bool)
+    isInGame (bool)
+    avatar (string)
+    nbVictories (number)
+    nbLosses (number)
+    ladderLevel (number)
+    achievements (string[])
+    friends (number[] (avec intraId) ou string[] (avec userName))
+    blackList (number[] (avec intraId) ou string[] (avec userName))
+    matchHistory ()
+MATCH entity :
+    leftPlayer (string or number)
+    rightPlayer (string or number)
+    leftPlayerScore (number)
+    rightPlayerScore (number)
+    victor (string or number)
+    leftBarPositionY (number)
+    rightBarPositionY (number)
+    ballPositionX (number)
+    ballPositionY (number)
+CHAT entity :
+    ??? needed features : isOnline, blockUser, addFriend
+*******************************************************
+[14 octobre]
 A mettre en script pour automatiser les dumps :
 brew install postgresql
 pg_dump postgres > usersDataBase.sql

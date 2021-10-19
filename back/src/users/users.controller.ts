@@ -12,11 +12,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  // create(@Body() createUserDto: CreateUserDto): Promise<User> | Promise<void> {
-  //   return this.usersService.create(createUserDto);
-  // }
-
-  // @Post('/create-user')
   async addUser(@Res() res, @Body() createUserDto: CreateUserDto) {
     if (await this.usersService.userAlreadyExists(createUserDto)){
         return res.status(HttpStatus.CONFLICT).json({
