@@ -53,8 +53,7 @@ export class UsersController {
   @Get(':userName')
   // @UseGuards(FortyTwoAuthGuard)
   findOne(@Param('userName') userName: string): Promise<User> {
-    const user = this.usersService.findOne(userName);
-    return user;
+    return this.usersService.findOne(userName);
   }
 
   @Get(':userName/avatar')
