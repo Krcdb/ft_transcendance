@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,6 +20,7 @@ export class UsersService {
   }
 
   async findOrCreate(intraId: number, userName: string) : Promise<User> {
+    console.log("find or create user");
     console.log(intraId, " -> ", userName);
     return await this.findOneIntra(intraId) || await this.create({"userName": userName, "intraId": intraId});
   }
@@ -54,6 +55,11 @@ export class UsersService {
 
   async findOneIntra(intra_id: number): Promise<User> {
     const user = this.usersRepository.findOne(intra_id);
+
+    console.log("findOneIntra");
+    if ( !user ) {
+      throw new UnauthorizedException();
+    }
     return user;
   }
 

@@ -18,6 +18,10 @@ class TutorialDataService {
     return http.post("/users", data);
   }
 
+  login(data: any): Promise<any> {
+    return http.get("/login", data);
+  }
+
   uploadAvatar(userName: string, avatar: FormData): Promise<any> {
     return http.post(`/users/${userName}/avatar`, avatar);
   }

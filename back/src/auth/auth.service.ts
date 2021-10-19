@@ -7,24 +7,16 @@ import { UnauthorizedException } from '@nestjs/common';
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService
+    // private jwtService: JwtService
   ) {}
 
-  async login(user: any) {
-    const payload = { username: user.username, sub: user.userId };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
-  }
-
-  async findUserFrom42Id(intraId: number): Promise<any> {
-    const user = await this.usersService.findOneIntra(intraId);
+  // async findUserFrom42Id(intraId: number): Promise<any> {
+  //   const user = await this.usersService.findOneIntra(intraId);
   
-    if ( !user ) {
-        throw new UnauthorizedException();
-    }
-  
-    return user;
-  }
+  //   if ( !user ) {
+  //       throw new UnauthorizedException();
+  //   }
+  //   return user;
+  // }
   
 }
