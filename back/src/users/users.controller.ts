@@ -1,4 +1,4 @@
-import { UseGuards, Body, Controller, Delete, Get, Res, Param, Post, UploadedFile, UseInterceptors, NotFoundException } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Res, Param, Post, UploadedFile, UseInterceptors, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
@@ -6,14 +6,14 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from  'multer';
 import { extname } from  'path';
 import { HttpStatus } from '@nestjs/common';
-import { FortyTwoAuthGuard } from 'src/auth/FortyTwo-auth.guard';
+import { Public } from 'src/auth/public.decorator';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  // @UseGuards(FortyTwoAuthGuard)
+  // @UseGuards(AuthGuard('jwt'))
   async addUser(@Res() res, @Body() createUserDto: CreateUserDto) {
     if (await this.usersService.userAlreadyExists(createUserDto)){
         return res.status(HttpStatus.CONFLICT).json({
@@ -28,7 +28,7 @@ export class UsersController {
 }
 
   @Post(':userName/avatar')
-  // @UseGuards(FortyTwoAuthGuard)
+  // @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('avatar',
   {
     storage: diskStorage({
@@ -45,19 +45,20 @@ export class UsersController {
     
 
   @Get()
-  // @UseGuards(FortyTwoAuthGuard)
+  // @UseGuards(AuthGuard('jwt'))
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
   @Get(':userName')
-  // @UseGuards(FortyTwoAuthGuard)
+  // @UseGuards(AuthGuard('jwt'))
   findOne(@Param('userName') userName: string): Promise<User> {
     return this.usersService.findOne(userName);
   }
 
+  // @Public()
   @Get(':userName/avatar')
-  // @UseGuards(FortyTwoAuthGuard)
+  // @UseGuards(AuthGuard('jwt'))
   serveAvatar(@Param('userName') userName, @Res() res) : Promise<any> {
     const getAvatarFile = async () => {
       const avatarPath = await this.usersService.getAvatar(userName);
@@ -70,13 +71,13 @@ export class UsersController {
   }
 
   @Delete(':userName')
-  // @UseGuards(FortyTwoAuthGuard)
+  // @UseGuards(AuthGuard('jwt'))
   remove(@Param('userName') userName: string): Promise<void> {
     return this.usersService.remove(userName);
   }
 
   @Delete(':userName/avatar')
-  // @UseGuards(FortyTwoAuthGuard)
+  // @UseGuards(AuthGuard('jwt'))
   removeAvatar(@Param('userName') userName: string): Promise<void> {
     return this.usersService.removeAvatar(userName);
   }

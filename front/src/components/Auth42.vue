@@ -26,7 +26,6 @@ export default defineComponent({
     };
   },
   async mounted() {
-    console.log("query.code -> ", this.$route.query.code);
     if (!this.$route.query.code) {
       this.$router.push("/login");
       return;
@@ -37,15 +36,13 @@ export default defineComponent({
       axios
         .get(url)
         .then((response: ResponseData) => {
-          this.user = response.data;
-          console.log(response.data);
-          // window.localStorage.setItem('user', this.user.userName);
-          this.$router.push(`/users/${this.user.userName}`);
+          // axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
+          console.log(response);
+          this.$router.push(`/users/${response.data.userName}`);
         })
         .catch((e: Error) => {
           console.log(e);
         });
-      // const { data } = await axios.get(url);
       this.state = "loggedIn";
     } catch (e) {
       this.error = e.response.data.message;

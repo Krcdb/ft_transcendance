@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import axios from "axios";
 
 const routes = [
   {
@@ -59,7 +60,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // console.log("user = ", window.localStorage.getItem('user'));
+  // console.log("window token = ", window.localStorage.getItem('token'));
+  // if (window.localStorage.getItem('token'))
+  // {
+  //   console.log("token !");
+  //   axios.defaults.headers.common['Authorization'] = `Bearer ${window.localStorage.getItem('token')}`;
+  // }
+  // window.localStorage.getItem('token');
   next()
 })
 

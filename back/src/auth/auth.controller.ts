@@ -6,9 +6,12 @@ import { FortyTwoAuthGuard } from './FortyTwo-auth.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Get('42')
   @UseGuards(FortyTwoAuthGuard)
-  async getUserFrom42Login(@Request() req): Promise<any> {
-    return req.user;
+  @Get('42')
+  async login(@Request() req): Promise<any>  {
+    return this.authService.login(req.user);
   }
+  // async getUserFrom42Login(@Request() req): Promise<any> {
+  //   return req.user;
+  // }
 }
