@@ -1,8 +1,10 @@
-import { Entity, Column, PrimaryColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import { Match } from '../match/match.entity'
 
 @Entity()
 export class User {
+
+  // USER PROFILE
   @PrimaryColumn( {unique: true} )
   userName: string;
 
@@ -15,21 +17,40 @@ export class User {
   @Column({nullable: true})
   avatar: string;
 
-  @OneToMany()
+  // MATCHES & GAME STATS
+  @OneToOne(() => Match, match => match.players)
+  currentMatch: Match;
+
+  @Column(() => Match)
   matchHistory: Match[];
 
-  // @Column()
-  // nbVictories: number;
+  @Column("int")
+  nbVictories: number;
 
-  // @Column()
-  // nbLosses: number;
+  @Column("int")
+  nbLosses: number;
 
-  // @Column()
-  // ladderLevel: number;
+  @Column("int")
+  ladderLevel: number;
 
-  @OneToMany(() => User, user => user.)
-  friendsList: User[];
+  // FRIENDS LIST
+  @ManyToMany(type => User, user => user.befriended)
+  @JoinTable()
+  friends: User[];
+  // = users que ce user a ajouté en ami
 
-  @ManyToOne()
+  @ManyToMany(type => User, user => user.friends)
+  befriended: User[];
+  // = users qui ont ajouté ce user en ami
+
+  // BLOCKED USERS LIST
+  @ManyToMany(type => User, user => user.blockingUsers)
+  @JoinTable()
+  blockedUsers: User[];
+  // = users que ce user a bloqué
+
+  @ManyToMany(type => User, user => user.blockedUsers)
+  blockingUsers: User[];
+  // = users qui ont bloqué ce user
 
 }
