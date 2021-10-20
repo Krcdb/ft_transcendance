@@ -51,8 +51,6 @@ export class UsersService {
   async findOne(userName: string): Promise<User> {
     const user = this.usersRepository.findOne(userName);
     return user;
-<<<<<<< HEAD
-=======
   }
 
   async findOneIntra(intra_id: number): Promise<User> {
@@ -63,7 +61,6 @@ export class UsersService {
       throw new UnauthorizedException();
     }
     return user;
->>>>>>> user
   }
 
   async findOneAgain(userName: string): Promise<User> {

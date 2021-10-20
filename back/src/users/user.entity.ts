@@ -18,39 +18,39 @@ export class User {
   avatar: string;
 
   // MATCHES & GAME STATS
-  @OneToOne(() => Match, match => match.players)
-  currentMatch: Match;
+  // @OneToOne(() => Match, match => match.players)
+  // currentMatch: Match;
 
-  @Column(() => Match)
-  matchHistory: Match[];
+  // @Column(() => Match)
+  // matchHistory: Match[];
 
-  @Column("int")
-  nbVictories: number;
+  // @Column("int")
+  // nbVictories: number;
 
-  @Column("int")
-  nbLosses: number;
+  // @Column("int")
+  // nbLosses: number;
 
-  @Column("int")
-  ladderLevel: number;
+  // @Column("int")
+  // ladderLevel: number;
 
-  // FRIENDS LIST
-  @ManyToMany(type => User, user => user.befriended)
-  @JoinTable()
-  friends: User[];
-  // = users que ce user a ajouté en ami
+  // // FRIENDS LIST
+  // @ManyToMany(type => User, user => user.befriended)
+  // @JoinTable()
+  // friends: User[];
+  // // = users que ce user a ajouté en ami
 
-  @ManyToMany(type => User, user => user.friends)
-  befriended: User[];
-  // = users qui ont ajouté ce user en ami
+  // @ManyToMany(type => User, user => user.friends)
+  // befriended: User[];
+  // // = users qui ont ajouté ce user en ami
 
-  // BLOCKED USERS LIST
-  @ManyToMany(type => User, user => user.blockingUsers)
-  @JoinTable()
-  blockedUsers: User[];
-  // = users que ce user a bloqué
+  // // BLOCKED USERS LIST
+  // @ManyToMany(type => User, user => user.blockingUsers)
+  // @JoinTable()
+  // blockedUsers: User[];
+  // // = users que ce user a bloqué
 
-  @ManyToMany(type => User, user => user.blockedUsers)
-  blockingUsers: User[];
-  // = users qui ont bloqué ce user
+  // @ManyToMany(type => User, user => user.blockedUsers)
+  // blockingUsers: User[];
+  // // = users qui ont bloqué ce user
 
 }
