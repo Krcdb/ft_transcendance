@@ -6,6 +6,7 @@ import { UsersService } from 'src/users/users.service';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class FortyTwoStrategy extends PassportStrategy(Strategy, 'passport-42') {
@@ -15,11 +16,13 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, 'passport-42') 
     super({
         clientID: configService.get<string>('FORTYTWO_APP_ID'),
         clientSecret:  configService.get<string>('FORTYTWO_APP_SECRET'),
-        callbackURL:  configService.get<string>('FORTYTWO_CB_URL')
+        // callbackURL:  "http://localhost:3000/auth/42"
+        callbackURL:  "http://localhost:8080/auth/42"
+        // callbackURL:  configService.get<string>('FORTYTWO_CB_URL')
       });
   }
 
-  async validate(accessToken: string): Promise<any> {
+  async validate(accessToken: string): Promise<User> {
     console.log("call to validate 42");
     console.log("access token = ", accessToken);
     const { data } = await lastValueFrom(this.httpService.get(' https://api.intra.42.fr/v2/me', {

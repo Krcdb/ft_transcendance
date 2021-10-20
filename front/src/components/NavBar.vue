@@ -32,9 +32,9 @@
 }
 .logo-wrapper {
   object-fit: contain;
-  /* max-width: 15%; */
+  max-width: 30%;
 }
-.logo img{
+img {
   /* display: inline-block; */
   object-fit: contain;
   max-width: fit-content;

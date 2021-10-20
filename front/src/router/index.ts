@@ -8,8 +8,13 @@ const routes = [
   },
   {
     path: "/login",
-    name: "Login",
+    name: "login",
     component: () => import("../components/Login.vue"),
+  },
+  {
+    path: "/auth/42",
+    name: "42 auth",
+    component: () => import("../components/Auth42.vue"),
   },
   {
     path: "/game",
@@ -52,5 +57,11 @@ const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+
+router.beforeEach((to, from, next) => {
+  // console.log("user = ", window.localStorage.getItem('user'));
+  next()
+})
+
 
 export default router;

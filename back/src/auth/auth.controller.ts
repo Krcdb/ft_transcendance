@@ -2,13 +2,13 @@ import { Post, Get, Controller, Request, UseGuards, Param } from '@nestjs/common
 import { AuthService } from './auth.service';
 import { FortyTwoAuthGuard } from './FortyTwo-auth.guard';
 
-@Controller()
+@Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Get('login')
+  @Get('42')
   @UseGuards(FortyTwoAuthGuard)
-  async getUserFrom42Login(@Request() req) {
+  async getUserFrom42Login(@Request() req): Promise<any> {
     return req.user;
   }
 }
