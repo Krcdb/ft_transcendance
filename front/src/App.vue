@@ -6,10 +6,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import NavBar from "@/components/NavBar.vue";
+// import 
 
 export default defineComponent({
   name: "App",
-  // title: "Pong";
   components: {
       NavBar,
   },
@@ -23,7 +23,7 @@ export default defineComponent({
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 6%;
+  margin-top: 10%;
 }
 button {
   border: none;

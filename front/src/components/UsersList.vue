@@ -2,8 +2,8 @@
   <div class="list row">
     <div class="list-wrapper">
       <h3>Users List</h3>
-      <router-link to="/create-user">
-        <button>Create New User</button>
+      <router-link to="/login">
+        <button>Login</button>
       </router-link>
       <ul class="list">
         <li

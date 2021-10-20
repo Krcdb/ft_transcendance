@@ -8,7 +8,7 @@ export class User {
   @PrimaryColumn( {unique: true} )
   userName: string;
 
-  @Column({nullable: true})
+  @Column({unique: true})
   intraId: number;
 
   @Column({ default: true })
