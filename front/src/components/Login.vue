@@ -1,24 +1,29 @@
 <template>
-    <button @click="saveUser"> 42 connect </button>
+  <div class="login">
+    Welcome!
+    <a :href="url">Sign in with 42</a>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
-import UserDataService from "@/services/UserDataService";
-import User from "@/types/User";
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "login",
-  methods: {
-    saveUser() {
-      window.location.href = 'http://localhost:3000/login';
-      }
+  name: "Login",
+  data() {
+    return {
+      query: {
+        client_id: process.env.VUE_APP_FT_CLIENT_ID,
+        redirect_uri: process.env.VUE_APP_FT_REDIRECT_URL,
+        response_type: "code",
+      },
+      url: "https://api.intra.42.fr/oauth/authorize?",
+    };
   },
   mounted() {
-    if (this.$route.query.code) {
-      localStorage.code = this.$route.query.code;
-      console.log(localStorage.code);
-    }
-  }
+    this.url += Object.entries(this.query)
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join("&");
+  },
 });
 </script>
