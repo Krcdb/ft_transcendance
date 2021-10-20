@@ -1,6 +1,6 @@
 <template>
   	<div class="game">
-    	<h1>This will be the Game page</h1>
+    	<h1>W/S for player 1 || P/L for player 2</h1>
     	<br />
 		    <game-canvas/>
     	<img src="../assets/pong_img.png" />

@@ -1,17 +1,18 @@
-enum Keys {
+/* eslint-disable */
+/* enum Keys {
     UP_KEY = 38,
 	DOWN_KEY = 40,
 	W_KEY = 87,
 	S_KEY = 83
-}
+} */
 
 import { Game } from "./Game"
 
 export class Paddle {
-	private x: number;
-	private y: number;
-	private width: number;
-	private height: number;
+	public x: number;
+	public y: number;
+	public width: number;
+	public height: number;
 	private up: number;
 	private down: number;
 	private speed: number = 10;

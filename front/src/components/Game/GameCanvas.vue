@@ -3,22 +3,24 @@
 </template>
 
 <script lang="ts">
-import Vue, { defineComponent } from 'vue'
+import { defineComponent } from "vue";
+import { Game } from "./classes/Game";
 
 export default defineComponent({
 	name: "game-canvas",
 	data() {
       	return {
-        	socket: {} as any,
-			ctx: {} as any,
-			vueCanvas: {} as any,
-      	};
+      	}
     },
+	methods: {
+		launchLoop: function() {
+		var game = new Game();
+		requestAnimationFrame(game.gameLoop.bind(game));
+		}
+	},
     mounted() {
-		var canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
-		this.ctx = canvas!.getContext("2d")!;
-		this.vueCanvas = this.ctx;
-    },
-    //methods: { }
+		this.launchLoop();
+    }
+   
 })
 </script>
