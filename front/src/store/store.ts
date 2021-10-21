@@ -7,20 +7,20 @@ export default createStore({
     user: {} as User,
   },
   getters: {
-    getAuthenticated: state => {
+    getAuthenticated: (state) => {
       return state.login;
     },
-    getUser: state => {
+    getUser: (state) => {
       return state.user;
-    }
+    },
   },
   mutations: {
-    currentUser (state, payload) {
-      state.user = payload
+    currentUser(state, payload) {
+      state.user = payload;
     },
-    isAuthenticated (state, bool: boolean) {
-      state.login = bool
-    }
+    isAuthenticated(state, bool: boolean) {
+      state.login = bool;
+    },
   },
   actions: {},
   modules: {},

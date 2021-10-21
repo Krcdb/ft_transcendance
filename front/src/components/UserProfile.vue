@@ -18,6 +18,7 @@
         <router-link :to="`/users/${currentUser.userName}/upload-avatar`">
           <button>Change Avatar</button>
         </router-link>
+        <button type="button" @click="logout">Logout</button>
         <button
           class="deletebtnb0"
           onclick="document.getElementById('id01').style.display='block'"
@@ -39,7 +40,9 @@
               <br />
               <div class="clearfix">
                 <button class="cancelbtn">Cancel</button>
-                <button type="button" class="deletebtn" @click="deleteUser">Delete</button>
+                <button type="button" class="deletebtn" @click="deleteUser">
+                  Delete
+                </button>
               </div>
             </div>
           </form>
@@ -73,7 +76,6 @@ export default defineComponent({
       UserDataService.get(userName)
         .then((response: ResponseData) => {
           this.currentUser = response.data;
-          // console.log(response.data);
         })
         .catch((e: Error) => {
           console.log(e);
@@ -82,15 +84,16 @@ export default defineComponent({
     deleteUser() {
       UserDataService.delete(this.currentUser.userName)
         .then((response: ResponseData) => {
-          console.log(response.data);
-          console.log("DELETED");
           this.$router.push("/users");
         })
         .catch((e: Error) => {
           console.log(e);
-          console.log("ERROR");
         });
     },
+    logout() {
+      localStorage.removeItem('user-token');
+      this.$router.go(0);
+    }
   },
   mounted() {
     this.getUser(String(this.$route.params.userName));

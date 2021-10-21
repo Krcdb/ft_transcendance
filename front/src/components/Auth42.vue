@@ -2,7 +2,7 @@
   <div>
     <p v-if="state === 'verifying'">Verifying your login...</p>
 
-    <p v-if="state === 'loggedIn'">Welcome {{ user.userName }}! :)</p>
+    <p v-if="state === 'loggedIn'">Logging in...</p>
 
     <div v-if="state === 'error'">
       <p>Failed to login in :(</p>
@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import axios from "axios";
+import http from "@/http-common";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 
@@ -33,14 +33,15 @@ export default defineComponent({
 
     const url = `http://localhost:3000/auth/42?code=${this.$route.query.code}`;
     try {
-      axios
+      http
         .get(url)
         .then((response: ResponseData) => {
-          // axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`;
+          localStorage.setItem('user-token', response.data.access_token)
           console.log(response);
           this.$router.push(`/users/${response.data.userName}`);
         })
         .catch((e: Error) => {
+          localStorage.removeItem('user-token');
           console.log(e);
         });
       this.state = "loggedIn";
@@ -49,6 +50,6 @@ export default defineComponent({
       this.state = "error";
     }
     console.log("state = ", this.state);
-},
+  },
 });
 </script>

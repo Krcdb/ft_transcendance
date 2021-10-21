@@ -13,7 +13,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  // @UseGuards(AuthGuard('jwt'))
+  @Public()
   async addUser(@Res() res, @Body() createUserDto: CreateUserDto) {
     if (await this.usersService.userAlreadyExists(createUserDto)){
         return res.status(HttpStatus.CONFLICT).json({
@@ -28,7 +28,6 @@ export class UsersController {
 }
 
   @Post(':userName/avatar')
-  // @UseGuards(AuthGuard('jwt'))
   @UseInterceptors(FileInterceptor('avatar',
   {
     storage: diskStorage({
@@ -45,20 +44,17 @@ export class UsersController {
     
 
   @Get()
-  // @UseGuards(AuthGuard('jwt'))
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
   @Get(':userName')
-  // @UseGuards(AuthGuard('jwt'))
   findOne(@Param('userName') userName: string): Promise<User> {
     return this.usersService.findOne(userName);
   }
 
-  // @Public()
+  @Public()
   @Get(':userName/avatar')
-  // @UseGuards(AuthGuard('jwt'))
   serveAvatar(@Param('userName') userName, @Res() res) : Promise<any> {
     const getAvatarFile = async () => {
       const avatarPath = await this.usersService.getAvatar(userName);
@@ -71,13 +67,11 @@ export class UsersController {
   }
 
   @Delete(':userName')
-  // @UseGuards(AuthGuard('jwt'))
   remove(@Param('userName') userName: string): Promise<void> {
     return this.usersService.remove(userName);
   }
 
   @Delete(':userName/avatar')
-  // @UseGuards(AuthGuard('jwt'))
   removeAvatar(@Param('userName') userName: string): Promise<void> {
     return this.usersService.removeAvatar(userName);
   }

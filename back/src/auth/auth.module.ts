@@ -18,14 +18,14 @@ import { APP_GUARD } from '@nestjs/core';
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '600000s' },
+      signOptions: { expiresIn: '1h' },
     })
   ],
   providers: [
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
     AuthService,
     JwtStrategy,
     FortyTwoStrategy

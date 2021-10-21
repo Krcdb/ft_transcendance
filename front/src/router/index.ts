@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import axios from "axios";
+import http from "@/http-common";
 
 const routes = [
   {
@@ -60,15 +60,14 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // console.log("window token = ", window.localStorage.getItem('token'));
-  // if (window.localStorage.getItem('token'))
-  // {
-  //   console.log("token !");
-  //   axios.defaults.headers.common['Authorization'] = `Bearer ${window.localStorage.getItem('token')}`;
-  // }
-  // window.localStorage.getItem('token');
-  next()
-})
-
+  const token = localStorage.getItem('user-token');
+  if (!token && to.path !== "/login" && to.path !== "/auth/42")
+      next({path: "/login"});
+  else
+  {
+    http.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    next();
+  }
+});
 
 export default router;
