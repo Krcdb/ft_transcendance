@@ -39,7 +39,7 @@
               <br />
               <div class="clearfix">
                 <button class="cancelbtn">Cancel</button>
-                <button class="deletebtn" @click="deleteUser">Delete</button>
+                <button type="button" class="deletebtn" @click="deleteUser">Delete</button>
               </div>
             </div>
           </form>
@@ -84,7 +84,7 @@ export default defineComponent({
         .then((response: ResponseData) => {
           console.log(response.data);
           console.log("DELETED");
-          // this.$router.push("/users");
+          this.$router.push("/users");
         })
         .catch((e: Error) => {
           console.log(e);
