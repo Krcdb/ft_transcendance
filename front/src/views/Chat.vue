@@ -7,7 +7,7 @@
 
 
     <!-- TMP TO TEST MSG -->
-    <Message :owner="user.userName"/>
+    <Message :owner="user" :prop_message="Test" v-if="user.userName"/>
 
 </template>
 

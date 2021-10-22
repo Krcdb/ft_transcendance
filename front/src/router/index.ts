@@ -20,7 +20,10 @@ const routes = [
   {
     path: "/game",
     name: "Game",
-    component: () => import("../components/Game.vue"),
+	  component: () => import("../views/Game.vue"),
+	  children: [
+		  {path: "/games-canvas", name: "GameCanvas", component: () => import("../components/Game/GameCanvas.vue")}
+	]
   },
   {
     path: "/chat",
