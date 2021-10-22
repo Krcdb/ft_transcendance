@@ -2,9 +2,9 @@
   <div class="list row">
     <div class="list-wrapper">
       <h3>Users List</h3>
-      <router-link to="/login">
+      <!-- <router-link to="/login">
         <button>Login</button>
-      </router-link>
+      </router-link> -->
       <ul class="list">
         <li
           class="list-item"
@@ -55,7 +55,6 @@ export default defineComponent({
         .then((response: ResponseData) => {
           this.users = response.data;
           this.users.sort((a, b) => (a.userName > b.userName ? 1 : -1));
-          // console.log(response.data);
         })
         .catch((e: Error) => {
           console.log(e);

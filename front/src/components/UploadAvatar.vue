@@ -13,7 +13,7 @@
     <div class="container">
       <form @submit.prevent="handleSubmit">
         <div class="form-group">
-          <input type="file" @change="uploadFile" multiple />
+          <input type="file" accept="image/*" @change="uploadFile" id="file-input"/>
         </div>
         <div class="form-group">
           <button class="btn btn-success btn-block btn-lg">Upload</button>
@@ -54,7 +54,6 @@ export default defineComponent({
       UserDataService.get(userName)
         .then((response: ResponseData) => {
           this.currentUser = response.data;
-          // console.log(response.data);
         })
         .catch((e: Error) => {
           console.log(e);
@@ -62,7 +61,6 @@ export default defineComponent({
     },
     uploadFile(event: any) {
       this.file = event.target.files[0];
-      console.log(event);
     },
     handleSubmit() {
       if (this.file) {
@@ -85,7 +83,6 @@ export default defineComponent({
       {
         UserDataService.deleteAvatar(this.currentUser.userName)
           .then(() => {
-            console.log("success");
             this.$router.go(0);
           })
           .catch((e: Error) => {

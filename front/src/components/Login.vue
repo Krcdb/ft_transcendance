@@ -1,7 +1,8 @@
 <template>
   <div class="login">
-    Welcome!
-    <a :href="url">Sign in with 42</a>
+    <a :href="url">
+      <button>Sign in with 42</button>
+    </a>
   </div>
 </template>
 

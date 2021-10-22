@@ -16,15 +16,11 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy, 'passport-42') 
     super({
         clientID: configService.get<string>('FORTYTWO_APP_ID'),
         clientSecret:  configService.get<string>('FORTYTWO_APP_SECRET'),
-        // callbackURL:  "http://localhost:3000/auth/42"
         callbackURL:  "http://localhost:8080/auth/42"
-        // callbackURL:  configService.get<string>('FORTYTWO_CB_URL')
       });
   }
 
   async validate(accessToken: string): Promise<User> {
-    console.log("call to validate 42");
-    console.log("access token = ", accessToken);
     const { data } = await lastValueFrom(this.httpService.get(' https://api.intra.42.fr/v2/me', {
         headers: { Authorization: `Bearer ${ accessToken }` },
       }));

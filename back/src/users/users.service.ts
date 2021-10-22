@@ -20,8 +20,6 @@ export class UsersService {
   }
 
   async findOrCreate(intraId: number, userName: string) : Promise<User> {
-    console.log("find or create user");
-    console.log(intraId, " -> ", userName);
     return await this.findOneIntra(intraId) || await this.create({"userName": userName, "intraId": intraId});
   }
 
@@ -30,9 +28,11 @@ export class UsersService {
     if (myAvatar)
     {
       fs.unlink("avatars/" + myAvatar, (err) => {
-        if (err) throw err;
+        if (err) 
+          throw err;
       });
     }
+    // this.usersRepository.update(userName, {avatar: null});
   }
 
   public async setAvatar(userName: string, avatarUrl: string): Promise<void>  {
@@ -56,7 +56,6 @@ export class UsersService {
   async findOneIntra(intra_id: number): Promise<User> {
     const user = this.usersRepository.findOne(intra_id);
 
-    console.log("findOneIntra");
     if ( !user ) {
       throw new UnauthorizedException();
     }
