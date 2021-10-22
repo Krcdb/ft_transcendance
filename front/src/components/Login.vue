@@ -22,9 +22,18 @@ export default defineComponent({
     };
   },
   mounted() {
+    localStorage.removeItem("user-name");
+    localStorage.removeItem("user-id");
+    localStorage.removeItem("user-token");
     this.url += Object.entries(this.query)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
   },
 });
 </script>
+
+<style scoped>
+.login {
+  margin: 20%;
+}
+</style>

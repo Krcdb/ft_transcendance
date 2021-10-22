@@ -8,15 +8,18 @@ const apiClient: AxiosInstance = axios.create({
   },
 });
 
-apiClient.interceptors.response
-  .use((response : ResponseData) => {
+apiClient.interceptors.response.use(
+  (response: ResponseData) => {
     return response;
-  }, (error) => {
+  },
+  (error) => {
+    console.log(error);
     if (error.response.status == 401) {
-      localStorage.removeItem('user-token');
-      window.location.href = '/login';
+      localStorage.removeItem("user-token");
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
   }
-  return Promise.reject(error);
-})
+);
 
 export default apiClient;
