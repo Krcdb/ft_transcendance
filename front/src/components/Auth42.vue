@@ -36,12 +36,13 @@ export default defineComponent({
       http
         .get(url)
         .then((response: ResponseData) => {
-          localStorage.setItem('user-token', response.data.access_token)
-          console.log(response);
-          this.$router.push(`/users/${response.data.userName}`);
+          localStorage.setItem("user-name", response.data.userName);
+          localStorage.setItem("user-id", response.data.id);
+          localStorage.setItem("user-token", response.data.access_token);
+          this.$router.push("/profile");
         })
         .catch((e: Error) => {
-          localStorage.removeItem('user-token');
+          localStorage.removeItem("user-token");
           console.log(e);
         });
       this.state = "loggedIn";
@@ -49,7 +50,6 @@ export default defineComponent({
       this.error = e.response.data.message;
       this.state = "error";
     }
-    console.log("state = ", this.state);
   },
 });
 </script>

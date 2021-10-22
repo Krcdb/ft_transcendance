@@ -41,9 +41,9 @@ const routes = [
     component: () => import("../components/UsersList.vue"),
   },
   {
-    path: "/users/:userName",
+    path: "/users/:id",
     name: "user-details",
-    component: () => import("../components/UserProfile.vue"),
+    component: () => import("../components/UserPublicProfile.vue"),
   },
   {
     path: "/create-user",
@@ -51,9 +51,9 @@ const routes = [
     component: () => import("../components/CreateUser.vue"),
   },
   {
-    path: "/users/:userName/upload-avatar",
-    name: "upload-avatar",
-    component: () => import("../components/UploadAvatar.vue"),
+    path: "/update-profile",
+    name: "update-profile",
+    component: () => import("../components/UpdateProfile.vue"),
   },
 ];
 
@@ -63,12 +63,12 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('user-token');
+  // console.log(localStorage);
+  const token = localStorage.getItem("user-token");
   if (!token && to.path !== "/login" && to.path !== "/auth/42")
-      next({path: "/login"});
-  else
-  {
-    http.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    next({ path: "/login" });
+  else {
+    http.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     next();
   }
 });

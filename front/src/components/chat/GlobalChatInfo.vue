@@ -35,7 +35,9 @@ export default defineComponent ({
         userSelected: Boolean,
     },
     methods: {
-
+        refreshConnectedUsers() {
+            this.$emit('refreshConnectedUsers');
+        }
     },
 
     mounted() {

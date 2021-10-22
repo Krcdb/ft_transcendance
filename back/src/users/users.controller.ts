@@ -7,6 +7,7 @@ import { diskStorage } from  'multer';
 import { extname } from  'path';
 import { HttpStatus } from '@nestjs/common';
 import { Public } from 'src/auth/public.decorator';
+import { UpdateUserNameDto } from './dto/update-userName.dto';
 
 @Controller('users')
 export class UsersController {
@@ -27,7 +28,21 @@ export class UsersController {
     })
 }
 
-  @Post(':userName/avatar')
+  @Post(':id')
+  async updateUserName(@Res() res, @Param('id') id: number, @Body() updateUserNameDto: UpdateUserNameDto): Promise<User> {
+    if (await this.usersService.userNameAlreadyExists(updateUserNameDto.newUserName)) {
+      return res.status(HttpStatus.CONFLICT).json({
+        message: "User Name is already taken"
+      })
+    }
+    const user = await this.usersService.updateUserName(id, updateUserNameDto);
+    return res.status(HttpStatus.OK).json({
+      message: "User Name has been successfully updated",
+      user
+    })
+  }
+
+  @Post(':id/avatar')
   @UseInterceptors(FileInterceptor('avatar',
   {
     storage: diskStorage({
@@ -38,26 +53,26 @@ export class UsersController {
     }
     })
   }))
-  uploadAvatar(@Param('userName') userName, @UploadedFile() file) {
-    this.usersService.setAvatar(String(userName), `${file.filename}`);
+  uploadAvatar(@Param('id') id, @UploadedFile() file) {
+    this.usersService.setAvatar(id, `${file.filename}`);
   }
-
 
   @Get()
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
-  @Get(':userName')
-  findOne(@Param('userName') userName: string): Promise<User> {
-    return this.usersService.findOne(userName);
+  @Public()
+  @Get(':id')
+  findOne(@Param('id') id: number): Promise<User> {
+    return this.usersService.findOne(id);
   }
 
   @Public()
-  @Get(':userName/avatar')
-  serveAvatar(@Param('userName') userName, @Res() res) : Promise<any> {
+  @Get(':id/avatar')
+  serveAvatar(@Param('id') id, @Res() res) : Promise<any> {
     const getAvatarFile = async () => {
-      const avatarPath = await this.usersService.getAvatar(userName);
+      const avatarPath = await this.usersService.getAvatar(id);
       if (avatarPath)
         return res.sendFile(avatarPath, { root: 'avatars'});
       else
@@ -66,13 +81,13 @@ export class UsersController {
     return getAvatarFile();
   }
 
-  @Delete(':userName')
-  remove(@Param('userName') userName: string): Promise<void> {
-    return this.usersService.remove(userName);
+  @Delete(':id')
+  remove(@Param('id') id: number): Promise<void> {
+    return this.usersService.remove(id);
   }
 
-  @Delete(':userName/avatar')
-  removeAvatar(@Param('userName') userName: string): Promise<void> {
-    return this.usersService.removeAvatar(userName);
+  @Delete(':id/avatar')
+  removeAvatar(@Param('id') id: number): Promise<void> {
+    return this.usersService.removeAvatar(id);
   }
 }
