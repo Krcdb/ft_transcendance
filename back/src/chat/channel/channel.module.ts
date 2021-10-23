@@ -10,7 +10,7 @@ import { ChannelDataService } from './channel.service';
 	imports: [
 	TypeOrmModule.forFeature([Channel]), MulterModule.registerAsync({
 		useFactory: () => ({
-			dest: './upload/channel',
+			dest: './upload',
 		}),
 	}),
 ],

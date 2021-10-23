@@ -14,10 +14,6 @@ export class Message {
 	@Column({ nullable: true })
 	date: string;
 
-	//@Column(() => Channel)
-	@ManyToOne(() => Channel, channel => channel.messagesHistory)
-	channel: Channel;
+	//@ManyToOne(() => Channel, channel => channel.messagesHistory)
+	//channel: Channel;
 }
-
-// @ManyToOne(() => User, user => user.photos)
-// user: User;

@@ -18,45 +18,28 @@ export class Channel {
 	@Column({ default: true })
 	isPublic: boolean;
 
+	// TMP d'abord on fait la base du channel après les users list ban etc...
+	// (les arrys sont trop chiants !)
+
 	// Users & History
 
-	//@Column({ array: true, nullable: true })
-	//@Column(() => Message, {array: true})
-	//@Column(() => Message, {array: true})
-	//@OneToMany(type => Message, message => message.message)
-	@OneToMany(() => Message, message => message.message)
-	messagesHistory: Message[];
+	//@OneToMany(() => Message, message => message.message)
+	//messagesHistory: Message[];
 
-
-
-	@Column({ unique: true })
-	owner: Number;
+	@Column(() => User)
+	owner: User;
 
 	// Lists | Users
 
-	@Column(() => User)
-	adminList: User[];
+	//@Column(() => User)
+	//adminList: User[];
 
-	@Column(() => User)
-	userList: User[];
+	//@Column(() => User)
+	//userList: User[];
 
-	@Column(() => User)
-	banList: User[];
+	//@Column(() => User)
+	//banList: User[];
 
-	@Column(() => User)
-	muteList: User[];
+	//@Column(() => User)
+	//muteList: User[];
 }
-
-//  @HasMany(() => Photo)
-
-// @Column("int", { array: true })
-// array: number[];
-
-// Column("text", { array: true, default: "{}" })
-// tags: string[];
-
-//   @OneToMany(type => Photo, photo => photo.user)
-// photos: Photo[];
-
-// @OneToMany(() => Photo, photo => photo.user)
-// photos: Photo[];

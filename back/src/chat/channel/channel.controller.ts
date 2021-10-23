@@ -36,7 +36,12 @@ export class ChannelController {
 	@Public()
 	@Get()
 	test() : string {
-		return ("Hello");
+		let string;
+
+		string = "Welcome to channel Backend page !";
+		string += "<br><br>List of all Channel: <br><br>"
+		string += this.findAllChannel();
+		return (string);
 	}
 
 
