@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, ManyToOne} from 'typeorm';
 import { Channel } from '../channel/channel.entity';
 import { User } from '../../users/user.entity';
 
@@ -8,12 +8,16 @@ export class Message {
 	message: string;
 
 	// Config
-	@Column()
+	@Column(() => User)
 	owner: User;
 
 	@Column({ nullable: true })
 	date: string;
 
-	@Column({ unique: true })
-	channelOwner: Channel;
+	//@Column(() => Channel)
+	@ManyToOne(() => Channel, channel => channel.messagesHistory)
+	channel: Channel;
 }
+
+// @ManyToOne(() => User, user => user.photos)
+// user: User;

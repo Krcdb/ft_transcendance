@@ -6,7 +6,7 @@
     <GlobalChatInfo :nbUsers="nbUsers" :userSelected="userSelected"
     @refreshConnectedUsers="refreshConnectedUsers"/>
 
-    <MenuChat />
+    <MenuChat :owner="user"/>
 
 
     <!-- TMP TO TEST MSG -->
@@ -21,6 +21,7 @@ import Vue from 'vue';
 import http from '@/http-common';
 
 import ChannelDataService from '@/services/ChannelDataService';
+import ResponseData from "@/types/ResponseData";
 
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
@@ -56,6 +57,24 @@ export default defineComponent({
             this.userSelected = true;
         },
         refreshConnectedUsers() {
+            //let users[] = {} as User;
+            //let nbUsers = 0;
+
+            ChannelDataService.getAllActiveUser()
+            .then((response: ResponseData) => {
+                //users = response.data;
+                this.nbUsers = response.data.length;
+            })
+            .catch((e: Error) => {
+                console.log("Error: " + e);
+            });
+
+            //for (let i = 0; i < users.length; i++) {
+            //    if (users[i].isActive == true) {
+            //        nbUsers++;
+            //    }
+            //}
+            //this.nbUsers = nbUsers;
             console.log("Refresh connected users: " + this.nbUsers);
         },
     },
@@ -63,6 +82,7 @@ export default defineComponent({
         console.log("Setup Chat");
     },
     mounted() {
+        this.refreshConnectedUsers();
         console.log("Mount chat !");
     }
 });

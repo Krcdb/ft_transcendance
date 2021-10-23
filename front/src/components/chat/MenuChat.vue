@@ -5,14 +5,24 @@
 
 			<p>
 				Nom du salon:
-				<input type="text" name="channel_name" value="Default">
+				<input placeholder="Default"
+				v-model="this.newChannel.channelName">
 				mot de passe :
-				<input type="password" name="channel_password" value="">
+				<input type="password" v-model="this.newChannel.password">
 
 				<button type="button" name="button"
 				@click="createChannel">
 				Créer</button>
 			</p>
+
+			<div class="debug">
+
+				debug: <br>
+				{{ this.newChannel.channelName }} <br>
+				{{ this.newChannel.password }} <br>
+				{{ this.owner }} <br>
+			</div>
+
 		</div>
 		<hr>
 		<div class="list">
@@ -31,7 +41,7 @@ import { defineComponent } from "vue";
 import ChannelDataService from '@/services/ChannelDataService';
 import ResponseData from "@/types/ResponseData";
 
-//import User from "@/types/User";
+import User from "@/types/User";
 import Channel from "@/types/Channel";
 
 export default defineComponent({
@@ -41,8 +51,15 @@ export default defineComponent({
 			newChannel: {} as Channel,
 		};
 	},
+	props: {
+		owner: {
+			type: Object as () => User,
+			required: true,
+		},
+	},
 	methods: {
 		createChannel() {
+			this.newChannel.owner = this.owner;
 			console.log("Try to create Channel !");
 			ChannelDataService.createChannel(this.newChannel)
 			.then((response: ResponseData) => {

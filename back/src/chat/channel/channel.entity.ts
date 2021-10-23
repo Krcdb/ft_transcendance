@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany} from 'typeorm';
 import { Message } from '../message/message.entity';
 import { User } from '../../users/user.entity';
 
@@ -10,7 +10,7 @@ export class Channel {
 	// Config
 
 	@Column({unique: true })
-	channelID: number[];
+	channelID: Number;
 
 	@Column({ nullable: true })
 	password: string;
@@ -20,23 +20,43 @@ export class Channel {
 
 	// Users & History
 
-	@Column({ nullable: true })
+	//@Column({ array: true, nullable: true })
+	//@Column(() => Message, {array: true})
+	//@Column(() => Message, {array: true})
+	//@OneToMany(type => Message, message => message.message)
+	@OneToMany(() => Message, message => message.message)
 	messagesHistory: Message[];
 
+
+
 	@Column({ unique: true })
-	owner: string;
+	owner: Number;
 
 	// Lists | Users
 
-	@Column({ nullable: true })
+	@Column(() => User)
 	adminList: User[];
 
-	@Column({ nullable: true })
+	@Column(() => User)
 	userList: User[];
 
-	@Column({ nullable: true })
+	@Column(() => User)
 	banList: User[];
 
-	@Column({ nullable: true })
+	@Column(() => User)
 	muteList: User[];
 }
+
+//  @HasMany(() => Photo)
+
+// @Column("int", { array: true })
+// array: number[];
+
+// Column("text", { array: true, default: "{}" })
+// tags: string[];
+
+//   @OneToMany(type => Photo, photo => photo.user)
+// photos: Photo[];
+
+// @OneToMany(() => Photo, photo => photo.user)
+// photos: Photo[];

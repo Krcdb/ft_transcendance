@@ -4,17 +4,18 @@ import { MulterModule } from '@nestjs/platform-express';
 
 import { Channel } from './channel.entity';
 import { ChannelController } from './channel.controller';
-import { ChannelService } from './channel.service';
+import { ChannelDataService } from './channel.service';
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Channel]),
-	MulterModule.registerAsync({
+	imports: [
+	TypeOrmModule.forFeature([Channel]), MulterModule.registerAsync({
 		useFactory: () => ({
 			dest: './upload/channel',
 		}),
-	})
+	}),
 ],
-providers: [ChannelService],
+providers: [ChannelDataService],
 controllers: [ChannelController],
+exports: [ChannelDataService],
 })
 export class ChannelModule {}
