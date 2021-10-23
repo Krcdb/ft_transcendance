@@ -57,6 +57,7 @@ export class UsersController {
     this.usersService.setAvatar(id, `${file.filename}`);
   }
 
+  @Public()
   @Get()
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
