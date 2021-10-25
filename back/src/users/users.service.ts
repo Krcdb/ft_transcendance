@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
+import { Match } from '../match/match.entity'
 import * as fs from 'fs';
 
 @Injectable()
@@ -77,10 +78,25 @@ export class UsersService {
     if (user)
       return true;
     return false;
-}
+  }
 
   async removeAvatar(userName: string): Promise<void> {
     this.DeleteOldAvatarFile(userName);
     await this.usersRepository.update(userName, {avatar: null});
+  }
+
+  // fonction pas encore testée
+  async updateUsersAfterGame(match: Match): Promise<void> {
+    let winner = await this.usersRepository.findOne(match.players[0]);
+    let loser = await this.usersRepository.findOne(match.players[1]);
+    if (match.scores[0] < match.scores[1])
+    {
+      const tmp = loser;
+      loser = winner;
+      winner = tmp;
+    }
+    // probablement pas comme ca qu'on appelle increment
+    await this.usersRepository.increment(winner.nbVictories);
+    await this.usersRepository.increment(loser.nbLosses);
   }
 }

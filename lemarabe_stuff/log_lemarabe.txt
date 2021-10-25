@@ -1,8 +1,39 @@
+[22 octobre]
+Useful Repository Methods :
+- rep.getId(user) : returns PrimaryColumn info
+- rep.create() || rep.create( { a: 1, b: 2} ) : creates a new User
+- rep.merge(user, {b: 1}) : merges user properties
+- rep.save(user) || rep.save([ cat1, cat2, cat3 ]) : saves the user in db
+- remove
+- insert
+- update
+- delete
+- rep.count({a: 1}) : counts the user with value 1 as their A property
+- rep.increment/decrement(User, {a: 1}, "b", 1) : increments or
+decrements 1 to the value of the B property in users with value 1 as 
+their A property
+- find
+- ...
+
+*********************************************************************
+
+[20 octobre]
+J'ai ecrit toutes les propriétés auxquelles je pouvais penser dans les
+entities USER, MATCH, MESSAGE et CHANNEL. Le seul truc qui manque c'est 
+mettre les JoinColumn/Table() au bon endroit mais je dois encore y 
+reflechir... De toute facon la DB ne compile pas si il y a des trous.
+Si je veux faire des tests il faut que je mette {nullable: true} sur 
+toutes mes propriétés.
+
+*********************************************************************
+
 [19 octobre]
 Je commence a comprendre les relations entre entities sur TypeORM,
 il me manque plus que ManyToMany a voir. J'ai ecrit une entity pour
 les matches, il faudra que je la modifie selon ce que mederic a fait.
 Sinon j'ai mis au propre ma vieille liste sur un draw.io.
+
+*********************************************************************
 
 [18 octobre]
 Database structure :
@@ -31,7 +62,9 @@ MATCH entity :
     ballPositionY (number)
 CHAT entity :
     ??? needed features : isOnline, blockUser, addFriend
+
 *******************************************************
+
 [14 octobre]
 A mettre en script pour automatiser les dumps :
 brew install postgresql

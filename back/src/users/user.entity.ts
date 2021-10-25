@@ -27,22 +27,22 @@ export class User {
     // MATCHES & GAME STATS //
     // -------------------- //
 
-  @OneToOne(() => Match, match => match.players)
+  @OneToOne(() => Match, match => match.players, {nullable: true})
   currentMatch: Match;
 
-  @Column(() => Match)
+  @Column(() => Match, {nullable: true})
   matchHistory: Match[];
 
-  @Column("int")
+  @Column("int", {nullable: true})
   nbVictories: number;
 
-  @Column("int")
+  @Column("int", {nullable: true})
   nbLosses: number;
 
-  @Column("int")
+  @Column("int", {nullable: true})
   ladderLevel: number;
 
-  @Column("varchar")
+  @Column("varchar", {nullable: true})
   achievements: string[];  // ou id[] ?
 
     // --------------- //
@@ -50,22 +50,22 @@ export class User {
     // --------------- //
 
   // FRIENDS LIST
-  @ManyToMany(type => User, user => user.befriended)
+  @ManyToMany(type => User, user => user.befriended, {nullable: true})
   @JoinTable()
   friends: User[];
   // = users que ce user a ajouté en ami
 
-  @ManyToMany(type => User, user => user.friends)
+  @ManyToMany(type => User, user => user.friends, {nullable: true})
   befriended: User[];
   // = users qui ont ajouté ce user en ami
 
   // BLOCKED USERS LIST
-  @ManyToMany(type => User, user => user.blockingUsers)
+  @ManyToMany(type => User, user => user.blockingUsers, {nullable: true})
   @JoinTable()
   blockedUsers: User[];
   // = users que ce user a bloqué
 
-  @ManyToMany(type => User, user => user.blockedUsers)
+  @ManyToMany(type => User, user => user.blockedUsers, {nullable: true})
   blockingUsers: User[];
   // = users qui ont bloqué ce user
 
@@ -73,22 +73,22 @@ export class User {
     // CHAT & CHANNELS //
     // --------------- //
     
-  @OneToMany(() => Channel, channel => channel.owner)
+  @OneToMany(() => Channel, channel => channel.owner, {nullable: true})
   channelsUserIsOwner: Channel[];
   
-  @ManyToMany(() => Channel, channel => channel.admins)
+  @ManyToMany(() => Channel, channel => channel.admins, {nullable: true})
   channelsUserIsAdmin: Channel[];
   
-  @ManyToMany(() => Channel, channel => channel.users)
+  @ManyToMany(() => Channel, channel => channel.users, {nullable: true})
   channelsUserIsIn: Channel[];
   
-  @ManyToMany(() => Channel, channel => channel.banList)
+  @ManyToMany(() => Channel, channel => channel.banList, {nullable: true})
   channelsUserIsBanned: Channel[];
   
-  @ManyToMany(() => Channel, channel => channel.muteList)
+  @ManyToMany(() => Channel, channel => channel.muteList, {nullable: true})
   channelsUserIsMuted: Channel[];
   
-  @OneToMany(() => Message, message => message.author)
+  @OneToMany(() => Message, message => message.author, {nullable: true})
   messagesSent: Message[];
   
 }

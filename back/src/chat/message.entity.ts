@@ -7,17 +7,17 @@ export class Message {
   @PrimaryGeneratedColumn()
   messageId: number;
 
-  @Column("timestamp")
+  @Column("timestamp", {nullable: true})
   dateTime: number;
   
-  @Column("varchar")
+  @Column("varchar", {nullable: true})
   content: string;
 
-  @ManyToOne(() => User, user => user.messagesSent)
+  @ManyToOne(() => User, user => user.messagesSent, {nullable: true})
   // @JoinColumn()
   author: User;
 
-  @ManyToOne(() => Channel, channel => channel.messageHistory)
+  @ManyToOne(() => Channel, channel => channel.messageHistory, {nullable: true})
   // @JoinColumn()
   channel: Channel;
 }
