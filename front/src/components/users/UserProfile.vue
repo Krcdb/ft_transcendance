@@ -81,6 +81,8 @@ export default defineComponent({
     },
     logout() {
       localStorage.removeItem("user-token");
+      localStorage.removeItem("user-name");
+      localStorage.removeItem("user-id");
       this.$router.go(0);
     },
   },
