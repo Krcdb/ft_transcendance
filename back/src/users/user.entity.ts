@@ -30,7 +30,8 @@ export class User {
   @OneToOne(() => Match, match => match.players, {nullable: true})
   currentMatch: Match;
 
-  @Column(() => Match, {nullable: true})
+  // @Column(() => Match, {nullable: true}) //doesn't compile
+  @Column( {nullable: true})
   matchHistory: Match[];
 
   @Column("int", {nullable: true})

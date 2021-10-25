@@ -96,7 +96,7 @@ export class UsersService {
       winner = tmp;
     }
     // probablement pas comme ca qu'on appelle increment
-    await this.usersRepository.increment(winner.nbVictories);
-    await this.usersRepository.increment(loser.nbLosses);
+    await this.usersRepository.increment(winner, "nbVictories", 1);
+    await this.usersRepository.increment(loser, "nbLosses", 1);
   }
 }

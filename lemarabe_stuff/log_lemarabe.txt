@@ -1,3 +1,40 @@
+TO DO :
+
+OK  rentrer dans le container et essayer d'explorer la db
+OK  essayer de faire un dump depuis l'interieur et voir a quoi ca ressemble
+-   creer des nouveaux users avec insomnia
+-   sauvegarder ces users d'un build a l'autre, on peut essayer de les
+hardcoder mais si y'a moyen de faire plus propre c'est mieux
+
+*********************************************************************
+
+[25 octobre]
+J'ai réussi a faire un dump !! (bon j'arrive pas a post d'autres users
+depuis l'authentification donc il sert un peu a rien pour l'instant)
+Voila la marche a suivre :
+1) ouvrir un shell dans le container postgres
+2) créer le fichier avec "pg_dump postgres -U admin > usersDB.sql"
+(pas besoin d'etre dans la console postgres)
+3) depuis un autre terminal, copier le fichier hors du container :
+docker cp <containerID>:/usersDB.sql /host/path
+4) (pas essayé encore) Importer le fichier avec la commande :
+IMPORT usersDataBase.sql
+
+Notes sur la console postgress :
+Logging-in as admin :   psql -d postgres -U admin
+Listing existing dbs :  \l || \list
+Switching databases :   \c dbname || \connect dbname
+Listing tables in db :  \dt
+
+Useful docker command : docker system prune -a
+-> This will remove:
+  - all stopped containers
+  - all networks not used by at least one container
+  - all images without at least one container associated to them
+  - all build cache
+
+*********************************************************************
+
 [22 octobre]
 Useful Repository Methods :
 - rep.getId(user) : returns PrimaryColumn info
@@ -13,7 +50,6 @@ Useful Repository Methods :
 decrements 1 to the value of the B property in users with value 1 as 
 their A property
 - find
-- ...
 
 *********************************************************************
 
@@ -71,6 +107,9 @@ brew install postgresql
 pg_dump postgres > usersDataBase.sql
 IMPORT usersDataBase.sql
 --> en fait ca marche pas les dumps, je change de technique
+---> en fait SI, CA MARCHE, il suffisait juste de les faire
+au bon endroit a savoir a l'interieur du container postgres
+(cf. update du 25 octobre)
 
 Using migrations instead :
 npm i -g typeorm
