@@ -27,12 +27,12 @@
         <button class="friend-btn">＋ Add to Friends</button>
         <button class="block-btn">🚫 Block</button>
       </div>
-        <router-link to="/chat">
-          <button class="chat-btn">💬 start a private chat</button>
-        </router-link> 
-        <router-link to="/game">
-          <button class="game-btn">🎮 Start a game</button>
-        </router-link>
+      <router-link to="/chat">
+        <button class="chat-btn">💬 start a private chat</button>
+      </router-link>
+      <router-link to="/game">
+        <button class="game-btn">🎮 Start a game</button>
+      </router-link>
     </div>
   </div>
 

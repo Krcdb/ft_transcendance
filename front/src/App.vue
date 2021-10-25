@@ -6,7 +6,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import NavBar from "@/components/NavBar.vue";
-// import
 
 export default defineComponent({
   name: "App",

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -34,7 +34,6 @@ export class UsersService {
           throw err;
       });
     }
-    // this.usersRepository.update(userName, {avatar: null});
   }
 
   public async setAvatar(id: number, avatarUrl: string): Promise<void>  {
@@ -59,15 +58,6 @@ export class UsersService {
     const user = this.usersRepository.findOne(id);
     return user;
   }
-
-  // async findOneIntra(intra_id: number): Promise<User> {
-  //   const user = await this.usersRepository.findOne({ where: { id: intra_id } });
-
-  //   if ( !user ) {
-  //     throw new UnauthorizedException();
-  //   }
-  //   return user;
-  // }
 
   async remove(id: number): Promise<void> {
     this.DeleteOldAvatarFile(id);

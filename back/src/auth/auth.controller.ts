@@ -1,4 +1,4 @@
-import { Post, Get, Controller, Request, UseGuards, Param } from '@nestjs/common';
+import { Get, Controller, Request, UseGuards, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { FortyTwoAuthGuard } from './FortyTwo-auth.guard';
 import { Public } from './public.decorator';

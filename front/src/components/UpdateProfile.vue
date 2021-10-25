@@ -77,8 +77,6 @@ export default defineComponent({
       UserDataService.get(id)
         .then((response: ResponseData) => {
           this.user = response.data;
-          if (!this.user)
-            console.log("no user");
         })
         .catch((e: Error) => {
           console.log(e);
@@ -88,19 +86,15 @@ export default defineComponent({
       this.file = event.target.files[0];
     },
     handleSubmit() {
-      // if (this.file) {
-        const formData = new FormData();
-        formData.append("avatar", this.file);
-        UserDataService.uploadAvatar(this.user.id, formData)
-          .then(() => {
-            this.$router.push("/profile");
-          })
-          .catch((e: Error) => {
-            console.log(e);
-          });
-      // }
-      // else
-      //   this.msg = "Select a File to Upload"
+      const formData = new FormData();
+      formData.append("avatar", this.file);
+      UserDataService.uploadAvatar(this.user.id, formData)
+        .then(() => {
+          this.$router.push("/profile");
+        })
+        .catch((e: Error) => {
+          console.log(e);
+        });
     },
     updateUserName() {
       if (this.newUserName) {
@@ -109,7 +103,6 @@ export default defineComponent({
         };
         UserDataService.updateUserName(this.user.id, data)
           .then(() => {
-            console.log("username updated");
             this.msg = "";
             localStorage.setItem("user-name", this.newUserName);
             this.$router.push("/profile");

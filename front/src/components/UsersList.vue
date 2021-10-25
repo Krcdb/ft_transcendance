@@ -3,11 +3,7 @@
     <div class="list-wrapper">
       <h3>Users List</h3>
       <ul class="list">
-        <li
-          class="list-item"
-          v-for="user in users"
-          :key="user.id"
-        >
+        <li class="list-item" v-for="user in users" :key="user.id">
           <div class="list-img">
             <img
               v-if="user.avatar"
@@ -30,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
