@@ -50,10 +50,10 @@
     </div>
   </div>
 
-  <!-- <div v-else>
+  <div v-else>
     <br />
-    <router-link to="/">User</router-link></p>
-  </div> -->
+    <router-link to="/">User</router-link>
+  </div>
 </template>
 
 <script lang="ts">
@@ -91,9 +91,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-/* div {
-  border: 1px solid black;
-} */
 .container {
   display: flex;
   align-items: center;

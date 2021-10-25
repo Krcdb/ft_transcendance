@@ -10,12 +10,12 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: () => import("../components/Login.vue"),
+    component: () => import("../components/users/Login.vue"),
   },
   {
     path: "/auth/42",
     name: "42 auth",
-    component: () => import("../components/Auth42.vue"),
+    component: () => import("../components/users/Auth42.vue"),
   },
   {
     path: "/game",
@@ -30,27 +30,22 @@ const routes = [
   {
     path: "/profile",
     name: "My Profile",
-    component: () => import("../components/UserProfile.vue"),
+    component: () => import("../components/users/UserProfile.vue"),
   },
   {
     path: "/users",
     name: "users",
-    component: () => import("../components/UsersList.vue"),
+    component: () => import("../components/users/UsersList.vue"),
   },
   {
     path: "/users/:id",
     name: "user-details",
-    component: () => import("../components/UserPublicProfile.vue"),
-  },
-  {
-    path: "/create-user",
-    name: "create-user",
-    component: () => import("../components/CreateUser.vue"),
+    component: () => import("../components/users/UserPublicProfile.vue"),
   },
   {
     path: "/update-profile",
     name: "update-profile",
-    component: () => import("../components/UpdateProfile.vue"),
+    component: () => import("../components/users/UpdateProfile.vue"),
   },
 ];
 
