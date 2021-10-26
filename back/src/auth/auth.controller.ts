@@ -13,4 +13,10 @@ export class AuthController {
   async login(@Request() req): Promise<any>  {
     return this.authService.login(req.user);
   }
+
+  @Public()
+  @Get(':id')
+  async loginInvite(@Param('id') id: number): Promise<any>  {
+    return this.authService.loginInvite(id);
+  }
 }

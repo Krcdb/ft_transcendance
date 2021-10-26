@@ -3,6 +3,9 @@
     <a :href="url">
       <button>Sign in with 42</button>
     </a>
+    <router-link to="/illegal-login">
+      <button>Illegal login</button>
+    </router-link>
   </div>
 </template>
 
