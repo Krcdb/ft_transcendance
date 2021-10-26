@@ -2,8 +2,15 @@
   <div class="list row">
     <div class="list-wrapper">
       <h3>Users List</h3>
+      <input
+        type="text"
+        placeholder="Search an user..."
+        v-model="keyword"
+        @input="searchhandler"
+        @change="searchhandler"
+      />
       <ul class="list">
-        <li class="list-item" v-for="user in users" :key="user.id">
+        <li class="list-item" v-for="user in filteredUsers" :key="user.id">
           <div class="list-img">
             <img
               v-if="user.avatar"
@@ -36,6 +43,8 @@ export default defineComponent({
   data() {
     return {
       users: [] as User[],
+      filteredUsers: [] as User[],
+      keyword: "",
     };
   },
   methods: {
@@ -44,10 +53,16 @@ export default defineComponent({
         .then((response: ResponseData) => {
           this.users = response.data;
           this.users.sort((a, b) => (a.userName > b.userName ? 1 : -1));
+          this.filteredUsers = this.users;
         })
         .catch((e: Error) => {
           console.log(e);
         });
+    },
+    searchhandler() {
+      this.filteredUsers = this.users.filter((user) =>
+        user.userName.toLowerCase().includes(this.keyword.toLowerCase())
+      );
     },
   },
   mounted() {
@@ -96,5 +111,11 @@ h3 {
 }
 .list-item-content {
   margin-left: 20px;
+}
+.list-wrapper input[type="text"] {
+  padding: 6px;
+  margin-top: 8px;
+  margin-right: 16px;
+  font-size: 17px;
 }
 </style>

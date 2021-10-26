@@ -61,6 +61,7 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
+import { logout } from "@/statics/log.methods";
 
 export default defineComponent({
   name: "User",
@@ -79,12 +80,7 @@ export default defineComponent({
           console.log(e);
         });
     },
-    logout() {
-      localStorage.removeItem("user-token");
-      localStorage.removeItem("user-name");
-      localStorage.removeItem("user-id");
-      this.$router.go(0);
-    },
+    logout,
   },
   mounted() {
     this.getUser(Number(localStorage.getItem("user-id")));

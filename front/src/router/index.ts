@@ -20,10 +20,14 @@ const routes = [
   {
     path: "/game",
     name: "Game",
-	  component: () => import("../views/Game.vue"),
-	  children: [
-		  {path: "/games-canvas", name: "GameCanvas", component: () => import("../components/Game/GameCanvas.vue")}
-	]
+    component: () => import("../views/Game.vue"),
+    children: [
+      {
+        path: "/games-canvas",
+        name: "GameCanvas",
+        component: () => import("../components/Game/GameCanvas.vue"),
+      },
+    ],
   },
   {
     path: "/chat",
@@ -58,7 +62,6 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log(localStorage);
   const token = localStorage.getItem("user-token");
   if (!token && to.path !== "/login" && to.path !== "/auth/42")
     next({ path: "/login" });

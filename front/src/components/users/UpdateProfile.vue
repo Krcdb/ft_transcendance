@@ -37,6 +37,7 @@
           <label for="userName">Change User Name:</label>
           <input
             type="text"
+            maxlength="12"
             class="form-control"
             required
             v-model="newUserName"
@@ -47,6 +48,9 @@
       </div>
     </div>
     <p>{{ msg }}</p>
+    <router-link to="/profile">
+      <button>Go back to Profile Page</button>
+    </router-link>
   </div>
 
   <div v-else>
@@ -163,7 +167,7 @@ h4 {
   background-color: #f44336;
 }
 .update-username {
-  margin: 5%;
+  margin: 2%;
 }
 .file-browsing-div {
   margin: 5%;
