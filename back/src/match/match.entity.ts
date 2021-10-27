@@ -14,12 +14,12 @@ export class Match {
   @Column("int", {nullable: true})
   scores: number[];
 
-  @Column("float", {nullable: true})
-  barPosition: number[];
+  // @Column("float", {nullable: true})
+  // barPosition: number[];
 
   // SOLUTION 1
-  @Column("float", {nullable: true})
-  ballPosition: number[];
+  // @Column("float", {nullable: true})
+  // ballPosition: number[];
   //avec x = ballPosition[0] && y = ballPosition[1]
 
   // SOLUTION 2

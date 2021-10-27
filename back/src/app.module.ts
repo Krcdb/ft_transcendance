@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { Connection, getConnectionOptions } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { MatchModule } from './match/match.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -17,7 +18,7 @@ import { AuthModule } from './auth/auth.module';
         autoLoadEntities: true,
       }),
       
-  }), UsersModule, AuthModule],
+  }), UsersModule, AuthModule, MatchModule],
   controllers: [AppController],
   providers: [AppService],
 })

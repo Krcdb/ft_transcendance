@@ -17,6 +17,22 @@ export class UsersService {
       const user = new User();
       user.userName = createUserDto.userName;
       user.intraId = createUserDto.intraId;
+      user.currentMatch = null;
+      // user.matchHistory = null;
+      user.nbLosses = 0;
+      user.nbVictories = 0;
+      user.ladderLevel = 0;
+      // user.achievements = null;
+      // user.friends = null;
+      // user.befriended = null;
+      // user.blockedUsers = null;
+      // user.blockingUsers = null;
+      user.channelsUserIsOwner = null;
+      user.channelsUserIsAdmin = null;
+      user.channelsUserIsIn = null;
+      user.channelsUserIsBanned = null;
+      user.channelsUserIsMuted = null;
+      user.messagesSent = null;
       return this.usersRepository.save(user);
   }
 
