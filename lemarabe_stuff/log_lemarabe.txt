@@ -2,9 +2,26 @@ TO DO :
 
 OK  rentrer dans le container et essayer d'explorer la db
 OK  essayer de faire un dump depuis l'interieur et voir a quoi ca ressemble
--   creer des nouveaux users avec insomnia
--   sauvegarder ces users d'un build a l'autre, on peut essayer de les
+OK   creer des nouveaux users avec insomnia
+OK   sauvegarder ces users d'un build a l'autre, on peut essayer de les
 hardcoder mais si y'a moyen de faire plus propre c'est mieux
+-   importer le dump
+
+
+*********************************************************************
+
+[27 octobre]
+L'importation du dump echoue toujours, enfin non l'importation se passe
+officiellement bien d'apres les logs de compilation, mais je ne recupere
+pas mes users, je sais pas pourquoi. Ptet que Servane a raison, que c'est
+les images qui font chier dans la colle. Demain j'essaierai de recreer
+le fichier de dump sans les images.
+Sinon j'ai reussi a compiler les relations entre MATCH et USER, je m'attaque
+maintenant au CHAT :
+        |Module |Service    |Controller | Entity    | DTO
+CHAT    |   OK  |  NO NEED  | NO NEED   | NO NEED   | NO NEED
+CHANNEL |   OK  |   OK      |           |   OK      |  EUH...
+MESSAGE |   OK  |   OK      |     OK    |   OK      |  EUH...
 
 *********************************************************************
 

@@ -15,7 +15,6 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {
-
       const user = new User();
       user.userName = createUserDto.userName;
       user.id = createUserDto.id;
@@ -113,4 +112,8 @@ export class UsersService {
     await this.usersRepository.increment(winner, "nbVictories", 1);
     await this.usersRepository.increment(loser, "nbLosses", 1);
   }
+
+  // async getAllMessages(id: number) : Promise<Message[]> {
+    
+  // }
 }
