@@ -6,12 +6,12 @@ class TutorialDataService {
     return http.get("/users");
   }
 
-  get(userName: string): Promise<any> {
-    return http.get(`/users/${userName}`);
+  get(id: number): Promise<any> {
+    return http.get(`/users/${id}`);
   }
 
-  getAvatar(userName: string): Promise<any> {
-    return http.get(`/users/${userName}/avatar`);
+  getAvatar(id: number): Promise<any> {
+    return http.get(`/users/${id}/avatar`);
   }
 
   create(data: any): Promise<any> {
@@ -22,15 +22,19 @@ class TutorialDataService {
     return http.get("/login", data);
   }
 
-  uploadAvatar(userName: string, avatar: FormData): Promise<any> {
-    return http.post(`/users/${userName}/avatar`, avatar);
+  updateUserName(id: number, data: any) : Promise<any>{
+    return http.post(`/users/${id}`, data);
   }
 
-  delete(userName: string): Promise<any> {
-    return http.delete(`/users/${userName}`);
+  uploadAvatar(id: number, avatar: FormData): Promise<any> {
+    return http.post(`/users/${id}/avatar`, avatar);
   }
-  deleteAvatar(userName: string): Promise<any> {
-    return http.delete(`/users/${userName}/avatar`);
+
+  delete(id: number): Promise<any> {
+    return http.delete(`/users/${id}`);
+  }
+  deleteAvatar(id: number): Promise<any> {
+    return http.delete(`/users/${id}/avatar`);
   }
 }
 

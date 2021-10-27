@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import http from "@/http-common";
 
 const routes = [
   {
@@ -9,17 +10,18 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: () => import("../components/Login.vue"),
+    component: () => import("../components/users/Login.vue"),
   },
   {
     path: "/auth/42",
     name: "42 auth",
-    component: () => import("../components/Auth42.vue"),
+    component: () => import("../components/users/Auth42.vue"),
   },
   {
     path: "/game",
     name: "Game",
-	  component: () => import("../components/Game.vue"),
+	  // component: () => import("../components/Game.vue"),
+	  component: () => import("../views/Game.vue"),
 	  children: [
 		  {path: "/games-canvas", name: "GameCanvas", component: () => import("../components/Game/GameCanvas.vue")}
 	]
@@ -32,27 +34,22 @@ const routes = [
   {
     path: "/profile",
     name: "My Profile",
-    component: () => import("../components/UserProfile.vue"),
+    component: () => import("../components/users/UserProfile.vue"),
   },
   {
     path: "/users",
     name: "users",
-    component: () => import("../components/UsersList.vue"),
+    component: () => import("../components/users/UsersList.vue"),
   },
   {
-    path: "/users/:userName",
+    path: "/users/:id",
     name: "user-details",
-    component: () => import("../components/UserProfile.vue"),
+    component: () => import("../components/users/UserPublicProfile.vue"),
   },
   {
-    path: "/create-user",
-    name: "create-user",
-    component: () => import("../components/CreateUser.vue"),
-  },
-  {
-    path: "/users/:userName/upload-avatar",
-    name: "upload-avatar",
-    component: () => import("../components/UploadAvatar.vue"),
+    path: "/update-profile",
+    name: "update-profile",
+    component: () => import("../components/users/UpdateProfile.vue"),
   },
 ];
 
@@ -62,9 +59,13 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  // console.log("user = ", window.localStorage.getItem('user'));
-  next()
-})
-
+  const token = localStorage.getItem("user-token");
+  if (!token && to.path !== "/login" && to.path !== "/auth/42")
+    next({ path: "/login" });
+  else {
+    http.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    next();
+  }
+});
 
 export default router;

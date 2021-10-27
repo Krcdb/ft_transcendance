@@ -1,14 +1,16 @@
-import { Post, Get, Controller, Request, UseGuards, Param } from '@nestjs/common';
+import { Get, Controller, Request, UseGuards, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { FortyTwoAuthGuard } from './FortyTwo-auth.guard';
+import { Public } from './public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @Get('42')
+  @Public()
   @UseGuards(FortyTwoAuthGuard)
-  async getUserFrom42Login(@Request() req): Promise<any> {
-    return req.user;
+  @Get('42')
+  async login(@Request() req): Promise<any>  {
+    return this.authService.login(req.user);
   }
 }

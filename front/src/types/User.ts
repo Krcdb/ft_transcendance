@@ -1,6 +1,6 @@
 export default interface User {
     userName: string;
-    intraId: string;
+    id: number;
     isActive: boolean;
     avatar: string;
   }

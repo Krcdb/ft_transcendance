@@ -1,7 +1,8 @@
 <template>
   <div class="login">
-    Welcome!
-    <a :href="url">Sign in with 42</a>
+    <a :href="url">
+      <button>Sign in with 42</button>
+    </a>
   </div>
 </template>
 
@@ -21,9 +22,18 @@ export default defineComponent({
     };
   },
   mounted() {
+    localStorage.removeItem("user-name");
+    localStorage.removeItem("user-id");
+    localStorage.removeItem("user-token");
     this.url += Object.entries(this.query)
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
   },
 });
 </script>
+
+<style scoped>
+.login {
+  margin: 20%;
+}
+</style>

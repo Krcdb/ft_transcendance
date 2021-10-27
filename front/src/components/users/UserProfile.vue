@@ -1,28 +1,28 @@
 <template>
-  <div v-if="currentUser.userName" class="edit-form">
-    <h4>{{ currentUser.userName }}</h4>
+  <div v-if="user.userName" class="edit-form">
+    <h4>{{ user.userName }}</h4>
     <div class="container">
       <img
-        v-if="currentUser.avatar"
-        :src="`http://localhost:3000/users/${currentUser.userName}/avatar`"
+        v-if="user.avatar"
+        :src="`http://localhost:3000/users/${user.id}/avatar`"
       />
       <img
         v-else
-        :src="`https://avatars.dicebear.com/api/avataaars/${currentUser.userName}.svg`"
+        :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
       />
       <div class="user-info">
         <p>Victories: 0</p>
         <p>Losses: 0</p>
         <p>Level: 0</p>
         <br />
-        <router-link :to="`/users/${currentUser.userName}/upload-avatar`">
-          <button>Change Avatar</button>
+        <router-link to="/update-profile">
+          <button>Update Profile</button>
         </router-link>
         <button
           class="deletebtnb0"
           onclick="document.getElementById('id01').style.display='block'"
         >
-          Delete Profile
+          Logout
         </button>
         <div id="id01" class="modal">
           <span
@@ -33,13 +33,15 @@
           >
           <form class="modal-content">
             <div class="modal-window">
-              <h1>Delete Account</h1>
+              <h1>Log out</h1>
               <br />
-              <p>Are you sure you want to delete your account?</p>
+              <p>Are you sure you want to log out ?</p>
               <br />
               <div class="clearfix">
                 <button class="cancelbtn">Cancel</button>
-                <button class="deletebtn" @click="deleteUser">Delete</button>
+                <button type="button" class="deletebtn" @click="logout">
+                  Logout
+                </button>
               </div>
             </div>
           </form>
@@ -50,7 +52,7 @@
 
   <div v-else>
     <br />
-    <p>Please select an <router-link to="/users">User</router-link></p>
+    <router-link to="/">User</router-link>
   </div>
 </template>
 
@@ -64,44 +66,31 @@ export default defineComponent({
   name: "User",
   data() {
     return {
-      currentAatar: "",
-      currentUser: {} as User,
+      user: {} as User,
     };
   },
   methods: {
-    getUser(userName: string) {
-      UserDataService.get(userName)
+    getUser(id: number) {
+      UserDataService.get(id)
         .then((response: ResponseData) => {
-          this.currentUser = response.data;
-          // console.log(response.data);
+          this.user = response.data;
         })
         .catch((e: Error) => {
           console.log(e);
         });
     },
-    deleteUser() {
-      UserDataService.delete(this.currentUser.userName)
-        .then((response: ResponseData) => {
-          console.log(response.data);
-          console.log("DELETED");
-          // this.$router.push("/users");
-        })
-        .catch((e: Error) => {
-          console.log(e);
-          console.log("ERROR");
-        });
+    logout() {
+      localStorage.removeItem("user-token");
+      this.$router.go(0);
     },
   },
   mounted() {
-    this.getUser(String(this.$route.params.userName));
+    this.getUser(Number(localStorage.getItem("user-id")));
   },
 });
 </script>
 
 <style scoped>
-/* div {
-  border: 1px solid black;
-} */
 .container {
   display: flex;
   align-items: center;

@@ -12,11 +12,11 @@ export class User {
     // --------------- //
 
   @PrimaryColumn( {unique: true} )
-  userName: string;
-
+  id: number;
+  
   @Column({unique: true})
-  intraId: number;
-
+  userName: string;
+  
   @Column({ default: true })
   isActive: boolean;
 

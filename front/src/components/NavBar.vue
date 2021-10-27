@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar">
     <div class="logo-wrapper">
-      <img class="logo" align="left" src="@/assets/pong_logo.png" />
+      <img class="logo" src="@/assets/pong_logo.png" height="60" width="140" />
     </div>
     <div class="nav-wrapper">
       <ul>
@@ -9,14 +9,14 @@
         <li><router-link to="/game">Game</router-link></li>
         <li><router-link to="/chat">Chat</router-link></li>
         <li><router-link to="/users">Users</router-link></li>
-        <!-- <li ><router-link class="right" to="/create-user">Create User</router-link></li> -->
+        <li><router-link to="/profile">My Profile</router-link></li>
       </ul>
     </div>
   </nav>
 </template>
 
 <style scoped>
-.navbar {
+/* .navbar {
   display: flex;
   align-content: center;
   position: fixed;
@@ -26,18 +26,13 @@
   height: 10%;
   width: 100%;
   left: 0;
-}
+} */
 .navbar div {
   display: flex;
 }
+
 .logo-wrapper {
-  object-fit: contain;
-  max-width: 30%;
-}
-img {
-  /* display: inline-block; */
-  object-fit: contain;
-  max-width: fit-content;
+  float: left;
 }
 
 .nav-wrapper ul {

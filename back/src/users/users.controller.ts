@@ -1,4 +1,4 @@
-import { UseGuards, Body, Controller, Delete, Get, Res, Param, Post, UploadedFile, UseInterceptors, NotFoundException } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Res, Param, Post, UploadedFile, UseInterceptors, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
@@ -6,14 +6,15 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from  'multer';
 import { extname } from  'path';
 import { HttpStatus } from '@nestjs/common';
-import { FortyTwoAuthGuard } from 'src/auth/FortyTwo-auth.guard';
+import { Public } from 'src/auth/public.decorator';
+import { UpdateUserNameDto } from './dto/update-userName.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  // @UseGuards(FortyTwoAuthGuard)
+  @Public()
   async addUser(@Res() res, @Body() createUserDto: CreateUserDto) {
     if (await this.usersService.userAlreadyExists(createUserDto)){
         return res.status(HttpStatus.CONFLICT).json({
@@ -27,8 +28,21 @@ export class UsersController {
     })
 }
 
-  @Post(':userName/avatar')
-  // @UseGuards(FortyTwoAuthGuard)
+  @Post(':id')
+  async updateUserName(@Res() res, @Param('id') id: number, @Body() updateUserNameDto: UpdateUserNameDto): Promise<User> {
+    if (await this.usersService.userNameAlreadyExists(updateUserNameDto.newUserName)) {
+      return res.status(HttpStatus.CONFLICT).json({
+        message: "User Name is already taken"
+      })
+    }
+    const user = await this.usersService.updateUserName(id, updateUserNameDto);
+    return res.status(HttpStatus.OK).json({
+      message: "User Name has been successfully updated",
+      user
+    })
+  }
+
+  @Post(':id/avatar')
   @UseInterceptors(FileInterceptor('avatar',
   {
     storage: diskStorage({
@@ -39,28 +53,27 @@ export class UsersController {
     }
     })
   }))
-  uploadAvatar(@Param('userName') userName, @UploadedFile() file) {
-    this.usersService.setAvatar(String(userName), `${file.filename}`);
+  uploadAvatar(@Param('id') id, @UploadedFile() file) {
+    this.usersService.setAvatar(id, `${file.filename}`);
   }
 
-
+  @Public()
   @Get()
-  // @UseGuards(FortyTwoAuthGuard)
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
-  @Get(':userName')
-  // @UseGuards(FortyTwoAuthGuard)
-  findOne(@Param('userName') userName: string): Promise<User> {
-    return this.usersService.findOne(userName);
+  @Public()
+  @Get(':id')
+  findOne(@Param('id') id: number): Promise<User> {
+    return this.usersService.findOne(id);
   }
 
-  @Get(':userName/avatar')
-  // @UseGuards(FortyTwoAuthGuard)
-  serveAvatar(@Param('userName') userName, @Res() res) : Promise<any> {
+  @Public()
+  @Get(':id/avatar')
+  serveAvatar(@Param('id') id, @Res() res) : Promise<any> {
     const getAvatarFile = async () => {
-      const avatarPath = await this.usersService.getAvatar(userName);
+      const avatarPath = await this.usersService.getAvatar(id);
       if (avatarPath)
         return res.sendFile(avatarPath, { root: 'avatars'});
       else
@@ -69,15 +82,13 @@ export class UsersController {
     return getAvatarFile();
   }
 
-  @Delete(':userName')
-  // @UseGuards(FortyTwoAuthGuard)
-  remove(@Param('userName') userName: string): Promise<void> {
-    return this.usersService.remove(userName);
+  @Delete(':id')
+  remove(@Param('id') id: number): Promise<void> {
+    return this.usersService.remove(id);
   }
 
-  @Delete(':userName/avatar')
-  // @UseGuards(FortyTwoAuthGuard)
-  removeAvatar(@Param('userName') userName: string): Promise<void> {
-    return this.usersService.removeAvatar(userName);
+  @Delete(':id/avatar')
+  removeAvatar(@Param('id') id: number): Promise<void> {
+    return this.usersService.removeAvatar(id);
   }
 }
