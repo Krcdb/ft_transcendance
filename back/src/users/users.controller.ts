@@ -70,6 +70,12 @@ export class UsersController {
   }
 
   @Public()
+  @Get('logout/:id')
+  logout(@Param('id') id: number): Promise<User> {
+    return this.usersService.updateLogState(id, false);
+  }
+
+  @Public()
   @Get(':id/avatar')
   serveAvatar(@Param('id') id, @Res() res) : Promise<any> {
     const getAvatarFile = async () => {

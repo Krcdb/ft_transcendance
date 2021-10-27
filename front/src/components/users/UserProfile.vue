@@ -38,7 +38,7 @@
               <p>Are you sure you want to log out ?</p>
               <br />
               <div class="clearfix">
-                <button class="cancelbtn">Cancel</button>
+                <button class="cancelbtn" onclick="document.getElementById('id01').style.display='none'">Cancel</button>
                 <button type="button" class="deletebtn" @click="logout">
                   Logout
                 </button>

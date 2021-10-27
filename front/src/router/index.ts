@@ -68,7 +68,12 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("user-token");
-  if (!token && to.path !== "/login" && to.path !== "/auth/42" && to.path !== "/illegal-login")
+  if (
+    !token &&
+    to.path !== "/login" &&
+    to.path !== "/auth/42" &&
+    to.path !== "/illegal-login"
+  )
     next({ path: "/login" });
   else {
     http.defaults.headers.common["Authorization"] = `Bearer ${token}`;

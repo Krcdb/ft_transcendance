@@ -8,9 +8,16 @@ export class User {
   @Column({unique: true})
   userName: string;
   
-  @Column({ default: true })
+  @Column({ default: false })
   isActive: boolean;
 
   @Column({nullable: true})
   avatar: string;
+
+  @Column({ nullable: true })
+  twoFactorAuthenticationSecret?: string;
+
+  @Column({ nullable: true })
+  email: string;
+
 }

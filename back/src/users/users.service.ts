@@ -14,7 +14,6 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {
-
       const user = new User();
       user.userName = createUserDto.userName;
       user.id = createUserDto.id;
@@ -47,6 +46,11 @@ export class UsersService {
 
   async updateUserName(id: number, updateUserNameDto: UpdateUserNameDto): Promise<User> {
     await this.usersRepository.update(id, {userName: updateUserNameDto.newUserName});
+    return this.usersRepository.findOne(id);
+  }
+
+  async updateLogState(id: number, isLog: boolean): Promise<User> {
+    await this.usersRepository.update(id, {isActive: isLog});
     return this.usersRepository.findOne(id);
   }
 

@@ -28,7 +28,6 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
-import { logout } from "@/statics/log.methods";
 
 export default defineComponent({
   name: "User",
@@ -47,7 +46,6 @@ export default defineComponent({
           console.log(e);
         });
     },
-    logout,
   },
   watch: {
     $route() {

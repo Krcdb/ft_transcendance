@@ -11,6 +11,7 @@
       />
       <ul class="list">
         <li class="list-item" v-for="user in filteredUsers" :key="user.id">
+        
           <div class="list-img">
             <img
               v-if="user.avatar"
@@ -25,6 +26,10 @@
             <router-link class="profile-link" :to="'/users/' + user.id">
               <h4>{{ user.userName }}</h4>
             </router-link>
+          </div>
+          <div class="user-status">
+            <div v-if="user.isActive" id="online-circle"></div>
+            <div v-else id="offline-circle"></div>
           </div>
         </li>
       </ul>
@@ -91,7 +96,6 @@ h3 {
   color: black;
   text-decoration: none;
   font-size: 18px;
-  display: flex;
   align-content: center;
 }
 .list {
@@ -108,6 +112,7 @@ h3 {
   padding-bottom: 5px;
   padding-top: 5px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  align-items: center;
 }
 .list-item-content {
   margin-left: 20px;
@@ -117,5 +122,16 @@ h3 {
   margin-top: 8px;
   margin-right: 16px;
   font-size: 17px;
+}
+.user-status {
+  margin-left: auto;
+  margin-right: 10%;
+}
+.user-status .online {
+  color: green;
+}
+.user-status .offline {
+  background-color: red;
+
 }
 </style>
