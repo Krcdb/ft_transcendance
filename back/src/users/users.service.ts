@@ -85,4 +85,15 @@ export class UsersService {
     this.DeleteOldAvatarFile(id);
     await this.usersRepository.update(id, {avatar: null});
   }
+  async setTwoFactorAuthenticationSecret(secret: string, id: number) {
+    return this.usersRepository.update(id, {
+      twoFactorAuthenticationSecret: secret
+    });
+  }
+
+  async turnOnTwoFactorAuthentication(id: number) {
+    return this.usersRepository.update(id, {
+      isTwoFactorAuthenticationEnabled: true
+    });
+  }
 }

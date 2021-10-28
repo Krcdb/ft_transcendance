@@ -13,6 +13,11 @@ const routes = [
     component: () => import("../components/users/Login.vue"),
   },
   {
+    path: "/qrcode",
+    name: "qr code",
+    component: () => import("../components/users/twoFactorAuth.vue"),
+  },
+  {
     path: "/auth/42",
     name: "42 auth",
     component: () => import("../components/users/Auth42.vue"),
@@ -74,6 +79,7 @@ router.beforeEach((to, from, next) => {
     to.path !== "/auth/42" &&
     to.path !== "/illegal-login"
   )
+    // next()
     next({ path: "/login" });
   else {
     http.defaults.headers.common["Authorization"] = `Bearer ${token}`;

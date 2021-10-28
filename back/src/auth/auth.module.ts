@@ -10,6 +10,10 @@ import { AuthController } from './auth.controller';
 import { HttpModule } from '@nestjs/axios';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { TwoFactorAuthenticationController } from './twoFAuth.controller';
+import { TwoFactorAuthenticationService } from './twoFAuth.service';
+import { JwtTwoFactorGuard } from './jwt-two-factor.guard';
+import { JwtTwoFactorStrategy } from './jwt-two-factor.strategy';
 
 @Module({
   imports: [ 
@@ -24,13 +28,16 @@ import { APP_GUARD } from '@nestjs/core';
   providers: [
     {
       provide: APP_GUARD,
+      // useClass: JwtTwoFactorGuard,
       useClass: JwtAuthGuard,
     },
     AuthService,
     JwtStrategy,
-    FortyTwoStrategy
+    FortyTwoStrategy,
+    JwtTwoFactorStrategy,
+    TwoFactorAuthenticationService,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, TwoFactorAuthenticationController],
   exports: [AuthService],
 })
 export class AuthModule {}
