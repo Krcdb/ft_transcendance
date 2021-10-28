@@ -46,7 +46,6 @@ import { AuthService } from './auth.service';
     @Public()
     @Post('generate')
     async register(@Res() response: Response, @Req() request) {
-      console.log("request => ", request);
       const { otpauthUrl } = await this.twoFactorAuthenticationService.generateTwoFactorAuthenticationSecret(request.body.user);
    
       return this.twoFactorAuthenticationService.pipeQrCodeStream(response, otpauthUrl);

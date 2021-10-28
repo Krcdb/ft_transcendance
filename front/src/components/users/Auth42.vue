@@ -5,7 +5,7 @@
     <p v-if="state === 'loggedIn'">Logging in...</p>
 
     <div v-if="state === 'error'">
-      <p>Failed to login in :(</p>
+      <p>Failed to log in :(</p>
       <p>{{ error }}</p>
     </div>
   </div>
@@ -14,14 +14,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import http from "@/http-common";
-import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
   data() {
     return {
       error: "",
-      user: {} as User,
       state: "verifying",
     };
   },
@@ -43,6 +41,7 @@ export default defineComponent({
         })
         .catch((e: Error) => {
           localStorage.removeItem("user-token");
+          this.state = "error";
           console.log(e);
         });
       this.state = "loggedIn";
