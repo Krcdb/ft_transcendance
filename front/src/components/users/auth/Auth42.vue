@@ -13,8 +13,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import http from "@/http-common";
 import ResponseData from "@/types/ResponseData";
+import UserDataService from "@/services/UserDataService";
 
 export default defineComponent({
   data() {
@@ -29,15 +29,22 @@ export default defineComponent({
       return;
     }
 
-    const url = `http://localhost:3000/auth/42?code=${this.$route.query.code}`;
     try {
-      http
-        .get(url)
+        UserDataService.get42Token(String(this.$route.query.code))
         .then((response: ResponseData) => {
-          localStorage.setItem("user-name", response.data.userName);
-          localStorage.setItem("user-id", response.data.id);
-          localStorage.setItem("user-token", response.data.access_token);
-          this.$router.push("/profile");
+          console.log(response.data);
+          if (response.data.access_token)
+          {
+            localStorage.setItem("user-name", response.data.userName);
+            localStorage.setItem("user-id", response.data.id);
+            localStorage.setItem("user-token", response.data.access_token);
+            this.$router.push("/profile");
+          }
+          else { //two F-Auth turned on
+            localStorage.setItem("user-id", response.data.id);
+            console.log(localStorage);
+            this.$router.push("/2FLogin");
+          }
         })
         .catch((e: Error) => {
           localStorage.removeItem("user-token");

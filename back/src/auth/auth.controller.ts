@@ -1,7 +1,7 @@
 import { Get, Controller, Request, UseGuards, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { FortyTwoAuthGuard } from './FortyTwo-auth.guard';
-import { Public } from './public.decorator';
+import { FortyTwoAuthGuard } from './Guard/FortyTwo-auth.guard';
+import { Public } from './utils/public.decorator';
 
 @Controller('auth')
 export class AuthController {

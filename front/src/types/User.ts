@@ -3,4 +3,5 @@ export default interface User {
     id: number;
     isActive: boolean;
     avatar: string;
+    isTwoFAuthEnabled: boolean;
   }

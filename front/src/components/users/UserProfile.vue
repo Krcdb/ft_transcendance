@@ -48,6 +48,7 @@
         </div>
       </div>
     </div>
+    <p> {{ error }} </p>
   </div>
 
   <div v-else>
@@ -67,6 +68,7 @@ export default defineComponent({
   name: "User",
   data() {
     return {
+      error: "",
       user: {} as User,
     };
   },

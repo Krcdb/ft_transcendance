@@ -30,7 +30,7 @@ import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
-  name: "User",
+  name: "NavBar",
   data() {
     return {
       user: {} as User,

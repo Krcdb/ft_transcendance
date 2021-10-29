@@ -6,7 +6,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from  'multer';
 import { extname } from  'path';
 import { HttpStatus } from '@nestjs/common';
-import { Public } from 'src/auth/public.decorator';
+import { Public } from 'src/auth/utils/public.decorator';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
 
 @Controller('users')

@@ -15,9 +15,9 @@ export class User {
   avatar: string;
 
   @Column({ nullable: true })
-  twoFactorAuthenticationSecret?: string;
+  twoFAuthSecret?: string;
 
   @Column({ default: false })
-  public isTwoFactorAuthenticationEnabled: boolean;
+  public isTwoFAuthEnabled: boolean;
 
 }

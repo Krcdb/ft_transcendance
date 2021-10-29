@@ -1,3 +1,4 @@
 export class TwoFactorAuthDto {
-    twoFactorAuthenticationCode: string;
+    twoFAuthCode: string;
+    id: number;
   }
