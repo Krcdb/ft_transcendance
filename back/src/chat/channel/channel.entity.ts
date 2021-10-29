@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany} from 'typeorm';
+import { Entity, Column, PrimaryColumn, OneToMany, ManyToOne, ManyToMany, JoinTable} from 'typeorm';
 import { Message } from '../message/message.entity';
 import { User } from '../../users/user.entity';
 
@@ -9,8 +9,8 @@ export class Channel {
 
 	// Config
 
-	@Column({unique: true })
-	channelID: Number;
+	// @Column({unique: true })
+	// channelID: Number;
 
 	@Column({ nullable: true })
 	password: string;
@@ -23,23 +23,27 @@ export class Channel {
 
 	// Users & History
 
-	//@OneToMany(() => Message, message => message.message)
-	//messagesHistory: Message[];
-
-	@Column(() => User)
+	@ManyToOne(() => User, user => user.channelsUserIsOwner, {nullable: true})
 	owner: User;
+	
+	@OneToMany(() => Message, message => message.channel, {nullable: true})
+	messagesHistory: Message[];
 
 	// Lists | Users
 
-	//@Column(() => User)
-	//adminList: User[];
+	@ManyToMany(() => User, user => user.channelsUserIsIn, {nullable: true})
+	@JoinTable()
+	admins: User[];
 
-	//@Column(() => User)
-	//userList: User[];
+	@ManyToMany(() => User, user => user.channelsUserIsAdmin, {nullable: true})
+	@JoinTable()
+	users: User[];
 
-	//@Column(() => User)
-	//banList: User[];
+	@ManyToMany(() => User, user => user.channelsUserIsBanned, {nullable: true})
+	@JoinTable()
+	banList: User[];
 
-	//@Column(() => User)
-	//muteList: User[];
+	@ManyToMany(() => User, user => user.channelsUserIsMuted, {nullable: true})
+	@JoinTable()
+	muteList: User[];
 }

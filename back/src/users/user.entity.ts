@@ -1,7 +1,7 @@
 // import { channel } from 'diagnostics_channel';
 import { Entity, Column, PrimaryColumn, OneToOne, OneToMany, ManyToMany, JoinTable } from 'typeorm';
-import { Channel } from 'src/chat/channel.entity'
-import { Message } from 'src/chat/message.entity';
+import { Channel } from 'src/chat/channel/channel.entity'
+import { Message } from 'src/chat/message/message.entity';
 import { Match } from '../match/match.entity'
 
 @Entity()
@@ -31,7 +31,7 @@ export class User {
   currentMatch: Match;
 
   // @Column(() => Match, {nullable: true}) //doesn't compile
-  @Column( {nullable: true})
+  @Column( {nullable: true, array: true})
   matchHistory: Match[];
 
   @Column("int", {nullable: true})
@@ -89,7 +89,7 @@ export class User {
   @ManyToMany(() => Channel, channel => channel.muteList, {nullable: true})
   channelsUserIsMuted: Channel[];
   
-  @OneToMany(() => Message, message => message.author, {nullable: true})
+  @OneToMany(() => Message, message => message.owner, {nullable: true})
   messagesSent: Message[];
   
 }

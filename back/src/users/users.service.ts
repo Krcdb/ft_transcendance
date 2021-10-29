@@ -1,17 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { User } from './user.entity';
+import { Message } from '../chat/message/message.entity';
 import { Match } from '../match/match.entity'
+import { Channel } from '../chat/channel/channel.entity'
 import * as fs from 'fs';
+import { ChannelDataService } from '../chat/channel/channel.service';
+import { MessageService } from '../chat/message/message.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    // @Inject(forwardRef(() => ChannelDataService))
+    // private readonly channelService: ChannelDataService,
+    // @Inject(forwardRef(() => MessageService))
+    // private readonly messageService: MessageService,
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {
@@ -98,22 +106,23 @@ export class UsersService {
     await this.usersRepository.update(id, {avatar: null});
   }
 
-  // fonction pas encore testée
-  async updateUsersAfterGame(match: Match): Promise<void> {
-    let winner = await this.usersRepository.findOne(match.players[0]);
-    let loser = await this.usersRepository.findOne(match.players[1]);
-    if (match.scores[0] < match.scores[1])
-    {
-      const tmp = loser;
-      loser = winner;
-      winner = tmp;
-    }
-    // probablement pas comme ca qu'on appelle increment
-    await this.usersRepository.increment(winner, "nbVictories", 1);
-    await this.usersRepository.increment(loser, "nbLosses", 1);
-  }
-
   // async getAllMessages(id: number) : Promise<Message[]> {
     
   // }
+
+  async addMessageToHistory(message: Message) : Promise<void> {
+		message.owner.messagesSent.unshift(message);
+  }
+  
+  async addVictory(winner: User) : Promise<void> {
+    // await this.usersRepository.increment(id, "nbVictories", 1);
+    winner.nbVictories += 1;
+    this.usersRepository.save(winner);
+  }
+
+  async addDefeat(loser: User) : Promise<void> {
+    // await this.usersRepository.increment(id, "nbLosses", 1);
+    loser.nbLosses += 1;
+    this.usersRepository.save(loser);
+  }
 }

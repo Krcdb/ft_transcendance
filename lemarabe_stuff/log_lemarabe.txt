@@ -7,6 +7,16 @@ OK   sauvegarder ces users d'un build a l'autre, on peut essayer de les
 hardcoder mais si y'a moyen de faire plus propre c'est mieux
 -   importer le dump
 
+*********************************************************************
+
+[29 octobre]
+Je suis arrivée au bout de ma demarche avec les relations de tables de
+TypeORM, mais je me rend compte que c'est très fastidieux, surtout qu'a
+priori il ne gere pas les arrays, et on en a beaucoup. Du coup, je pense
+enlever toutes les relations de table pour pouvoir continuer a utiliser
+les arrays, juste au lieu de stocker des references d'entités, je vais
+stocker des IDs, ce sera beaucoup plus simple.
+A faire demain donc.
 
 *********************************************************************
 

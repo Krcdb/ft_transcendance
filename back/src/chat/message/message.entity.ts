@@ -11,12 +11,12 @@ export class Message {
 	message: string;
 
 	// Config
-	@Column(() => User)
+	@ManyToOne(() => User, user => user.messagesSent, {nullable: true})
 	owner: User;
 
 	@Column({ nullable: true })
 	date: string;
 
-	@ManyToOne(() => Channel, channel => channel.messagesHistory)
+	@ManyToOne(() => Channel, channel => channel.messagesHistory, {nullable: true})
 	channel: Channel;
 }

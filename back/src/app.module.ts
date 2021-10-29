@@ -7,7 +7,7 @@ import { Connection, getConnectionOptions } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MatchModule } from './match/match.module';
-import { ChatModule } from './chat/chat.module';
+// import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -19,7 +19,7 @@ import { ChatModule } from './chat/chat.module';
         autoLoadEntities: true,
       }),
       
-  }), UsersModule, AuthModule, MatchModule, ChatModule],
+  }), UsersModule, AuthModule, MatchModule],
   controllers: [AppController],
   providers: [AppService],
 })
