@@ -17,7 +17,7 @@ export class User {
   @Column({unique: true})
   userName: string;
   
-  @Column({ default: true })
+  @Column({ default: false })
   isActive: boolean;
 
   @Column({nullable: true})
@@ -102,4 +102,10 @@ export class User {
   @Column("varchar", {nullable: true})
   messagesHistory: number[];
   
+  @Column({ nullable: true })
+  twoFAuthSecret?: string;
+
+  @Column({ default: false })
+  public isTwoFAuthEnabled: boolean;
+
 }

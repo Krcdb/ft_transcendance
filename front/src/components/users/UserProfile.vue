@@ -38,7 +38,7 @@
               <p>Are you sure you want to log out ?</p>
               <br />
               <div class="clearfix">
-                <button class="cancelbtn">Cancel</button>
+                <button class="cancelbtn" onclick="document.getElementById('id01').style.display='none'">Cancel</button>
                 <button type="button" class="deletebtn" @click="logout">
                   Logout
                 </button>
@@ -48,6 +48,7 @@
         </div>
       </div>
     </div>
+    <p> {{ error }} </p>
   </div>
 
   <div v-else>
@@ -61,11 +62,13 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
+import { logout } from "@/statics/log.methods";
 
 export default defineComponent({
   name: "User",
   data() {
     return {
+      error: "",
       user: {} as User,
     };
   },
@@ -79,10 +82,7 @@ export default defineComponent({
           console.log(e);
         });
     },
-    logout() {
-      localStorage.removeItem("user-token");
-      this.$router.go(0);
-    },
+    logout,
   },
   mounted() {
     this.getUser(Number(localStorage.getItem("user-id")));

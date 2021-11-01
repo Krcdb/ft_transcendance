@@ -36,6 +36,26 @@ class TutorialDataService {
   deleteAvatar(id: number): Promise<any> {
     return http.delete(`/users/${id}/avatar`);
   }
+
+  get42Token(code: string) : Promise<any> {
+    return http.get(`/auth/42?code=${code}`);
+  }
+
+  generateQRcode(data:any): Promise<any> {
+    return http.post("/2fa/generate", data, { responseType: "arraybuffer" });
+  }
+
+  turn2FAon(data: any): Promise<any> {
+    return http.post("/2fa/turn-on", data);
+  }
+
+  turn2FAoff(data: any): Promise<any> {
+    return http.post("/2fa/turn-off", data);
+  }
+
+  authenticate2fa(data: any): Promise<any> {
+    return http.post("/2fa/authenticate", data);
+  }
 }
 
 export default new TutorialDataService();

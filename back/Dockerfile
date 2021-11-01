@@ -13,7 +13,8 @@ RUN npm install -g npm@latest \
 	&& npm i -D @types/multer @types/node \
 	&& npm i --save @nestjs/axios \
 	&& npm install --save-dev @types/passport-jwt \
-	&& npm install --save @nestjs/jwt passport-jwt
+	&& npm install --save @nestjs/jwt passport-jwt \
+	&& npm install otplib qrcode
 
 
 COPY . /app/

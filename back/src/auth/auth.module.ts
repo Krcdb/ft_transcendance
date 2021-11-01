@@ -1,15 +1,19 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { JwtStrategy } from './jwt.strategy';
+import { JwtStrategy } from './Strategy/jwt.strategy';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
-import { FortyTwoStrategy } from './FortyTwo.strategy';
+import { jwtConstants } from './utils/constants';
+import { FortyTwoStrategy } from './Strategy/FortyTwo.strategy';
 import { AuthController } from './auth.controller';
 import { HttpModule } from '@nestjs/axios';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuard } from './Guard/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
+import { TwoFAuthController } from './twoFAuth.controller';
+import { twoFAuthService } from './twoFAuth.service';
+import { JwtTwoFactorGuard } from './Guard/jwt-two-factor.guard';
+import { JwtTwoFactorStrategy } from './Strategy/jwt-two-factor.strategy';
 
 @Module({
   imports: [ 
@@ -24,13 +28,16 @@ import { APP_GUARD } from '@nestjs/core';
   providers: [
     {
       provide: APP_GUARD,
+      // useClass: JwtTwoFactorGuard,
       useClass: JwtAuthGuard,
     },
     AuthService,
     JwtStrategy,
-    FortyTwoStrategy
+    FortyTwoStrategy,
+    JwtTwoFactorStrategy,
+    twoFAuthService,
   ],
-  controllers: [AuthController],
+  controllers: [AuthController, TwoFAuthController],
   exports: [AuthService],
 })
 export class AuthModule {}

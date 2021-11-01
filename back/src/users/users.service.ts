@@ -74,6 +74,11 @@ export class UsersService {
     return this.usersRepository.findOne(id);
   }
 
+  async updateLogState(id: number, isLog: boolean): Promise<User> {
+    await this.usersRepository.update(id, {isActive: isLog});
+    return this.usersRepository.findOne(id);
+  }
+
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
@@ -128,5 +133,23 @@ export class UsersService {
     const loser = await this.usersRepository.findOne(loserId);
     loser.nbLosses += 1;
     this.usersRepository.save(loser);
+  }
+  
+  async settwoFAuthSecret(secret: string, id: number) {
+    return this.usersRepository.update(id, {
+      twoFAuthSecret: secret
+    });
+  }
+
+  async turnOnTwoFAuth(id: number) {
+    return this.usersRepository.update(id, {
+      isTwoFAuthEnabled: true
+    });
+  }
+
+  async turnOffTwoFAuth(id: number) {
+    return this.usersRepository.update(id, {
+      isTwoFAuthEnabled: false
+    });
   }
 }
