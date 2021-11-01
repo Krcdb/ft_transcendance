@@ -134,6 +134,63 @@ export class UsersService {
     loser.nbLosses += 1;
     this.usersRepository.save(loser);
   }
+
+  // Gestion des Channels
+
+      // Ajout de l'utilisateur
+  async addToChannelUsers(userId: number, channelName: string) : Promise<void> {
+		const user = await this.usersRepository.findOne(userId);
+		user.channelsUserIsIn.unshift(channelName);
+		this.usersRepository.save(user);
+  }
+  async addToChannelOwner(userId: number, channelName: string) : Promise<void> {
+		const user = await this.usersRepository.findOne(userId);
+		user.channelsUserIsOwner.unshift(channelName);
+		this.usersRepository.save(user);
+  }
+  async addToChannelAdmins(userId: number, channelName: string) : Promise<void> {
+		const user = await this.usersRepository.findOne(userId);
+		user.channelsUserIsAdmin.unshift(channelName);
+		this.usersRepository.save(user);
+  }
+  async addToChannelBanned(userId: number, channelName: string) : Promise<void> {
+		const user = await this.usersRepository.findOne(userId);
+		user.channelsUserIsBanned.unshift(channelName);
+		this.usersRepository.save(user);
+  }
+  async addToChannelMuted(userId: number, channelName: string) : Promise<void> {
+		const user = await this.usersRepository.findOne(userId);
+		user.channelsUserIsMuted.unshift(channelName);
+		this.usersRepository.save(user);
+  }
+      // Retrait de l'utilisateur
+  async removeFromChannelUsers(userId: number, channelName: string) : Promise<void> {
+    const user = await this.usersRepository.findOne(userId);
+    user.channelsUserIsIn.splice(user.channelsUserIsIn.indexOf(channelName), 1);
+    this.usersRepository.save(user);
+  }
+  async removeFromChannelOwner(userId: number, channelName: string) : Promise<void> {
+    const user = await this.usersRepository.findOne(userId);
+    user.channelsUserIsOwner.splice(user.channelsUserIsIn.indexOf(channelName), 1);
+    this.usersRepository.save(user);
+  }
+  async removeFromChannelAdmins(userId: number, channelName: string) : Promise<void> {
+    const user = await this.usersRepository.findOne(userId);
+    user.channelsUserIsAdmin.splice(user.channelsUserIsIn.indexOf(channelName), 1);
+    this.usersRepository.save(user);
+  }
+  async removeFromChannelBanned(userId: number, channelName: string) : Promise<void> {
+    const user = await this.usersRepository.findOne(userId);
+    user.channelsUserIsBanned.splice(user.channelsUserIsIn.indexOf(channelName), 1);
+    this.usersRepository.save(user);
+  }
+  async removeFromChannelMuted(userId: number, channelName: string) : Promise<void> {
+    const user = await this.usersRepository.findOne(userId);
+    user.channelsUserIsMuted.splice(user.channelsUserIsIn.indexOf(channelName), 1);
+    this.usersRepository.save(user);
+  }
+
+  // Authentifiction a 2 facteurs
   
   async settwoFAuthSecret(secret: string, id: number) {
     return this.usersRepository.update(id, {

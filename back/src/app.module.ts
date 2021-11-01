@@ -7,19 +7,25 @@ import { Connection, getConnectionOptions } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { MatchModule } from './match/match.module';
+import { ChannelModule } from './chat/channel/channel.module';
+import { MessageModule } from './chat/message/message.module';
 // import { ChatModule } from './chat/chat.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({
-    isGlobal: true,
-  }),
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
-    useFactory: async () =>
-      Object.assign(await getConnectionOptions(), {
-        autoLoadEntities: true,
+      useFactory: async () =>
+        Object.assign(await getConnectionOptions(), {
+          autoLoadEntities: true,
       }),
-      
-  }), UsersModule, AuthModule, MatchModule],
+    }),
+    UsersModule,
+    AuthModule,
+    MatchModule,
+    ChannelModule, 
+    MessageModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

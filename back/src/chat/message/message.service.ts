@@ -14,17 +14,17 @@ export class MessageService {
         private readonly messageRepository: Repository<Message>,
         @Inject(forwardRef(() => UsersService))
         private readonly usersService: UsersService,
-        @Inject(forwardRef(() => ChannelDataService))
-        private readonly channelService: ChannelDataService
+        // @Inject(forwardRef(() => ChannelDataService))
+        // private readonly channelService: ChannelDataService
     ) {}
 
     create(createMessageDto: CreateMessageDto) : Promise<Message> {
         const message = new Message();
         message.message = createMessageDto.message;
         message.owner = createMessageDto.owner;
-        message.date = createMessageDto.date;
         message.channelName = createMessageDto.channel;
-        
+        message.date = Date.now();
+        message.dateStr = message.date.toString();
         return this.messageRepository.save(message);
     }
 
@@ -39,17 +39,17 @@ export class MessageService {
     async findAllByUser(ownerId: number): Promise<Message[]> {
         return this.messageRepository.find({ owner: ownerId });
     }
-    // async findAllByUser(ownerId: number): Promise<Message[]> {
-    //     return this.messageRepository.find({ owner: owner });
-    // }
+    async findAllInChannel(channelName: string): Promise<Message[]> {
+        return this.messageRepository.find({ channelName: channelName });
+    }
 
     async remove(id: number): Promise<void> {
         await this.messageRepository.delete(id);
     }
 
-    async addMessageToHistories(id: number) : Promise<void> {
-        const message = await this.messageRepository.findOne(id);
-        this.usersService.addMessageToHistory(message.owner, message.id);
-        this.channelService.addMessageToHistory(message.channelName, message.id);
-	}
+    // async addMessageToHistories(id: number) : Promise<void> {
+    //     const message = await this.messageRepository.findOne(id);
+    //     this.usersService.addMessageToHistory(message.owner, message.id);
+    //     this.channelService.addMessageToHistory(message.channelName, message.id);
+	// }
 }

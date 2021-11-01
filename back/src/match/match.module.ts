@@ -8,7 +8,7 @@ import { UsersModule } from '../users/users.module';
 import { User } from 'src/users/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Match, User]), UsersModule],
+  imports: [TypeOrmModule.forFeature([Match]), UsersModule],
   providers: [MatchService],
   controllers: [MatchController],
   exports: [MatchService]

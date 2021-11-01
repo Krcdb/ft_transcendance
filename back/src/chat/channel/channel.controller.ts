@@ -1,16 +1,21 @@
-import { Body, Controller, Get, Post, Delete, Res} from '@nestjs/common';
+import { Body, Controller, Get, Post, Delete, Param, Res} from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
-import { Public } from 'src/auth/public.decorator';
+import { Public } from 'src/auth/utils/public.decorator';
 
 import { ChannelDataService } from './channel.service';
 import { Channel } from './channel.entity'
 import { User } from '../../users/user.entity';
 
 import { CreateChannelDto } from './dto/create-channel.dto';
+import { MessageController } from '../message/message.controller';
+import { UsersService } from 'src/users/users.service';
 
-@Controller('channel')
+@Controller('chat')
 export class ChannelController {
-	constructor(private readonly channelDataService: ChannelDataService) {}
+	constructor(
+		private readonly channelDataService: ChannelDataService,
+		private readonly usersService: UsersService
+	) {}
 
 	// POST
 
@@ -19,6 +24,9 @@ export class ChannelController {
 	@Public()
 	async createChannel(@Res() res, @Body() createChannelDto: CreateChannelDto) {
 		if (await this.channelDataService.channelAlreadyExist(createChannelDto)) {
+			await this.channelDataService.addUserAsUser(createChannelDto.channelName, createChannelDto.owner);
+			await this.usersService.addToChannelOwner(createChannelDto.owner, createChannelDto.channelName);
+			await this.usersService.addToChannelUsers(createChannelDto.owner, createChannelDto.channelName);
 			return res.status(HttpStatus.CONFLICT).json({
 				message: "Channel already exists"
 			})
@@ -32,23 +40,30 @@ export class ChannelController {
 
 	// GET
 
+	@Public()
+	@Get()
+	findAllChannels() : Promise<Channel[]> {
+		return (this.channelDataService.getAllChannels());
+	}
+
+	@Public()
+	@Get(':channelName')
+	getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
+		return (this.channelDataService.getOneChannel(channelName));
+	}
+
 	// Get Default Channel Page
-	@Public()
-	@Get()
-	test() : string {
-		let string;
+	// @Public()
+	// @Get()
+	// test() : string {
+	// 	let string;
 
-		string = "Welcome to channel Backend page !";
-		string += "<br><br>List of all Channel: <br><br>"
-		string += this.findAllChannel();
-		return (string);
-	}
+	// 	string = "Welcome to channel Backend page !";
+	// 	string += "<br><br>List of all Channel: <br><br>"
+	// 	string += this.findAllChannel();
+	// 	return (string);
+	// }
 
 
-	@Public()
-	@Get()
-	findAllChannel() : Promise<Channel[]> {
-		return (this.channelDataService.getAllChannel());
-	}
 
 }

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Delete, Post, Res, Param, Inject } from '@nestjs/common';
 
 import { HttpStatus } from '@nestjs/common';
-import { Public } from 'src/auth/public.decorator';
+import { Public } from 'src/auth/utils/public.decorator';
 
 import { Message } from './message.entity'
 import { MessageService } from './message.service'
@@ -13,19 +13,15 @@ import { CreateMessageDto } from './dto/create-message.dto';
 
 @Controller('chat')
 export class MessageController {
-	constructor(private readonly messageService: MessageService) {}
-	// to do in back :
-	// récupérer le nombre de message crées, leur noms etc...
-	@Public()
-	@Get(':message')
-	getAllChannels() {
+	constructor(
+		private readonly messageService: MessageService,
+		// private readonly channelService: ChannelDataService
+	) {}
 
-	}
-
-	@Public()// get all messages in DB
-	@Get()
-  	findAll(): Promise<Message[]> {
-	return this.messageService.findAll();
+	@Public()// get all messages from a channel
+	@Get(':channelName/msg')
+	findAll(@Param('channelName') channelName: string): Promise<Message[]> {
+		return this.messageService.findAllInChannel(channelName);
 	}
 	
 	@Public()  // get one message by its id
@@ -44,8 +40,8 @@ export class MessageController {
 	}
 
 	@Public()
-	@Post('chat')
-	async addUser(@Res() res, @Body() createMessageDto: CreateMessageDto) {
+	@Post('channelName/')
+	async postMessageOnChannel(@Res() res, @Body() createMessageDto: CreateMessageDto) {
 		const msg = await this.messageService.create(createMessageDto);
 		return res.status(HttpStatus.CREATED).json({
 			message: "Message has been created successfully",

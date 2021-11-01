@@ -80,23 +80,23 @@ export class User {
     
   // @OneToMany(() => Channel, channel => channel.owner, {nullable: true})
   @Column("varchar", {nullable: true})
-  channelsUserIsOwner: number[];
+  channelsUserIsOwner: string[];
   
   // @ManyToMany(() => Channel, channel => channel.admins, {nullable: true})
   @Column("varchar", {nullable: true})
-  channelsUserIsAdmin: number[];
+  channelsUserIsAdmin: string[];
   
   // @ManyToMany(() => Channel, channel => channel.users, {nullable: true})
   @Column("varchar", {nullable: true})
-  channelsUserIsIn: number[];
+  channelsUserIsIn: string[];
   
   // @ManyToMany(() => Channel, channel => channel.banList, {nullable: true})
   @Column("varchar", {nullable: true})
-  channelsUserIsBanned: number[];
+  channelsUserIsBanned: string[];
   
   // @ManyToMany(() => Channel, channel => channel.muteList, {nullable: true})
   @Column("varchar", {nullable: true})
-  channelsUserIsMuted: number[];
+  channelsUserIsMuted: string[];
   
   // @OneToMany(() => Message, message => message.owner, {nullable: true})
   @Column("varchar", {nullable: true})

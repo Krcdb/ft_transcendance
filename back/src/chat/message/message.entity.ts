@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn, ManyToOne} from 'typeorm';
+// import { Date } from 
 import { Channel } from '../channel/channel.entity';
 import { User } from '../../users/user.entity';
 
@@ -15,10 +16,12 @@ export class Message {
 	@Column("int", {nullable: true})
 	owner: number;
 
-	@Column("varchar", { nullable: true })
-	date: string;
-
 	// @ManyToOne(() => Channel, channel => channel.messagesHistory, {nullable: true})
 	@Column("varchar", {nullable: true})
 	channelName: string;
+
+	@Column({ nullable: true })
+	date: number;
+	@Column({ nullable: true })
+	dateStr: string;
 }

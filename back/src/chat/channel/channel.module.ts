@@ -12,9 +12,11 @@ import { ChannelDataService } from './channel.service';
 import { UsersModule } from 'src/users/users.module';
 import { Message } from '../message/message.entity';
 import { User } from 'src/users/user.entity';
+import { MessageModule } from '../message/message.module';
+import { MessageController } from '../message/message.controller';
 
 @Module({
-	imports: [TypeOrmModule.forFeature([Channel, User, Message]), UsersModule ],
+	imports: [TypeOrmModule.forFeature([Channel]), UsersModule, MessageModule ],
 	providers: [ ChannelDataService ], //UsersService ],//, MessageService],
 	controllers: [ ChannelController ],
 	exports: [ ChannelDataService ]//, UsersService]//, MessageService ],

@@ -4,6 +4,5 @@
 export class CreateMessageDto {
     message: string;
     owner: number;
-    date: string;
     channel: string;
 }
