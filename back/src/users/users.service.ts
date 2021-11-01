@@ -26,7 +26,7 @@ export class UsersService {
       const user = new User();
       user.userName = createUserDto.userName;
       user.id = createUserDto.id;
-      user.currentMatch = null;
+      // user.currentMatch = null;
       // user.matchHistory = null;
       user.nbLosses = 0;
       user.nbVictories = 0;
@@ -36,12 +36,12 @@ export class UsersService {
       // user.befriended = null;
       // user.blockedUsers = null;
       // user.blockingUsers = null;
-      user.channelsUserIsOwner = null;
-      user.channelsUserIsAdmin = null;
-      user.channelsUserIsIn = null;
-      user.channelsUserIsBanned = null;
-      user.channelsUserIsMuted = null;
-      user.messagesSent = null;
+      // user.channelsUserIsOwner = null;
+      // user.channelsUserIsAdmin = null;
+      // user.channelsUserIsIn = null;
+      // user.channelsUserIsBanned = null;
+      // user.channelsUserIsMuted = null;
+      // user.messagesHistory = null;
       return this.usersRepository.save(user);
   }
 
@@ -110,18 +110,22 @@ export class UsersService {
     
   // }
 
-  async addMessageToHistory(message: Message) : Promise<void> {
-		message.owner.messagesSent.unshift(message);
+  async addMessageToHistory(userId: number, messageId: number) : Promise<void> {
+		const user = await this.usersRepository.findOne(userId);
+		user.messagesHistory.unshift(messageId);
+		this.usersRepository.save(user);
   }
   
-  async addVictory(winner: User) : Promise<void> {
+  async addVictory(winnerId: number) : Promise<void> {
     // await this.usersRepository.increment(id, "nbVictories", 1);
+    const winner = await this.usersRepository.findOne(winnerId);
     winner.nbVictories += 1;
     this.usersRepository.save(winner);
   }
 
-  async addDefeat(loser: User) : Promise<void> {
+  async addDefeat(loserId: number) : Promise<void> {
     // await this.usersRepository.increment(id, "nbLosses", 1);
+    const loser = await this.usersRepository.findOne(loserId);
     loser.nbLosses += 1;
     this.usersRepository.save(loser);
   }

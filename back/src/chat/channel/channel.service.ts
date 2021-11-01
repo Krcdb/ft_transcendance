@@ -61,14 +61,16 @@ export class ChannelDataService {
 		return (this.channelRepository.find());
 	}
 
-	async addUserAsAdmin(channelName: string, user: User) : Promise<void> {
+	async addUserAsAdmin(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne({channelName: channelName});
-		channel.admins.unshift(user);
+		channel.admins.unshift(userId);
 		this.channelRepository.save(channel);
 	}
 
-	async addMessageToHistory(message: Message) : Promise<void> {
-		message.channel.messagesHistory.unshift(message);
+	async addMessageToHistory(channelName: string, messageId: number) : Promise<void> {
+		const channel = await this.channelRepository.findOne({channelName: channelName});
+		channel.messagesHistory.unshift(messageId);
+		this.channelRepository.save(channel);
 	}
 
 }

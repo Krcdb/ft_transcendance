@@ -23,7 +23,7 @@ export class MessageService {
         message.message = createMessageDto.message;
         message.owner = createMessageDto.owner;
         message.date = createMessageDto.date;
-        message.channel = createMessageDto.channel;
+        message.channelName = createMessageDto.channel;
         
         return this.messageRepository.save(message);
     }
@@ -36,8 +36,8 @@ export class MessageService {
     async findAll(): Promise<Message[]> {
         return this.messageRepository.find();
     }
-    async findAllByUser(owner: User): Promise<Message[]> {
-        return this.messageRepository.find({ owner: owner });
+    async findAllByUser(ownerId: number): Promise<Message[]> {
+        return this.messageRepository.find({ owner: ownerId });
     }
     // async findAllByUser(ownerId: number): Promise<Message[]> {
     //     return this.messageRepository.find({ owner: owner });
@@ -49,7 +49,7 @@ export class MessageService {
 
     async addMessageToHistories(id: number) : Promise<void> {
         const message = await this.messageRepository.findOne(id);
-        this.usersService.addMessageToHistory(message);
-        this.channelService.addMessageToHistory(message);
+        this.usersService.addMessageToHistory(message.owner, message.id);
+        this.channelService.addMessageToHistory(message.channelName, message.id);
 	}
 }

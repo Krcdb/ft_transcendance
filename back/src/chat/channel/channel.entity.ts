@@ -23,27 +23,33 @@ export class Channel {
 
 	// Users & History
 
-	@ManyToOne(() => User, user => user.channelsUserIsOwner, {nullable: true})
-	owner: User;
+	// @ManyToOne(() => User, user => user.channelsUserIsOwner, {nullable: true})
+	@Column("int", {nullable: true})
+	owner: number;
 	
-	@OneToMany(() => Message, message => message.channel, {nullable: true})
-	messagesHistory: Message[];
+	// @OneToMany(() => Message, message => message.channel, {nullable: true})
+	@Column("int", {nullable: true})
+	messagesHistory: number[];
 
 	// Lists | Users
 
-	@ManyToMany(() => User, user => user.channelsUserIsIn, {nullable: true})
-	@JoinTable()
-	admins: User[];
+	// @ManyToMany(() => User, user => user.channelsUserIsIn, {nullable: true})
+	// @JoinTable()
+	@Column("int", {nullable: true})
+	admins: number[];
 
-	@ManyToMany(() => User, user => user.channelsUserIsAdmin, {nullable: true})
-	@JoinTable()
-	users: User[];
+	// @ManyToMany(() => User, user => user.channelsUserIsAdmin, {nullable: true})
+	// @JoinTable()
+	@Column("int", {nullable: true})
+	users: number[];
 
-	@ManyToMany(() => User, user => user.channelsUserIsBanned, {nullable: true})
-	@JoinTable()
-	banList: User[];
+	// @ManyToMany(() => User, user => user.channelsUserIsBanned, {nullable: true})
+	// @JoinTable()
+	@Column("int", {nullable: true})
+	banList: number[];
 
-	@ManyToMany(() => User, user => user.channelsUserIsMuted, {nullable: true})
-	@JoinTable()
-	muteList: User[];
+	// @ManyToMany(() => User, user => user.channelsUserIsMuted, {nullable: true})
+	// @JoinTable()
+	@Column("int", {nullable: true})
+	muteList: number[];
 }

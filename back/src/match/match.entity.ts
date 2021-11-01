@@ -7,9 +7,10 @@ export class Match {
   @PrimaryGeneratedColumn()
   matchId: number;
 
-  @OneToOne(() => User, user => user.currentMatch, {nullable: true})
-  @JoinColumn()
-  players: User[];
+  // @OneToOne(() => User, user => user.currentMatch, {nullable: true})
+  // @JoinColumn()
+  @Column("int", {nullable: true})
+  players: number[];
 
   @Column("int", {nullable: true})
   scores: number[];

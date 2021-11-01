@@ -11,12 +11,14 @@ export class Message {
 	message: string;
 
 	// Config
-	@ManyToOne(() => User, user => user.messagesSent, {nullable: true})
-	owner: User;
+	// @ManyToOne(() => User, user => user.messagesHistory, {nullable: true})
+	@Column("int", {nullable: true})
+	owner: number;
 
-	@Column({ nullable: true })
+	@Column("varchar", { nullable: true })
 	date: string;
 
-	@ManyToOne(() => Channel, channel => channel.messagesHistory, {nullable: true})
-	channel: Channel;
+	// @ManyToOne(() => Channel, channel => channel.messagesHistory, {nullable: true})
+	@Column("varchar", {nullable: true})
+	channelName: string;
 }

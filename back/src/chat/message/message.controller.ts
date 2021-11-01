@@ -36,8 +36,8 @@ export class MessageController {
 
 	@Public()  // get all messages of a user by its id
 	@Get(':owner/')
-	findAllByUserId(@Param('owner') owner: User): Promise<Message[]> {
-		return this.messageService.findAllByUser(owner);
+	findAllByUserId(@Param('owner') ownerId: number): Promise<Message[]> {
+		return this.messageService.findAllByUser(ownerId);
 	// findAllByUserId(@Param('owner') ownerId: number, usersService: UsersService): Promise<Message[]> {
 	// 	const owner = usersService.findOne(ownerId);
 	// 	return this.messageService.findAllByUser(owner);
