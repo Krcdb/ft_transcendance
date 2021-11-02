@@ -11,7 +11,6 @@
       />
       <ul class="list">
         <li class="list-item" v-for="user in filteredUsers" :key="user.id">
-        
           <div class="list-img">
             <img
               v-if="user.avatar"
@@ -130,6 +129,5 @@ h3 {
 }
 .user-status .offline {
   background-color: red;
-
 }
 </style>

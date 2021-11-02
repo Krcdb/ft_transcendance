@@ -16,49 +16,57 @@
           v-else
           :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
         />
-          <form @submit.prevent="handleSubmit">
-            <div class="file-browsing-div">
-              <input
-                type="file"
-                accept="image/*"
-                @change="uploadFile"
-                required
-                id="file-input"
-              />
-            </div>
-            <div class="form-group">
-              <button class="btn btn-success btn-block btn-lg">Upload</button>
-              <button class="deletebtn" @click="deleteAvatar">Delete Avatar</button>
-            </div>
-          </form>
+        <form @submit.prevent="handleSubmit">
+          <div class="file-browsing-div">
+            <input
+              type="file"
+              accept="image/*"
+              @change="uploadFile"
+              required
+              id="file-input"
+            />
+          </div>
+          <div class="form-group">
+            <button class="btn btn-success btn-block btn-lg">Upload</button>
+            <button class="deletebtn" @click="deleteAvatar">
+              Delete Avatar
+            </button>
+          </div>
+        </form>
       </div>
       <div class="other-change">
         <div class="twofa-handling">
-        <h3>2-factor authentication</h3>
-        <label class="switch">
-          <input type="checkbox" v-model="checked" @change="Handle2FaChange">
-          <span class="slider round"></span>
-        </label>
+          <h3>2-factor authentication</h3>
+          <label class="switch">
+            <input
+              type="checkbox"
+              v-model="checked"
+              @change="Handle2FaChange"
+            />
+            <span class="slider round"></span>
+          </label>
         </div>
         <div class="update-username">
           <div class="form-group">
             <h3>Change User Name</h3>
             <label for="userName">
-            <input
-              type="text"
-              maxlength="12"
-              class="form-control"
-              required
-              v-model="newUserName"
-              :placeholder="user.userName"
-            />
-              <button @click="updateUserName" class="btn btn-success">Submit</button>
+              <input
+                type="text"
+                maxlength="12"
+                class="form-control"
+                required
+                v-model="newUserName"
+                :placeholder="user.userName"
+              />
+              <button @click="updateUserName" class="btn btn-success">
+                Submit
+              </button>
             </label>
           </div>
         </div>
         <p>{{ msg }}</p>
         <router-link to="/profile">
-          <button class="discreet-button" >Go back to Profile Page</button>
+          <button class="discreet-button">Go back to Profile Page</button>
         </router-link>
       </div>
     </div>

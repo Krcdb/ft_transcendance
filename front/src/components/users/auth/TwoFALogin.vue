@@ -11,10 +11,10 @@
         v-model="authcode"
         size="6"
       />
-      </div>
-      <button @click="sendCode">Verify</button>
     </div>
-    <p> {{ error }} </p>
+    <button @click="sendCode">Verify</button>
+  </div>
+  <p>{{ error }}</p>
 </template>
 
 <script lang="ts">
@@ -51,8 +51,7 @@ export default defineComponent({
       UserDataService.authenticate2fa(data)
         .then((response: ResponseData) => {
           this.error = "";
-          if (response.data.access_token)
-          {
+          if (response.data.access_token) {
             localStorage.setItem("user-name", response.data.userName);
             localStorage.setItem("user-id", response.data.id);
             localStorage.setItem("user-token", response.data.access_token);
@@ -62,7 +61,7 @@ export default defineComponent({
         .catch((e) => {
           this.error = e.response.data.message;
         });
-    }
+    },
   },
   mounted() {
     if (localStorage.getItem("user-id"))

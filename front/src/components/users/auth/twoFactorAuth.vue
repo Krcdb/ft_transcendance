@@ -12,7 +12,9 @@
         size="6"
       />
     </div>
-    <button @click="sendCode" class="btn btn-submit">Turn on Two Factor Authentification</button>
+    <button @click="sendCode" class="btn btn-submit">
+      Turn on Two Factor Authentification
+    </button>
   </div>
   <p>{{ error }}</p>
 </template>

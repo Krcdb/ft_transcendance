@@ -38,7 +38,12 @@
               <p>Are you sure you want to log out ?</p>
               <br />
               <div class="clearfix">
-                <button class="cancelbtn" onclick="document.getElementById('id01').style.display='none'">Cancel</button>
+                <button
+                  class="cancelbtn"
+                  onclick="document.getElementById('id01').style.display='none'"
+                >
+                  Cancel
+                </button>
                 <button type="button" class="deletebtn" @click="logout">
                   Logout
                 </button>
@@ -48,7 +53,7 @@
         </div>
       </div>
     </div>
-    <p> {{ error }} </p>
+    <p>{{ error }}</p>
   </div>
 
   <div v-else>

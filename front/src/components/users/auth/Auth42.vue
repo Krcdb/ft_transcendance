@@ -30,16 +30,14 @@ export default defineComponent({
     }
 
     try {
-        UserDataService.get42Token(String(this.$route.query.code))
+      UserDataService.get42Token(String(this.$route.query.code))
         .then((response: ResponseData) => {
-          if (response.data.access_token)
-          {
+          if (response.data.access_token) {
             localStorage.setItem("user-name", response.data.userName);
             localStorage.setItem("user-id", response.data.id);
             localStorage.setItem("user-token", response.data.access_token);
             this.$router.push("/profile");
-          }
-          else { //two F-Auth turned on
+          } else {
             localStorage.setItem("user-id", response.data.id);
             this.$router.push("/2FLogin");
           }

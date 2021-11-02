@@ -24,8 +24,7 @@ function logout(): void {
     "user-id"
   )}`;
 
-  if (!localStorage.getItem("user-id"))
-    return ;
+  if (!localStorage.getItem("user-id")) return;
   http
     .get(url)
     .then(() => {

@@ -6,7 +6,7 @@
   <div v-else>
     <h1>Please <router-link to="/login">Login</router-link></h1>
   </div>
-<p> {{ error }} </p>
+  <p>{{ error }}</p>
 </template>
 
 <script lang="ts">
@@ -40,8 +40,7 @@ export default defineComponent({
       let data = {
         id: localStorage.getItem("user-id"),
       };
-      UserDataService.generateQRcode(data)
-        .then((response) => {
+      UserDataService.generateQRcode(data).then((response) => {
         this.qrcode = `data:${response.headers["content-type"]};base64,${btoa(
           String.fromCharCode(...new Uint8Array(response.data))
         )}`;
@@ -49,18 +48,10 @@ export default defineComponent({
     },
   },
   mounted() {
-    if (localStorage.getItem("user-id"))
-    {
+    if (localStorage.getItem("user-id")) {
       this.getUser(Number(localStorage.getItem("user-id")));
       this.getQrcode();
     }
   },
 });
 </script>
-
-<style scoped>
-
-img {
-}
-
-</style>

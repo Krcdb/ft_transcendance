@@ -41,15 +41,15 @@ ul {
   list-style-type: none;
 }
 #online-circle {
-    background: #1fcc00;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+  background: #1fcc00;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 #offline-circle {
-    background: #ff0000;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
+  background: #ff0000;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 </style>
