@@ -48,7 +48,7 @@ export class UsersService {
   async findOrCreate(id: number, userName: string) : Promise<User> {
     return await this.findOne(id) || await this.create({"userName": userName, "id": id});
   }
-  
+
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }

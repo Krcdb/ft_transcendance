@@ -13,9 +13,8 @@ export class twoFAuthService {
     private readonly configService: ConfigService
   ) {}
  
-  public async istwoFAuthCodeValid(twoFAuthCode: string,id: number) {
+  public async istwoFAuthCodeValid(twoFAuthCode: string, id: number) {
     const user = await this.usersService.findOne(id);
-    console.log("USER = ", user)
     return authenticator.verify({
       token: twoFAuthCode,
       secret: user.twoFAuthSecret,
@@ -26,7 +25,6 @@ export class twoFAuthService {
     const secret = authenticator.generateSecret();
     const user = await this.usersService.findOne(id);
   
-    console.log(user.id, " -> ", user.userName);
     const otpauthUrl = authenticator.keyuri(user.userName, this.configService.get('TWO_FACTOR_AUTHENTICATION_APP_NAME'), secret);
  
     await this.usersService.settwoFAuthSecret(secret, user.id);

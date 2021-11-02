@@ -4,7 +4,7 @@
       <h4>{{ user.userName }}</h4>
       <div v-if="user.isActive" id="online-circle"></div>
       <div v-else id="offline-circle"></div>
-     </div>
+    </div>
     <div class="container">
       <img
         v-if="user.avatar"

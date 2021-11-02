@@ -13,7 +13,6 @@ apiClient.interceptors.request.use(
     return request;
   },
   (error) => {
-    console.log("ERROR => ", error);
     return Promise.reject(error);
   }
 );
