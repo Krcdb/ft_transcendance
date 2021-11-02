@@ -10,6 +10,7 @@ export default defineComponent({
 	name: "game-canvas",
 	data() {
       	return {
+			  
       	}
     },
 	methods: {

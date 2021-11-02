@@ -6,6 +6,7 @@ import { UsersModule } from './users/users.module';
 import { Connection, getConnectionOptions } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { WebsocketGateway } from './websocket/websocket.gateway';
 
 @Module({
   imports: [ConfigModule.forRoot({

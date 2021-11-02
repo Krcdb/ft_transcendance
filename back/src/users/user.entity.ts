@@ -13,4 +13,7 @@ export class User {
 
   @Column({nullable: true})
   avatar: string;
+
+  @Column({ default: 1000 })
+  elo: number;
 }
