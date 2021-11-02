@@ -13,6 +13,10 @@ import { UpdateUserNameDto } from './dto/update-userName.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // ------ // 
+  //  POST  //
+  // ------ // 
+
   @Post()
   @Public()
   async addUser(@Res() res, @Body() createUserDto: CreateUserDto) {
@@ -57,6 +61,10 @@ export class UsersController {
     this.usersService.setAvatar(id, `${file.filename}`);
   }
 
+  // ------ // 
+  //   GET  //
+  // ------ // 
+
   @Public()
   @Get()
   findAll(): Promise<User[]> {
@@ -87,6 +95,10 @@ export class UsersController {
     }
     return getAvatarFile();
   }
+
+  // -------- // 
+  //  DELETE  //
+  // -------- // 
 
   @Delete(':id')
   remove(@Param('id') id: number): Promise<void> {

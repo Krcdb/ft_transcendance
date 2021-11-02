@@ -18,6 +18,29 @@ export class MessageController {
 		// private readonly channelService: ChannelDataService
 	) {}
 
+	// ------ // 
+  	//  POST  //
+	// ------ //
+	  
+	@Public()
+	@Post(':channelName/')
+	async postMessageOnChannel(@Param('channelName') channelName: string,
+		@Res() res, @Body() createMessageDto: CreateMessageDto) {	
+		const msg = await this.messageService.create(createMessageDto, channelName);
+		if (msg == null)
+			return res.status(HttpStatus.NOT_FOUND).json({
+				message: "Couldn't find channel with given name" });
+		await this.messageService.addMessageToHistories(msg.id);
+		return res.status(HttpStatus.CREATED).json({
+			message: "Message has been created successfully",
+			msg
+		})
+	}
+
+	// ------ // 
+	//   GET  //
+	// ------ // 
+
 	@Public()// get all messages from a channel
 	@Get(':channelName/msg')
 	findAll(@Param('channelName') channelName: string): Promise<Message[]> {
@@ -34,20 +57,11 @@ export class MessageController {
 	@Get(':owner/')
 	findAllByUserId(@Param('owner') ownerId: number): Promise<Message[]> {
 		return this.messageService.findAllByUser(ownerId);
-	// findAllByUserId(@Param('owner') ownerId: number, usersService: UsersService): Promise<Message[]> {
-	// 	const owner = usersService.findOne(ownerId);
-	// 	return this.messageService.findAllByUser(owner);
 	}
 
-	@Public()
-	@Post('channelName/')
-	async postMessageOnChannel(@Res() res, @Body() createMessageDto: CreateMessageDto) {
-		const msg = await this.messageService.create(createMessageDto);
-		return res.status(HttpStatus.CREATED).json({
-			message: "Message has been created successfully",
-			msg
-		})
-	}	
+	// ------- // 
+	//  DELETE //
+	// ------- // 
 
 	@Delete(':id')
   	remove(@Param('id') id: number): Promise<void> {

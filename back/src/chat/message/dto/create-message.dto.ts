@@ -1,8 +1,10 @@
-// import { User } from '../../../users/user.entity';
-// import { Channel } from '../../channel/channel.entity';
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateMessageDto {
-    message: string;
+    @IsNumber()
     owner: number;
-    channel: string;
+
+    @IsString()
+    @IsNotEmpty()
+    message: string;
 }

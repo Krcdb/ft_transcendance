@@ -35,6 +35,8 @@ export class MatchService {
             loser = winner;
             winner = tmp;
         }
+        await this.usersService.addMatchToHistory(winner, matchId);
+        await this.usersService.addMatchToHistory(loser, matchId);
         await this.usersService.addVictory(winner);
         await this.usersService.addDefeat(loser);
     }

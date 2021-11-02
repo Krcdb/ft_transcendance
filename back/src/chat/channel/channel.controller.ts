@@ -14,19 +14,17 @@ import { UsersService } from 'src/users/users.service';
 export class ChannelController {
 	constructor(
 		private readonly channelDataService: ChannelDataService,
-		private readonly usersService: UsersService
+		// private readonly usersService: UsersService
 	) {}
 
-	// POST
+	// ------ // 
+	//  POST  //
+	// ------ // 
 
-	// Create Channel
 	@Post()
 	@Public()
 	async createChannel(@Res() res, @Body() createChannelDto: CreateChannelDto) {
-		if (await this.channelDataService.channelAlreadyExist(createChannelDto)) {
-			await this.channelDataService.addUserAsUser(createChannelDto.channelName, createChannelDto.owner);
-			await this.usersService.addToChannelOwner(createChannelDto.owner, createChannelDto.channelName);
-			await this.usersService.addToChannelUsers(createChannelDto.owner, createChannelDto.channelName);
+		if (await this.channelDataService.channelAlreadyExists(createChannelDto.channelName)) {
 			return res.status(HttpStatus.CONFLICT).json({
 				message: "Channel already exists"
 			})
@@ -38,32 +36,24 @@ export class ChannelController {
 		})
 	}
 
-	// GET
+	// ------ // 
+  	//  GET   //
+  	// ------ // 
 
 	@Public()
 	@Get()
 	findAllChannels() : Promise<Channel[]> {
-		return (this.channelDataService.getAllChannels());
+		return (this.channelDataService.findAll());
 	}
 
 	@Public()
 	@Get(':channelName')
 	getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
-		return (this.channelDataService.getOneChannel(channelName));
+		return (this.channelDataService.findOne(channelName));
 	}
 
-	// Get Default Channel Page
-	// @Public()
-	// @Get()
-	// test() : string {
-	// 	let string;
-
-	// 	string = "Welcome to channel Backend page !";
-	// 	string += "<br><br>List of all Channel: <br><br>"
-	// 	string += this.findAllChannel();
-	// 	return (string);
-	// }
-
-
+	// ------- // 
+	//  DELETE //
+	// ------- // 
 
 }

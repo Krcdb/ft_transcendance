@@ -1,11 +1,43 @@
-TO DO :
+_______________________________________________________________________
+_____  __        __    __
+  |   /  \  __  |  \  /  \
+  |   \__/      |__/  \__/
+_______________________________________________________________________
+[OK]    rentrer dans le container et essayer d'explorer la db
+[OK]    essayer de faire un dump depuis l'interieur et voir a quoi ca
+            ressemble
+[OK]    creer des nouveaux users avec insomnia
+[OK]    sauvegarder ces users d'un build a l'autre, on peut essayer de les
+            hardcoder mais si y'a moyen de faire plus propre c'est mieux
+[NON]   importer le dump
+[NON]   explorer la db avec pgadmin
+[ ]     simplifier les fonctions de service (au lieu de toujours utiliser
+            find/save, essayer d'utiliser des fonctions plus pertinentes
+            pour gagner en lignes de code et en efficacité)
+[ ]     Rediger des securites ?? un user qui n'est pas dans un channel ne peut pas y
+            poster etc...
+_______________________________________________________________________
+QUESTIONS :
+_______________________________________________________________________
 
-OK  rentrer dans le container et essayer d'explorer la db
-OK  essayer de faire un dump depuis l'interieur et voir a quoi ca ressemble
-OK   creer des nouveaux users avec insomnia
-OK   sauvegarder ces users d'un build a l'autre, on peut essayer de les
-hardcoder mais si y'a moyen de faire plus propre c'est mieux
--   importer le dump
+- Amitiés a sens unique ? Demande puis acceptation ?
+- Comment gerer le ladder level ?
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+* * * * * * * * * * * * * JOURNAL DE BORD * * * * * * * * * * * * * * * 
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+[2 novembre]
+Je suis tres contente de ma refonte, ca marche nickel avec les IDs !!
+En plus maintenant j'arrive bien a acceder a mes services et mes
+repositories d'ou j'en ai besoin, et j'ai éliminé la dépendance circulaire.
+J'ai ecrit beaucoup de setters/getters ces derniers jours, j'ai testé
+ceux que je pouvais avec insomnia (ceux qui ont des dto en gros) du coup
+je suis ready pour push sur master !!
+>> A faire la prochaine fois :
+- ecrire les fonctions de delete
+- tester MATCH, ma derniere entités pas testée
 
 *********************************************************************
 
