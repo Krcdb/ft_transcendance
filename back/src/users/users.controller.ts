@@ -53,7 +53,7 @@ export class UsersController {
     }
     })
   }))
-  uploadAvatar(@Param('id') id, @UploadedFile() file) {
+  uploadAvatar(@Param('id') id: number, @UploadedFile() file) {
     this.usersService.setAvatar(id, `${file.filename}`);
   }
 
@@ -77,7 +77,7 @@ export class UsersController {
 
   @Public()
   @Get(':id/avatar')
-  serveAvatar(@Param('id') id, @Res() res) : Promise<any> {
+  serveAvatar(@Param('id') id: number, @Res() res) : Promise<any> {
     const getAvatarFile = async () => {
       const avatarPath = await this.usersService.getAvatar(id);
       if (avatarPath)

@@ -1,22 +1,20 @@
 <template>
-  <h4>Two Factor Authentication</h4>
+  <h4>Turn On Two Factor Authentication</h4>
   <QRcode />
   <div class="send-code">
     <div class="form-group">
-      <label for="code">Enter code:</label>
       <input
         type="text"
         maxlength="6"
         minlength="6"
         required
         v-model="authcode"
-        placeholder="000000"
         size="6"
       />
-      </div>
-      <button @click="sendCode" class="btn btn-submit">Submit</button>
     </div>
-    <p> {{ error }} </p>
+    <button @click="sendCode" class="btn btn-submit">Turn on Two Factor Authentification</button>
+  </div>
+  <p>{{ error }}</p>
 </template>
 
 <script lang="ts">
@@ -55,21 +53,25 @@ export default defineComponent({
         id: this.user.id,
       };
       UserDataService.turn2FAon(data)
-        .then((response: ResponseData) => {
+        .then(() => {
           this.error = "";
           this.$router.push("/profile");
         })
-        .catch((e: Error) => {
-          this.error = e.message;
-          console.log(e);
+        .catch((e) => {
+          this.error = e.response.data.message;
         });
-    }
+    },
   },
   mounted() {
-    if (localStorage.getItem("user-id"))
-    {
+    if (localStorage.getItem("user-id")) {
       this.getUser(Number(localStorage.getItem("user-id")));
     }
   },
 });
 </script>
+
+<style scoped>
+input {
+  font-size: 20px;
+}
+</style>

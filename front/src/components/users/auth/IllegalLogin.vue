@@ -30,7 +30,6 @@ export default defineComponent({
       http
         .get("http://localhost:3000/auth/0")
         .then((response: ResponseData) => {
-          console.log("got response");
           localStorage.setItem("user-name", response.data.userName);
           localStorage.setItem("user-id", response.data.id);
           localStorage.setItem("user-token", response.data.access_token);

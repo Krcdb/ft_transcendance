@@ -1,5 +1,5 @@
 <template>
-  <p>Scan it in an Authentificator App</p>
+  <p>Scan it in an Authentificator App and enter the code</p>
   <div v-if="qrcode">
     <img :src="qrcode" />
   </div>

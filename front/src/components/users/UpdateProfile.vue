@@ -166,7 +166,6 @@ export default defineComponent({
   mounted() {
     this.getUser(Number(localStorage.getItem('user-id')));
     this.checked = this.user.isTwoFAuthEnabled;
-    console.log("check = ", this.checked)
   },
 });
 </script>

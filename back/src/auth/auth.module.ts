@@ -12,8 +12,6 @@ import { JwtAuthGuard } from './Guard/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { TwoFAuthController } from './twoFAuth.controller';
 import { twoFAuthService } from './twoFAuth.service';
-import { JwtTwoFactorGuard } from './Guard/jwt-two-factor.guard';
-import { JwtTwoFactorStrategy } from './Strategy/jwt-two-factor.strategy';
 
 @Module({
   imports: [ 
@@ -28,13 +26,11 @@ import { JwtTwoFactorStrategy } from './Strategy/jwt-two-factor.strategy';
   providers: [
     {
       provide: APP_GUARD,
-      // useClass: JwtTwoFactorGuard,
       useClass: JwtAuthGuard,
     },
     AuthService,
     JwtStrategy,
     FortyTwoStrategy,
-    JwtTwoFactorStrategy,
     twoFAuthService,
   ],
   controllers: [AuthController, TwoFAuthController],

@@ -3,18 +3,16 @@
   <p>Enter the code from your authentification app</p>
   <div class="send-code">
     <div class="form-group">
-      <label for="code">Enter code:</label>
       <input
         type="text"
         maxlength="6"
         minlength="6"
         required
         v-model="authcode"
-        placeholder="000000"
         size="6"
       />
       </div>
-      <button @click="sendCode" class="btn btn-submit">Submit</button>
+      <button @click="sendCode">Verify</button>
     </div>
     <p> {{ error }} </p>
 </template>
@@ -52,7 +50,6 @@ export default defineComponent({
       };
       UserDataService.authenticate2fa(data)
         .then((response: ResponseData) => {
-          console.log("RESPONSE = ", response);
           this.error = "";
           if (response.data.access_token)
           {
@@ -62,18 +59,20 @@ export default defineComponent({
             this.$router.push("/profile");
           }
         })
-        .catch((e: Error) => {
-          this.error = e.message;
-          console.log(e);
+        .catch((e) => {
+          this.error = e.response.data.message;
         });
     }
   },
   mounted() {
     if (localStorage.getItem("user-id"))
-    {
-      console.log("id = ", localStorage.getItem("user-id"));
       this.getUser(Number(localStorage.getItem("user-id")));
-    }
   },
 });
 </script>
+
+<style scoped>
+input {
+  font-size: 20px;
+}
+</style>
