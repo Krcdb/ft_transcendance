@@ -86,8 +86,8 @@ export class UsersService {
     await this.usersRepository.update(id, {avatar: avatarUrl});
   }
 
-  async getAvatar(userName: string) : Promise<String>  {
-    return this.usersRepository.findOne(userName).then((user) => { return user.avatar; });
+  async getAvatar(id: number) : Promise<String>  {
+    return this.usersRepository.findOne(id).then((user) => { return user.avatar; });
   }
   
   async DeleteOldAvatarFile (id: number) {
