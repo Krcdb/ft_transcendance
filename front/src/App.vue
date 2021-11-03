@@ -6,7 +6,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import NavBar from "@/components/NavBar.vue";
-// import
 
 export default defineComponent({
   name: "App",
@@ -40,5 +39,17 @@ button:hover {
 }
 ul {
   list-style-type: none;
+}
+#online-circle {
+    background: #1fcc00;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+#offline-circle {
+    background: #ff0000;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
 }
 </style>

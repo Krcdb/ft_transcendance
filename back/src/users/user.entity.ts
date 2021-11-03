@@ -8,12 +8,16 @@ export class User {
   @Column({unique: true})
   userName: string;
   
-  @Column({ default: true })
+  @Column({ default: false })
   isActive: boolean;
 
   @Column({nullable: true})
   avatar: string;
 
-  @Column({nullable: true})
-  access_token: string;
+  @Column({ nullable: true })
+  twoFAuthSecret?: string;
+
+  @Column({ default: false })
+  public isTwoFAuthEnabled: boolean;
+
 }

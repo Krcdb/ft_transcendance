@@ -9,13 +9,12 @@ RUN npm install -g npm@latest \
 	&& npm install -g @nestjs/cli  \
 	&& npm install --save @nestjs/config @nestjs/common @nestjs/core @nestjs/typeorm typeorm pg \
 	&& npm install --save class-validator \
-	&& npm install --save @nestjs/passport passport passport-local \
-	&& npm install --save-dev @types/passport-local \
-	&& npm install passport-42 \
+	&& npm install --save @nestjs/passport passport passport-42 \
 	&& npm i -D @types/multer @types/node \
 	&& npm i --save @nestjs/axios \
 	&& npm install --save-dev @types/passport-jwt \
-	&& npm install --save @nestjs/jwt passport-jwt
+	&& npm install --save @nestjs/jwt passport-jwt \
+	&& npm install otplib qrcode
 
 
 COPY . /app/

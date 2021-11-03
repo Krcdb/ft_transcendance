@@ -1,6 +1,10 @@
 <template>
   <div v-if="user.userName" class="edit-form">
-    <h4>{{ user.userName }}</h4>
+    <div class="user-status">
+      <h4>{{ user.userName }}</h4>
+      <div v-if="user.isActive" id="online-circle"></div>
+      <div v-else id="offline-circle"></div>
+     </div>
     <div class="container">
       <img
         v-if="user.avatar"
@@ -27,12 +31,12 @@
         <button class="friend-btn">＋ Add to Friends</button>
         <button class="block-btn">🚫 Block</button>
       </div>
-        <router-link to="/chat">
-          <button class="chat-btn">💬 start a private chat</button>
-        </router-link> 
-        <router-link to="/game">
-          <button class="game-btn">🎮 Start a game</button>
-        </router-link>
+      <router-link to="/chat">
+        <button class="chat-btn">💬 start a private chat</button>
+      </router-link>
+      <router-link to="/game">
+        <button class="game-btn">🎮 Start a game</button>
+      </router-link>
     </div>
   </div>
 
@@ -87,6 +91,13 @@ export default defineComponent({
 .user-info {
   margin: 5%;
 }
+.user-status {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  align-items: center;
+}
 img {
   width: 300px;
   height: 300px;
@@ -96,9 +107,7 @@ img {
 }
 h4 {
   font-size: 30px;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+  margin-right: 10px;
 }
 .block-btn {
   background-color: #f44336;

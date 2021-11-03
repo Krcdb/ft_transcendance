@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,7 +14,6 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {
-
       const user = new User();
       user.userName = createUserDto.userName;
       user.id = createUserDto.id;
@@ -34,7 +33,6 @@ export class UsersService {
           throw err;
       });
     }
-    // this.usersRepository.update(userName, {avatar: null});
   }
 
   public async setAvatar(id: number, avatarUrl: string): Promise<void>  {
@@ -51,6 +49,11 @@ export class UsersService {
     return this.usersRepository.findOne(id);
   }
 
+  async updateLogState(id: number, isLog: boolean): Promise<User> {
+    await this.usersRepository.update(id, {isActive: isLog});
+    return this.usersRepository.findOne(id);
+  }
+
   async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
@@ -59,15 +62,6 @@ export class UsersService {
     const user = this.usersRepository.findOne(id);
     return user;
   }
-
-  // async findOneIntra(intra_id: number): Promise<User> {
-  //   const user = await this.usersRepository.findOne({ where: { id: intra_id } });
-
-  //   if ( !user ) {
-  //     throw new UnauthorizedException();
-  //   }
-  //   return user;
-  // }
 
   async remove(id: number): Promise<void> {
     this.DeleteOldAvatarFile(id);
@@ -90,5 +84,22 @@ export class UsersService {
   async removeAvatar(id: number): Promise<void> {
     this.DeleteOldAvatarFile(id);
     await this.usersRepository.update(id, {avatar: null});
+  }
+  async settwoFAuthSecret(secret: string, id: number) {
+    return this.usersRepository.update(id, {
+      twoFAuthSecret: secret
+    });
+  }
+
+  async turnOnTwoFAuth(id: number) {
+    return this.usersRepository.update(id, {
+      isTwoFAuthEnabled: true
+    });
+  }
+
+  async turnOffTwoFAuth(id: number) {
+    return this.usersRepository.update(id, {
+      isTwoFAuthEnabled: false
+    });
   }
 }

@@ -1,9 +1,10 @@
-// import { IsAlphanumeric, Length, Validate } from 'class-validator'
+import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateUserDto {
-  // @Length(1, 30)
-  // @IsAlphanumeric()
-  // @Validate(UserExistsRule)
+  @IsNumber()
   id: number;
+
+  @IsString()
+  @IsNotEmpty()
 	userName: string;
 }
