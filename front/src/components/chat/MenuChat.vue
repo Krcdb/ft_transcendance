@@ -18,11 +18,10 @@
 			<div class="debug">
 
 				debug: <br>
-				{{ this.newChannel.channelName }} <br>
-				{{ this.newChannel.password }} <br>
-				{{ this.owner }} <br>
+				channelName: {{ this.newChannel.channelName }} <br>
+				channelPassword: {{ this.newChannel.password }} <br>
+				Owner: {{ this.owner }} <br>
 			</div>
-
 		</div>
 		<hr>
 		<div class="list">
@@ -32,6 +31,16 @@
 
 			</div>
 		</div>
+
+
+		<ErrorChat
+		:error_message="'olala'"
+		:description="'cpascool'"
+		:button_left="'Confirmer'"
+		:button_right="'retour'"
+		/>
+
+
 	</div>
 </template>
 
@@ -44,12 +53,18 @@ import ResponseData from "@/types/ResponseData";
 import User from "@/types/User";
 import Channel from "@/types/Channel";
 
+import ErrorChat from "./Error.vue";
+
 export default defineComponent({
 	name: "menu-chat",
 	data() {
 		return {
 			newChannel: {} as Channel,
+			channelList: {} as Channel,
 		};
+	},
+	components: {
+		ErrorChat,
 	},
 	props: {
 		owner: {
@@ -64,6 +79,7 @@ export default defineComponent({
 			ChannelDataService.createChannel(this.newChannel)
 			.then((response: ResponseData) => {
 				console.log("Response LOG: " + response.data);
+				this.channelList = response.data;
 			})
 			.catch((e: Error) => {
 				console.log("CreateChannel Error: " + e);

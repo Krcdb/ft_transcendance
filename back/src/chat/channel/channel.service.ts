@@ -23,7 +23,14 @@ export class ChannelDataService {
 		// faire pareil avec la liste entiere entity de channel pour en creer un
 
 
-		channel.channelID = 0; // generer id unique
+		console.log("channelID: " + channel.channelID);
+		console.log("channelName: " + channel.channelName);
+		console.log("isPublic: " + channel.isPublic);
+		console.log("password: " + channel.password);
+		console.log("owner: " + channel.owner);
+
+
+		channel.channelID = createChannelDto.channelID; // generer id unique
 		channel.channelName = createChannelDto.channelName;
 		channel.isPublic = createChannelDto.isPublic;
 		channel.password = createChannelDto.password;
@@ -35,6 +42,8 @@ export class ChannelDataService {
 		//channel.muteList = [] as User[];
 
 		// new Array<orderItem>();
+
+
 
 		return (this.channelRepository.save(channel));
 	}

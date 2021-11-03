@@ -3,8 +3,8 @@ import http from "@/http-common";
 import Channel from "@/types/Channel";
 
 class ChannelDataService {
-    createChannel(channel: Channel) : Promise<any> {
-        return http.post('/channel', channel);
+    createChannel(data: any) : Promise<any> {
+        return http.post('/channel', data);
     }
 
     getAllActiveUser() : Promise <any> {

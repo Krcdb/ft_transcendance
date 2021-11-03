@@ -1,7 +1,7 @@
 import { Body, Controller, Get } from '@nestjs/common';
 
 import { HttpStatus } from '@nestjs/common';
-import { Public } from 'src/auth/public.decorator';
+import { Public } from 'src/auth/utils/public.decorator';
 
 import { Message } from './message.entity'
 import { Channel } from '../channel/channel.entity'
@@ -15,6 +15,6 @@ export class MessageController {
 	@Public()
 	@Get(':message')
 	getAllChannels() {
-
+		
 	}
 }
