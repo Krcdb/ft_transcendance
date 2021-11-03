@@ -1,16 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToMany} from 'typeorm';
-import { Message } from '../message/message.entity';
-import { User } from '../../users/user.entity';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Channel {
 	@PrimaryColumn({ unique: true })
 	channelName: string;
-
-	// Config
-
-	@Column({unique: true })
-	channelID: number;
 
 	@Column({ nullable: true })
 	password: string;
@@ -18,28 +11,21 @@ export class Channel {
 	@Column({ default: true })
 	isPublic: boolean;
 
-	// TMP d'abord on fait la base du channel après les users list ban etc...
-	// (les arrys sont trop chiants !)
-
-	// Users & History
-
-	//@OneToMany(() => Message, message => message.message)
-	//messagesHistory: Message[];
-
-	@Column()
+	@Column("int")//, {nullable: true})
 	owner: number;
+	
+	@Column("int", {nullable: true, array: true})
+	messagesHistory: number[];
 
-	// Lists | Users
+	@Column("int", {nullable: true, array: true})
+	admins: number[];
 
-	//@Column(() => User)
-	//adminList: User[];
+	@Column("int", {nullable: true, array: true})
+	users: number[];
 
-	//@Column(() => User)
-	//userList: User[];
+	@Column("int", {nullable: true, array: true})
+	banList: number[];
 
-	//@Column(() => User)
-	//banList: User[];
-
-	//@Column(() => User)
-	//muteList: User[];
+	@Column("int", {nullable: true, array: true})
+	muteList: number[];
 }

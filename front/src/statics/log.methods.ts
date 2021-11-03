@@ -23,11 +23,8 @@ function logout(): void {
   const url = `http://localhost:3000/users/logout/${localStorage.getItem(
     "user-id"
   )}`;
-  console.log("logging out...");
 
-  if (!localStorage.getItem("user-id"))
-    return ;
-  console.log("url = ", url);
+  if (!localStorage.getItem("user-id")) return;
   http
     .get(url)
     .then(() => {

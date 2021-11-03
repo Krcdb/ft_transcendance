@@ -1,19 +1,22 @@
-import { Entity, Column, PrimaryColumn, ManyToOne} from 'typeorm';
-import { Channel } from '../channel/channel.entity';
-import { User } from '../../users/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Message {
-	@PrimaryColumn()
+	@PrimaryGeneratedColumn()
+	id: number;
+
+	@Column("varchar")
+	channelName: string;
+
+	@Column("int")
+	owner: number;
+
+	@Column("varchar")
 	message: string;
 
-	// Config
-	@Column(() => User)
-	owner: User;
+	// @Column("timestamp") // ca bugge pour l'instant mais il faut le garder
+	// date: number;
 
-	@Column({ nullable: true })
-	date: string;
-
-	//@ManyToOne(() => Channel, channel => channel.messagesHistory)
-	//channel: Channel;
+	@Column("varchar")   // pas lisible, ca donne juste le nb de millisec passées depuis 1970
+	dateStr: string;
 }

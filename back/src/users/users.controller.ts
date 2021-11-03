@@ -13,6 +13,10 @@ import { UpdateUserNameDto } from './dto/update-userName.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // ------ // 
+  //  POST  //
+  // ------ // 
+
   @Post()
   @Public()
   async addUser(@Res() res, @Body() createUserDto: CreateUserDto) {
@@ -53,9 +57,13 @@ export class UsersController {
     }
     })
   }))
-  uploadAvatar(@Param('id') id, @UploadedFile() file) {
+  uploadAvatar(@Param('id') id: number, @UploadedFile() file) {
     this.usersService.setAvatar(id, `${file.filename}`);
   }
+
+  // ------ // 
+  //   GET  //
+  // ------ // 
 
   @Public()
   @Get()
@@ -77,7 +85,7 @@ export class UsersController {
 
   @Public()
   @Get(':id/avatar')
-  serveAvatar(@Param('id') id, @Res() res) : Promise<any> {
+  serveAvatar(@Param('id') id: number, @Res() res) : Promise<any> {
     const getAvatarFile = async () => {
       const avatarPath = await this.usersService.getAvatar(id);
       if (avatarPath)
@@ -87,6 +95,10 @@ export class UsersController {
     }
     return getAvatarFile();
   }
+
+  // -------- // 
+  //  DELETE  //
+  // -------- // 
 
   @Delete(':id')
   remove(@Param('id') id: number): Promise<void> {

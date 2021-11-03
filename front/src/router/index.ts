@@ -84,7 +84,6 @@ router.beforeEach((to, from, next) => {
     to.path !== "/auth/42" &&
     to.path !== "/illegal-login" &&
     to.path !== "/2FLogin"
-    
   )
     next({ path: "/login" });
   else {

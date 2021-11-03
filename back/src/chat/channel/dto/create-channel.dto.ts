@@ -1,9 +1,17 @@
-import { User } from '../../../users/user.entity';
+import { IsString, IsNotEmpty, IsNumber, IsBoolean } from 'class-validator';
 
 export class CreateChannelDto {
-	channelID: number;
+	@IsString()
+	@IsNotEmpty()
 	channelName: string;
-	isPublic: boolean;
+
+	@IsString()
+	//@IsNotEmpty()  ca depend de comment on veut gerer l'absence de mdp, soit on laisse le champ a null, soit string vide "" 
 	password: string;
+
+	@IsBoolean()
+	isPublic: boolean;
+
+	@IsNumber()
 	owner: number;
 }
