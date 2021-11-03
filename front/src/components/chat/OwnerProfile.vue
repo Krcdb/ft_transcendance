@@ -13,7 +13,7 @@
             :key="index"
             @click="selectUser(user)"
             >
-            <img :src="`https://avatars.dicebear.com/api/avataaars/${user.userName}.svg`" alt="">
+            <img :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`" alt="">
             {{ user.userName }}
         </button>
     </div>

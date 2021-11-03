@@ -36,11 +36,17 @@ export class ChannelController {
 	@Public()
 	@Get()
 	test() : string {
-		let string;
+		let string = "";
 
-		string = "Welcome to channel Backend page !";
-		string += "<br><br>List of all Channel: <br><br>"
-		string += this.findAllChannel();
+		//string = "Welcome to channel Backend page !";
+		//string += "<br><br>List of all Channel: <br><br>"
+		let chan : Promise<Channel[]>
+
+		chan = this.findAllChannel();
+
+		//string += this.findAllChannel();
+
+		string += chan[0].channelID;
 		return (string);
 	}
 
