@@ -57,3 +57,21 @@ export class ChannelController {
 	// ------- // 
 
 }
+
+	// Get Default Channel Page
+	@Public()
+	@Get()
+	test() : string {
+		let string;
+
+		string = "Welcome to channel Backend page !";
+		string += "<br><br>List of all Channel: <br><br>"
+		string += this.findAllChannel();
+		return (string);
+	}
+	@Public()
+	@Get()
+
+	findAllChannel() : Promise<Channel[]> {
+		return (this.channelDataService.getAllChannel());
+	}
