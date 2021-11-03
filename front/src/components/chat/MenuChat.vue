@@ -88,6 +88,7 @@ export default defineComponent({
 			ChannelDataService.createChannel(this.newChannel)
 			.then((response: ResponseData) => {
 				console.log("Response LOG: " + response.data);
+				this.channelList = response.data;
 			})
 			.catch((e: Error) => {
 				console.log("CreateChannel Error: " + e);
