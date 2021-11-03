@@ -13,10 +13,7 @@ import { CreateMessageDto } from './dto/create-message.dto';
 
 @Controller('chat')
 export class MessageController {
-	constructor(
-		private readonly messageService: MessageService,
-		// private readonly channelService: ChannelDataService
-	) {}
+	constructor(private readonly messageService: MessageService) {}
 
 	// ------ // 
   	//  POST  //
