@@ -10,16 +10,16 @@ import { CreateChannelDto } from './dto/create-channel.dto';
 import { MessageController } from '../message/message.controller';
 import { UsersService } from 'src/users/users.service';
 
-@Controller('chat')
+@Controller('channel')
 export class ChannelController {
 	constructor(
 		private readonly channelDataService: ChannelDataService,
 		// private readonly usersService: UsersService
 	) {}
 
-	// ------ // 
+	// ------ //
 	//  POST  //
-	// ------ // 
+	// ------ //
 
 	@Post()
 	@Public()
@@ -36,9 +36,9 @@ export class ChannelController {
 		})
 	}
 
-	// ------ // 
+	// ------ //
   	//  GET   //
-  	// ------ // 
+  	// ------ //
 
 	@Public()
 	@Get()
@@ -52,8 +52,8 @@ export class ChannelController {
 		return (this.channelDataService.findOne(channelName));
 	}
 
-	// ------- // 
+	// ------- //
 	//  DELETE //
-	// ------- // 
+	// ------- //
 
 }

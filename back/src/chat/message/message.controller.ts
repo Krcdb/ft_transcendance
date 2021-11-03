@@ -11,18 +11,18 @@ import { ChannelDataService } from '../channel/channel.service'
 import { User } from '../../users/user.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
 
-@Controller('chat')
+@Controller('message')
 export class MessageController {
 	constructor(private readonly messageService: MessageService) {}
 
-	// ------ // 
+	// ------ //
   	//  POST  //
 	// ------ //
-	  
+
 	@Public()
 	@Post(':channelName/')
 	async postMessageOnChannel(@Param('channelName') channelName: string,
-		@Res() res, @Body() createMessageDto: CreateMessageDto) {	
+		@Res() res, @Body() createMessageDto: CreateMessageDto) {
 		const msg = await this.messageService.create(createMessageDto, channelName);
 		if (msg == null)
 			return res.status(HttpStatus.NOT_FOUND).json({
@@ -34,16 +34,16 @@ export class MessageController {
 		})
 	}
 
-	// ------ // 
+	// ------ //
 	//   GET  //
-	// ------ // 
+	// ------ //
 
 	@Public()// get all messages from a channel
 	@Get(':channelName/msg')
 	findAll(@Param('channelName') channelName: string): Promise<Message[]> {
 		return this.messageService.findAllInChannel(channelName);
 	}
-	
+
 	@Public()  // get one message by its id
 	@Get(':id')
 	findOne(@Param('id') id: number): Promise<Message> {
@@ -56,9 +56,9 @@ export class MessageController {
 		return this.messageService.findAllByUser(ownerId);
 	}
 
-	// ------- // 
+	// ------- //
 	//  DELETE //
-	// ------- // 
+	// ------- //
 
 	@Delete(':id')
   	remove(@Param('id') id: number): Promise<void> {
