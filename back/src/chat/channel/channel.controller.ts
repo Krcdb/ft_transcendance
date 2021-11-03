@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Post, Delete, Res} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Delete, Res} from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
-import { Public } from 'src/auth/public.decorator';
+import { Public } from 'src/auth/utils/public.decorator';
 
 import { ChannelDataService } from './channel.service';
 import { Channel } from './channel.entity'

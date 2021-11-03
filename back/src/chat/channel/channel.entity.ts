@@ -10,7 +10,7 @@ export class Channel {
 	// Config
 
 	@Column({unique: true })
-	channelID: Number;
+	channelID: number;
 
 	@Column({ nullable: true })
 	password: string;
@@ -26,8 +26,8 @@ export class Channel {
 	//@OneToMany(() => Message, message => message.message)
 	//messagesHistory: Message[];
 
-	@Column(() => User)
-	owner: User;
+	@Column()
+	owner: number;
 
 	// Lists | Users
 
