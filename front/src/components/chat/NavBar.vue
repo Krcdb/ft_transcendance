@@ -2,19 +2,23 @@
 	<div class="chat-nav-bar">
 		<ul class="list">
 			<li class="list-item" >
-				<router-link class="element" :to="'/chat/createchannel'">
+				<button class="element" type="btn btn-success" name="button"
+				@click="changeNavSelection(0)"
+				>
 					<h4>Créer un salon</h4>
-				</router-link>
+				</button>
 			</li>
 			<li class="list-item" >
-				<router-link class="element" :to="'/chat/joinchannel'">
+				<button class="element" type="btn btn-success" name="button"
+				@click="changeNavSelection(1)">
 					<h4>Rejoindre un salon</h4>
-				</router-link>
+				</button>
 			</li>
 			<li class="list-item" >
-				<router-link class="element" :to="'/chat/listusers'">
+				<button class="element" type="btn btn-success" name="button"
+				@click="changeNavSelection(2)">
 					<h4>Liste des joueurs connectés</h4>
-				</router-link>
+				</button>
 			</li>
 		</ul>
 	</div>
@@ -25,6 +29,12 @@
 import { defineComponent } from "vue";
 export default defineComponent({
 	name: "char-nav-bar",
+	methods: {
+		changeNavSelection(value: number) {
+			this.$emit("switchNavBarSelection", value);
+			console.log("change selection emit: " + value);
+		}
+	}
 });
 
 </script>
@@ -34,52 +44,42 @@ export default defineComponent({
 .chat-nav-bar {
 	box-sizing: border-box;
 	font-family: "Varela Round", sans-serif;
-	background-color: rgba(20, 20, 20, 255);
-	width: 100%;
 	max-width: 75%;
-	height: 6em;
 	display: block;
 	margin: 0 auto;
 }
 .chat-nav-bar .list {
 	display: flex;
+	flex-grow: row;
 	justify-content: center;
 	align-items: center;
-	max-width: 720px;
 	margin: 0 auto;
 	list-style: none;
 }
 
 .chat-nav-bar .list .list-item {
-	width: 250px;
+	width: 100%;
 	height: 100%;
-	transition: background-position-x 0.9s linear;
 	text-align: center;
+	margin: 0 auto;
+	padding: 0 auto;
 }
 
-.chat-nav-bar .element, h4 {
-	font-size: 22px;
-	color: #777;
+.chat-nav-bar .element, {
+	background-color: rgba(20, 20, 20, 255);
+}
+
+.chat-nav-bar .element, button {
 	text-decoration: none;
-	transition: all 0.45s;
 	color: white;
 	text-transform: uppercase;
 	font-size: 18px;
 	transition: 0.25s;
+	width: 500px;
 }
-
 .chat-nav-bar .element h4:hover {
 	color: #d94f5c;
 	transition: 0.25s;
-}
-
-chat-nav-bar,
-chat-nav-bar:before,
-chat-nav-bar:after {
-	box-sizing: inherit;
-	padding: 0;
-	margin: 0;
-	letter-spacing: 1.1px;
 }
 
 </style>

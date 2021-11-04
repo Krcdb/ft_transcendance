@@ -1,7 +1,11 @@
 <template>
-    <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
-    <NavBar v-if="this.userSelected"/>
 
+    <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
+
+    <NavBar @switchNavBarSelection="SwitchNavBarSelection" v-if="this.userSelected"/>
+
+    <ChannelList :owner="user" v-if="this.navBarSelection == -1"/>
+    <UserList :owner="user" v-if="this.navBarSelection == 2"/>
 
 <!--
     <GlobalChatInfo :nbUsers="nbUsers" :userSelected="userSelected"
@@ -30,6 +34,9 @@ import User from "@/types/User";
 import OwnerProfile from '@/components/chat/OwnerProfile.vue';
 import NavBar from "@/components/chat/NavBar.vue";
 import ChatMessage from "@/types/ChatMessage";
+import UserList from "@/components/chat/NavBar/UserList.vue";
+import ChannelList from "@/components/chat/NavBar/ChannelList.vue";
+
 //import GlobalChatInfo from '@/components/chat/GlobalChatInfo.vue';
 //import Message from '@/components/chat/Message.vue';
 //import MenuChat from '@/components/chat/MenuChat.vue';
@@ -44,11 +51,15 @@ export default defineComponent({
 
             nbUsers: 0,
             message: {} as ChatMessage,
+
+            navBarSelection: -1,
         };
     },
     components: {
         OwnerProfile,
         NavBar,
+        UserList,
+        ChannelList,
         //GlobalChatInfo,
         //Message,
         //MenuChat
@@ -58,6 +69,10 @@ export default defineComponent({
             this.user = value;
             console.log("Handle get user: " + this.user.userName);
             this.userSelected = true;
+        },
+        SwitchNavBarSelection(value : number) {
+            this.navBarSelection = value;
+            console.log("Change NavBar Selection to: " + value);
         },
         refreshConnectedUsers() {
             UserDataService.getAll()
