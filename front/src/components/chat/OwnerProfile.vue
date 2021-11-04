@@ -1,6 +1,5 @@
 <template>
     <div class="chat">
-
         <div class="select-user" v-if="!userSelected">
             <h3>Seclectionnez votre profile</h3>
             <div class="no-user-created">
@@ -18,9 +17,9 @@
         </button>
     </div>
 
-    <div class="Welcome-User" v-else>
+    <div class="welcome-User" v-else>
         <h3>Bienvenue: <strong> {{ this.currentUser.userName }} </strong> </h3>
-        <img :src="`https://avatars.dicebear.com/api/avataaars/${this.currentUser.userName}.svg`" alt="">
+        <img :src="`https://avatars.dicebear.com/api/avataaars/${this.currentUser.id}.svg`" alt="">
     </div>
 
 </div>
@@ -114,12 +113,23 @@ export default defineComponent({
 button img{
     width: 24px;
 }
-.Welcome-User img {
-    width: 64px;
+.welcome-User {
+    position: relative;
+    display: inline-block;
+    margin: 0 auto;
+    padding: 0 auto;
+    width: 30em;
+    text-align: center;
+}
+.welcome-User img {
+    width: 12em;
+}
+
+.welcome-User strong {
+    color: lightgreen;
 }
 
 .warning {
     color: orange;
 }
-
 </style>

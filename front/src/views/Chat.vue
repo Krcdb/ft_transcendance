@@ -1,13 +1,14 @@
 <template>
-    <br>
-
     <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
+    <NavBar v-if="this.userSelected"/>
 
+
+<!--
     <GlobalChatInfo :nbUsers="nbUsers" :userSelected="userSelected"
     @refreshConnectedUsers="refreshConnectedUsers"/>
 
     <MenuChat :owner="user"/>
-
+-->
 
     <!-- TMP TO TEST MSG -->
     <Message :owner="user" :prop_message="Test" v-if="user.userName"/>
@@ -27,10 +28,11 @@ import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 
 import OwnerProfile from '@/components/chat/OwnerProfile.vue';
+import NavBar from "@/components/chat/NavBar.vue";
 import ChatMessage from "@/types/ChatMessage";
-import GlobalChatInfo from '@/components/chat/GlobalChatInfo.vue';
-import Message from '@/components/chat/Message.vue';
-import MenuChat from '@/components/chat/MenuChat.vue';
+//import GlobalChatInfo from '@/components/chat/GlobalChatInfo.vue';
+//import Message from '@/components/chat/Message.vue';
+//import MenuChat from '@/components/chat/MenuChat.vue';
 
 
 export default defineComponent({
@@ -46,9 +48,10 @@ export default defineComponent({
     },
     components: {
         OwnerProfile,
-        GlobalChatInfo,
-        Message,
-        MenuChat
+        NavBar,
+        //GlobalChatInfo,
+        //Message,
+        //MenuChat
     },
     methods: {
         HandleGetUserSelected: function(value : User) {
@@ -57,24 +60,19 @@ export default defineComponent({
             this.userSelected = true;
         },
         refreshConnectedUsers() {
-            //let users[] = {} as User;
-            //let nbUsers = 0;
-
-            ChannelDataService.getAllActiveUser()
+            UserDataService.getAll()
             .then((response: ResponseData) => {
-                //users = response.data;
-                this.nbUsers = response.data.length;
+                let nb = 0;
+                for (let index = 0; index < response.data.length; index++) {
+                    if (response.data[index].isActive) {
+                        ++nb;
+                    }
+                }
+                this.nbUsers = nb;
             })
             .catch((e: Error) => {
                 console.log("Error: " + e);
             });
-
-            //for (let i = 0; i < users.length; i++) {
-            //    if (users[i].isActive == true) {
-            //        nbUsers++;
-            //    }
-            //}
-            //this.nbUsers = nbUsers;
             console.log("Refresh connected users: " + this.nbUsers);
         },
     },
