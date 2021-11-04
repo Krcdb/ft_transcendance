@@ -14,6 +14,8 @@
         <p>Victories: 0</p>
         <p>Losses: 0</p>
         <p>Level: 0</p>
+        <p>FRIENDS => {{user.friends}}</p>
+        <p>BLOCKED => {{user.blockedUsers}}</p>
         <br />
         <router-link to="/update-profile">
           <button>Update Profile</button>

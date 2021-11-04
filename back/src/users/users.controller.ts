@@ -8,6 +8,7 @@ import { extname } from  'path';
 import { HttpStatus } from '@nestjs/common';
 import { Public } from 'src/auth/utils/public.decorator';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
+import { IdDto } from './dto/id.dto';
 
 @Controller('users')
 export class UsersController {
@@ -16,15 +17,21 @@ export class UsersController {
   // ------ // 
   //  POST  //
   // ------ // 
-
+  
+  // -> create a new user
   @Post()
   @Public()
   async addUser(@Res() res, @Body() createUserDto: CreateUserDto) {
-    if (await this.usersService.userAlreadyExists(createUserDto)){
+    if (await this.usersService.userExists(createUserDto.id)){
         return res.status(HttpStatus.CONFLICT).json({
             message: "User already exists"
         })
     }
+    if (await this.usersService.userNameAlreadyExists(createUserDto.userName)){
+      return res.status(HttpStatus.CONFLICT).json({
+          message: "User Name is already taken"
+      })
+  }
     const user = await this.usersService.create(createUserDto);
     return res.status(HttpStatus.CREATED).json({
         message: "User has been created successfully",
@@ -32,6 +39,7 @@ export class UsersController {
     })
 }
 
+  // -> update user name
   @Post(':id')
   async updateUserName(@Res() res, @Param('id') id: number, @Body() updateUserNameDto: UpdateUserNameDto): Promise<User> {
     if (await this.usersService.userNameAlreadyExists(updateUserNameDto.newUserName)) {
@@ -46,6 +54,7 @@ export class UsersController {
     })
   }
 
+  // -> add / replace avatar picture
   @Post(':id/avatar')
   @UseInterceptors(FileInterceptor('avatar',
   {
@@ -61,28 +70,67 @@ export class UsersController {
     this.usersService.setAvatar(id, `${file.filename}`);
   }
 
+  // -> add user as friend
+  @Post(':id/friends')
+  async addFriend(@Res() res, @Param('id') id: number, @Body() idDto: IdDto) {
+    const message = await this.usersService.addAsFriend(id, idDto.id);
+    return res.status(HttpStatus.OK).json({
+      message: message
+    })
+  }
+
+  @Post(':id/block')
+  async addBlock(@Res() res, @Param('id') id: number, @Body() idDto: IdDto) {
+    const message = await this.usersService.addAsBlocked(id, idDto.id);
+    return res.status(HttpStatus.OK).json({
+      message: message
+    })
+  }
+
+  // -> remove user from friends
+  @Post(':id/remove-friend')
+  async removeFriend(@Res() res, @Param('id') id: number, @Body() idDto: IdDto) {
+    const message = await this.usersService.removeFromFriends(id, idDto.id);
+    return res.status(HttpStatus.OK).json({
+      message: message
+    })
+  }
+
+  @Post(':id/unblock')
+  async removeBlocked(@Res() res, @Param('id') id: number, @Body() idDto: IdDto) {
+    const message = await this.usersService.removeFromBlocked(id, idDto.id);
+    return res.status(HttpStatus.OK).json({
+      message: message
+    })
+  }
+
+
   // ------ // 
   //   GET  //
   // ------ // 
 
+  // -> get all users
   @Public()
   @Get()
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
-  @Public()
+  // -> get one user
+  // @Public()
   @Get(':id')
   findOne(@Param('id') id: number): Promise<User> {
     return this.usersService.findOne(id);
   }
 
-  @Public()
+  // -> logout 
+  // @Public()
   @Get('logout/:id')
   logout(@Param('id') id: number): Promise<User> {
     return this.usersService.updateLogState(id, false);
   }
 
+  // -> get avatar picture (should be tthe only public request)
   @Public()
   @Get(':id/avatar')
   serveAvatar(@Param('id') id: number, @Res() res) : Promise<any> {
@@ -100,11 +148,13 @@ export class UsersController {
   //  DELETE  //
   // -------- // 
 
+  // -> delete the user
   @Delete(':id')
   remove(@Param('id') id: number): Promise<void> {
     return this.usersService.remove(id);
   }
 
+  // -> delete the user avatar picture
   @Delete(':id/avatar')
   removeAvatar(@Param('id') id: number): Promise<void> {
     return this.usersService.removeAvatar(id);

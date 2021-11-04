@@ -78,9 +78,9 @@ export class User {
   @Column("int", {nullable: true, array: true})
   messagesHistory: number[];
   
-    // --------------- //
-    // AUTHENTICATION  //
-    // --------------- //
+    // -------------------------- //
+    // TWO FACTOR AUTHENTICATION  //
+    // -------------------------- //
 
   @Column({ nullable: true })
   twoFAuthSecret?: string;

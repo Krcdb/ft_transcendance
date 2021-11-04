@@ -7,6 +7,7 @@ import { Public } from './utils/public.decorator';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  // -> login with 42 api
   @Public()
   @UseGuards(FortyTwoAuthGuard)
   @Get('42')
@@ -14,6 +15,7 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  // -> login to user with out 42 (only for testing)
   @Public()
   @Get(':id')
   async loginInvite(@Param('id') id: number): Promise<any>  {

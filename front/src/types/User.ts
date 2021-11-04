@@ -4,4 +4,6 @@ export default interface User {
     isActive: boolean;
     avatar: string;
     isTwoFAuthEnabled: boolean;
+    friends: number[];
+    blockedUsers: number[];
   }

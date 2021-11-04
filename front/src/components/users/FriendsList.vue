@@ -7,28 +7,29 @@
         placeholder="Search an user..."
         v-model="keyword"
         @input="searchhandler"
+        @change="searchhandler"
       />
       <ul class="list">
         <li class="list-item" v-for="user in filteredUsers" :key="user.id">
-            <div class="list-img">
-              <img
-                v-if="user.avatar"
-                :src="`http://localhost:3000/users/${user.id}/avatar`"
-              />
-              <img
-                v-else
-                :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
-              />
-            </div>
-            <div class="list-item-content">
-              <router-link class="profile-link" :to="'/users/' + user.id">
-                <h4>{{ user.userName }}</h4>
-              </router-link>
-            </div>
-            <div class="user-status">
-              <div v-if="user.isActive" id="online-circle"></div>
-              <div v-else id="offline-circle"></div>
-            </div>
+          <div class="list-img">
+            <img
+              v-if="user.avatar"
+              :src="`http://localhost:3000/users/${user.id}/avatar`"
+            />
+            <img
+              v-else
+              :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
+            />
+          </div>
+          <div class="list-item-content">
+            <router-link class="profile-link" :to="'/users/' + user.id">
+              <h4>{{ user.userName }}</h4>
+            </router-link>
+          </div>
+          <div class="user-status">
+            <div v-if="user.isActive" id="online-circle"></div>
+            <div v-else id="offline-circle"></div>
+          </div>
         </li>
       </ul>
     </div>
@@ -61,6 +62,11 @@ export default defineComponent({
         .catch((e: Error) => {
           console.log(e);
         });
+    },
+    searchhandler() {
+      this.filteredUsers = this.users.filter((user) =>
+        user.userName.toLowerCase().includes(this.keyword.toLowerCase())
+      );
     },
   },
   mounted() {
