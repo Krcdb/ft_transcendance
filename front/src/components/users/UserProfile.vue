@@ -26,6 +26,7 @@
         >
           Logout
         </button>
+        <BlockedList />
         <div id="id01" class="modal">
           <span
             onclick="document.getElementById('id01').style.display='none'"
@@ -55,7 +56,6 @@
         </div>
       </div>
       <FriendList />
-      <BlockedList />
     </div>
     <p>{{ error }}</p>
   </div>

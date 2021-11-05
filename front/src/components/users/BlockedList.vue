@@ -1,27 +1,11 @@
 <template>
-  <div class="list-row">
-    <div class="list-wrapper">
-      <h3>Blocked List</h3>
-      <ul class="list">
-        <li class="list-item" v-for="user in users" :key="user.id">
-          <div class="list-img">
-            <img
-              v-if="user.avatar"
-              :src="`http://localhost:3000/users/${user.id}/avatar`"
-            />
-            <img
-              v-else
-              :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
-            />
-          </div>
-          <div class="list-item-content">
-            <router-link class="profile-link" :to="'/users/' + user.id">
-              <p>{{ user.userName }}</p>
-            </router-link>
-          </div>
-        </li>
-      </ul>
-    </div>
+  <div class="blocked-select">
+    <select class="blocked" onchange="location = this.value">
+      <option>Blocked users:</option>
+      <option class="blocked-item" v-for="user in users" :key="user.id" :value="'/users/' + user.id">
+        {{ user.userName }}
+      </option>
+    </select>
   </div>
 </template>
 
@@ -32,7 +16,7 @@ import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
-  name: "users-list",
+  name: "users-blocked",
   data() {
     return {
       users: [] as User[],
@@ -57,40 +41,13 @@ export default defineComponent({
 </script>
 
 <style scopped>
-.list-row {
-  padding: 20px;
-  display: flex;
-}
-.list-img img {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
-}
-h3 {
+.blocked-select h3 {
   font-size: 20px;
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
 }
-.profile-link {
-  color: black;
-  text-decoration: none;
-  font-size: 18px;
-  align-content: center;
-}
-.list {
-  list-style: none;
-  padding: 0px;
-}
-.list-item {
-  display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  align-items: center;
-}
-.list-item-content {
-  margin-left: 10px;
-}
-.list-wrapper input[type="text"] {
-  padding: 6px;
+.blocked-select {
+  position: relative;
 }
 </style>

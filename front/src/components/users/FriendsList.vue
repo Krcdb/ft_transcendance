@@ -1,6 +1,6 @@
 <template>
-  <div class="list-row">
-    <div class="list-wrapper">
+  <div class="friend-row">
+    <div class="friend-wrapper">
       <h3>Friends List</h3>
       <input
         type="text"
@@ -9,9 +9,9 @@
         @input="searchhandler"
         @change="searchhandler"
       />
-      <ul class="list">
-        <li class="list-item" v-for="user in filteredUsers" :key="user.id">
-          <div class="list-img">
+      <ul class="friend">
+        <li class="friend-item" v-for="user in filteredUsers" :key="user.id">
+          <div class="friend-img">
             <img
               v-if="user.avatar"
               :src="`http://localhost:3000/users/${user.id}/avatar`"
@@ -21,7 +21,7 @@
               :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
             />
           </div>
-          <div class="list-item-content">
+          <div class="friend-item-content">
             <router-link class="profile-link" :to="'/users/' + user.id">
               <p>{{ user.userName }}</p>
             </router-link>
@@ -43,7 +43,7 @@ import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
-  name: "users-list",
+  name: "users-friend",
   data() {
     return {
       users: [] as User[],
@@ -76,16 +76,16 @@ export default defineComponent({
 </script>
 
 <style scopped>
-.list-row {
+.friend-row {
   padding: 20px;
   display: flex;
 }
-.list-img img {
+.friend-img img {
   width: 40px;
   height: 40px;
   object-fit: contain;
 }
-h3 {
+.friend-wrapper h3 {
   font-size: 20px;
   width: fit-content;
   margin-left: auto;
@@ -97,19 +97,19 @@ h3 {
   font-size: 18px;
   align-content: center;
 }
-.list {
+.friend {
   list-style: none;
   padding: 0px;
 }
-.list-item {
+.friend-item {
   display: flex;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   align-items: center;
 }
-.list-item-content {
+.friend-item-content {
   margin-left: 10px;
 }
-.list-wrapper input[type="text"] {
+.friend-wrapper input[type="text"] {
   padding: 6px;
 }
 .user-status {
