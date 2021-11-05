@@ -8,6 +8,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable */
 import { defineComponent } from "vue";
 import io from "socket.io-client";
 //import GameCanvas from "../components/Game/GameCanvas.vue"
@@ -18,9 +19,10 @@ export default defineComponent({
 		GameCanvas,
 	},*/
 	data() {
-      	return {
-      	}
-    },
+		return {
+
+		};
+	},
 	methods: {
 		findMatch: function() {
 			socket.emit('searchGame');
