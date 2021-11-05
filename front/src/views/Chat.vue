@@ -4,7 +4,8 @@
 
     <NavBar @switchNavBarSelection="SwitchNavBarSelection" v-if="this.userSelected"/>
 
-    <ChannelList :owner="user" v-if="this.navBarSelection == -1"/>
+    <CreateChannel :owner="user" v-if="this.navBarSelection == 0"/>
+    <ChannelList :owner="user" v-if="this.navBarSelection == 1"/>
     <UserList :owner="user" v-if="this.navBarSelection == 2"/>
 
 <!--
@@ -35,6 +36,7 @@ import OwnerProfile from '@/components/chat/OwnerProfile.vue';
 import NavBar from "@/components/chat/NavBar.vue";
 import ChatMessage from "@/types/ChatMessage";
 import UserList from "@/components/chat/NavBar/UserList.vue";
+import CreateChannel from "@/components/chat/NavBar/CreateChannel.vue";
 import ChannelList from "@/components/chat/NavBar/ChannelList.vue";
 
 //import GlobalChatInfo from '@/components/chat/GlobalChatInfo.vue';
@@ -60,6 +62,7 @@ export default defineComponent({
         NavBar,
         UserList,
         ChannelList,
+        CreateChannel,
         //GlobalChatInfo,
         //Message,
         //MenuChat

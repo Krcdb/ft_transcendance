@@ -56,4 +56,11 @@ export class ChannelController {
 	//  DELETE //
 	// ------- //
 
+	@Public()
+	@Get('channelName')
+	deleteChannel(@Param('channelName') channelName : string) {
+		const ret = this.channelDataService.deleteOne(channelName);
+		return (ret ? "Channel: " + channelName + " deleted !" : "Channel " + channelName + " not deleted...");
+	}
+
 }

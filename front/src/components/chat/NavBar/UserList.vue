@@ -12,7 +12,8 @@
                                 <div v-else id="offline-circle"></div>
                             </div>
                         </div>
-                        <button class='user.isActive == true ? btn-actif : btn-inactif' type="button" name="button">Envoyer un message privé</button>
+                        <div class="defaultclass" :class="condition?' conditionalclasstoappend':''"></div>
+                        <button class="button" :class="user.isActive? 'btn-actif' : 'btn-inactif'" type="button" name="button">Envoyer un message privé</button>
                     </div>
                 </div>
                 <hr>
@@ -114,7 +115,6 @@ export default defineComponent({
     border: 4px solid lightgreen;
     border-radius: 5px;
     background-color: rgb(40,40,40);
-
 }
 
 .user-list-element .list-user-info h4 {

@@ -57,7 +57,7 @@ export class ChannelDataService {
 			return (true);
 		return (false);
 	}
-	
+
 	/////////////////////////////////////////
 	//  Gestion des listes d'utilisateurs  //
   	/////////////////////////////////////////
@@ -83,7 +83,7 @@ export class ChannelDataService {
 		channel.muteList.push(userId);
 		this.channelRepository.save(channel);
 	}
-	
+
 		// Retrait
 	async removeUserAsUser(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
@@ -121,6 +121,18 @@ export class ChannelDataService {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.messagesHistory.push(messageId);
 		this.channelRepository.save(channel);
+	}
+
+  	////////////////////////////////
+	//  DESTRUCTION DES CHANNELS  //
+  	////////////////////////////////
+
+	async deleteOne(channelName : string) : Promise<any> {
+		const channel = await this.channelRepository.findOne(channelName);
+		this.channelRepository.delete(channel);
+		if (!channel)
+			return (true);
+		return (false);
 	}
 
 }
