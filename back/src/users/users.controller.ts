@@ -110,17 +110,29 @@ export class UsersController {
   // ------ // 
 
   // -> get all users
-  @Public()
+  // @Public()
   @Get()
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
   // -> get one user
-  // @Public()
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: number): Promise<User> {
     return this.usersService.findOne(id);
+  }
+
+  // -> get one user Friends
+  // @Public()
+  @Get(':id/friends')
+  getFriends(@Param('id') id: number): Promise<User[]> {
+    return this.usersService.getFriends(id);
+  }
+
+  @Get(':id/blocked')
+  getBlocked(@Param('id') id: number): Promise<User[]> {
+    return this.usersService.getBlocked(id);
   }
 
   // -> logout 
@@ -130,7 +142,7 @@ export class UsersController {
     return this.usersService.updateLogState(id, false);
   }
 
-  // -> get avatar picture (should be tthe only public request)
+  // -> get avatar picture (should be the only public request)
   @Public()
   @Get(':id/avatar')
   serveAvatar(@Param('id') id: number, @Res() res) : Promise<any> {

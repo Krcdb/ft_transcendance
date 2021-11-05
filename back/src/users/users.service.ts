@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Any, In } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { User } from './user.entity';
@@ -142,6 +142,22 @@ export class UsersService {
   // Relations entre Utilisateurs //
   //////////////////////////////////
   
+  async getFriends(id: number):  Promise<User[]> {
+    const user = await this.usersRepository.findOne(id);
+    const friends = await this.usersRepository.find({
+      id: In(user.friends),
+    });
+    return friends;
+  }
+
+  async getBlocked(id: number):  Promise<User[]> {
+    const user = await this.usersRepository.findOne(id);
+    const blockedUsers = await this.usersRepository.find({
+      id: In(user.blockedUsers),
+    });
+    return blockedUsers;
+  }
+
   // Ajout de l'utilisateur
   async addAsFriend(userId: number, id: number) : Promise<string> {
     const user = await this.usersRepository.findOne(userId);
@@ -155,10 +171,6 @@ export class UsersService {
     }
     else
       return "Is already your friend";
-    // const friend = await this.usersRepository.findOne(id);
-    // friend.friends.push(userId);
-    // this.usersRepository.save(user);   // seems necessary but i don't know why
-    // this.usersRepository.save(friend); // seems necessary but i don't know why
   }
 
   // Retrait de l'utilisateur

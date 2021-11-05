@@ -33,11 +33,11 @@
         <button v-if="isblocked" class="block-btn" @click="removeFromBlocked">Unblock</button>
         <button v-else class="block-btn" @click="addToBlocked">🚫 Block</button>
       </div>
-      <router-link to="/chat">
-        <button class="chat-btn">💬 start a private chat</button>
+      <router-link v-if="!isblocked" to="/chat">
+        <button class="chat-btn">💬  Start a private chat</button>
       </router-link>
-      <router-link to="/game">
-        <button class="game-btn">🎮 Start a game</button>
+      <router-link v-if="!isblocked" to="/game">
+        <button class="game-btn">🎮  Start a game</button>
       </router-link>
     </div>
     <p>{{ message }}</p>
@@ -120,8 +120,7 @@ export default defineComponent({
             this.isblocked = true;
             this.isfriend = false;
           }
-          // this.$router.go(0);
-          this.$forceUpdate();
+          // this.$forceUpdate();
         })
         .catch((e: Error) => {
           // this.message = e;
@@ -136,7 +135,7 @@ export default defineComponent({
         .then((response: ResponseData) => {
           this.message = response.data.message;
           this.isfriend = false;
-          this.$router.go(0);
+          // this.$router.go(0);
         })
         .catch((e: Error) => {
           // this.message = e;

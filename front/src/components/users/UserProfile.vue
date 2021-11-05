@@ -54,6 +54,8 @@
           </form>
         </div>
       </div>
+      <FriendList />
+      <BlockedList />
     </div>
     <p>{{ error }}</p>
   </div>
@@ -70,9 +72,15 @@ import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 import { logout } from "@/statics/log.methods";
+import FriendList from "@/components/users/FriendsList.vue"
+import BlockedList from "@/components/users/BlockedList.vue"
 
 export default defineComponent({
   name: "User",
+  components: {
+      FriendList,
+      BlockedList,
+  },
   data() {
     return {
       error: "",

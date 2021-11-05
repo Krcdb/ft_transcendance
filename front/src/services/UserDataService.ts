@@ -72,6 +72,14 @@ class TutorialDataService {
   removeFromBlocked(id: number, data: any): Promise<any> {
     return http.post(`/users/${id}/unblock`, data);
   }
+
+  getFriends(id: number): Promise<any> {
+    return http.get(`/users/${id}/friends`);
+  }
+
+  getBlocked(id: number): Promise<any> {
+    return http.get(`/users/${id}/blocked`);
+  }
 }
 
 export default new TutorialDataService();

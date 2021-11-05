@@ -1,16 +1,9 @@
 <template>
   <div class="list-row">
     <div class="list-wrapper">
-      <h3>Friends List</h3>
-      <input
-        type="text"
-        placeholder="Search an user..."
-        v-model="keyword"
-        @input="searchhandler"
-        @change="searchhandler"
-      />
+      <h3>Blocked List</h3>
       <ul class="list">
-        <li class="list-item" v-for="user in filteredUsers" :key="user.id">
+        <li class="list-item" v-for="user in users" :key="user.id">
           <div class="list-img">
             <img
               v-if="user.avatar"
@@ -25,10 +18,6 @@
             <router-link class="profile-link" :to="'/users/' + user.id">
               <p>{{ user.userName }}</p>
             </router-link>
-          </div>
-          <div class="user-status">
-            <div v-if="user.isActive" id="online-circle"></div>
-            <div v-else id="offline-circle"></div>
           </div>
         </li>
       </ul>
@@ -47,26 +36,18 @@ export default defineComponent({
   data() {
     return {
       users: [] as User[],
-      filteredUsers: [] as User[],
-      keyword: "",
     };
   },
   methods: {
     retrieveusers() {
-      UserDataService.getFriends(Number(localStorage.getItem('user-id')))
+      UserDataService.getBlocked(Number(localStorage.getItem('user-id')))
         .then((response: ResponseData) => {
           this.users = response.data;
           this.users.sort((a, b) => (a.userName > b.userName ? 1 : -1));
-          this.filteredUsers = this.users;
         })
         .catch((e: Error) => {
           console.log(e);
         });
-    },
-    searchhandler() {
-      this.filteredUsers = this.users.filter((user) =>
-        user.userName.toLowerCase().includes(this.keyword.toLowerCase())
-      );
     },
   },
   mounted() {
@@ -111,15 +92,5 @@ h3 {
 }
 .list-wrapper input[type="text"] {
   padding: 6px;
-}
-.user-status {
-  margin-left: auto;
-  margin-right: 5%;
-}
-.user-status .online {
-  color: green;
-}
-.user-status .offline {
-  background-color: red;
 }
 </style>
