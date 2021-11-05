@@ -26,10 +26,11 @@ export default defineComponent({
 	methods: {
 		findMatch: function() {
 			socket.emit('searchGame');
+			console.log("start matchmaking")
 		}
 	},
     mounted() {
-		socket.on('matchFound', ()=> {
+		socket.on('matchFound', () => {
 			console.log("match found");
 		})
     }

@@ -5,7 +5,7 @@ import { WebsocketService } from "./websocket.service";
 import { User } from "src/users/user.entity";
 
 
-@WebSocketGateway()
+@WebSocketGateway( {cors: true } )
 export class WebsocketGateway {
 	@WebSocketServer()
 	server : Server;
