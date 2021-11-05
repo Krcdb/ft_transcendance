@@ -18,12 +18,21 @@ const routes = [
     component: () => import("../components/users/Auth42.vue"),
   },
   {
+    path: "/illegal-login",
+    name: "illegal auth",
+    component: () => import("../components/users/IllegalLogin.vue"),
+  },
+  {
     path: "/game",
     name: "Game",
-	  component: () => import("../views/Game.vue"),
-	  children: [
-		  {path: "/games-canvas", name: "GameCanvas", component: () => import("../components/Game/GameCanvas.vue")}
-	]
+    component: () => import("../views/Game.vue"),
+    children: [
+      {
+        path: "/games-canvas",
+        name: "GameCanvas",
+        component: () => import("../components/Game/GameCanvas.vue"),
+      },
+    ],
   },
   {
     path: "/chat",
@@ -59,7 +68,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("user-token");
-  if (!token && to.path !== "/login" && to.path !== "/auth/42")
+  if (!token && to.path !== "/login" && to.path !== "/auth/42" && to.path !== "/illegal-login")
     next({ path: "/login" });
   else {
     http.defaults.headers.common["Authorization"] = `Bearer ${token}`;

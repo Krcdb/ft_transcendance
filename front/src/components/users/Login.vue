@@ -3,31 +3,25 @@
     <a :href="url">
       <button>Sign in with 42</button>
     </a>
+    <router-link to="/illegal-login">
+      <button>Illegal login</button>
+    </router-link>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { login } from "@/statics/log.methods";
 
 export default defineComponent({
   name: "Login",
   data() {
     return {
-      query: {
-        client_id: process.env.VUE_APP_FT_CLIENT_ID,
-        redirect_uri: process.env.VUE_APP_FT_REDIRECT_URL,
-        response_type: "code",
-      },
-      url: "https://api.intra.42.fr/oauth/authorize?",
+      url: "",
     };
   },
   mounted() {
-    localStorage.removeItem("user-name");
-    localStorage.removeItem("user-id");
-    localStorage.removeItem("user-token");
-    this.url += Object.entries(this.query)
-      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-      .join("&");
+    this.url = login.loginUser();
   },
 });
 </script>
