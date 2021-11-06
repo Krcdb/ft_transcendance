@@ -91,8 +91,13 @@ export default defineComponent({
 	max-width: 50%;
 	display: block;
 	margin: 0 auto;
+    animation: fadeIn 0.5s;
 }
 
+@keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}
 .create-channel .create-channel-box {
 	margin: 0 auto;
 }

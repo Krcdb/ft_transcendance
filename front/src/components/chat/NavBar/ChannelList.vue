@@ -2,6 +2,12 @@
     <div class="channel-list">
         <h1>List des salons créés</h1>
 
+        <div class="no-channel" v-if="this.ChannelList.length <= 0">
+            <h4>Aucun salon créé...</h4>
+        </div>
+
+        <h4>Rechercher un salon: <input type="text" name="" value=""></h4>
+
         <ul class="channel-list-list">
             <li class="channel-list-element" v-for="channel in ChannelList" :key="channel.id">
                 <!-- todo, v-if channel public -->
@@ -11,18 +17,17 @@
                 </div>
 
                 <div class="channel-info-center">
-                    <!--
-                        <img :src="`https://avatars.dicebear.com/api/avataaars/${this.UserList[channel.owner].id}.svg`" alt="">
-                    -->
-                    <h4>Propriétaire: {{ this.UserList[channel.owner].userName }} </h4>
-                    <h5>Salon publique: {{ channel.isPublic ? "OUi" : "NON"}}</h5>
+
+                    <h4>Propriétaire: {{ this.getUserByID(channel.owner).userName }} </h4>
+                    <h5>Salon publique: {{ channel.isPublic ? "OUI" : "NON"}}</h5>
                     <!--{{ channel.password }}-->
                 </div>
 
 
                 <div class="channel-info-right">
                     <div class="buttons-join-channel">
-                        <button type="button" name="button">Rejoindre</button>
+                        <button class="btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
+                        type="button" name="button">Rejoindre</button>
                     </div>
                     <h5>Mot de passe: <input id="password" type="password" name="password" value=""> </h5>
                 </div>
@@ -84,7 +89,11 @@ export default defineComponent({
             .catch((e: Error) => {
                 console.log("Error: " + e);
             });
-        }
+        },
+        getUserByID(tosearch: number) {
+            let user =  this.UserList.find(x => x.id == tosearch);
+            return user;
+        },
     },
     mounted() {
         this.refreshChannelList();
@@ -112,6 +121,19 @@ export default defineComponent({
     display: inline-block;
     width: 50%;
     margin: 0 auto;
+}
+
+.channel-list .no-channel {
+    display: block;
+    width: 25%;
+    margin: 0 auto;
+    background-color: orangered;
+    color: white;
+}
+
+.channel-list .no-channel h4 {
+    padding: 15px;
+    text-transform: uppercase;
 }
 
 .channel-list-list .channel-list-element {
@@ -176,5 +198,14 @@ export default defineComponent({
     width: auto;
     color: black;
 }
+
+
+.btn-green {
+	background-color: lightgreen;
+}
+.btn-red {
+    background-color: darkred;
+}
+
 
 </style>

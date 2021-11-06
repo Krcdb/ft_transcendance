@@ -1,5 +1,4 @@
 <template>
-
     <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
 
     <NavBar @switchNavBarSelection="SwitchNavBarSelection" v-if="this.userSelected"/>

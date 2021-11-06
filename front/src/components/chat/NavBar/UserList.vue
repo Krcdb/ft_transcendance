@@ -12,7 +12,6 @@
                                 <div v-else id="offline-circle"></div>
                             </div>
                         </div>
-                        <div class="defaultclass" :class="condition?' conditionalclasstoappend':''"></div>
                         <button class="button" :class="user.isActive? 'btn-actif' : 'btn-inactif'" type="button" name="button">Envoyer un message privé</button>
                     </div>
                 </div>
