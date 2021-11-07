@@ -21,12 +21,16 @@ QUESTIONS :
 _______________________________________________________________________
 
 - Amitiés a sens unique ? Demande puis acceptation ?
+  >> resolu, c'est a sens unique comme sur stud42
 - Comment gerer le ladder level ?
+
 
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * * * * * * * * * * * * * JOURNAL DE BORD * * * * * * * * * * * * * * * 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+[7 novembre]
 
 [2 novembre]
 Je suis tres contente de ma refonte, ca marche nickel avec les IDs !!

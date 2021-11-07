@@ -10,6 +10,8 @@ import { AuthModule } from './auth/auth.module';
 import { MatchModule } from './match/match.module';
 import { ChannelModule } from './chat/channel/channel.module';
 import { MessageModule } from './chat/message/message.module';
+// import { loadFixtures } from './config/seeder';
+import setup from './config/dbsetup';
 
 @Module({
   imports: [
@@ -30,5 +32,27 @@ import { MessageModule } from './chat/message/message.module';
   providers: [AppService],
 })
 export class AppModule {
-  constructor(private connection: Connection) {}
+  constructor(private connection: Connection) {
+    Object.keys(setup).forEach(entity => {
+      try {
+        const vals = setup[entity];
+        console.log("** Entity = " + entity);
+        for (let i in vals)
+        {
+          console.log(" -> Loading " + entity + i + "...");
+          this.connection
+            .createQueryBuilder()
+            .insert()
+            .into(entity)
+            .values(vals[i])
+            .execute();
+        }
+      } catch (e) { console.log("Error loading entities : " + e); }
+    });
+    // console.log(this.connection);
+    // async () => await loadFixtures('fixtures', this.connection);
+  }
+  // async getConnection() : Promise<Connection> {
+  //   return this.connection;
+  // }
 }
