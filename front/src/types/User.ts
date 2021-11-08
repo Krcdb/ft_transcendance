@@ -1,9 +1,9 @@
 export default interface User {
-    userName: string;
-    id: number;
-    isActive: boolean;
-    avatar: string;
-    isTwoFAuthEnabled: boolean;
-    friends: number[];
-    blockedUsers: number[];
-  }
+  id: number;
+  userName: string;
+  isActive: boolean;
+  avatar: string;
+  isTwoFAuthEnabled: boolean;
+  friends: number[];
+  blockedUsers: number[];
+}

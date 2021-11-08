@@ -1,7 +1,7 @@
 <template>
-  <div class="friend-row">
-    <div class="friend-wrapper">
-      <h3>Friends List</h3>
+  <div class="friends-list-div">
+    <h3>Friends</h3>
+    <div v-if="users.length" class="friend-wrapper">
       <input
         type="text"
         placeholder="Search an user..."
@@ -33,6 +33,14 @@
         </li>
       </ul>
     </div>
+    <div v-else>
+      <p>You currently have no friends :(</p>
+    </div>
+    <div>
+      <router-link to="/users">
+        <button class="users-link">Find New Friends</button>
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -53,7 +61,7 @@ export default defineComponent({
   },
   methods: {
     retrieveusers() {
-      UserDataService.getFriends(Number(localStorage.getItem('user-id')))
+      UserDataService.getFriends(Number(localStorage.getItem("user-id")))
         .then((response: ResponseData) => {
           this.users = response.data;
           this.users.sort((a, b) => (a.userName > b.userName ? 1 : -1));
@@ -76,10 +84,6 @@ export default defineComponent({
 </script>
 
 <style scopped>
-.friend-row {
-  padding: 20px;
-  display: flex;
-}
 .friend-img img {
   width: 40px;
   height: 40px;
@@ -121,5 +125,9 @@ export default defineComponent({
 }
 .user-status .offline {
   background-color: red;
+}
+.users-link {
+  font-size: 14px;
+  background-color: grey;
 }
 </style>

@@ -130,11 +130,18 @@ export class UsersController {
     return this.usersService.getFriends(id);
   }
 
+  // -> get one user Blocked Users
   @Get(':id/blocked')
   getBlocked(@Param('id') id: number): Promise<User[]> {
     return this.usersService.getBlocked(id);
   }
 
+  // -> get all users except blocked ones
+  @Public()
+  @Get(':id/non-block-users')
+  getUsersexceptBlocked(@Param('id') id: number): Promise<User[]> {
+    return this.usersService.getUsersexceptBlocked(id);
+  }
   // -> logout 
   // @Public()
   @Get('logout/:id')

@@ -14,8 +14,6 @@
         <p>Victories: 0</p>
         <p>Losses: 0</p>
         <p>Level: 0</p>
-        <p>FRIENDS => {{user.friends}}</p>
-        <p>BLOCKED => {{user.blockedUsers}}</p>
         <br />
         <router-link to="/update-profile">
           <button>Update Profile</button>
@@ -26,7 +24,6 @@
         >
           Logout
         </button>
-        <BlockedList />
         <div id="id01" class="modal">
           <span
             onclick="document.getElementById('id01').style.display='none'"
@@ -55,11 +52,13 @@
           </form>
         </div>
       </div>
-      <FriendList />
+      <div>
+        <FriendList />
+        <BlockedList />
+      </div>
     </div>
     <p>{{ error }}</p>
   </div>
-
   <div v-else>
     <br />
     <router-link to="/">User</router-link>
@@ -72,14 +71,14 @@ import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 import { logout } from "@/statics/log.methods";
-import FriendList from "@/components/users/FriendsList.vue"
-import BlockedList from "@/components/users/BlockedList.vue"
+import FriendList from "@/components/users/FriendsList.vue";
+import BlockedList from "@/components/users/BlockedList.vue";
 
 export default defineComponent({
   name: "User",
   components: {
-      FriendList,
-      BlockedList,
+    FriendList,
+    BlockedList,
   },
   data() {
     return {

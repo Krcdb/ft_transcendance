@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Any, In } from 'typeorm';
+import { Repository, Not, In } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { User } from './user.entity';
@@ -156,6 +156,16 @@ export class UsersService {
       id: In(user.blockedUsers),
     });
     return blockedUsers;
+  }
+
+  async getUsersexceptBlocked(id:number): Promise<User[]> {
+    const user = await this.usersRepository.findOne(id);
+    const users = await this.usersRepository.find({
+      where: {
+        id: Not(In(user.blockedUsers))
+      }
+    });
+    return users;
   }
 
   // Ajout de l'utilisateur

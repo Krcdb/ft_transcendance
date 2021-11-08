@@ -1,8 +1,13 @@
 <template>
-  <div class="blocked-select">
-    <select class="blocked" onchange="location = this.value">
-      <option>Blocked users:</option>
-      <option class="blocked-item" v-for="user in users" :key="user.id" :value="'/users/' + user.id">
+  <div v-if="users.length" class="formfield-select--container">
+    <select id="mon_select" onchange="location = this.value">
+      <option>Blocked users</option>
+      <option
+        class="blocked-item"
+        v-for="user in users"
+        :key="user.id"
+        :value="'/users/' + user.id"
+      >
         {{ user.userName }}
       </option>
     </select>
@@ -24,7 +29,7 @@ export default defineComponent({
   },
   methods: {
     retrieveusers() {
-      UserDataService.getBlocked(Number(localStorage.getItem('user-id')))
+      UserDataService.getBlocked(Number(localStorage.getItem("user-id")))
         .then((response: ResponseData) => {
           this.users = response.data;
           this.users.sort((a, b) => (a.userName > b.userName ? 1 : -1));
@@ -41,13 +46,10 @@ export default defineComponent({
 </script>
 
 <style scopped>
-.blocked-select h3 {
-  font-size: 20px;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-}
-.blocked-select {
-  position: relative;
+.formfield-select--container select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 0;
 }
 </style>

@@ -80,6 +80,11 @@ class TutorialDataService {
   getBlocked(id: number): Promise<any> {
     return http.get(`/users/${id}/blocked`);
   }
+
+  getNonBlocked(id: number): Promise<any> {
+    return http.get(`/users/${id}/non-block-users`);
+  }
+
 }
 
 export default new TutorialDataService();
