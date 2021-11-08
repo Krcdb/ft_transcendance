@@ -84,6 +84,11 @@ export default defineComponent({
 </script>
 
 <style scopped>
+.friends-list-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .friend-img img {
   width: 40px;
   height: 40px;

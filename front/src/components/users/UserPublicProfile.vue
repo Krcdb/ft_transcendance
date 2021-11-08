@@ -1,27 +1,6 @@
 <template>
   <div v-if="user.userName" class="edit-form">
-    <div class="user-status">
-      <h4>{{ user.userName }}</h4>
-      <div class="friend-status" v-if="isfriend">Friend</div>
-      <div v-if="user.isActive" id="online-circle"></div>
-      <div v-else id="offline-circle"></div>
-    </div>
-    <div class="container">
-      <img
-        v-if="user.avatar"
-        :src="`http://localhost:3000/users/${user.id}/avatar`"
-      />
-      <img
-        v-else
-        :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
-      />
-      <div class="user-info">
-        <p>Victories: 0</p>
-        <p>Losses: 0</p>
-        <p>Level: 0</p>
-        <br />
-      </div>
-    </div>
+    <UserInfo :isFriend="isfriend" :user="user" />
     <div v-if="itsMe">
       <router-link to="/profile">
         <button>Got to your profile page</button>
@@ -69,9 +48,13 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
+import UserInfo from "./UserInfo.vue";
 
 export default defineComponent({
   name: "User",
+  components: {
+    UserInfo,
+  },
   data() {
     return {
       userConnected: {} as User,

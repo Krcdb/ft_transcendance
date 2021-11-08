@@ -6,4 +6,8 @@ export default interface User {
   isTwoFAuthEnabled: boolean;
   friends: number[];
   blockedUsers: number[];
+  matchHistory: number[];
+  nbVictories: number;
+  nbLosses: number;
+  ladderLevel: number;
 }
