@@ -26,28 +26,47 @@
 
                 <div class="channel-info-right">
                     <div class="buttons-join-channel">
-                        <router-link class="channel-link" :to="'/chat/channel/' + channel.channelName">
-                        <button class="btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
-                        type="button" name="button">
-                        Rejoindre</button>
+
+                    <!--    <router-link class="channel-link" :to="'/chat/channel/' + channel.channelName"> -->
+                    <router-link class="channel-link" :to="{name: 'Channel',
+                    params: {channel: channel, owner: this.owner}}">
+                            <button class="btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
+                            type="button" name="button"
+                            @click="updateCurrentChannel(channel)">
+                            Rejoindre</button>
+                        </router-link>
+
+                        <!-- DEBUG
+                        <router-link
+                        :to="{ name: 'MyComponent',
+                        params: { exampleProp: examplePropValue }}">
+                        Link to My Component
                     </router-link>
+                -->
+
+
                     </div>
                     <h5>Mot de passe: <input id="password" type="password" name="password" value=""></h5>
+                    <div class="channel-delete"
+                    v-if=" this.getUserByID(channel.owner).id === this.owner.id">
+                    <button type="button" name="button" class="btn-red"
+                    @click="deleteChannel(channel)">Supprimer le salon</button>
                 </div>
-            </li>
-        </ul>
+            </div>
+        </li>
+    </ul>
 
-        <h1>info !</h1>
-        <ul>
+    <h1>info !</h1>
+    <ul>
 
-            <li class="tmp" v-for="user in UserList" :key="user.id">
-                <p>
-                    {{ user.userName }} : {{ user.id }}
-                </p>
-            </li>
-        </ul>
+        <li class="tmp" v-for="user in UserList" :key="user.id">
+            <p>
+                {{ user.userName }} : {{ user.id }}
+            </p>
+        </li>
+    </ul>
 
-    </div>
+</div>
 </template>
 
 <script lang="ts">
@@ -96,6 +115,19 @@ export default defineComponent({
         getUserByID(tosearch: number) {
             let user =  this.UserList.find(x => x.id == tosearch);
             return user;
+        },
+        deleteChannel(channel: Channel) {
+            ChannelDataService.deleteChannel(channel.channelName)
+            .then((response : ResponseData) => {
+                console.log("Channel Successfully deleted");
+                this.refreshChannelList();
+            })
+            .catch((e: Error) => {
+                console.log("Error: " + e);
+            });
+        },
+        updateCurrentChannel(channel : Channel) {
+            localStorage.setItem("channel-name", channel.channelName);
         },
     },
     mounted() {
@@ -203,7 +235,7 @@ export default defineComponent({
 }
 
 .btn-green {
-	background-color: lightgreen;
+    background-color: lightgreen;
 }
 .btn-red {
     background-color: darkred;

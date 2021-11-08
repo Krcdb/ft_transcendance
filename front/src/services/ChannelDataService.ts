@@ -6,17 +6,20 @@ class ChannelDataService {
     createChannel(data: any) : Promise<any> {
         return http.post('/channel', data);
     }
-
     getAllActiveUser() : Promise <any> {
         return http.get('/users/');
     }
-
     getAllChannels() : Promise<any> {
-        return http.get("/channel");
+        return http.get(`/channel`);
     }
-
+    getChannel(channelName : string) : Promise<any> {
+        return http.get(`/channel/${channelName}`);
+    }
     getAllUsersInChannel(channelName : string) : Promise<any> {
-        return http.get("/channel/${channelName}");
+        return http.get(`/channel/${channelName}`);
+    }
+    deleteChannel(channelName : string) : Promise<any> {
+        return http.delete(`channel/${channelName}`);
     }
 }
 

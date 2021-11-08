@@ -8,9 +8,9 @@
     <UserList :owner="user" v-if="this.navBarSelection == 2"/>
 
 
+    <!--
     <ChannelElement :owner="user" :channel="currentChannel"/>
 
-<!--
     <GlobalChatInfo :nbUsers="nbUsers" :userSelected="userSelected"
     @refreshConnectedUsers="refreshConnectedUsers"/>
 
@@ -42,7 +42,7 @@ import UserList from "@/components/chat/NavBar/UserList.vue";
 import CreateChannel from "@/components/chat/NavBar/CreateChannel.vue";
 import ChannelList from "@/components/chat/NavBar/ChannelList.vue";
 
-import ChannelElement from "@/components/chat/Channel/Channel.vue";
+//import ChannelElement from "@/components/chat/Channel/Channel.vue";
 
 //import GlobalChatInfo from '@/components/chat/GlobalChatInfo.vue';
 //import Message from '@/components/chat/Message.vue';
@@ -70,7 +70,7 @@ export default defineComponent({
         UserList,
         ChannelList,
         CreateChannel,
-        ChannelElement, // tmp
+//        ChannelElement, // tmp
 
         //GlobalChatInfo,
         //Message,
