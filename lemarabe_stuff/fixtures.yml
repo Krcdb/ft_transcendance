@@ -1,4 +1,4 @@
 fixtures:
-  - User:
-    id: 42
-    userName: Norminet
+    - User:
+        id: 42
+        userName: Norminet

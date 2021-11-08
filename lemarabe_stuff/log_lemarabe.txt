@@ -25,12 +25,12 @@ _______________________________________________________________________
 - Comment gerer le ladder level ?
 
 
-
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * * * * * * * * * * * * * JOURNAL DE BORD * * * * * * * * * * * * * * * 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-[7 novembre]
+[8 novembre]
+Putain ca a enfin marché !!! Du coup pas de yaml...
 
 [2 novembre]
 Je suis tres contente de ma refonte, ca marche nickel avec les IDs !!
