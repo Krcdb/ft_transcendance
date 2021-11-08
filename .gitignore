@@ -1,4 +1,0 @@
-front/node_modules/.cache/
-back/avatars/
-.dockerignore
-back/src/chat/old_files/

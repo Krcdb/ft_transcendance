@@ -1,11 +1,13 @@
 <template>
   <nav class="navbar">
     <div class="logo-wrapper">
-      <img class="logo" src="@/assets/pong_logo.png" height="60" width="140" />
+      <router-link class="active" to="/">
+        <img class="logo" src="@/assets/pong_logo.png" height="60" width="140" />
+      </router-link>
     </div>
     <div class="nav-wrapper">
       <ul>
-        <li><router-link class="active" to="/">Home</router-link></li>
+        <!-- <li><router-link class="active" to="/">Home</router-link></li> -->
         <li><router-link to="/game">Game</router-link></li>
         <li><router-link to="/chat">Chat</router-link></li>
         <li><router-link to="/users">Users</router-link></li>
