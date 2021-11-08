@@ -26,10 +26,13 @@
 
                 <div class="channel-info-right">
                     <div class="buttons-join-channel">
+                        <router-link class="channel-link" :to="'/chat/channel/' + channel.channelName">
                         <button class="btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
-                        type="button" name="button">Rejoindre</button>
+                        type="button" name="button">
+                        Rejoindre</button>
+                    </router-link>
                     </div>
-                    <h5>Mot de passe: <input id="password" type="password" name="password" value=""> </h5>
+                    <h5>Mot de passe: <input id="password" type="password" name="password" value=""></h5>
                 </div>
             </li>
         </ul>
@@ -49,10 +52,10 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import VueRouter from 'vue-router'
 
 import User from "@/types/User";
 import Channel from "@/types/Channel";
-
 
 import UserDataService from '@/services/UserDataService';
 import ChannelDataService from '@/services/ChannelDataService';
@@ -198,7 +201,6 @@ export default defineComponent({
     width: auto;
     color: black;
 }
-
 
 .btn-green {
 	background-color: lightgreen;

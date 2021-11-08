@@ -14,6 +14,10 @@ class ChannelDataService {
     getAllChannels() : Promise<any> {
         return http.get("/channel");
     }
+
+    getAllUsersInChannel(channelName : string) : Promise<any> {
+        return http.get("/channel/${channelName}");
+    }
 }
 
 export default new ChannelDataService();

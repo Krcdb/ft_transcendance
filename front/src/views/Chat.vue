@@ -7,6 +7,9 @@
     <ChannelList :owner="user" v-if="this.navBarSelection == 1"/>
     <UserList :owner="user" v-if="this.navBarSelection == 2"/>
 
+
+    <ChannelElement :owner="user" :channel="currentChannel"/>
+
 <!--
     <GlobalChatInfo :nbUsers="nbUsers" :userSelected="userSelected"
     @refreshConnectedUsers="refreshConnectedUsers"/>
@@ -30,6 +33,7 @@ import ResponseData from "@/types/ResponseData";
 
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
+import Channel from "@/types/Channel";
 
 import OwnerProfile from '@/components/chat/OwnerProfile.vue';
 import NavBar from "@/components/chat/NavBar.vue";
@@ -37,6 +41,8 @@ import ChatMessage from "@/types/ChatMessage";
 import UserList from "@/components/chat/NavBar/UserList.vue";
 import CreateChannel from "@/components/chat/NavBar/CreateChannel.vue";
 import ChannelList from "@/components/chat/NavBar/ChannelList.vue";
+
+import ChannelElement from "@/components/chat/Channel/Channel.vue";
 
 //import GlobalChatInfo from '@/components/chat/GlobalChatInfo.vue';
 //import Message from '@/components/chat/Message.vue';
@@ -54,6 +60,8 @@ export default defineComponent({
             message: {} as ChatMessage,
 
             navBarSelection: -1,
+
+            currentChannel: {} as Channel, // current connected channel
         };
     },
     components: {
@@ -62,6 +70,8 @@ export default defineComponent({
         UserList,
         ChannelList,
         CreateChannel,
+        ChannelElement, // tmp
+
         //GlobalChatInfo,
         //Message,
         //MenuChat
