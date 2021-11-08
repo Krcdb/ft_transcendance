@@ -1,27 +1,43 @@
-import { WebSocketGateway, SubscribeMessage, WebSocketServer, OnGatewayInit } from "@nestjs/websockets"
+import { WebSocketGateway, SubscribeMessage, WebSocketServer, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect } from "@nestjs/websockets"
 import { GameService } from "src/game/game.service";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { WebsocketService } from "./websocket.service";
 import { User } from "src/users/user.entity";
+import { UsersService } from "src/users/users.service";
 
 
-@WebSocketGateway( {cors: true } )
-export class WebsocketGateway {
+@WebSocketGateway( { cors: true } )
+export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect{
 	@WebSocketServer()
 	server : Server;
 
 	constructor(
     	private readonly websocketService: WebsocketService,
-		private readonly gameService: GameService
+		private readonly gameService: GameService,
+		private readonly usersSerive: UsersService,
 	) {}
 
 	afterInit(server: Server) {
 		this.websocketService.server = server;
 	}
 
+	async handleConnection(socket: Socket) {
+		const user = await this.usersSerive.getUserFromToken(socket.handshake.auth.token);
+		if (!user) {
+			this.handleDisconnect(socket);
+		}
+		else
+			socket.data.user = user;
+	};
+	
+	handleDisconnect(socket: Socket) {
+		if (socket.data.user)
+			socket.disconnect();
+	}
+
 	@SubscribeMessage('searchGame')
-	async searchGame(user: User) {
-		return this.gameService.searchGame(user);
+	async searchGame(socket: Socket) {
+		return this.gameService.searchGame(socket);
 	}
 
 	@SubscribeMessage('createGame')

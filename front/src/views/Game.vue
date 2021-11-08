@@ -2,8 +2,7 @@
   	<div class="game">
     	<h1>W/S for player 1 || P/L for player 2</h1>
     	<br />
-		   <button class="button" v-on:click="findMatch">Find a match</button>
-    	<img src="../assets/pong_img.png" />
+		<button class="button" v-on:click="findMatch">Find a match</button>
   	</div>
 </template>
 
@@ -12,7 +11,12 @@
 import { defineComponent } from "vue";
 import io from "socket.io-client";
 //import GameCanvas from "../components/Game/GameCanvas.vue"
-const socket = io("http://localhost:3000");
+const socket = io("http://localhost:3000", {
+	auth: {
+		token: localStorage.getItem('user-token'),
+		userId: localStorage.getItem('user-id'),
+	}
+});
 
 export default defineComponent({
 	/*components: {
@@ -20,18 +24,17 @@ export default defineComponent({
 	},*/
 	data() {
 		return {
-
 		};
 	},
 	methods: {
 		findMatch: function() {
+			console.log("start matchmaking");
 			socket.emit('searchGame');
-			console.log("start matchmaking")
 		}
 	},
     mounted() {
-		socket.on('matchFound', () => {
-			console.log("match found");
+		socket.on('matchFound', (uuid: string) => {
+			console.log("match found |", uuid);
 		})
     }
    

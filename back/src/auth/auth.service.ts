@@ -28,5 +28,4 @@ export class AuthService {
       id: user.id
     };
   }
-  
 }
