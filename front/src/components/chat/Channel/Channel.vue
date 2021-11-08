@@ -41,7 +41,7 @@ export default defineComponent({
 	data() {
 		return {
 			PlayerList: [] as User[],
-      		user: {} as User,
+			user: {} as User,
 
 			channel: {} as Channel,
 		};
@@ -61,33 +61,48 @@ export default defineComponent({
 				}
 				//this.PlayerList = response.data;
 			})
-            .catch((e: Error) => {
-                console.log(e);
-            });
+			.catch((e: Error) => {
+				console.log(e);
+			});
 		},
-		getUser(id: number) {
-	      UserDataService.get(id)
-	        .then((response: ResponseData) => {
-	          this.user = response.data;
-	        })
-	        .catch((e: Error) => {
-	          console.log(e);
-	        });
-	    },
-		getChannel(name: string) {
-			ChannelDataService.getChannel(name)
+		async getUser(id: number) {
+			await UserDataService.get(id)
+			.then((response: ResponseData) => {
+				this.user = response.data;
+			})
+			.catch((e: Error) => {
+				console.log(e);
+			});
+		},
+		async getChannel(name: string) {
+			await ChannelDataService.getChannel(name)
 			.then((response : ResponseData) => {
 				this.channel = response.data;
 			})
-	        .catch((e: Error) => {
-	          console.log(e);
-	        });
+			.catch((e: Error) => {
+				console.log(e);
+			});
 		},
+		async initChannel() {
+			console.log("name: " + this.channel.channelName);
+
+			await ChannelDataService.addChannelUser(this.channel.channelName, this.user.id)
+			.then((response : ResponseData) => {
+				console.log("Successfully added user connected");
+			})
+			.catch((e: Error) => {
+				console.log(e);
+			});
+		},
+		async init() {
+			await this.getAllPlayersInChannel();
+			await this.getUser(Number(localStorage.getItem("user-id")));
+			await this.getChannel(String(localStorage.getItem("channel-name")));
+			await this.initChannel();
+		}
 	},
 	mounted() {
-		this.getAllPlayersInChannel();
-    	this.getUser(Number(localStorage.getItem("user-id")));
-		this.getChannel(String(localStorage.getItem("channel-name")));
+		this.init();
 	},
 });
 </script>

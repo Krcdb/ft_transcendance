@@ -21,8 +21,8 @@ export class ChannelController {
 	//  POST  //
 	// ------ //
 
-	@Post()
 	@Public()
+	@Post()
 	async createChannel(@Res() res, @Body() createChannelDto: CreateChannelDto) {
 		if (await this.channelDataService.channelAlreadyExists(createChannelDto.channelName)) {
 			return res.status(HttpStatus.CONFLICT).json({
@@ -34,6 +34,17 @@ export class ChannelController {
 			message: "Channel has been created successfully",
 			channel
 		})
+	}
+
+	// a verifier comment differencier upload avec param et upload comme ça dans la barre
+	// là on doit upload /42Born2Code/ID alors que dans le channelDataService on utilise data en aprametre
+	// a voir comment differencier les 2 datas et update le channel
+
+	@Public()
+	@Post(':channelName/:UserID')
+	async addChannelUser(@Param('channelName') channelName : string,
+	@Param('UserID') UserID : number) : Promise<any> {
+		return (this.channelDataService.addUserAsUser(channelName, UserID));
 	}
 
 	// ------ //

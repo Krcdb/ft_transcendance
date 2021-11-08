@@ -21,6 +21,11 @@ class ChannelDataService {
     deleteChannel(channelName : string) : Promise<any> {
         return http.delete(`channel/${channelName}`);
     }
+
+    addChannelUser(channelName : string, id : number) : Promise<any> {
+        return http.post(`channel/${channelName}`, id);
+    }
+
 }
 
 export default new ChannelDataService();
