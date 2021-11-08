@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { JwtService } from '@nestjs/jwt';
-import { jwtConstants } from '../auth/constants';
 import { User } from './user.entity';
 import * as fs from 'fs';
 
@@ -83,18 +82,5 @@ export class UsersService {
   async removeAvatar(id: number): Promise<void> {
     this.DeleteOldAvatarFile(id);
     await this.usersRepository.update(id, {avatar: null});
-  }
-
-  async getUserFromToken(token: string) {
-	try {
-		const payload = this.jwtService.verify(token, {
-		  secret: jwtConstants.secret,
-		});
-		if (payload.userId) {
-		  return await this.usersRepository.findOne(payload.userId);
-		}
-	  } catch (err) {
-		return null;
-	  }
   }
 }

@@ -22,7 +22,7 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
 	}
 
 	async handleConnection(socket: Socket) {
-		const user = await this.usersSerive.getUserFromToken(socket.handshake.auth.token);
+		const user = await this.usersSerive.findOne(socket.handshake.auth.userId);
 		if (!user) {
 			this.handleDisconnect(socket);
 		}
