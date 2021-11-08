@@ -129,7 +129,8 @@ export default defineComponent({
         };
         UserDataService.turn2FAoff(data)
           .then((response: ResponseData) => {
-            window.location.reload();
+            // consolee.log
+            this.checked = false;
           })
           .catch((e: Error) => {
             console.log(e);

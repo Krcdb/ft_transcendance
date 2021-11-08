@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Not, In } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { User } from './user.entity';
@@ -59,14 +59,14 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  async userAlreadyExists(createUserDTO: CreateUserDto): Promise<any> {
-    const user = await this.usersRepository.findOne({ userName: createUserDTO.userName });
+  async userExists(id: number): Promise<boolean> {
+    const user = await this.usersRepository.findOne(id);
     if (user)
       return true;
     return false;
   }
   
-  async userNameAlreadyExists(name: string): Promise<any> {
+  async userNameAlreadyExists(name: string): Promise<boolean> {
     const user = await this.usersRepository.findOne({ userName: name });
     if (user)
       return true;
@@ -138,40 +138,92 @@ export class UsersService {
   // Relations entre Utilisateurs //
   //////////////////////////////////
   
-  // Ajout de l'utilisateur
-  async addAsFriend(userId: number, friendId: number) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-    const friend = await this.usersRepository.findOne(friendId);
-    user.friends.push(friendId);
-    friend.friends.push(userId);
-    this.usersRepository.save(user);
-    this.usersRepository.save(friend);
+  async getFriends(id: number):  Promise<User[]> {
+    const user = await this.usersRepository.findOne(id);
+    const friends = await this.usersRepository.find({
+      id: In(user.friends),
+    });
+    return friends;
   }
-  async addAsBlocked(userId: number, blockedId: number) : Promise<void> {
+
+  async getBlocked(id: number):  Promise<User[]> {
+    const user = await this.usersRepository.findOne(id);
+    const blockedUsers = await this.usersRepository.find({
+      id: In(user.blockedUsers),
+    });
+    return blockedUsers;
+  }
+
+  async getUsersexceptBlocked(id:number): Promise<User[]> {
+    const user = await this.usersRepository.findOne(id);
+    const users = await this.usersRepository.find({
+      where: {
+        id: Not(In(user.blockedUsers))
+      }
+    });
+    return users;
+  }
+
+  // Ajout de l'utilisateur
+  async addAsFriend(userId: number, id: number) : Promise<string> {
+    const user = await this.usersRepository.findOne(userId);
+
+    if (user.blockedUsers.indexOf(id) !== -1)
+      return "You can't add a blocked user as friend";
+    if (user.friends.indexOf(id) === -1) {
+      user.friends.push(id);
+      this.usersRepository.save(user);   // seems necessary but i don't know why
+      return "Successfully added to your friends";
+    }
+    else
+      return "Is already your friend";
+  }
+
+  // Retrait de l'utilisateur
+  async removeFromFriends(userId: number, id: number) : Promise<string> {
+    const user = await this.usersRepository.findOne(userId);
+    if (user.friends.indexOf(id) === -1)
+      return "This user is not in your friends list";
+    else {
+      user.friends.splice(user.friends.indexOf(id), 1);
+      this.usersRepository.save(user);
+      return "Successfully removed from your friends list";
+    }
+    // const friend = await this.usersRepository.findOne(id);
+    // friend.friends.splice(friend.friends.indexOf(userId), 1);
+    // this.usersRepository.save(friend);
+  }
+
+  async addAsBlocked(userId: number, blockedId: number) : Promise<string> {
     const user = await this.usersRepository.findOne(userId);
     const blocked = await this.usersRepository.findOne(blockedId);
-    user.blockedUsers.push(blockedId);
-    blocked.blockingUsers.push(userId);
-    this.usersRepository.save(user);
-    this.usersRepository.save(blocked);
+    await this.removeFromFriends(userId, blockedId);
+    if (user.blockedUsers.indexOf(blockedId) === -1)
+    {
+      if (user.friends.indexOf(blockedId) !== -1)
+        user.friends.splice(user.friends.indexOf(blockedId), 1);
+      user.blockedUsers.push(blockedId);
+      blocked.blockingUsers.push(userId);
+      this.usersRepository.save(user);
+      this.usersRepository.save(blocked);
+      return "Successfully Blocked";
+    }
+    else
+      return "Is already Blocked";
   }
   
-  // Retrait de l'utilisateur
-  async removeFromFriends(userId: number, friendId: number) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-    const friend = await this.usersRepository.findOne(friendId);
-    user.friends.splice(user.friends.indexOf(friendId), 1);
-    friend.friends.splice(friend.friends.indexOf(userId), 1);
-    this.usersRepository.save(user);
-    this.usersRepository.save(friend);
-  }
-  async removeFromBlocked(userId: number, blockedId: number) : Promise<void> {
+  async removeFromBlocked(userId: number, blockedId: number) : Promise<string> {
     const user = await this.usersRepository.findOne(userId);
     const blocked = await this.usersRepository.findOne(blockedId);
-    user.blockedUsers.splice(user.blockedUsers.indexOf(blockedId), 1);
-    blocked.blockingUsers.splice(blocked.blockingUsers.indexOf(userId), 1);
-    this.usersRepository.save(user);
-    this.usersRepository.save(blocked);
+    if (user.blockedUsers.indexOf(blockedId) === -1)
+      return "This user is not Blocked";
+    else {
+      user.blockedUsers.splice(user.blockedUsers.indexOf(blockedId), 1);
+      blocked.blockingUsers.splice(blocked.blockingUsers.indexOf(userId), 1);
+      this.usersRepository.save(user);
+      this.usersRepository.save(blocked);
+      return "Successfully Unblocked";
+    }
   }
   
   //////////////////////////

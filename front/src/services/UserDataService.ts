@@ -56,6 +56,35 @@ class TutorialDataService {
   authenticate2fa(data: any): Promise<any> {
     return http.post("/2fa/authenticate", data);
   }
+
+  addToFriends(id: number, data: any): Promise<any> {
+    return http.post(`/users/${id}/friends`, data);
+  }
+
+  addToBlocked(id: number, data: any): Promise<any> {
+    return http.post(`/users/${id}/block`, data);
+  }
+
+  removeFromFriends(id: number, data: any): Promise<any> {
+    return http.post(`/users/${id}/remove-friend`, data);
+  }
+
+  removeFromBlocked(id: number, data: any): Promise<any> {
+    return http.post(`/users/${id}/unblock`, data);
+  }
+
+  getFriends(id: number): Promise<any> {
+    return http.get(`/users/${id}/friends`);
+  }
+
+  getBlocked(id: number): Promise<any> {
+    return http.get(`/users/${id}/blocked`);
+  }
+
+  getNonBlocked(id: number): Promise<any> {
+    return http.get(`/users/${id}/non-block-users`);
+  }
+
 }
 
 export default new TutorialDataService();
