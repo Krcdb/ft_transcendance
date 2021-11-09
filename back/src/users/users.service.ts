@@ -5,18 +5,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { User } from './user.entity';
 import * as fs from 'fs';
-import { ChannelDataService } from '../chat/channel/channel.service';
-import { MessageService } from '../chat/message/message.service';
+// import { ChannelDataService } from '../chat/channel/channel.service';
+// import { MessageService } from '../chat/message/message.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
-    // @Inject(forwardRef(() => ChannelDataService))
-    // private readonly channelService: ChannelDataService,
-    // @Inject(forwardRef(() => MessageService))
-    // private readonly messageService: MessageService,
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {

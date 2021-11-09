@@ -85,6 +85,7 @@ export default defineComponent({
     logout,
   },
   mounted() {
+    console.log("in profile");
     this.getUser(Number(localStorage.getItem("user-id")));
   },
 });

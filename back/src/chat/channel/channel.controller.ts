@@ -40,11 +40,17 @@ export class ChannelController {
   	//  GET   //
   	// ------ // 
 
-	@Public()
-	@Get()
-	findAllChannels() : Promise<Channel[]> {
-		return (this.channelDataService.findAll());
-	}
+	// Get Default Channel Page
+	// @Public()
+	// @Get()
+	// test() : string {
+	// 	let string;
+
+	// 	string = "Welcome to channel Backend page !";
+	// 	string += "<br><br>List of all Channel: <br><br>"
+	// 	string += this.channelDataService.findAll();
+	// 	return (string);
+	// }
 
 	@Public()
 	@Get(':channelName')
@@ -52,8 +58,16 @@ export class ChannelController {
 		return (this.channelDataService.findOne(channelName));
 	}
 
+	@Public()
+	@Get()
+	findAllChannels() : Promise<Channel[]> {
+		return (this.channelDataService.findAll());
+	}
+
 	// ------- // 
 	//  DELETE //
 	// ------- // 
 
 }
+
+	

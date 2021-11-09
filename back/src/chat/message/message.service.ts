@@ -38,7 +38,7 @@ export class MessageService {
         this.usersService.addMessageToHistory(message.owner, message.id);
         this.channelService.addMessageToHistory(message.channelName, message.id);
     }
-    
+
     async remove(msgId: number): Promise<void> {
         await this.messageRepository.delete(msgId);
     }

@@ -87,22 +87,22 @@ export class ChannelDataService {
 		// Retrait
 	async removeUserAsUser(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
-		channel.users.push(userId);
+		channel.users.splice(channel.users.indexOf(userId));
 		this.channelRepository.save(channel);
 	}
 	async removeUserAsAdmin(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
-		channel.admins.push(userId);
+		channel.admins.splice(channel.admins.indexOf(userId));
 		this.channelRepository.save(channel);
 	}
 	async removeUserAsBanned(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
-		channel.banList.push(userId);
+		channel.banList.splice(channel.banList.indexOf(userId));
 		this.channelRepository.save(channel);
 	}
 	async removeUserAsMuted(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
-		channel.muteList.push(userId);
+		channel.muteList.splice(channel.muteList.indexOf(userId));
 		this.channelRepository.save(channel);
 	}
 		// Changement d'owner  // (owner ne peut pas etre null)
