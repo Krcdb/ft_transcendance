@@ -35,6 +35,7 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
+import { logout } from "@/statics/log.methods";
 
 export default defineComponent({
   name: "NavBar",
@@ -48,11 +49,17 @@ export default defineComponent({
       UserDataService.get(id)
         .then((response: ResponseData) => {
           this.user = response.data;
+          if (!this.user)
+          {
+            logout();
+            // this.$router.push("/login");
+          }
         })
         .catch((e: Error) => {
           console.log(e);
         });
     },
+    logout,
   },
   watch: {
     $route() {

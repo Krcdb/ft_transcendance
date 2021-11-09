@@ -156,6 +156,8 @@ export class UsersService {
 
   async getUsersexceptBlocked(id:number): Promise<User[]> {
     const user = await this.usersRepository.findOne(id);
+    if (!user)
+      return [] as User[];
     const users = await this.usersRepository.find({
       where: {
         id: Not(In(user.blockedUsers))
@@ -163,7 +165,6 @@ export class UsersService {
     });
     return users;
   }
-
   // Ajout de l'utilisateur
   async addAsFriend(userId: number, id: number) : Promise<string> {
     const user = await this.usersRepository.findOne(userId);

@@ -4,7 +4,7 @@
     <div v-if="users.length" class="friend-wrapper">
       <input
         type="text"
-        placeholder="Search an user..."
+        placeholder="Search a friend.."
         v-model="keyword"
         @input="searchhandler"
         @change="searchhandler"
