@@ -51,11 +51,6 @@ export class User {
   @Column("int", {nullable: true, array: true})
   blockedUsers: number[];
 
-  @Column("int", {nullable: true, array: true})
-  blockingUsers: number[];
-  // ici c'est la liste des users qui ont bloqué ce user
-  // -> pas sure que ce soit utile maintenant que j'ai viré les relations TypeOrm
-
     // --------------- //
     // CHAT & CHANNELS //
     // --------------- //
