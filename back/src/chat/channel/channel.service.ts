@@ -57,7 +57,7 @@ export class ChannelDataService {
 			return (true);
 		return (false);
 	}
-
+	
 	/////////////////////////////////////////
 	//  Gestion des listes d'utilisateurs  //
   	/////////////////////////////////////////

@@ -16,9 +16,9 @@
         :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
       />
       <div class="user-info">
-        <p>Victories: 0</p>
-        <p>Losses: 0</p>
-        <p>Level: 0</p>
+        <p>Victories: {{ user.nbVictories }}</p>
+        <p>Losses: {{ user.nbLosses }}</p>
+        <p>Level: {{ user.ladderLevel }}</p>
         <br />
       </div>
     </div>

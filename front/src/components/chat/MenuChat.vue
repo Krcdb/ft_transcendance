@@ -83,7 +83,7 @@ export default defineComponent({
 	},
 	methods: {
 		createChannel() {
-			this.newChannel.owner = this.owner;
+			this.newChannel.owner = this.owner.id;
 			console.log("Try to create Channel !");
 			ChannelDataService.createChannel(this.newChannel)
 			.then((response: ResponseData) => {

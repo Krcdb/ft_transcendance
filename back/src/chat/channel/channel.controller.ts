@@ -36,25 +36,29 @@ export class ChannelController {
 		})
 	}
 
+	// ------ // 
+  	//  GET   //
+  	// ------ // 
 	// a verifier comment differencier upload avec param et upload comme ça dans la barre
 	// là on doit upload /42Born2Code/ID alors que dans le channelDataService on utilise data en aprametre
 	// a voir comment differencier les 2 datas et update le channel
 
+	// Get Default Channel Page
+	// @Public()
+	// @Get()
+	// test() : string {
+	// 	let string;
+
+	// 	string = "Welcome to channel Backend page !";
+	// 	string += "<br><br>List of all Channel: <br><br>"
+	// 	string += this.channelDataService.findAll();
+	// 	return (string);
+	// }
 	@Public()
 	@Post(':channelName/:UserID')
 	async addChannelUser(@Param('channelName') channelName : string,
 	@Param('UserID') UserID : number) : Promise<any> {
 		return (this.channelDataService.addUserAsUser(channelName, UserID));
-	}
-
-	// ------ //
-  	//  GET   //
-  	// ------ //
-
-	@Public()
-	@Get()
-	findAllChannels() : Promise<Channel[]> {
-		return (this.channelDataService.findAll());
 	}
 
 	@Public()
@@ -63,7 +67,13 @@ export class ChannelController {
 		return (this.channelDataService.findOne(channelName));
 	}
 
-	// ------- //
+	@Public()
+	@Get()
+	findAllChannels() : Promise<Channel[]> {
+		return (this.channelDataService.findAll());
+	}
+
+	// ------- // 
 	//  DELETE //
 	// ------- //
 
@@ -75,3 +85,5 @@ export class ChannelController {
 	}
 
 }
+
+	
