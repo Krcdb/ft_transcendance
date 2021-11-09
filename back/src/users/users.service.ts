@@ -27,7 +27,6 @@ export class UsersService {
       user.achievements = [];
       user.friends = [];
       user.blockedUsers = [];
-      user.blockingUsers = [];
       user.channelsUserIsOwner = [];
       user.channelsUserIsAdmin = [];
       user.channelsUserIsIn = [];
@@ -204,7 +203,6 @@ export class UsersService {
       if (user.friends.indexOf(blockedId) !== -1)
         user.friends.splice(user.friends.indexOf(blockedId), 1);
       user.blockedUsers.push(blockedId);
-      blocked.blockingUsers.push(userId);
       this.usersRepository.save(user);
       this.usersRepository.save(blocked);
       return "Successfully Blocked";
@@ -220,7 +218,6 @@ export class UsersService {
       return "This user is not Blocked";
     else {
       user.blockedUsers.splice(user.blockedUsers.indexOf(blockedId), 1);
-      blocked.blockingUsers.splice(blocked.blockingUsers.indexOf(userId), 1);
       this.usersRepository.save(user);
       this.usersRepository.save(blocked);
       return "Successfully Unblocked";
