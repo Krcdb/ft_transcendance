@@ -10,17 +10,27 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    component: () => import("../components/users/Login.vue"),
+    component: () => import("../components/users/auth/Login.vue"),
+  },
+  {
+    path: "/2FAuth",
+    name: "two factor auth",
+    component: () => import("../components/users/auth/twoFactorAuth.vue"),
   },
   {
     path: "/auth/42",
     name: "42 auth",
-    component: () => import("../components/users/Auth42.vue"),
+    component: () => import("../components/users/auth/Auth42.vue"),
   },
   {
     path: "/illegal-login",
     name: "illegal auth",
-    component: () => import("../components/users/IllegalLogin.vue"),
+    component: () => import("../components/users/auth/IllegalLogin.vue"),
+  },
+  {
+    path: "/2FLogin",
+    name: "two factor login",
+    component: () => import("../components/users/auth/TwoFALogin.vue"),
   },
   {
     path: "/game",
@@ -41,7 +51,7 @@ const routes = [
   },
   {
     path: "/profile",
-    name: "My Profile",
+    name: "Profile",
     component: () => import("../components/users/UserProfile.vue"),
   },
   {
@@ -68,7 +78,13 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("user-token");
-  if (!token && to.path !== "/login" && to.path !== "/auth/42" && to.path !== "/illegal-login")
+  if (
+    !token &&
+    to.path !== "/login" &&
+    to.path !== "/auth/42" &&
+    to.path !== "/illegal-login" &&
+    to.path !== "/2FLogin"
+  )
     next({ path: "/login" });
   else {
     http.defaults.headers.common["Authorization"] = `Bearer ${token}`;

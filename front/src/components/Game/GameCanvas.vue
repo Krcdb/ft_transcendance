@@ -1,5 +1,5 @@
 <template>
-    <canvas id="game-canvas" width="700" height="400"></canvas>
+  <canvas id="game-canvas" width="700" height="400"></canvas>
 </template>
 
 <script lang="ts">
@@ -13,15 +13,9 @@ export default defineComponent({
 			  
       	}
     },
-	methods: {
-		launchLoop: function() {
-		var game = new Game();
-		requestAnimationFrame(game.gameLoop.bind(game));
-		}
-	},
-    mounted() {
-		this.launchLoop();
-    }
-   
-})
+  },
+  mounted() {
+    
+  },
+});
 </script>

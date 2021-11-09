@@ -1,11 +1,18 @@
 <template>
   <nav class="navbar">
     <div class="logo-wrapper">
-      <img class="logo" src="@/assets/pong_logo.png" height="60" width="140" />
+      <router-link class="active" to="/">
+        <img
+          class="logo"
+          src="@/assets/pong_logo.png"
+          height="60"
+          width="140"
+        />
+      </router-link>
     </div>
     <div class="nav-wrapper">
       <ul>
-        <li><router-link class="active" to="/">Home</router-link></li>
+        <!-- <li><router-link class="active" to="/">Home</router-link></li> -->
         <li><router-link to="/game">Game</router-link></li>
         <li><router-link to="/chat">Chat</router-link></li>
         <li><router-link to="/users">Users</router-link></li>
@@ -31,7 +38,7 @@ import ResponseData from "@/types/ResponseData";
 import { logout } from "@/statics/log.methods";
 
 export default defineComponent({
-  name: "User",
+  name: "NavBar",
   data() {
     return {
       user: {} as User,
@@ -42,6 +49,7 @@ export default defineComponent({
       UserDataService.get(id)
         .then((response: ResponseData) => {
           this.user = response.data;
+          if (!this.user) logout();
         })
         .catch((e: Error) => {
           console.log(e);
@@ -51,7 +59,7 @@ export default defineComponent({
   },
   watch: {
     $route() {
-      if (localStorage.getItem("user-id")) {
+      if (localStorage.getItem("user-token")) {
         this.getUser(Number(localStorage.getItem("user-id")));
       }
     },

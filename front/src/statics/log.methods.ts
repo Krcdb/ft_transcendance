@@ -1,3 +1,6 @@
+import http from "@/http-common";
+// import ResponseData from "@/types/ResponseData";
+
 const login = {
   url: "https://api.intra.42.fr/oauth/authorize?",
   query: {
@@ -17,6 +20,19 @@ const login = {
 };
 
 function logout(): void {
+  const url = `http://localhost:3000/users/logout/${localStorage.getItem(
+    "user-id"
+  )}`;
+
+  if (!localStorage.getItem("user-id")) return;
+  http
+    .get(url)
+    .then(() => {
+      // console.log("res = ", response);
+    })
+    .catch((e: Error) => {
+      console.log(e);
+    });
   localStorage.removeItem("user-token");
   localStorage.removeItem("user-name");
   localStorage.removeItem("user-id");

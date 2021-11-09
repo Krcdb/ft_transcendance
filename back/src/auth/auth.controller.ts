@@ -1,12 +1,13 @@
 import { Get, Controller, Request, UseGuards, Param } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { FortyTwoAuthGuard } from './FortyTwo-auth.guard';
-import { Public } from './public.decorator';
+import { FortyTwoAuthGuard } from './Guard/FortyTwo-auth.guard';
+import { Public } from './utils/public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  // -> login with 42 api
   @Public()
   @UseGuards(FortyTwoAuthGuard)
   @Get('42')
@@ -14,6 +15,7 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  // -> login to user with out 42 (only for testing)
   @Public()
   @Get(':id')
   async loginInvite(@Param('id') id: number): Promise<any>  {
