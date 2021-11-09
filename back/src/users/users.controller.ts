@@ -110,21 +110,18 @@ export class UsersController {
   // ------ // 
 
   // -> get all users
-  // @Public()
   @Get()
   findAll(): Promise<User[]> {
     return this.usersService.findAll();
   }
 
   // -> get one user
-  @Public()
   @Get(':id')
   findOne(@Param('id') id: number): Promise<User> {
     return this.usersService.findOne(id);
   }
 
   // -> get one user Friends
-  // @Public()
   @Get(':id/friends')
   getFriends(@Param('id') id: number): Promise<User[]> {
     return this.usersService.getFriends(id);
@@ -137,13 +134,11 @@ export class UsersController {
   }
 
   // -> get all users except blocked ones
-  @Public()
   @Get(':id/non-block-users')
   getUsersexceptBlocked(@Param('id') id: number): Promise<User[]> {
     return this.usersService.getUsersexceptBlocked(id);
   }
   // -> logout 
-  // @Public()
   @Get('logout/:id')
   logout(@Param('id') id: number): Promise<User> {
     return this.usersService.updateLogState(id, false);

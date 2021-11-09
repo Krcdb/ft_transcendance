@@ -2,7 +2,12 @@
   <nav class="navbar">
     <div class="logo-wrapper">
       <router-link class="active" to="/">
-        <img class="logo" src="@/assets/pong_logo.png" height="60" width="140" />
+        <img
+          class="logo"
+          src="@/assets/pong_logo.png"
+          height="60"
+          width="140"
+        />
       </router-link>
     </div>
     <div class="nav-wrapper">
@@ -51,7 +56,7 @@ export default defineComponent({
   },
   watch: {
     $route() {
-      if (localStorage.getItem("user-id")) {
+      if (localStorage.getItem("user-token")) {
         this.getUser(Number(localStorage.getItem("user-id")));
       }
     },

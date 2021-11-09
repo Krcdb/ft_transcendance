@@ -20,33 +20,20 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
-import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
   data() {
     return {
       error: "",
-      user: {} as User,
       authcode: "",
     };
   },
   methods: {
-    getUser(id: number) {
-      UserDataService.get(id)
-        .then((response: ResponseData) => {
-          this.error = "";
-          this.user = response.data;
-        })
-        .catch((e: Error) => {
-          this.error = e.message;
-          console.log(e);
-        });
-    },
     sendCode() {
       let data = {
         twoFAuthCode: this.authcode,
-        id: this.user.id,
+        id: Number(localStorage.getItem("user-id")),
       };
       UserDataService.authenticate2fa(data)
         .then((response: ResponseData) => {
@@ -55,6 +42,7 @@ export default defineComponent({
             localStorage.setItem("user-name", response.data.userName);
             localStorage.setItem("user-id", response.data.id);
             localStorage.setItem("user-token", response.data.access_token);
+            console.log(localStorage);
             this.$router.push("/profile");
           }
         })
@@ -64,8 +52,7 @@ export default defineComponent({
     },
   },
   mounted() {
-    if (localStorage.getItem("user-id"))
-      this.getUser(Number(localStorage.getItem("user-id")));
+    console.log("mounted");
   },
 });
 </script>
