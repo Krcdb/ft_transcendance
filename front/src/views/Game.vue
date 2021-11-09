@@ -47,7 +47,7 @@ img {
   max-width: 50%;
   height: auto;
 }
-canvas { 
+canvas {
   background: #2e2d2d;
   display: block;
   margin: 0 auto;
