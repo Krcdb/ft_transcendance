@@ -17,9 +17,6 @@
     <MenuChat :owner="user"/>
 -->
 
-    <!-- TMP TO TEST MSG -->
-    <Message :owner="user" :prop_message="Test" v-if="user.userName"/>
-
 
 </template>
 

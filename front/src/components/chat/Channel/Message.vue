@@ -1,82 +1,96 @@
 <template>
 	<div class="message">
-		<div class="flex">
-			<!-- AVATAR -->
-			<img src="" alt="">
-
-			<!--
-			<div class="text w-3/4" :class="message.sender ? 'bg-green-800' : 'bg-gray-700'">
-				{{ owner.userName }}: {{ message.message }}
-			</div>
-			-->
-
-			{{ user.userName }} : {{ message }}
+		<div class="message-box"  :class="this.sender ? 'sender' : 'not-sender'">
+			<h4>
+				{{ this.owner.userName }} :
+				{{ this.message.message }}
+			</h4>
 
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-	import { defineComponent } from "vue";
-	import ChatMessage from "@/types/ChatMessage";
-	import User from "@/types/User";
+import { defineComponent } from "vue";
+import ChatMessage from "@/types/ChatMessage";
+import User from "@/types/User";
+import ResponseData from "@/types/ResponseData";
+import ChannelDataService from "@/services/ChannelDataService";
+import UserDataService from "@/services/UserDataService";
 
-	export default defineComponent({
-		name: "chat-message",
-		data() {
-			return {
-				user: this.owner,
-				message: {} as ChatMessage,
-				//user: {} as User,
-				//message: {} as ChatMessage,
-			};
+export default defineComponent({
+	name: "chat-message",
+	data() {
+		return {
+			user: {} as User,
+			owner: {} as User,
+			sender: false as boolean,
+		};
+	},
+	props: {
+		message: {
+			type: Object as () => ChatMessage,
+			required: true,
+		}
+	},
+	methods: {
+		async getUserByID(id: number) {
+			await UserDataService.get(id)
+			.then((response : ResponseData) => {
+				this.user = response.data;
+			})
+			.catch((e: Error) => {
+				console.log(e);
+			});
 		},
-		props: {
-			owner: {
-				type: Object as () => User,
-				//type: String,
-				required: true,
-			},
-			prop_message: {
-				type: String,
-				required: true,
-			}
+		async getOwnerByID(id: number) {
+			await UserDataService.get(id)
+			.then((response : ResponseData) => {
+				this.owner = response.data;
+			})
+			.catch((e: Error) => {
+				console.log(e);
+			});
 		},
-		methods: {
-			initElements() {
-				console.log("Init Elements !");
-			},
+		async initElements() {
+			await this.getUserByID(Number(localStorage.getItem("user-id")));
+			await this.getOwnerByID(this.message.owner);
+
+			this.sender = (this.user.id === this.message.owner ? true : false);
+			console.log("isSender: " + this.sender + " | " + this.user.id + " == " + this.message.owner);
+
 		},
-		mounted() {
-			this.message.message = this.prop_message;
-
-			console.log("Message: Mounted");
-			console.log("Message: User: " + this.user.userName + " | Message: " + this.message.message);
-			//this.message.message = "this is a test !";
-			//this.message.sender = true;
-			//this.user.userName = "Default User";
-
-			//owner: props.Owner.label;
-
-			//let OwnerPropRef = ref({
-			//	console.log("");
-			//})
-
-			//this.message.owner = this.props.PropOwner;
-		},
-	});
+	},
+	mounted() {
+		this.initElements();
+	},
+});
 </script>
 
 <style media="screen">
-	.sender {
+.message {
+	width: 100%;
+	display: inline-block;
+	margin: 0 auto;
+}
 
-	}
+.message-box {
+	width: 50%;
+	border: 4px solid lightgreen;
+	border-radius: 8px;
+}
 
-	.notSender {
+.message-box h4 {
+	font-size: 24px;
+}
 
-	}
+.sender {
+	float: left;
+	background-color: lightgreen;
+}
 
-	.message {
-
-	}
+.not-sender {
+	float: right;
+	background-color: darkred;
+}
 </style>

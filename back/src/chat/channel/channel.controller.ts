@@ -7,6 +7,7 @@ import { Channel } from './channel.entity'
 import { User } from '../../users/user.entity';
 
 import { CreateChannelDto } from './dto/create-channel.dto';
+import { UpdateChannelUserDto } from './dto/update-channel-users.dto';
 import { MessageController } from '../message/message.controller';
 import { UsersService } from 'src/users/users.service';
 
@@ -36,35 +37,55 @@ export class ChannelController {
 		})
 	}
 
-	// ------ // 
-  	//  GET   //
-  	// ------ // 
 	// a verifier comment differencier upload avec param et upload comme ça dans la barre
 	// là on doit upload /42Born2Code/ID alors que dans le channelDataService on utilise data en aprametre
 	// a voir comment differencier les 2 datas et update le channel
 
-	// Get Default Channel Page
-	// @Public()
-	// @Get()
-	// test() : string {
-	// 	let string;
+	/*
+		@Public()
+		@Post(':channelName/:UserID')
+		async addChannelUser(@Param('channelName') channelName : string,
+		@Param('UserID') UserID : number) : Promise<any> {
+			return (this.channelDataService.addUserAsUser(channelName, UserID));
+		}
+	*/
 
-	// 	string = "Welcome to channel Backend page !";
-	// 	string += "<br><br>List of all Channel: <br><br>"
-	// 	string += this.channelDataService.findAll();
-	// 	return (string);
-	// }
 	@Public()
-	@Post(':channelName/:UserID')
-	async addChannelUser(@Param('channelName') channelName : string,
-	@Param('UserID') UserID : number) : Promise<any> {
-		return (this.channelDataService.addUserAsUser(channelName, UserID));
+	@Post(':channelName')
+	async addChannelUser(@Res() res, @Param('channelName') channelName: string, @Body() UpdateChannelUserDto: UpdateChannelUserDto) :Promise<void> {
+
+		console.log("newUser: " + UpdateChannelUserDto.newUser);
+
+		if (await this.channelDataService.findUserInChannel(channelName, UpdateChannelUserDto.newUser)) {
+			return res.status(HttpStatus.CONFLICT).json({
+				message: "User already in channel"
+			})
+		}
+		else {
+			this.channelDataService.addUserAsUser(channelName, UpdateChannelUserDto.newUser);
+			return (
+					res.status(HttpStatus.CREATED).json ({
+						message: `"User successfully added to channel !" + "channelName"`
+
+					})
+			);
+		}
 	}
 
+
+	// ------ //
+  	//  GET   //
+  	// ------ //
 	@Public()
 	@Get(':channelName')
 	getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
 		return (this.channelDataService.findOne(channelName));
+	}
+
+	@Public()
+	@Get('/:channelName/:messagesHistory')
+	getChannelHistory(@Param('channelName') channelName: string) : Promise<number[]> {
+		return (this.channelDataService.getMessageHistory(channelName));
 	}
 
 	@Public()
@@ -73,17 +94,15 @@ export class ChannelController {
 		return (this.channelDataService.findAll());
 	}
 
-	// ------- // 
+	// ------- //
 	//  DELETE //
 	// ------- //
 
 	@Public()
-	@Delete(':channelName')
-	deleteChannel(@Param('channelName') channelName : string) {
-		const ret = this.channelDataService.deleteOne(channelName);
-		return (ret ? "Channel: " + channelName + " deleted !" : "Channel " + channelName + " not deleted...");
+	@Delete('/:channelName/:id')
+	deleteChannel(@Param('channelName') channelName : string, @Param('id') id : number) {
+		this.channelDataService.removeUserAsUser(channelName, id);
+		return ("successfully deleted");
 	}
 
 }
-
-	

@@ -11,7 +11,7 @@ import { ChannelDataService } from '../channel/channel.service'
 import { User } from '../../users/user.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
 
-@Controller('message')
+@Controller('messages')
 export class MessageController {
 	constructor(private readonly messageService: MessageService) {}
 

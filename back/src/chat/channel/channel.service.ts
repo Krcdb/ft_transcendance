@@ -2,6 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
+import { User } from '../../users/user.entity';
 import { CreateChannelDto } from './dto/create-channel.dto';
 
 import { UsersService } from 'src/users/users.service';
@@ -57,12 +58,16 @@ export class ChannelDataService {
 			return (true);
 		return (false);
 	}
-	
+	async findUserInChannel(channelName: string, userID: number) : Promise<number> {
+		const channel = await this.findOne(channelName);
+		const found = channel.users.find(element => element === userID);
+		return found;
+	}
+
 	/////////////////////////////////////////
 	//  Gestion des listes d'utilisateurs  //
   	/////////////////////////////////////////
 
-		// Ajout
 	async addUserAsUser(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.users.push(userId);
@@ -121,6 +126,11 @@ export class ChannelDataService {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.messagesHistory.push(messageId);
 		this.channelRepository.save(channel);
+	}
+
+	async getMessageHistory(channelName: string) : Promise<any> {
+		const channel = await this.channelRepository.findOne(channelName);
+		return (channel.messagesHistory);
 	}
 
   	////////////////////////////////
