@@ -49,11 +49,7 @@ export default defineComponent({
       UserDataService.get(id)
         .then((response: ResponseData) => {
           this.user = response.data;
-          if (!this.user)
-          {
-            logout();
-            // this.$router.push("/login");
-          }
+          if (!this.user) logout();
         })
         .catch((e: Error) => {
           console.log(e);

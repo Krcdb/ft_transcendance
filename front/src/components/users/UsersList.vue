@@ -28,9 +28,7 @@
           <div class="friend-status" v-if="friends.indexOf(user.id) !== -1">
             Friend
           </div>
-          <div class="me-status" v-if="user.id == currentId">
-            Me
-          </div>
+          <div class="me-status" v-if="user.id == currentId">Me</div>
           <div class="user-status">
             <div v-if="user.isActive" id="online-circle"></div>
             <div v-else id="offline-circle"></div>
