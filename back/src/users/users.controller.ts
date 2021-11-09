@@ -66,8 +66,8 @@ export class UsersController {
     }
     })
   }))
-  uploadAvatar(@Param('id') id: number, @UploadedFile() file) {
-    this.usersService.setAvatar(id, `${file.filename}`);
+  async uploadAvatar(@Param('id') id: number, @UploadedFile() file) {
+    await this.usersService.setAvatar(id, `${file.filename}`);
   }
 
   // -> add user as friend
@@ -110,43 +110,43 @@ export class UsersController {
   // ------ // 
 
   // -> get all users
-  // @Public()
+  @Public()
   @Get()
-  findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  async findAll(): Promise<User[]> {
+    return await this.usersService.findAll();
   }
 
   // -> get one user
   @Public()
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<User> {
-    return this.usersService.findOne(id);
+  async findOne(@Param('id') id: number): Promise<User> {
+    return await this.usersService.findOne(id);
   }
 
   // -> get one user Friends
   // @Public()
   @Get(':id/friends')
-  getFriends(@Param('id') id: number): Promise<User[]> {
-    return this.usersService.getFriends(id);
+  async getFriends(@Param('id') id: number): Promise<User[]> {
+    return await this.usersService.getFriends(id);
   }
 
   // -> get one user Blocked Users
   @Get(':id/blocked')
-  getBlocked(@Param('id') id: number): Promise<User[]> {
-    return this.usersService.getBlocked(id);
+  async getBlocked(@Param('id') id: number): Promise<User[]> {
+    return await this.usersService.getBlocked(id);
   }
 
   // -> get all users except blocked ones
   @Public()
   @Get(':id/non-block-users')
-  getUsersexceptBlocked(@Param('id') id: number): Promise<User[]> {
-    return this.usersService.getUsersexceptBlocked(id);
+  async getUsersexceptBlocked(@Param('id') id: number): Promise<User[]> {
+    return await this.usersService.getUsersexceptBlocked(id);
   }
   // -> logout 
   // @Public()
   @Get('logout/:id')
-  logout(@Param('id') id: number): Promise<User> {
-    return this.usersService.updateLogState(id, false);
+  async logout(@Param('id') id: number): Promise<User> {
+    return await this.usersService.updateLogState(id, false);
   }
 
   // -> get avatar picture (should be the only public request)
@@ -169,13 +169,13 @@ export class UsersController {
 
   // -> delete the user
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
-    return this.usersService.remove(id);
+  async remove(@Param('id') id: number): Promise<void> {
+    return await this.usersService.remove(id);
   }
 
   // -> delete the user avatar picture
   @Delete(':id/avatar')
-  removeAvatar(@Param('id') id: number): Promise<void> {
-    return this.usersService.removeAvatar(id);
+  async removeAvatar(@Param('id') id: number): Promise<void> {
+    return await this.usersService.removeAvatar(id);
   }
 }

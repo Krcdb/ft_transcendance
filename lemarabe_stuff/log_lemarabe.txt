@@ -9,13 +9,13 @@ _______________________________________________________________________
 [OK]    creer des nouveaux users avec insomnia
 [OK]    sauvegarder ces users d'un build a l'autre, on peut essayer de les
             hardcoder mais si y'a moyen de faire plus propre c'est mieux
-[NON]   importer le dump
+[OK]    importer le dump
 [NON]   explorer la db avec pgadmin
-[ ]     simplifier les fonctions de service (au lieu de toujours utiliser
-            find/save, essayer d'utiliser des fonctions plus pertinentes
-            pour gagner en lignes de code et en efficacité)
-[ ]     Rediger des securites ?? un user qui n'est pas dans un channel ne peut pas y
-            poster etc...
+[ ]     Rediger des securites ?? un user qui n'est pas dans un channel
+            ne peut pas y poster etc...
+[ ]     Regler le souci de duplicate key qui pop quand j'update les users
+            apres un match : il ne devrait pas essayer de creer un nouvel
+            user pourtant c'est ce qu'il a l'air de faire
 _______________________________________________________________________
 QUESTIONS :
 _______________________________________________________________________
@@ -23,14 +23,65 @@ _______________________________________________________________________
 - Amitiés a sens unique ? Demande puis acceptation ?
   >> resolu, c'est a sens unique comme sur stud42
 - Comment gerer le ladder level ?
-
+  >> en cours, j'ai donné des levels entre 10 (le plus bas) et 1 (le plus
+  haut). Un seul user peut etre le niveau 1, les autres sont dans une pool.
+  Si un joueur defie un joueur de niveau superieur et gagne, ils echangent
+  leurs place. Problemes :
+    * joueur de niveau 10 gagne vs niveau 1 : il passe direct niveau 1 ??
+    * ou alors on les empeche de defier quelqu'un avec lequel ils ont plus
+    d'un niveau d'ecart ??
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * * * * * * * * * * * * * JOURNAL DE BORD * * * * * * * * * * * * * * * 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+[9 novembre]
+J'ai rajouté le user 'Illegal" avec id 0 dans le dump comme ca le illegal
+login fonctionne toujours.
+J'ai rajouté des DTO pour les match pour pouvoir faire des tests
+Je me rends compte que j'ai un peu foiré mes getters etc parce que 
+j'appelle pas toujours les fonctions des repositories avec await alors 
+que la plupart de celles qu'on utilise sont async !! Je vais devoir tout
+vérifier...
+--> C'est fait, j'ai tout checké, les 200 occurrences !! ^^'
+    sauf les trucs d'authentification (je prefere voir avec Servane demain)
+
+Voila la liste exhaustive des methodes des repositories :
+          manager   - The EntityManager used by this repository.
+          metadata  - The EntityMetadata of the entity managed by this repository. Learn more about transactions in Entity Metadata.
+          queryRunner - The query runner used by EntityManager. Used only in transactional instances of EntityManager.
+          target    - The target entity class managed by this repository. Used only in transactional instances of EntityManager.
++   async createQueryBuilder - Creates a query builder use to build SQL queries. Learn more about QueryBuilder.
+          hasId     - Checks if the given entity's primary column property is defined.
+          getId     - Gets the primary column property values of the given entity. If entity has composite primary keys then the returned value will be an object with names and values of primary columns.
+++        create    - Creates a new instance of User. Optionally accepts an object literal with user properties which will be written into newly created user object
+          merge     - Merges multiple entities into a single entity.
+++  async preload   - Creates a new entity from the given plain javascript object. If the entity already exists in the database, then it loads it (and everything related to it), replaces all values with the new ones from the given object, and returns the new entity. The new entity is actually an entity loaded from the database with all properties replaced from the new object.
+++  async save      - Saves a given entity or array of entities. If the entity already exist in the database, it is updated. If the entity does not exist in the database, it is inserted. It saves all given entities in a single transaction (in the case of entity, manager is not transactional). Also supports partial updating since all undefined properties are skipped. Returns the saved entity/entities.
+    async remove    - Removes a given entity or array of entities. It removes all given entities in a single transaction (in the case of entity, manager is not transactional). Returns the removed entity/entities.
+    async insert    - Inserts a new entity, or array of entities.
+++  async update    - Partially updates entity by a given update options or entity id.
+    async upsert    - Inserts a new entity or array of entities unless they already exist in which case they are updated instead. Supported by AuroraDataApi, Cockroach, Mysql, Postgres, and Sqlite database drivers.
+++  async delete    - Deletes entities by entity id, ids or given conditions:
+    async softDelete and restore - Soft deleting and restoring a row by id
+    async softRemove and recover - This is alternative to softDelete and restore.
+    async count     - Counts entities that match given options. Useful for pagination.
+    async increment - Increments some column by provided value of entities that match given options.
+    async decrement - Decrements some column by provided value that match given options.
+++  async find      - Finds entities that match given options.
+    async findAndCount - Finds entities that match given find options. Also counts all entities that match given conditions, but ignores pagination settings (skip and take options).
+    async findByIds - Finds multiple entities by id.
+++  async findOne   - Finds first entity that matches some id or find options.
+++  async findOneOrFail - Finds the first entity that matches the some id or find options. Rejects the returned promise if nothing matches.
+    async query     - Executes a raw SQL query.
+    async clear     - Clears all the data from the given table (truncates/drops it).
+
+*********************************************************************
+
 [8 novembre]
 Putain ca a enfin marché !!! Du coup pas de yaml...
+
+*********************************************************************
 
 [2 novembre]
 Je suis tres contente de ma refonte, ca marche nickel avec les IDs !!

@@ -17,7 +17,7 @@ export class AuthService {
       };
     }
     const payload = { name: user.userName, sub: user.id };
-    this.usersService.updateLogState(user.id, true);
+    await this.usersService.updateLogState(user.id, true);
     return {
       access_token: this.jwtService.sign(payload),
       userName: user.userName,
@@ -26,7 +26,7 @@ export class AuthService {
   }
 
   async loginAuthenticate(user: User) {
-    this.usersService.updateLogState(user.id, true);
+    await this.usersService.updateLogState(user.id, true);
     const payload = { name: user.userName, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),

@@ -15,7 +15,7 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto): Promise<User> {
+  async create(createUserDto: CreateUserDto): Promise<User> {
       const user = new User();
       user.userName = createUserDto.userName;
       user.id = createUserDto.id;
@@ -23,7 +23,7 @@ export class UsersService {
       user.matchHistory = [];
       user.nbLosses = 0;
       user.nbVictories = 0;
-      user.ladderLevel = 0;
+      user.ladderLevel = 10;
       user.achievements = [];
       user.friends = [];
       user.blockedUsers = [];
@@ -33,7 +33,7 @@ export class UsersService {
       user.channelsUserIsBanned = [];
       user.channelsUserIsMuted = [];
       user.messagesHistory = [];
-      return this.usersRepository.save(user);
+      return await this.usersRepository.save(user);
   }
 
   /////////////////////////////////////////
@@ -45,16 +45,16 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+    return await this.usersRepository.find();
   }
 
   async findOne(id: number): Promise<User> {
-    const user = this.usersRepository.findOne(id);
+    const user = await this.usersRepository.findOne(id);
     return user;
   }
 
   async remove(id: number): Promise<void> {
-    this.DeleteOldAvatarFile(id);
+    await this.DeleteOldAvatarFile(id);
     await this.usersRepository.delete(id);
   }
 
@@ -77,12 +77,12 @@ export class UsersService {
   ///////////////////////
 
   public async setAvatar(id: number, avatarUrl: string): Promise<void>  {
-    this.DeleteOldAvatarFile(id);
+    await this.DeleteOldAvatarFile(id);
     await this.usersRepository.update(id, {avatar: avatarUrl});
   }
 
   async getAvatar(id: number) : Promise<String>  {
-    return this.usersRepository.findOne(id).then((user) => { return user.avatar; });
+    return await this.usersRepository.findOne(id).then((user) => { return user.avatar; });
   }
   
   async DeleteOldAvatarFile (id: number) {
@@ -97,18 +97,18 @@ export class UsersService {
   }
 
   async removeAvatar(id: number): Promise<void> {
-    this.DeleteOldAvatarFile(id);
+    await this.DeleteOldAvatarFile(id);
     await this.usersRepository.update(id, {avatar: null});
   }
 
   async updateUserName(id: number, updateUserNameDto: UpdateUserNameDto): Promise<User> {
     await this.usersRepository.update(id, {userName: updateUserNameDto.newUserName});
-    return this.usersRepository.findOne(id);
+    return await this.usersRepository.findOne(id);
   }
 
   async updateLogState(id: number, isLog: boolean): Promise<User> {
     await this.usersRepository.update(id, {isActive: isLog});
-    return this.usersRepository.findOne(id);
+    return await this.usersRepository.findOne(id);
   }
 
   ///////////////////////////
@@ -118,19 +118,29 @@ export class UsersService {
   async addMatchToHistory(userId: number, matchId: number) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.matchHistory.push(matchId);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
 
   async addVictory(winnerId: number) : Promise<void> {
     const winner = await this.usersRepository.findOne(winnerId);
     winner.nbVictories += 1;
-    this.usersRepository.save(winner);
+    await this.usersRepository.save(winner);
   }
   
   async addDefeat(loserId: number) : Promise<void> {
     const loser = await this.usersRepository.findOne(loserId);
     loser.nbLosses += 1;
-    this.usersRepository.save(loser);
+    await this.usersRepository.save(loser);
+  }
+
+  async updateLadderLevel(winnerId: number, loserId: number) : Promise<void> {
+    const winner = await this.usersRepository.findOne(winnerId);
+    const loser = await this.usersRepository.findOne(loserId);
+    if (winner.ladderLevel < loser.ladderLevel)
+    {
+      await this.usersRepository.update(winnerId, { ladderLevel: loser.ladderLevel });
+      await this.usersRepository.update(loserId, { ladderLevel: winner.ladderLevel });
+    }
   }
   
   //////////////////////////////////
@@ -176,7 +186,7 @@ export class UsersService {
       return "You can't add a blocked user as friend";
     if (user.friends.indexOf(id) === -1) {
       user.friends.push(id);
-      this.usersRepository.save(user);   // seems necessary but i don't know why
+      await this.usersRepository.save(user);   // seems necessary but i don't know why
       return "Successfully added to your friends";
     }
     else
@@ -190,7 +200,7 @@ export class UsersService {
       return "This user is not in your friends list";
     else {
       user.friends.splice(user.friends.indexOf(id), 1);
-      this.usersRepository.save(user);
+      await this.usersRepository.save(user);
       return "Successfully removed from your friends list";
     }
     // const friend = await this.usersRepository.findOne(id);
@@ -207,8 +217,8 @@ export class UsersService {
       if (user.friends.indexOf(blockedId) !== -1)
         user.friends.splice(user.friends.indexOf(blockedId), 1);
       user.blockedUsers.push(blockedId);
-      this.usersRepository.save(user);
-      this.usersRepository.save(blocked);
+      await this.usersRepository.save(user);
+      await this.usersRepository.save(blocked);
       return "Successfully Blocked";
     }
     else
@@ -222,8 +232,8 @@ export class UsersService {
       return "This user is not Blocked";
     else {
       user.blockedUsers.splice(user.blockedUsers.indexOf(blockedId), 1);
-      this.usersRepository.save(user);
-      this.usersRepository.save(blocked);
+      await this.usersRepository.save(user);
+      await this.usersRepository.save(blocked);
       return "Successfully Unblocked";
     }
   }
@@ -236,54 +246,54 @@ export class UsersService {
   async addToChannelUsers(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
 		user.channelsUserIsIn.push(channelName);
-		this.usersRepository.save(user);
+		await this.usersRepository.save(user);
   }
   async addToChannelOwner(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
 		user.channelsUserIsOwner.push(channelName);
-		this.usersRepository.save(user);
+		await this.usersRepository.save(user);
   }
   async addToChannelAdmins(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
 		user.channelsUserIsAdmin.push(channelName);
-		this.usersRepository.save(user);
+		await this.usersRepository.save(user);
   }
   async addToChannelBanned(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
 		user.channelsUserIsBanned.push(channelName);
-		this.usersRepository.save(user);
+		await this.usersRepository.save(user);
   }
   async addToChannelMuted(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
 		user.channelsUserIsMuted.push(channelName);
-		this.usersRepository.save(user);
+		await this.usersRepository.save(user);
   }
   
   // Retrait de l'utilisateur
   async removeFromChannelUsers(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.channelsUserIsIn.splice(user.channelsUserIsIn.indexOf(channelName), 1);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   async removeFromChannelOwner(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.channelsUserIsOwner.splice(user.channelsUserIsOwner.indexOf(channelName), 1);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   async removeFromChannelAdmins(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.channelsUserIsAdmin.splice(user.channelsUserIsAdmin.indexOf(channelName), 1);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   async removeFromChannelBanned(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.channelsUserIsBanned.splice(user.channelsUserIsBanned.indexOf(channelName), 1);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   async removeFromChannelMuted(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.channelsUserIsMuted.splice(user.channelsUserIsMuted.indexOf(channelName), 1);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   
   ///////////////////////////
@@ -293,7 +303,7 @@ export class UsersService {
   async addMessageToHistory(userId: number, messageId: number) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.messagesHistory.push(messageId);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   
   //////////////////////////////////
@@ -301,19 +311,19 @@ export class UsersService {
   //////////////////////////////////
   
   async settwoFAuthSecret(secret: string, id: number) {
-    return this.usersRepository.update(id, {
+    return await this.usersRepository.update(id, {
       twoFAuthSecret: secret
     });
   }
 
   async turnOnTwoFAuth(id: number) {
-    return this.usersRepository.update(id, {
+    return await this.usersRepository.update(id, {
       isTwoFAuthEnabled: true
     });
   }
 
   async turnOffTwoFAuth(id: number) {
-    return this.usersRepository.update(id, {
+    return await this.usersRepository.update(id, {
       isTwoFAuthEnabled: false
     });
   }
