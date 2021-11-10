@@ -17,6 +17,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable */
 	import { defineComponent } from "vue";
 	import ChatMessage from "@/types/ChatMessage";
 	import User from "@/types/User";

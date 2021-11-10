@@ -39,17 +39,24 @@ export class GameService {
 			this.logger.log('user in queue', user.userName);
 			for (let i = this.matchmakingQueue.indexOf(user) + 1; i < this.matchmakingQueue.length; i++) {
 				const opponent = this.matchmakingQueue[i];
-				const eloDiff = Math.abs(opponent.elo - user.elo);
+				const eloDiff = Math.abs(opponent.ladderLevel - user.ladderLevel);
 				if (eloDiff < 100)
 					this.matchPlayers(user, opponent);
 			}
 		}
 	}
 
+	createGame(player1: User, player2: User) {
+		const game = new Game(GameOptions, "1");
+
+		this.games.set(game.uuid, game);
+	}
+
 	matchPlayers(player1: User, player2: User) {
 		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(player1), 1);
 		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(player2), 1);
 		this.logger.log('match found');
+		this.createGame(player1, player2);
 		const uuid = "123456";
 		this.gameReady(player1, uuid);
 		this.gameReady(player2, uuid);
@@ -62,12 +69,6 @@ export class GameService {
 			this.matchmakingQueue.push(user);
 			this.logger.log(user.userName, "added to queue");
 		}
-	}
-
-	createGame() {
-		const game = new Game(GameOptions, "1");
-
-		this.games.set(game.uuid, game);
 	}
 
 	playerNewKeyEvent(payload: any) {

@@ -37,7 +37,7 @@ export default defineComponent({
 		socket.on('matchFound', (uuid: string) => {
 			console.log("match found |", uuid);
 		})
-    }
+    },
    
 });
 </script>
