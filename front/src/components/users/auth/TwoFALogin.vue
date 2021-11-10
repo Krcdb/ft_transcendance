@@ -20,33 +20,20 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
-import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
   data() {
     return {
       error: "",
-      user: {} as User,
       authcode: "",
     };
   },
   methods: {
-    getUser(id: number) {
-      UserDataService.get(id)
-        .then((response: ResponseData) => {
-          this.error = "";
-          this.user = response.data;
-        })
-        .catch((e: Error) => {
-          this.error = e.message;
-          console.log(e);
-        });
-    },
     sendCode() {
       let data = {
         twoFAuthCode: this.authcode,
-        id: this.user.id,
+        id: Number(localStorage.getItem("user-id")),
       };
       UserDataService.authenticate2fa(data)
         .then((response: ResponseData) => {
@@ -62,10 +49,6 @@ export default defineComponent({
           this.error = e.response.data.message;
         });
     },
-  },
-  mounted() {
-    if (localStorage.getItem("user-id"))
-      this.getUser(Number(localStorage.getItem("user-id")));
   },
 });
 </script>

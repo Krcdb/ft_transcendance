@@ -23,7 +23,6 @@ import { AuthService } from './auth.service';
     ) {}
    
     // -> turn on 2fa
-    // @Public()
     @Post('turn-on')
     @HttpCode(200)
     async turnOnTwoFAuth(
@@ -39,7 +38,6 @@ import { AuthService } from './auth.service';
     }
 
     // -> generate qr code 
-    // @Public()
     @Post('generate')
     async register(@Res() response: Response, @Body() id: number) {
       const { otpauthUrl } = await this.twoFAuthService.generatetwoFAuthSecret(id);
@@ -48,7 +46,6 @@ import { AuthService } from './auth.service';
     }
 
     // -> turn off 2fa
-    // @Public()
     @Post('turn-off')
     async turnOffTwoFAuth(@Body() id: number) {
       return await this.usersService.turnOffTwoFAuth(id);

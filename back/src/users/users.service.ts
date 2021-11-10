@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not, In } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
+import { JwtService } from '@nestjs/jwt';
 import { User } from './user.entity';
 import * as fs from 'fs';
 // import { ChannelDataService } from '../chat/channel/channel.service';
@@ -12,7 +13,8 @@ import * as fs from 'fs';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+	private readonly usersRepository: Repository<User>,
+	private readonly jwtService: JwtService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -166,10 +168,7 @@ export class UsersService {
   async getUsersexceptBlocked(id:number): Promise<User[]> {
     const user = await this.usersRepository.findOne(id);
     if (!user)
-    {
-      console.log("getUsersexceptBlocked() failed for id:" + id);
       return [] as User[];
-    }
     const users = await this.usersRepository.find({
       where: {
         id: Not(In(user.blockedUsers))
@@ -177,7 +176,6 @@ export class UsersService {
     });
     return users;
   }
-
   // Ajout de l'utilisateur
   async addAsFriend(userId: number, id: number) : Promise<string> {
     const user = await this.usersRepository.findOne(userId);
@@ -203,9 +201,6 @@ export class UsersService {
       await this.usersRepository.save(user);
       return "Successfully removed from your friends list";
     }
-    // const friend = await this.usersRepository.findOne(id);
-    // friend.friends.splice(friend.friends.indexOf(userId), 1);
-    // this.usersRepository.save(friend);
   }
 
   async addAsBlocked(userId: number, blockedId: number) : Promise<string> {

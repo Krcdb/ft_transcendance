@@ -4,7 +4,7 @@
     <div v-if="users.length" class="friend-wrapper">
       <input
         type="text"
-        placeholder="Search an user..."
+        placeholder="Search a friend.."
         v-model="keyword"
         @input="searchhandler"
         @change="searchhandler"
@@ -84,6 +84,11 @@ export default defineComponent({
 </script>
 
 <style scopped>
+.friends-list-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .friend-img img {
   width: 40px;
   height: 40px;

@@ -3,12 +3,6 @@ _____  __        __    __
   |   /  \  __  |  \  /  \
   |   \__/      |__/  \__/
 _______________________________________________________________________
-[OK]    rentrer dans le container et essayer d'explorer la db
-[OK]    essayer de faire un dump depuis l'interieur et voir a quoi ca
-            ressemble
-[OK]    creer des nouveaux users avec insomnia
-[OK]    sauvegarder ces users d'un build a l'autre, on peut essayer de les
-            hardcoder mais si y'a moyen de faire plus propre c'est mieux
 [OK]    importer le dump
 [NON]   explorer la db avec pgadmin
 [ ]     Rediger des securites ?? un user qui n'est pas dans un channel

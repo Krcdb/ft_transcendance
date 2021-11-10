@@ -28,6 +28,7 @@
           <div class="friend-status" v-if="friends.indexOf(user.id) !== -1">
             Friend
           </div>
+          <div class="me-status" v-if="user.id == currentId">Me</div>
           <div class="user-status">
             <div v-if="user.isActive" id="online-circle"></div>
             <div v-else id="offline-circle"></div>
@@ -52,6 +53,7 @@ export default defineComponent({
       friends: [] as number[],
       filteredUsers: [] as User[],
       keyword: "",
+      currentId: {} as number,
     };
   },
   methods: {
@@ -70,8 +72,14 @@ export default defineComponent({
           console.log(e);
         });
     },
+    searchhandler() {
+      this.filteredUsers = this.users.filter((user) =>
+        user.userName.toLowerCase().includes(this.keyword.toLowerCase())
+      );
+    },
   },
   mounted() {
+    this.currentId = Number(localStorage.getItem("user-id"));
     this.retrieveusers();
   },
 });
@@ -134,6 +142,13 @@ h3 {
 }
 .friend-status {
   background-color: #4bbd4b;
+  font-weight: bold;
+  color: white;
+  margin-right: 0%;
+  padding: 5px;
+}
+.me-status {
+  background-color: black;
   font-weight: bold;
   color: white;
   margin-right: 0%;

@@ -12,30 +12,16 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
-import User from "@/types/User";
-import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
   data() {
     return {
       error: "",
-      user: {} as User,
       qrcode: "",
       authcode: "",
     };
   },
   methods: {
-    getUser(id: number) {
-      UserDataService.get(id)
-        .then((response: ResponseData) => {
-          this.error = "";
-          this.user = response.data;
-        })
-        .catch((e: Error) => {
-          this.error = e.message;
-          console.log(e);
-        });
-    },
     getQrcode() {
       let data = {
         id: localStorage.getItem("user-id"),
@@ -49,7 +35,6 @@ export default defineComponent({
   },
   mounted() {
     if (localStorage.getItem("user-id")) {
-      this.getUser(Number(localStorage.getItem("user-id")));
       this.getQrcode();
     }
   },

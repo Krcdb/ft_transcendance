@@ -20,7 +20,7 @@ import { twoFAuthService } from './twoFAuth.service';
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '1h' },
+      signOptions: { expiresIn: '5h' },
     })
   ],
   providers: [

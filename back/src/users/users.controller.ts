@@ -110,21 +110,18 @@ export class UsersController {
   // ------ // 
 
   // -> get all users
-  @Public()
   @Get()
   async findAll(): Promise<User[]> {
     return await this.usersService.findAll();
   }
 
   // -> get one user
-  @Public()
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<User> {
     return await this.usersService.findOne(id);
   }
 
   // -> get one user Friends
-  // @Public()
   @Get(':id/friends')
   async getFriends(@Param('id') id: number): Promise<User[]> {
     return await this.usersService.getFriends(id);
@@ -137,13 +134,11 @@ export class UsersController {
   }
 
   // -> get all users except blocked ones
-  @Public()
   @Get(':id/non-block-users')
   async getUsersexceptBlocked(@Param('id') id: number): Promise<User[]> {
     return await this.usersService.getUsersexceptBlocked(id);
   }
   // -> logout 
-  // @Public()
   @Get('logout/:id')
   async logout(@Param('id') id: number): Promise<User> {
     return await this.usersService.updateLogState(id, false);
