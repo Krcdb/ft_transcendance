@@ -21,6 +21,7 @@
         <p>Level: {{ user.ladderLevel }}</p>
         <br />
       </div>
+    <AchievementsList :userId="user.id"/>
     </div>
   </div>
 
@@ -33,9 +34,13 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import User from "@/types/User";
+import AchievementsList from "./AchievementsList.vue";
 
 export default defineComponent({
   name: "User",
+  components: {
+    AchievementsList,
+  },
   props: {
     user: {
       type: Object as () => User,
@@ -78,6 +83,11 @@ h4 {
   margin-right: 10px;
 }
 .friend-status {
+  background-color: #4bbd4b;
+  font-weight: bold;
+  color: white;
+  margin-right: 0%;
+  padding: 5px;
   margin-right: 5px;
 }
 </style>

@@ -46,7 +46,8 @@ export class GameService {
 		}
 	}
 
-	createGame(player1: User, player2: User) {
+	createGame() {
+		// createGame(player1: User, player2: User) {
 		const game = new Game(GameOptions, "1");
 
 		this.games.set(game.uuid, game);
@@ -56,7 +57,8 @@ export class GameService {
 		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(player1), 1);
 		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(player2), 1);
 		this.logger.log('match found');
-		this.createGame(player1, player2);
+		this.createGame();
+		// this.createGame(player1, player2);
 		const uuid = "123456";
 		this.gameReady(player1, uuid);
 		this.gameReady(player2, uuid);

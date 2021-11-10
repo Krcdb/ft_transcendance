@@ -6,6 +6,8 @@ import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './user.entity';
 import * as fs from 'fs';
+import { enumAchievements, allAchievement } from 'src/achievements/achievements';
+import { AchievementsInterface } from 'src/achievements/achievements';
 // import { ChannelDataService } from '../chat/channel/channel.service';
 // import { MessageService } from '../chat/message/message.service';
 
@@ -38,6 +40,21 @@ export class UsersService {
       return this.usersRepository.save(user);
   }
 
+
+  ///////////
+  // Utils //
+  ///////////
+
+  async setAchievement(userId: number, achiev: enumAchievements): Promise<User> {
+    const user = await this.usersRepository.findOne(userId);
+    if (user.achievements.indexOf(achiev) === -1)
+    {
+      user.achievements.push(achiev);
+      await this.usersRepository.save(user);
+    }
+    return user;
+  }
+  
   /////////////////////////////////////////
   // Recherche et gestion d'utilisateurs //
   /////////////////////////////////////////
@@ -78,9 +95,11 @@ export class UsersService {
   // Gestion du profil //
   ///////////////////////
 
-  public async setAvatar(id: number, avatarUrl: string): Promise<void>  {
+  // AVATAR //
+  async setAvatar(id: number, avatarUrl: string): Promise<User>  {
     this.DeleteOldAvatarFile(id);
     await this.usersRepository.update(id, {avatar: avatarUrl});
+    return this.setAchievement(id, enumAchievements.UPLOAD_AVATAR);
   }
 
   async getAvatar(id: number) : Promise<String>  {
@@ -103,14 +122,20 @@ export class UsersService {
     await this.usersRepository.update(id, {avatar: null});
   }
 
+  // Other //
   async updateUserName(id: number, updateUserNameDto: UpdateUserNameDto): Promise<User> {
     await this.usersRepository.update(id, {userName: updateUserNameDto.newUserName});
-    return this.usersRepository.findOne(id);
+    return this.setAchievement(id, enumAchievements.CHANGE_NAME);
   }
 
   async updateLogState(id: number, isLog: boolean): Promise<User> {
     await this.usersRepository.update(id, {isActive: isLog});
     return this.usersRepository.findOne(id);
+  }
+
+  async getAchievements(id: number): Promise<AchievementsInterface[]> {
+    const user = await this.usersRepository.findOne(id);
+    return allAchievement.filter(({id}) => user.achievements.includes(id));
   }
 
   ///////////////////////////
@@ -120,7 +145,7 @@ export class UsersService {
   async addMatchToHistory(userId: number, matchId: number) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.matchHistory.push(matchId);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
 
   async addVictory(winnerId: number) : Promise<void> {
@@ -166,6 +191,7 @@ export class UsersService {
     });
     return users;
   }
+
   // Ajout de l'utilisateur
   async addAsFriend(userId: number, id: number) : Promise<string> {
     const user = await this.usersRepository.findOne(userId);
@@ -174,7 +200,9 @@ export class UsersService {
       return "You can't add a blocked user as friend";
     if (user.friends.indexOf(id) === -1) {
       user.friends.push(id);
-      this.usersRepository.save(user);   // seems necessary but i don't know why
+      if (user.friends.length > 0)
+        this.setAchievement(userId, enumAchievements.ADD_ONE_FRIEND);
+      await this.usersRepository.save(user);
       return "Successfully added to your friends";
     }
     else
@@ -188,25 +216,22 @@ export class UsersService {
       return "This user is not in your friends list";
     else {
       user.friends.splice(user.friends.indexOf(id), 1);
-      this.usersRepository.save(user);
+      await this.usersRepository.save(user);
       return "Successfully removed from your friends list";
     }
-    // const friend = await this.usersRepository.findOne(id);
-    // friend.friends.splice(friend.friends.indexOf(userId), 1);
-    // this.usersRepository.save(friend);
   }
 
   async addAsBlocked(userId: number, blockedId: number) : Promise<string> {
     const user = await this.usersRepository.findOne(userId);
-    const blocked = await this.usersRepository.findOne(blockedId);
     await this.removeFromFriends(userId, blockedId);
     if (user.blockedUsers.indexOf(blockedId) === -1)
     {
       if (user.friends.indexOf(blockedId) !== -1)
         user.friends.splice(user.friends.indexOf(blockedId), 1);
       user.blockedUsers.push(blockedId);
-      this.usersRepository.save(user);
-      this.usersRepository.save(blocked);
+      if (user.blockedUsers.length > 0)
+        this.setAchievement(userId, enumAchievements.BLOCK_ONE_USER);
+      await this.usersRepository.save(user);
       return "Successfully Blocked";
     }
     else
@@ -220,7 +245,8 @@ export class UsersService {
       return "This user is not Blocked";
     else {
       user.blockedUsers.splice(user.blockedUsers.indexOf(blockedId), 1);
-      this.usersRepository.save(user);
+      this.setAchievement(userId, enumAchievements.UNBLOCK_AN_USER);
+      await this.usersRepository.save(user);
       this.usersRepository.save(blocked);
       return "Successfully Unblocked";
     }
@@ -234,54 +260,54 @@ export class UsersService {
   async addToChannelUsers(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
 		user.channelsUserIsIn.push(channelName);
-		this.usersRepository.save(user);
+		await this.usersRepository.save(user);
   }
   async addToChannelOwner(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
 		user.channelsUserIsOwner.push(channelName);
-		this.usersRepository.save(user);
+		await this.usersRepository.save(user);
   }
   async addToChannelAdmins(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
 		user.channelsUserIsAdmin.push(channelName);
-		this.usersRepository.save(user);
+		await this.usersRepository.save(user);
   }
   async addToChannelBanned(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
 		user.channelsUserIsBanned.push(channelName);
-		this.usersRepository.save(user);
+		await this.usersRepository.save(user);
   }
   async addToChannelMuted(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
 		user.channelsUserIsMuted.push(channelName);
-		this.usersRepository.save(user);
+		await this.usersRepository.save(user);
   }
   
   // Retrait de l'utilisateur
   async removeFromChannelUsers(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.channelsUserIsIn.splice(user.channelsUserIsIn.indexOf(channelName), 1);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   async removeFromChannelOwner(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.channelsUserIsOwner.splice(user.channelsUserIsOwner.indexOf(channelName), 1);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   async removeFromChannelAdmins(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.channelsUserIsAdmin.splice(user.channelsUserIsAdmin.indexOf(channelName), 1);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   async removeFromChannelBanned(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.channelsUserIsBanned.splice(user.channelsUserIsBanned.indexOf(channelName), 1);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   async removeFromChannelMuted(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.channelsUserIsMuted.splice(user.channelsUserIsMuted.indexOf(channelName), 1);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   
   ///////////////////////////
@@ -291,7 +317,7 @@ export class UsersService {
   async addMessageToHistory(userId: number, messageId: number) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.messagesHistory.push(messageId);
-    this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
   
   //////////////////////////////////
@@ -305,6 +331,7 @@ export class UsersService {
   }
 
   async turnOnTwoFAuth(id: number) {
+    const user = await this.setAchievement(id, enumAchievements.ACTIVATE_2FA);
     return this.usersRepository.update(id, {
       isTwoFAuthEnabled: true
     });

@@ -85,6 +85,9 @@ class TutorialDataService {
     return http.get(`/users/${id}/non-block-users`);
   }
 
+  getAchievements(id: number): Promise<any> {
+    return http.get(`/users/${id}/achievements`);
+  }
 }
 
 export default new TutorialDataService();
