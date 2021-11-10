@@ -12,13 +12,13 @@ export class AuthController {
   @UseGuards(FortyTwoAuthGuard)
   @Get('42')
   async login(@Request() req): Promise<any>  {
-    return this.authService.login(req.user);
+    return await this.authService.login(req.user);
   }
 
   // -> login to user with out 42 (only for testing)
   @Public()
   @Get(':id')
   async loginInvite(@Param('id') id: number): Promise<any>  {
-    return this.authService.loginInvite(id);
+    return await this.authService.loginInvite(id);
   }
 }

@@ -44,7 +44,7 @@ import { AuthService } from './auth.service';
     async register(@Res() response: Response, @Body() id: number) {
       const { otpauthUrl } = await this.twoFAuthService.generatetwoFAuthSecret(id);
    
-      return this.twoFAuthService.pipeQrCodeStream(response, otpauthUrl);
+      return await this.twoFAuthService.pipeQrCodeStream(response, otpauthUrl);
     }
 
     // -> turn off 2fa
