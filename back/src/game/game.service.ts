@@ -54,7 +54,7 @@ export class GameService {
 	}
 
 	async createGame(player1: User, player2: User) {
-		const match = await this.matchService.createMatch(player1.id, player2.id);
+		const match = await this.matchService.create(player1.id, player2.id);
 		console.log("new match | id : ", match.matchId, " | p1 : ", player1.id, " | p2 : ", player2.id);
 		
 		const game = new Game(player1, player2, GameOptions, match.matchId);
@@ -75,11 +75,8 @@ export class GameService {
 			  	match.state = GameState.IN_PROGRESS;
 			  	await this.matchRepository.update(match.matchId, { state: match.state });
 			}
-			if (game.player1Score !== match.scores[0] || game.player2Score !== match.scores[1]) {
-				let scoreUpdate:number[] = [];
-				scoreUpdate[0] = game.player1Score;
-				scoreUpdate[1] = game.player2Score;
-				await this.matchRepository.update(match.matchId, { scores: scoreUpdate })
+			if (game.player1Score !== match.scorePlayerOne || game.player2Score !== match.scorePlayerTwo) {
+				await this.matchRepository.update(match.matchId, { scorePlayerOne : game.player1Score, scorePlayerTwo : game.player2Score })
 			}
 			if (game.player1Score >= 5 || game.player2Score >= 5) {
 			  	game.matchDone(this.socketService.server);

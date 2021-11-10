@@ -1,5 +1,22 @@
 export default {
     User: [
+        {
+            id: 0,
+            userName: 'Illegal',
+            matchHistory: [],
+            nbVictories: 42,
+            nbLosses: 0,
+            ladderLevel: 1,
+            achievements: [],
+            friends: [],
+            blockedUsers: [],
+            channelsUserIsOwner: [],
+            channelsUserIsAdmin: [],
+            channelsUserIsIn: [],
+            channelsUserIsBanned: [],
+            channelsUserIsMuted: [],
+            messagesHistory: []
+        },
         ////////////
         /// CATS ///
         ////////////

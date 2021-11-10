@@ -32,7 +32,7 @@ export class ChannelDataService {
 		channel.users.push(createChannelDto.owner);
 		await this.usersService.addToChannelOwner(createChannelDto.owner, createChannelDto.channelName);
 		await this.usersService.addToChannelUsers(createChannelDto.owner, createChannelDto.channelName);
-		return (this.channelRepository.save(channel));
+		return (await this.channelRepository.save(channel));
 	}
 
 	/////////////////////////////////////////
@@ -40,16 +40,16 @@ export class ChannelDataService {
   	/////////////////////////////////////////
 
 	async findOne(channelName: string) : Promise<Channel> {
-		return (this.channelRepository.findOne(channelName));
+		return (await this.channelRepository.findOne(channelName));
 	}
 	async findAll() : Promise<Channel[]> {
-		return (this.channelRepository.find());
+		return (await this.channelRepository.find());
 	}
 	async findAllPublicChannels() : Promise<Channel[]> {
-		return (this.channelRepository.find({isPublic: true}));
+		return (await this.channelRepository.find({isPublic: true}));
 	}
 	async findAllPrivateChannels() : Promise<Channel[]> {
-		return (this.channelRepository.find({isPublic: false}));
+		return (await this.channelRepository.find({isPublic: false}));
 	}
 	async channelAlreadyExists(channelName: string): Promise<any> {
 		const channel = await this.channelRepository.findOne(channelName);
@@ -66,51 +66,51 @@ export class ChannelDataService {
 	async addUserAsUser(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.users.push(userId);
-		this.channelRepository.save(channel);
+		await this.channelRepository.save(channel);
 	}
 	async addUserAsAdmin(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.admins.push(userId);
-		this.channelRepository.save(channel);
+		await this.channelRepository.save(channel);
 	}
 	async addUserAsBanned(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.banList.push(userId);
-		this.channelRepository.save(channel);
+		await this.channelRepository.save(channel);
 	}
 	async addUserAsMuted(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.muteList.push(userId);
-		this.channelRepository.save(channel);
+		await this.channelRepository.save(channel);
 	}
 	
 		// Retrait
 	async removeUserAsUser(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.users.splice(channel.users.indexOf(userId));
-		this.channelRepository.save(channel);
+		await this.channelRepository.save(channel);
 	}
 	async removeUserAsAdmin(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.admins.splice(channel.admins.indexOf(userId));
-		this.channelRepository.save(channel);
+		await this.channelRepository.save(channel);
 	}
 	async removeUserAsBanned(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.banList.splice(channel.banList.indexOf(userId));
-		this.channelRepository.save(channel);
+		await this.channelRepository.save(channel);
 	}
 	async removeUserAsMuted(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.muteList.splice(channel.muteList.indexOf(userId));
-		this.channelRepository.save(channel);
+		await this.channelRepository.save(channel);
 	}
 		// Changement d'owner  // (owner ne peut pas etre null)
 	async changeOwner(channelName: string, newOwnerId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		await this.usersService.removeFromChannelOwner(channel.owner, channelName);
 		await this.usersService.addToChannelOwner(newOwnerId, channelName);
-		this.channelRepository.update(channelName, {owner: newOwnerId});
+		await this.channelRepository.update(channelName, {owner: newOwnerId});
 	}
 
   	////////////////////////////////
@@ -120,7 +120,7 @@ export class ChannelDataService {
 	async addMessageToHistory(channelName: string, messageId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.messagesHistory.push(messageId);
-		this.channelRepository.save(channel);
+		await this.channelRepository.save(channel);
 	}
 
 }

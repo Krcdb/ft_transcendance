@@ -1,5 +1,4 @@
-import { User } from 'src/users/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum GameState {
   WAITING_ALL = 'waiting_all',
@@ -15,9 +14,15 @@ export class Match {
   @Column({ enum: GameState, type: 'enum', default: GameState.WAITING_ALL })
   state: GameState;
 
-  @Column("int", {nullable: true})
-  players: number[];
+  @Column("int")
+  playerOne: number;
 
-  @Column("int", {nullable: true})
-  scores: number[];
+  @Column("int")
+  playerTwo: number;
+
+  @Column("int")
+  scorePlayerOne: number;
+
+  @Column("int")
+  scorePlayerTwo: number;
 }
