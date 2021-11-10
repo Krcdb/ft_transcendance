@@ -4,6 +4,10 @@ import { WebsocketService } from "src/websocket/websocket.service"
 import { User } from "src/users/user.entity";
 import { UsersService } from "src/users/users.service";
 import { Socket } from "socket.io";
+import { MatchService } from "src/match/match.service";
+import { GameState, Match } from "src/match/match.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 const GameOptions: GameOptionsInterface = {
 	FPS: 60,
@@ -28,15 +32,18 @@ export class GameService {
 	constructor(
 		@Inject(forwardRef(() => WebsocketService))
 		private readonly socketService: WebsocketService,
+		@Inject(forwardRef(() => WebsocketService))
+		private readonly matchService: MatchService,
+		@InjectRepository(Match)
+        private readonly matchRepository: Repository<Match>,
 		@Inject(forwardRef(() => UsersService))
-		private readonly usersService: UsersService) {
+		private readonly usersService: UsersService){
 		if (!this.matchmakingInterval)
 			this.matchmakingInterval = setInterval(this.checkMatchmakingRef, 5000);
 	}
 
 	checkMatchmaking() {
 		for (const user of this.matchmakingQueue) {
-			this.logger.log('user in queue', user.userName);
 			for (let i = this.matchmakingQueue.indexOf(user) + 1; i < this.matchmakingQueue.length; i++) {
 				const opponent = this.matchmakingQueue[i];
 				const eloDiff = Math.abs(opponent.ladderLevel - user.ladderLevel);
@@ -46,10 +53,48 @@ export class GameService {
 		}
 	}
 
-	createGame(player1: User, player2: User) {
-		const game = new Game(GameOptions, "1");
-
+	async createGame(player1: User, player2: User) {
+		const match = await this.matchService.createMatch(player1.id, player2.id);
+		console.log("new match | id : ", match.matchId, " | p1 : ", player1.id, " | p2 : ", player2.id);
+		
+		const game = new Game(player1, player2, GameOptions, match.matchId);
 		this.games.set(game.uuid, game);
+
+		this.gameReady(player1, game.uuid);
+		this.gameReady(player2, game.uuid);
+
+		setTimeout(() => {
+			if (!game.player1Ready || !game.player2Ready) {
+				this.cancelGame(game);
+			}
+		}, 30000);
+
+		game.intervalRef = setInterval(async () => {
+			game.gameLoop(this.socketService.server);
+			if (game.started && match.state !== GameState.IN_PROGRESS) {
+			  	match.state = GameState.IN_PROGRESS;
+			  	await this.matchRepository.update(match.matchId, { state: match.state });
+			}
+			if (game.player1Score !== match.scores[0] || game.player2Score !== match.scores[1]) {
+				let scoreUpdate:number[] = [];
+				scoreUpdate[0] = game.player1Score;
+				scoreUpdate[1] = game.player2Score;
+				await this.matchRepository.update(match.matchId, { scores: scoreUpdate })
+			}
+			if (game.player1Score >= 5 || game.player2Score >= 5) {
+			  	game.matchDone(this.socketService.server);
+			  	this.matchDone(game);
+			  	return;
+			}
+		  }, 1000 / game.options.FPS);
+	}
+
+	cancelGame(game: Game) {
+
+	}
+
+	matchDone(game: Game) {
+
 	}
 
 	matchPlayers(player1: User, player2: User) {
@@ -57,9 +102,6 @@ export class GameService {
 		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(player2), 1);
 		this.logger.log('match found');
 		this.createGame(player1, player2);
-		const uuid = "123456";
-		this.gameReady(player1, uuid);
-		this.gameReady(player2, uuid);
 		//this.socketService.server.emit('matchFound');
 	}
 
@@ -75,7 +117,7 @@ export class GameService {
 		const game = this.games.get(payload.uuid);
 
 		if (game) {
-			game.playerNewKeyEvent(payload.key)
+			game.playerNewKeyEvent(payload)
 		}
 	}
 

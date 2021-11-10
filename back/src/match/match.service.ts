@@ -15,7 +15,7 @@ export class MatchService {
         private readonly usersService: UsersService
     ) {}
 
-    create(userOneId: number, userTwoId: number) : Promise<Match> {
+    createMatch(userOneId: number, userTwoId: number) : Promise<Match> {
         const match = new Match();
         match.players[0] = userOneId;
         match.players[1] = userTwoId;
