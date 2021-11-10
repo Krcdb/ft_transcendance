@@ -43,6 +43,7 @@
 </template>
 
 <script lang="ts">
+//import Vue from "vue";
 import { defineComponent } from "vue";
 import User from "@/types/User";
 import ChannelDataService from "@/services/ChannelDataService";
@@ -62,9 +63,16 @@ export default defineComponent({
 			user: {} as User,
 			channel: {} as Channel,
 			Messages: [] as Message[],
-
 			currentMessage: {} as Message,
 		};
+	},
+	sockets: {
+		connect: function () {
+			console.log('socket connected');
+		},
+		customEmit: function (data: number) {
+			console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)' + data);
+		}
 	},
 	components: {
 		MessageComponent,
@@ -170,6 +178,7 @@ export default defineComponent({
 				await ChannelDataService.sendMessageToChannel(this.channel.channelName, this.currentMessage)
 				.then((response : ResponseData) => {
 					console.log("SendMessage: " + response.data);
+					//this.$socket.emit('message', this.currentMessage.message);
 					this.getMessages();
 				})
 				.catch((e: Error) => {

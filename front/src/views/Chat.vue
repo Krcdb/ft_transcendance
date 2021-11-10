@@ -78,6 +78,13 @@ export default defineComponent({
             this.user = value;
             console.log("Handle get user: " + this.user.userName);
             this.userSelected = true;
+
+
+            console.log("Switch user");
+
+            // TMP debug with user
+            localStorage.setItem("user-id", String(this.user.id));
+            localStorage.setItem("user-name", this.user.userName);
         },
         SwitchNavBarSelection(value : number) {
             this.navBarSelection = value;
