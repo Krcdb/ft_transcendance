@@ -15,8 +15,6 @@ export class ChannelDataService {
 		private readonly channelRepository: Repository<Channel>,
 		@Inject(forwardRef(() => UsersService))
 		private readonly usersService: UsersService,
-		// @Inject(forwardRef(() => MessageService))
-		// private readonly messageService: MessageService
 	) {}
 
 	async create(createChannelDto: CreateChannelDto): Promise <Channel> {
@@ -143,6 +141,16 @@ export class ChannelDataService {
 		if (!channel)
 			return (true);
 		return (false);
+	}
+
+  	////////////////////////////////
+	// 			 SOCKETS  		  //
+  	////////////////////////////////
+
+	async refreshChannelMessages(channelName: string) : Promise<any> {
+		const channel = await this.channelRepository.findOne(channelName);
+
+		return (true);
 	}
 
 }

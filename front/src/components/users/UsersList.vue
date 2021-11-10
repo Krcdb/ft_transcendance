@@ -1,12 +1,19 @@
 <template>
-    <div class="list row">
-        <div class="list-wrapper">
-            <h3>Users List</h3>
-            <input
-            type="text"
-            placeholder="Search an user..."
-            v-model="keyword"
-            @input="searchhandler"
+  <div class="list row">
+    <div class="list-wrapper">
+      <h3>Users List</h3>
+      <input
+        type="text"
+        placeholder="Search an user..."
+        v-model="keyword"
+        @input="searchhandler"
+      />
+      <ul class="list">
+        <li class="list-item" v-for="user in filteredUsers" :key="user.id">
+          <div class="list-img">
+            <img
+              v-if="user.avatar"
+              :src="`http://localhost:3000/users/${user.id}/avatar`"
             />
             <img
               v-else
@@ -29,6 +36,7 @@
         </li>
       </ul>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -79,65 +87,65 @@ export default defineComponent({
 
 <style scopped>
 .list-img img {
-    width: 64px;
-    height: 64px;
-    object-fit: contain;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
 }
 h3 {
-    font-size: 30px;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
+  font-size: 30px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 .list-wrapper {
-    max-width: 400px;
-    margin: auto;
+  max-width: 400px;
+  margin: auto;
 }
 .profile-link {
-    color: black;
-    text-decoration: none;
-    font-size: 18px;
-    align-content: center;
+  color: black;
+  text-decoration: none;
+  font-size: 18px;
+  align-content: center;
 }
 .list {
-    background-color: white;
-    border-radius: 2px;
-    list-style: none;
+  background-color: white;
+  border-radius: 2px;
+  list-style: none;
 }
 
 .list-item {
-    display: flex;
-    align-content: center;
-    margin: 10px;
-    padding-bottom: 5px;
-    padding-top: 5px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    align-items: center;
+  display: flex;
+  align-content: center;
+  margin: 10px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  align-items: center;
 }
 .list-item-content {
-    margin-left: 20px;
-    margin-right: auto;
+  margin-left: 20px;
+  margin-right: auto;
 }
 .list-wrapper input[type="text"] {
-    padding: 6px;
-    font-size: 17px;
+  padding: 6px;
+  font-size: 17px;
 }
 .user-status {
-    margin-left: 5%;
-    margin-right: 10%;
+  margin-left: 5%;
+  margin-right: 10%;
 }
 .user-status .online {
-    color: green;
+  color: green;
 }
 .user-status .offline {
-    background-color: red;
+  background-color: red;
 }
 .friend-status {
-    background-color: #4bbd4b;
-    font-weight: bold;
-    color: white;
-    margin-right: 0%;
-    padding: 5px;
+  background-color: #4bbd4b;
+  font-weight: bold;
+  color: white;
+  margin-right: 0%;
+  padding: 5px;
 }
 .me-status {
   background-color: black;
