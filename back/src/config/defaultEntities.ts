@@ -15,7 +15,6 @@ export default {
             channelsUserIsIn: [],
             channelsUserIsBanned: [],
             channelsUserIsMuted: [],
-            messagesHistory: []
         },
         ////////////
         /// CATS ///
@@ -35,7 +34,6 @@ export default {
             channelsUserIsIn: ['CatClub'],
             channelsUserIsBanned: ['DogClub'],
             channelsUserIsMuted: [],
-            messagesHistory: [1]
         },
         {
             id: 101,
@@ -52,7 +50,6 @@ export default {
             channelsUserIsIn: ['CatClub'],
             channelsUserIsBanned: ['DogClub'],
             channelsUserIsMuted: [],
-            messagesHistory: [2]
         },
         {
             id: 102,
@@ -88,7 +85,6 @@ export default {
             channelsUserIsIn: ['DogClub'],
             channelsUserIsBanned: ['CatClub'],
             channelsUserIsMuted: [],
-            messagesHistory: [3]
         },
         {
             id: 201,
@@ -105,7 +101,6 @@ export default {
             channelsUserIsIn: ['DogClub'],
             channelsUserIsBanned: ['CatClub'],
             channelsUserIsMuted: [],
-            messagesHistory: [4]
         },
         {
             id: 202,
@@ -141,7 +136,6 @@ export default {
             channelsUserIsIn: ['CatClub', 'DogClub', 'SecretClub'],
             channelsUserIsBanned: [],
             channelsUserIsMuted: [],
-            messagesHistory: [5]
         },
         {
             id: 301,
@@ -158,7 +152,6 @@ export default {
             channelsUserIsIn: ['CatClub', 'DogClub', 'SecretClub'],
             channelsUserIsBanned: [],
             channelsUserIsMuted: [],
-            messagesHistory: [6, 8]
         },
         {
             id: 302,
@@ -175,7 +168,6 @@ export default {
             channelsUserIsIn: ['CatClub', 'DogClub', 'SecretClub'],
             channelsUserIsBanned: [],
             channelsUserIsMuted: [],
-            messagesHistory: [7]
         }
     ],
     Channel: [

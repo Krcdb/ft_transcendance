@@ -2,18 +2,14 @@ import { Body, Controller, Get, Post, Delete, Param, Res} from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { Public } from 'src/auth/utils/public.decorator';
 
-import { ChannelDataService } from './channel.service';
+import { ChannelService } from './channel.service';
 import { Channel } from './channel.entity'
-import { User } from '../../users/user.entity';
-
 import { CreateChannelDto } from './dto/create-channel.dto';
-import { MessageController } from '../message/message.controller';
-import { UsersService } from 'src/users/users.service';
 
 @Controller('chat')
 export class ChannelController {
 	constructor(
-		private readonly channelDataService: ChannelDataService,
+		private readonly channelDataService: ChannelService,
 	) {}
 
 	// ------ // 

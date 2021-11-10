@@ -5,17 +5,14 @@ import { Channel } from './channel.entity';
 import { CreateChannelDto } from './dto/create-channel.dto';
 
 import { UsersService } from 'src/users/users.service';
-import { MessageService } from '../message/message.service';
 
 @Injectable()
-export class ChannelDataService {
+export class ChannelService {
 	constructor(
 		@InjectRepository(Channel)
 		private readonly channelRepository: Repository<Channel>,
 		@Inject(forwardRef(() => UsersService))
 		private readonly usersService: UsersService,
-		// @Inject(forwardRef(() => MessageService))
-		// private readonly messageService: MessageService
 	) {}
 
 	async create(createChannelDto: CreateChannelDto): Promise <Channel> {

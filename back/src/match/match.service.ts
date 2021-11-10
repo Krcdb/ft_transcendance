@@ -2,7 +2,6 @@ import { Inject, Injectable, forwardRef } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Match } from './match.entity'
-// import { User } from '../users/user.entity'
 import { UsersService } from 'src/users/users.service';
 
 

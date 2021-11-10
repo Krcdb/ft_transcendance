@@ -4,12 +4,11 @@ _____  __        __    __
   |   \__/      |__/  \__/
 _______________________________________________________________________
 [OK]    importer le dump
+[OK]    Supprimer le message history de l'utilisateur
 [NON]   explorer la db avec pgadmin
 [ ]     Rediger des securites ?? un user qui n'est pas dans un channel
             ne peut pas y poster etc...
-[ ]     Regler le souci de duplicate key qui pop quand j'update les users
-            apres un match : il ne devrait pas essayer de creer un nouvel
-            user pourtant c'est ce qu'il a l'air de faire
+[ ]     Regler le souci de duplicate key qui pop je sais pas trop quand
 _______________________________________________________________________
 QUESTIONS :
 _______________________________________________________________________
@@ -24,10 +23,25 @@ _______________________________________________________________________
     * joueur de niveau 10 gagne vs niveau 1 : il passe direct niveau 1 ??
     * ou alors on les empeche de defier quelqu'un avec lequel ils ont plus
     d'un niveau d'ecart ??
+- Est ce qu'on se sert de la date des messages ?
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 * * * * * * * * * * * * * JOURNAL DE BORD * * * * * * * * * * * * * * * 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+[10 novembre]
+J'ai push sur master mes modifs de la veille, pas celles d'aujourd'hui.
+Aujourd'hui j'ai fait du ménage :
+    - J'ai supprimé messagesHistory du User parce qu'au final on s'en
+sert pas du tout, du coup j'ai enlevé les références aux modules et
+services inutiles.
+    - J'ai un peu clean les imports.
+    - J'ai enlevé currentMatch du User, il est commenté depuis un moment
+et vu que Mederic a créé une entité Game je pense pas qu'on s'en servira
+finalement.
+    - J'ai renommé la variable ChannelDataService qui est dans le back
+en ChannelService, comme ca ChannelDataService est uniquement presente
+sur le front et les conventions de nommage sont respectées.
 
 [9 novembre]
 J'ai rajouté le user 'Illegal" avec id 0 dans le dump comme ca le illegal
