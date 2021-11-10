@@ -35,7 +35,7 @@ export class User {
   @Column("int", {nullable: true})
   nbLosses: number;
 
-  @Column("int", {nullable: true})
+  @Column("int", {nullable: true, default : 1000})
   ladderLevel: number;
 
   @Column("varchar", {nullable: true, array: true})
@@ -50,11 +50,6 @@ export class User {
 
   @Column("int", {nullable: true, array: true})
   blockedUsers: number[];
-
-  @Column("int", {nullable: true, array: true})
-  blockingUsers: number[];
-  // ici c'est la liste des users qui ont bloqué ce user
-  // -> pas sure que ce soit utile maintenant que j'ai viré les relations TypeOrm
 
     // --------------- //
     // CHAT & CHANNELS //

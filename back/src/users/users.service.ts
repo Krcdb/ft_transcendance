@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not, In } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
+import { JwtService } from '@nestjs/jwt';
 import { User } from './user.entity';
 import * as fs from 'fs';
 // import { ChannelDataService } from '../chat/channel/channel.service';
@@ -12,7 +13,8 @@ import * as fs from 'fs';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>,
+	private readonly usersRepository: Repository<User>,
+	private readonly jwtService: JwtService,
   ) {}
 
   create(createUserDto: CreateUserDto): Promise<User> {
@@ -27,7 +29,6 @@ export class UsersService {
       user.achievements = [];
       user.friends = [];
       user.blockedUsers = [];
-      user.blockingUsers = [];
       user.channelsUserIsOwner = [];
       user.channelsUserIsAdmin = [];
       user.channelsUserIsIn = [];
@@ -156,6 +157,8 @@ export class UsersService {
 
   async getUsersexceptBlocked(id:number): Promise<User[]> {
     const user = await this.usersRepository.findOne(id);
+    if (!user)
+      return [] as User[];
     const users = await this.usersRepository.find({
       where: {
         id: Not(In(user.blockedUsers))
@@ -163,7 +166,6 @@ export class UsersService {
     });
     return users;
   }
-
   // Ajout de l'utilisateur
   async addAsFriend(userId: number, id: number) : Promise<string> {
     const user = await this.usersRepository.findOne(userId);
@@ -203,7 +205,6 @@ export class UsersService {
       if (user.friends.indexOf(blockedId) !== -1)
         user.friends.splice(user.friends.indexOf(blockedId), 1);
       user.blockedUsers.push(blockedId);
-      blocked.blockingUsers.push(userId);
       this.usersRepository.save(user);
       this.usersRepository.save(blocked);
       return "Successfully Blocked";
@@ -219,7 +220,6 @@ export class UsersService {
       return "This user is not Blocked";
     else {
       user.blockedUsers.splice(user.blockedUsers.indexOf(blockedId), 1);
-      blocked.blockingUsers.splice(blocked.blockingUsers.indexOf(userId), 1);
       this.usersRepository.save(user);
       this.usersRepository.save(blocked);
       return "Successfully Unblocked";

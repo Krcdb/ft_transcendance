@@ -7,10 +7,11 @@ import { ConfigModule } from '@nestjs/config';
 
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { WebsocketModule } from './websocket/websocket.module';
+import { GameModule } from './game/game.module';
 import { MatchModule } from './match/match.module';
 import { ChannelModule } from './chat/channel/channel.module';
 import { MessageModule } from './chat/message/message.module';
-
 
 @Module({
   imports: [
@@ -21,11 +22,13 @@ import { MessageModule } from './chat/message/message.module';
           autoLoadEntities: true,
       }),
     }),
-    UsersModule,
-    AuthModule,
-    MatchModule,
-    ChannelModule, 
-    MessageModule
+	UsersModule,
+	AuthModule,
+	WebsocketModule,
+	GameModule,
+  MatchModule,
+  ChannelModule, 
+  MessageModule
   ],
   controllers: [AppController],
   providers: [AppService],

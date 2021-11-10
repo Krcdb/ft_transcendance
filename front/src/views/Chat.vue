@@ -21,6 +21,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable */
 import { defineComponent } from "vue";
 import Vue from 'vue';
 import http from '@/http-common';

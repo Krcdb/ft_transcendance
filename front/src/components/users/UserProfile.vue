@@ -1,62 +1,46 @@
 <template>
   <div v-if="user.userName" class="edit-form">
-    <h4>{{ user.userName }}</h4>
-    <div class="container">
-      <img
-        v-if="user.avatar"
-        :src="`http://localhost:3000/users/${user.id}/avatar`"
-      />
-      <img
-        v-else
-        :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
-      />
-      <div class="user-info">
-        <p>Victories: {{ user.nbVictories }}</p>
-        <p>Losses: {{ user.nbLosses }}</p>
-        <p>Level: {{ user.ladderLevel }}</p>
-        <br />
-        <router-link to="/update-profile">
-          <button>Update Profile</button>
-        </router-link>
-        <button
-          class="deletebtnb0"
-          onclick="document.getElementById('id01').style.display='block'"
+    <UserInfo :user="user" />
+    <div class="user-info">
+      <router-link to="/update-profile">
+        <button>Update Profile</button>
+      </router-link>
+      <button
+        class="deletebtnb0"
+        onclick="document.getElementById('id01').style.display='block'"
+      >
+        Logout
+      </button>
+      <div id="id01" class="modal">
+        <span
+          onclick="document.getElementById('id01').style.display='none'"
+          class="close"
+          title="Close Modal"
+          >&times;</span
         >
-          Logout
-        </button>
-        <div id="id01" class="modal">
-          <span
-            onclick="document.getElementById('id01').style.display='none'"
-            class="close"
-            title="Close Modal"
-            >&times;</span
-          >
-          <form class="modal-content">
-            <div class="modal-window">
-              <h1>Log out</h1>
-              <br />
-              <p>Are you sure you want to log out ?</p>
-              <br />
-              <div class="clearfix">
-                <button
-                  class="cancelbtn"
-                  onclick="document.getElementById('id01').style.display='none'"
-                >
-                  Cancel
-                </button>
-                <button type="button" class="deletebtn" @click="logout">
-                  Logout
-                </button>
-              </div>
+        <form class="modal-content">
+          <div class="modal-window">
+            <h1>Log out</h1>
+            <br />
+            <p>Are you sure you want to log out ?</p>
+            <br />
+            <div class="clearfix">
+              <button
+                class="cancelbtn"
+                onclick="document.getElementById('id01').style.display='none'"
+              >
+                Cancel
+              </button>
+              <button type="button" class="deletebtn" @click="logout">
+                Logout
+              </button>
             </div>
-          </form>
-        </div>
-      </div>
-      <div>
-        <FriendList />
-        <BlockedList />
+          </div>
+        </form>
       </div>
     </div>
+    <FriendList />
+    <BlockedList />
     <p>{{ error }}</p>
   </div>
   <div v-else>
@@ -73,12 +57,14 @@ import ResponseData from "@/types/ResponseData";
 import { logout } from "@/statics/log.methods";
 import FriendList from "@/components/users/FriendsList.vue";
 import BlockedList from "@/components/users/BlockedList.vue";
+import UserInfo from "./UserInfo.vue";
 
 export default defineComponent({
   name: "User",
   components: {
     FriendList,
     BlockedList,
+    UserInfo,
   },
   data() {
     return {
@@ -111,7 +97,7 @@ export default defineComponent({
   justify-content: center;
 }
 .user-info {
-  margin: 5%;
+  margin: 0%;
 }
 img {
   width: 300px;
@@ -186,5 +172,8 @@ hr {
   content: "";
   clear: both;
   display: table;
+}
+.friend-list div {
+  display: flex;
 }
 </style>

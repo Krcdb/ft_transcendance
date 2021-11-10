@@ -26,6 +26,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable */
 import { defineComponent } from "vue";
 
 import UserDataService from "@/services/UserDataService";

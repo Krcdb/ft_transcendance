@@ -2,7 +2,12 @@
   <nav class="navbar">
     <div class="logo-wrapper">
       <router-link class="active" to="/">
-        <img class="logo" src="@/assets/pong_logo.png" height="60" width="140" />
+        <img
+          class="logo"
+          src="@/assets/pong_logo.png"
+          height="60"
+          width="140"
+        />
       </router-link>
     </div>
     <div class="nav-wrapper">
@@ -30,6 +35,7 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
+import { logout } from "@/statics/log.methods";
 
 export default defineComponent({
   name: "NavBar",
@@ -43,15 +49,17 @@ export default defineComponent({
       UserDataService.get(id)
         .then((response: ResponseData) => {
           this.user = response.data;
+          if (!this.user) logout();
         })
         .catch((e: Error) => {
           console.log(e);
         });
     },
+    logout,
   },
   watch: {
     $route() {
-      if (localStorage.getItem("user-id")) {
+      if (localStorage.getItem("user-token")) {
         this.getUser(Number(localStorage.getItem("user-id")));
       }
     },
