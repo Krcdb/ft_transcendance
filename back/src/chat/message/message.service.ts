@@ -26,7 +26,7 @@ export class MessageService {
         message.message = createMessageDto.message;
         // message.date = Date.now();
         message.dateStr = Date.now().toString();
-        return this.messageRepository.save(message);
+        return await this.messageRepository.save(message);
     }
 
     //////////////////////////////
@@ -35,8 +35,8 @@ export class MessageService {
 
     async addMessageToHistories(msgId: number) : Promise<void> {
         const message = await this.messageRepository.findOne(msgId);
-        this.usersService.addMessageToHistory(message.owner, message.id);
-        this.channelService.addMessageToHistory(message.channelName, message.id);
+        await this.usersService.addMessageToHistory(message.owner, message.id);
+        await this.channelService.addMessageToHistory(message.channelName, message.id);
     }
 
     async remove(msgId: number): Promise<void> {
@@ -48,15 +48,15 @@ export class MessageService {
     //////////////////////////////
 
     async findOne(msgId: number): Promise<Message> {
-        return this.messageRepository.findOne(msgId);
+        return await this.messageRepository.findOne(msgId);
     }
     async findAll(): Promise<Message[]> {
-        return this.messageRepository.find();
+        return await this.messageRepository.find();
     }
     async findAllByUser(ownerId: number): Promise<Message[]> {
-        return this.messageRepository.find({ owner: ownerId });
+        return await this.messageRepository.find({ owner: ownerId });
     }
     async findAllInChannel(channelName: string): Promise<Message[]> {
-        return this.messageRepository.find({ channelName: channelName });
+        return await this.messageRepository.find({ channelName: channelName });
     }
 }
