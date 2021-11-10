@@ -72,7 +72,10 @@ export default defineComponent({
 		},
 		customEmit: function (data: number) {
 			console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)' + data);
-		}
+		},
+		refreshChannelMessages: function() {
+			console.log("refresh socket");
+		},
 	},
 	components: {
 		MessageComponent,
@@ -185,6 +188,10 @@ export default defineComponent({
 					console.log(e);
 				});
 			}
+		},
+		// SocketHandler
+		refreshChannelMessages() {
+			console.log("refresh");
 		},
 		async init() {
 			await this.getUser(Number(localStorage.getItem("user-id")));

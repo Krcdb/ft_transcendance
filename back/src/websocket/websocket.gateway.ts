@@ -15,6 +15,7 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
     	private readonly websocketService: WebsocketService,
 		private readonly gameService: GameService,
 		private readonly usersSerive: UsersService,
+		private readonly channelService: ChannelDataService,
 	) {}
 
 	afterInit(server: Server) {
@@ -52,8 +53,8 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
 
 	// Chat
 
-//	@SubscribeMessage('refreshChannelMessages')
-//	async refreshChannelMessages(channelName: string) {
-//		return this.channelService.refreshChannelMessages(channelName);
-//	}
+	@SubscribeMessage('refreshChannelMessages')
+	async refreshChannelMessages(channelName: string) {
+		return this.channelService.refreshChannelMessages(channelName);
+	}
 }

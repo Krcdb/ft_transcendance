@@ -13,7 +13,10 @@ import { CreateMessageDto } from './dto/create-message.dto';
 
 @Controller('messages')
 export class MessageController {
-	constructor(private readonly messageService: MessageService) {}
+	constructor(
+		private readonly messageService: MessageService,
+		private readonly channelService: ChannelDataService,
+	) {}
 
 	// ------ //
   	//  POST  //
@@ -28,6 +31,7 @@ export class MessageController {
 			return res.status(HttpStatus.NOT_FOUND).json({
 				message: "Couldn't find channel with given name" });
 		await this.messageService.addMessageToHistories(msg.id);
+		await this.channelService.refreshChannelMessages(channelName);
 		return res.status(HttpStatus.CREATED).json({
 			message: "Message has been created successfully",
 			msg
