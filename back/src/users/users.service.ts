@@ -224,9 +224,18 @@ export class UsersService {
       return "You can't add a blocked user as friend";
     if (user.friends.indexOf(id) === -1) {
       user.friends.push(id);
-      if (user.friends.length > 0) {
+      if (user.friends.length > 0)
         this.setAchievement(user, enumAchievements.ADD_ONE_FRIEND);
-      }
+      if (user.friends.length >= 3)
+        this.setAchievement(user, enumAchievements.ADD_3_FRIEND);
+      if (user.friends.length >= 5)
+        this.setAchievement(user, enumAchievements.ADD_5_FRIEND);
+      if (user.friends.length >= 10)
+        this.setAchievement(user, enumAchievements.ADD_10_FRIEND);
+      if (user.friends.length >= 50)
+        this.setAchievement(user, enumAchievements.ADD_50_FRIEND);
+      if (user.friends.length >= 100)
+        this.setAchievement(user, enumAchievements.ADD_100_FRIEND);
       await this.usersRepository.save(user);
       return "Successfully added to your friends";
     }
@@ -256,6 +265,16 @@ export class UsersService {
       user.blockedUsers.push(blockedId);
       if (user.blockedUsers.length > 0)
         this.setAchievement(user, enumAchievements.BLOCK_ONE_USER);
+      if (user.blockedUsers.length >= 3)
+        this.setAchievement(user, enumAchievements.BLOCK_3_USER);
+      if (user.blockedUsers.length >= 5)
+        this.setAchievement(user, enumAchievements.BLOCK_5_USER);
+      if (user.blockedUsers.length >= 10)
+        this.setAchievement(user, enumAchievements.BLOCK_10_USER);
+      if (user.blockedUsers.length >= 50)
+        this.setAchievement(user, enumAchievements.BLOCK_50_USER);
+      if (user.blockedUsers.length >= 100)
+        this.setAchievement(user, enumAchievements.BLOCK_100_USER);
       await this.usersRepository.save(user);
       return "Successfully Blocked";
     }

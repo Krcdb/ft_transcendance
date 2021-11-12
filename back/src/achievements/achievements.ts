@@ -7,9 +7,19 @@ export enum enumAchievements {
     ONE_LOSING_OVER, // not activated yet
     // USER RELATION 
     BLOCK_ONE_USER,
+    BLOCK_3_USER,
+    BLOCK_5_USER,
+    BLOCK_10_USER,
+    BLOCK_50_USER,
+    BLOCK_100_USER,
     UNBLOCK_AN_USER,
     BLOCK_ALL_USERS, // not activated yet
     ADD_ONE_FRIEND,
+    ADD_3_FRIEND,
+    ADD_5_FRIEND,
+    ADD_10_FRIEND,
+    ADD_50_FRIEND,
+    ADD_100_FRIEND,
     ADD_ALL_TO_FRIENDS, // not activated yet
     // CHAT
     PRIVATE_RANDOM_CHAT, // not activated yet
@@ -79,6 +89,36 @@ export const allAchievement: AchievementsInterface[] = [
         description: "block one user",
     },
     {
+        id: enumAchievements.BLOCK_3_USER,
+        class: "relation",
+        name: "i don't like you 2",
+        description: "have three blocked users",
+    },
+    {
+        id: enumAchievements.BLOCK_5_USER,
+        class: "relation",
+        name: "i don't like you 3",
+        description: "have five blocked users",
+    },
+    {
+        id: enumAchievements.BLOCK_10_USER,
+        class: "relation",
+        name: "i don't like you 4",
+        description: "have ten blocked users",
+    },
+    {
+        id: enumAchievements.BLOCK_50_USER,
+        class: "relation",
+        name: "i don't like you 5",
+        description: "have fifty blocked users",
+    },
+    {
+        id: enumAchievements.BLOCK_100_USER,
+        class: "relation",
+        name: "i don't like you 6",
+        description: "have one hundred blocked users",
+    },
+    {
         id: enumAchievements.UNBLOCK_AN_USER,
         class: "relation",
         name: "maybe i do like you",
@@ -95,6 +135,36 @@ export const allAchievement: AchievementsInterface[] = [
         class: "relation",
         name: "the more the merrier",
         description: "add another user as friend",
+    },
+    {
+        id: enumAchievements.ADD_3_FRIEND,
+        class: "relation",
+        name: "the more the merrier 2",
+        description: "have three friends",
+    },
+    {
+        id: enumAchievements.ADD_5_FRIEND,
+        class: "relation",
+        name: "the more the merrier 3",
+        description: "have five friends",
+    },
+    {
+        id: enumAchievements.ADD_10_FRIEND,
+        class: "relation",
+        name: "the more the merrier 4",
+        description: "have ten friends",
+    },
+    {
+        id: enumAchievements.ADD_50_FRIEND,
+        class: "relation",
+        name: "the more the merrier 5",
+        description: "have fifty friends",
+    },
+    {
+        id: enumAchievements.ADD_100_FRIEND,
+        class: "relation",
+        name: "the more the merrier 6",
+        description: "have one hundred friends",
     },
     {
         id: enumAchievements.ADD_ALL_TO_FRIENDS,
