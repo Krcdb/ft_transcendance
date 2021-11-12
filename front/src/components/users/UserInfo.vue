@@ -58,11 +58,19 @@ export default defineComponent({
 <style scoped>
 .container {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
 }
 .user-info {
   margin: 5%;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 .user-status {
   display: flex;

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Res, Param, Post, UploadedFile, UseInterceptors, NotFoundException } from '@nestjs/common';
+import { Sse, MessageEvent, Body, Controller, Delete, Get, Res, Param, Post, UploadedFile, UseInterceptors, NotFoundException,  } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
@@ -12,10 +12,16 @@ import { IdDto } from './dto/id.dto';
 import { AchievementsInterface } from 'src/achievements/achievements';
 
 
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+
+  @Sse('sse')
+  sse(): Observable<MessageEvent> {
+    return interval(1000).pipe(map((_) => ({ data: { hello: 'world' } })));
+  }
   // ------ // 
   //  POST  //
   // ------ // 
@@ -168,6 +174,12 @@ export class UsersController {
         throw new  NotFoundException;
     }
     return getAvatarFile();
+  }
+
+  @Public()
+  @Get('achievements/:class')
+  serveAchievImage(@Param('class') class_name: string, @Res() res) : Promise<any> {
+    return res.sendFile(`${class_name}_icon.png`, { root: "src/achievements/images"});
   }
 
   // -------- // 

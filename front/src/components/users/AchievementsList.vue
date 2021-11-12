@@ -1,10 +1,10 @@
 <template>
   <div class="achievements-wrapper">
-    <h3>Achievements</h3>
+    <h3>Achievements </h3>
     <div v-if="achievements.length">
       <ul class="achievements-list">
-        <li class="achievements-item" v-for="achievements in achievements" :key="achievements.id">
-          <!-- <img src="@/assets/user_icon.png"> -->
+        <li v-for="achievements in achievements" :key="achievements.id" :class="`achievements-item-${achievements.class}`">
+          <img :src="`http://localhost:3000/users/achievements/${achievements.class}`">
           <div class="achievements-info">
             <h4>{{ achievements.name }}</h4>
             <p>{{ achievements.description }}</p>
@@ -68,16 +68,36 @@ props: {
   max-height: 300px;
   overflow-y: auto;
 }
-.achievements-item {
+[class|='achievements-item'] {
   display: flex;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   align-items: center;
+  background-color: #ddd;
+  margin: 3px;
+  border-radius: 10px;
 }
-.achievements-item img {
-    width: 32px;
-    height: 32px;
-    margin-right: 10px ;
+[class|='achievements-item'] img {
+    width: 42px;
+    height: 42px;
+    margin: 10px;
+    border-radius: 10%;
 }
+
+.achievements-item-user img{
+  background-color: #e6c7ff;
+}
+
+.achievements-item-relation img{
+  background-color: #b3f4ff;
+}
+
+.achievements-item-game img{
+  background-color: #faffb3;
+}
+.achievements-item-chat img{
+  background-color: #bdffb3;
+}
+
 .achievements-info {
   text-align: initial;
 }

@@ -144,7 +144,12 @@ export class UsersService {
 
   async getAchievements(id: number): Promise<AchievementsInterface[]> {
     const user = await this.usersRepository.findOne(id);
-    return allAchievement.filter(({id}) => user.achievements.includes(id));
+    let achievements: AchievementsInterface[] = [];
+    user.achievements.forEach( achiev_id => {
+      achievements.push(allAchievement[allAchievement.map(x => x.id).indexOf(achiev_id)]);
+    });
+    achievements.reverse();
+    return achievements;
   }
 
   ///////////////////////////
