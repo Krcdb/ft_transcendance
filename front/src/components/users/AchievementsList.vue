@@ -4,7 +4,9 @@
     <div v-if="achievements.length">
       <ul class="achievements-list">
         <li v-for="achievements in achievements" :key="achievements.id" :class="`achievements-item-${achievements.class}`">
-          <img :src="`http://localhost:3000/users/achievements/${achievements.class}`">
+          <div :class="`achievement-img-${achievements.class}`">
+            <img :src="`http://localhost:3000/users/achievements/${achievements.class}`">
+          </div>
           <div class="achievements-info">
             <h4>{{ achievements.name }}</h4>
             <p>{{ achievements.description }}</p>
@@ -56,8 +58,7 @@ props: {
 
 <style scopped>
 .achievements-wrapper {
-  /* border: 2px solid #ddd;
-  border-radius: 10px; */
+  width: 300px;
 }
 .achievements-wrapper h3{
   font-size: 20px;
@@ -70,42 +71,49 @@ props: {
 }
 [class|='achievements-item'] {
   display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   align-items: center;
-  background-color: #ddd;
   margin: 3px;
-  border-radius: 10px;
 }
-[class|='achievements-item'] img {
-    width: 42px;
-    height: 42px;
-    margin: 10px;
-    border-radius: 10%;
+[class|='achievement-img'] {
+    width: 20%;
+    max-width: 50px;
+    padding: 15px 10px;
+    display: flex;
+    align-items: center;
+}
+[class|='achievement-img'] img {
+    width: 40px;
+    height: 40px;
 }
 
-.achievements-item-user img{
+.achievement-img-user {
   background-color: #e6c7ff;
 }
 
-.achievements-item-relation img{
+.achievement-img-relation {
   background-color: #b3f4ff;
 }
-
-.achievements-item-game img{
+.achievement-img-game {
   background-color: #faffb3;
 }
-.achievements-item-chat img{
+.achievement-img-chat {
   background-color: #bdffb3;
 }
 
 .achievements-info {
   text-align: initial;
+  width: 100%;
+  margin-left: 10px;
 }
 .achievements-info p {
-  margin: 0;
-  font-size: 14px;
+  margin: 0.1em;
+  font-size: 0.8em;
+  color: #999;
 }
 .achievements-info h4 {
   margin: 0;
+  font-size: 1.2em;
+  /* font-size: 17px;; */
 }
 </style>

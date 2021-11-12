@@ -11,14 +11,7 @@
       <ul class="list">
         <li class="list-item" v-for="user in filteredUsers" :key="user.id">
           <div class="list-img">
-            <img
-              v-if="user.avatar"
-              :src="`http://localhost:3000/users/${user.id}/avatar`"
-            />
-            <img
-              v-else
-              :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
-            />
+            <Avatar :user="user" />
           </div>
           <div class="list-item-content">
             <router-link class="profile-link" :to="'/users/' + user.id">
@@ -44,9 +37,14 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
+import Avatar from "./Avatar.vue";
+
 
 export default defineComponent({
   name: "users-list",
+  components: {
+    Avatar,
+  },
   data() {
     return {
       users: [] as User[],

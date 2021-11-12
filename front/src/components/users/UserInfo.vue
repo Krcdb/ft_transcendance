@@ -7,14 +7,7 @@
       <div v-else id="offline-circle"></div>
     </div>
     <div class="container">
-      <img
-        v-if="user.avatar"
-        :src="`http://localhost:3000/users/${user.id}/avatar`"
-      />
-      <img
-        v-else
-        :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
-      />
+      <Avatar :user="user" />
       <div class="user-info">
         <p>Victories: {{ user.nbVictories }}</p>
         <p>Losses: {{ user.nbLosses }}</p>
@@ -35,11 +28,13 @@
 import { defineComponent } from "vue";
 import User from "@/types/User";
 import AchievementsList from "./AchievementsList.vue";
+import Avatar from "./Avatar.vue";
 
 export default defineComponent({
   name: "User",
   components: {
     AchievementsList,
+    Avatar,
   },
   props: {
     user: {

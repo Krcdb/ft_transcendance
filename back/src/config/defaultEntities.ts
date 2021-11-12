@@ -27,7 +27,7 @@ export default {
             nbVictories: 42,
             nbLosses: 0,
             ladderLevel: 1,
-            achievements: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 24],
+            achievements: [18, 8, 14, 11, 5, 31, 27, 13, 16, 29, 15, 23, 6, 33, 25, 9, 20, 7, 19, 17, 12, 2, 30, 28, 10, 32, 22, 26, 24, 4, 3, 1, 21],
             friends: [101, 102],
             blockedUsers: [200, 201, 202],
             channelsUserIsOwner: ['CatClub'],
