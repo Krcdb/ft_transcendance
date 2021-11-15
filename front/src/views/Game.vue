@@ -35,10 +35,9 @@ export default defineComponent({
     mounted() {
 		console.log(localStorage.getItem('user-token'))
 		socket.on('matchFound', (uuid: string) => {
-			console.log("match found |", uuid);
+			this.$router.push("/profile" + uuid);
 		})
     },
-   
 });
 </script>
 

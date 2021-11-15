@@ -39,14 +39,9 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
 	async searchGame(socket: Socket) {
 		return this.gameService.searchGame(socket);
 	}
-
-	@SubscribeMessage('createGame')
-	async createGame() {
-		return this.gameService.createGame();
-	}
-
+	
 	@SubscribeMessage('playerNewKeyEvent')
-	async playerNewKeyEvent(payload: any) {
+	async playerNewKeyEvent(socket: Socket, payload: any) {
 		return this.gameService.playerNewKeyEvent(payload);
 	}
 }
