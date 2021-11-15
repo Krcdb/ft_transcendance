@@ -22,7 +22,7 @@
 
 		<div class="error-channel"
 			v-if="this.state == 1">
-			<h3>{{ this.errorMSG }}</h3>
+			<h3>Le salon existe déjà</h3>
 		</div>
 		<div class="success-channel"
 			v-if="this.state == 2">
@@ -48,7 +48,6 @@ export default defineComponent({
 		return {
 			channel: {} as Channel,
 			state: 0,
-			errorMSG: "" as string,
 		}
 	},
     props: {
@@ -72,29 +71,18 @@ export default defineComponent({
 			console.log("password: " + this.channel.password);
 			console.log("owner: " + this.owner.userName);
 
+
 			ChannelDataService.createChannel(data)
 			.then((response: ResponseData) => {
 				console.log("create Channel");
-				if (response.data.valid === true) {
-					this.state = 2;
-				}
-				else {
-					this.state = 1;
-					this.errorMSG = response.data.message;
-				}
+				this.state = 2;
 			})
             .catch((e: Error) => {
 				this.state = 1;
                 console.log("Error: " + e);
-				this.errorMSG = "" + e;
             });
 		}
 	},
-	mounted() {
-		this.channel.channelName = "";
-		this.channel.password = "";
-		this.channel.isPublic = false;
-	}
 });
 </script>
 

@@ -23,18 +23,16 @@ export class ChannelController {
 	// ------ //
 
 	@Public()
-	@Post('CreateChannel')
+	@Post()
 	async createChannel(@Res() res, @Body() createChannelDto: CreateChannelDto) {
 		if (await this.channelDataService.channelAlreadyExists(createChannelDto.channelName)) {
-			return res.status(HttpStatus.OK).json({
-				message: "Channel already exists",
-				valid: false,
+			return res.status(HttpStatus.CONFLICT).json({
+				message: "Channel already exists"
 			})
 		}
 		const channel = await this.channelDataService.create(createChannelDto);
 		return res.status(HttpStatus.CREATED).json({
 			message: "Channel has been created successfully",
-			valid: true,
 			channel
 		})
 	}
@@ -81,19 +79,19 @@ export class ChannelController {
 	async UserJoinPrivateChannel(@Res() res, @Param('channelName') channelName: string, @Body() JoinPrivateChannelDto: JoinPrivateChannelDto) {
 		console.log("Trying to join channel: " + channelName);
 		if (!await this.channelDataService.findOne(channelName)) {
-			return res.status(HttpStatus.OK).json({
+			return res.status(HttpStatus.CONFLICT).json({
 				message: "Channel does not exist.",
 				value: false,
 			})
 		}
-		else if (await this.channelDataService.passwordMatch(channelName, JoinPrivateChannelDto.password)) {
+		else if (this.channelDataService.passwordMatch(channelName, JoinPrivateChannelDto.password)) {
 			return res.status(HttpStatus.OK).json({
 				message: "Joining channel",
 				value: true,
 			})
 		}
 		else {
-			return res.status(HttpStatus.OK).json({
+			return res.status(HttpStatus.CONFLICT).json({
 				message: "Password does not match",
 				value: false,
 			})
@@ -111,7 +109,7 @@ export class ChannelController {
 	}
 
 	@Public()
-	@Get(':channelName/:messagesHistory')
+	@Get('/:channelName/:messagesHistory')
 	getChannelHistory(@Param('channelName') channelName: string) : Promise<number[]> {
 		return (this.channelDataService.getMessageHistory(channelName));
 	}
@@ -127,7 +125,7 @@ export class ChannelController {
 	// ------- //
 
 	@Public()
-	@Delete(':channelName/')
+	@Delete('/:channelName/:id')
 	deleteChannel(@Param('channelName') channelName : string, @Param('id') id : number) {
 		this.channelDataService.removeUserAsUser(channelName, id);
 		return ("successfully deleted");
