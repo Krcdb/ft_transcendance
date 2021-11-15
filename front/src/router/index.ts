@@ -52,12 +52,12 @@ const routes = [
   {
     path: "/profile",
     name: "Profile",
-    component: () => import("../components/users/UserProfile.vue"),
+    component: () => import("../views/Profile.vue"),
   },
   {
     path: "/users",
     name: "users",
-    component: () => import("../components/users/UsersList.vue"),
+    component: () => import("../views/Users.vue"),
   },
   {
     path: "/users/:id",

@@ -23,7 +23,7 @@ export default {
         {
             id: 100,
             userName: 'Norminet',
-            matchHistory: [],
+            matchHistory: [0],
             nbVictories: 42,
             nbLosses: 0,
             ladderLevel: 1,
@@ -40,7 +40,7 @@ export default {
         {
             id: 101,
             userName: 'Grumpy',
-            matchHistory: [],
+            matchHistory: [0, 3, 4],
             nbVictories: 24,
             nbLosses: 15,
             ladderLevel: 3,
@@ -57,7 +57,7 @@ export default {
         {
             id: 102,
             userName: 'HelloKitty',
-            matchHistory: [],
+            matchHistory: [3, 6, 7],
             nbVictories: 10,
             nbLosses: 12,
             ladderLevel: 7,
@@ -76,7 +76,7 @@ export default {
         {
             id: 200,
             userName: 'Milou',
-            matchHistory: [],
+            matchHistory: [1, 4],
             nbVictories: 40,
             nbLosses: 1,
             ladderLevel: 2,
@@ -93,7 +93,7 @@ export default {
         {
             id: 201,
             userName: 'Lassie',
-            matchHistory: [],
+            matchHistory: [1, 5],
             nbVictories: 30,
             nbLosses: 10,
             ladderLevel: 4,
@@ -110,7 +110,7 @@ export default {
         {
             id: 202,
             userName: 'Idefix',
-            matchHistory: [],
+            matchHistory: [7],
             nbVictories: 20,
             nbLosses: 7,
             ladderLevel: 6,
@@ -129,7 +129,7 @@ export default {
         {
             id: 300,
             userName: 'Nemo',
-            matchHistory: [],
+            matchHistory: [2, 5],
             nbVictories: 10,
             nbLosses: 1,
             ladderLevel: 5,
@@ -146,7 +146,7 @@ export default {
         {
             id: 301,
             userName: 'Dory',
-            matchHistory: [],
+            matchHistory: [2, 6],
             nbVictories: 12,
             nbLosses: 46,
             ladderLevel: 9,
@@ -278,6 +278,63 @@ export default {
             owner: 301,
             message: 'A new channel ?! What new channel ??',
             dateStr: '1636395155'
+        },
+    ],
+    Match: [
+        {
+            matchId: 0,
+            playerOne: 100,
+            playerTwo: 101,
+            scorePlayerOne: 3,
+            scorePlayerTwo: 10,
+        },
+        {
+            matchId: 1,
+            playerOne: 200,
+            playerTwo: 201,
+            scorePlayerOne: 3,
+            scorePlayerTwo: 10,
+        },
+        {
+            matchId: 2,
+            playerOne: 300,
+            playerTwo: 301,
+            scorePlayerOne: 3,
+            scorePlayerTwo: 10,
+        },
+        {
+            matchId: 3,
+            playerOne: 102,
+            playerTwo: 101,
+            scorePlayerOne: 3,
+            scorePlayerTwo: 10,
+        },        {
+            matchId: 4,
+            playerOne: 200,
+            playerTwo: 101,
+            scorePlayerOne: 3,
+            scorePlayerTwo: 10,
+        },
+        {
+            matchId: 5,
+            playerOne: 300,
+            playerTwo: 201,
+            scorePlayerOne: 3,
+            scorePlayerTwo: 10,
+        },
+        {
+            matchId: 6,
+            playerOne: 102,
+            playerTwo: 301,
+            scorePlayerOne: 3,
+            scorePlayerTwo: 10,
+        },
+        {
+            matchId: 7,
+            playerOne: 202,
+            playerTwo: 102,
+            scorePlayerOne: 3,
+            scorePlayerTwo: 10,
         },
     ]
 }

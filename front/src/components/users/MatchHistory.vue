@@ -1,7 +1,7 @@
 <template>
   <div class="achievements-wrapper">
-    <h3>Achievements</h3>
-    <div v-if="achievements.length">
+    <h3>Match History</h3>
+    <!-- <div v-if="achievements.length">
       <ul class="achievements-list">
         <li
           v-for="achievements in achievements"
@@ -19,10 +19,10 @@
           </div>
         </li>
       </ul>
-    </div>
-    <div v-else>
+    </div> -->
+    <!-- <div v-else>
       <p>No achievements :(</p>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -31,33 +31,35 @@ import { defineComponent } from "vue";
 import Achievements from "@/types/Achievements";
 import UserDataService from "@/services/UserDataService";
 import ResponseData from "@/types/ResponseData";
+import User from "@/types/User";
 
 export default defineComponent({
   name: "users-achievements",
   props: {
-    userId: {
-      type: Number,
+    user: {
+      type: Object as () => User,
       required: true,
     },
   },
-  data() {
-    return {
-      achievements: [] as Achievements[],
-    };
-  },
+//   data() {
+//     return {
+//       achievements: [] as Achievements[],
+//     };
+//   },
   methods: {
-    getAchievements(id: number) {
-      UserDataService.getAchievements(id)
-        .then((response: ResponseData) => {
-          this.achievements = response.data;
-        })
-        .catch((e: Error) => {
-          console.log(e);
-        });
-    },
+    // getAchievements(id: number) {
+    //   UserDataService.getAchievements(id)
+    //     .then((response: ResponseData) => {
+    //       this.achievements = response.data;
+    //     })
+    //     .catch((e: Error) => {
+    //       console.log(e);
+    //     });
+    // },
   },
   mounted() {
-    this.getAchievements(this.userId);
+      console.log(this.user.matchHistory);
+    // this.getAchievements(this.userId);
   },
 });
 </script>

@@ -1,12 +1,12 @@
 <template>
-    <img
-      v-if="user.avatar"
-      :src="`http://localhost:3000/users/${user.id}/avatar`"
-    />
-    <img
-      v-else
-      :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
-    />
+  <img
+    v-if="user.avatar"
+    :src="`http://localhost:3000/users/${user.id}/avatar`"
+  />
+  <img
+    v-else
+    :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
+  />
 </template>
 
 <script lang="ts">

@@ -37,8 +37,7 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
-import Avatar from "./Avatar.vue";
-
+import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
   name: "users-list",
@@ -142,14 +141,12 @@ h3 {
   background-color: #4bbd4b;
   font-weight: bold;
   color: white;
-  margin-right: 0%;
   padding: 5px;
 }
 .me-status {
   background-color: black;
   font-weight: bold;
   color: white;
-  margin-right: 0%;
   padding: 5px;
 }
 </style>
