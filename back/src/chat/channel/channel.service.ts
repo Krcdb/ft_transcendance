@@ -149,6 +149,19 @@ export class ChannelDataService {
 	}
 
   	////////////////////////////////
+	//  	  JOIN CHANNEL 	 	  //
+  	////////////////////////////////
+
+	async passwordMatch(channelName: string, password: string) : Promise<boolean> {
+		const channel = await this.channelRepository.findOne(channelName);
+		if (!channel)
+			return (false);
+		else if (channel.password === password)
+			return (true);
+		return (false);
+	}
+
+  	////////////////////////////////
 	// 			 SOCKETS  		  //
   	////////////////////////////////
 

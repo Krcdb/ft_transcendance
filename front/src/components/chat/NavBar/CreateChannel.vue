@@ -1,5 +1,5 @@
 <template id="">
-	<div class="create-channel">
+	<div class="container create-channel">
 		<hr>
 		<div class="create-channel-box">
 
@@ -88,7 +88,8 @@ export default defineComponent({
 
 <style media="screen">
 .create-channel {
-	max-width: 50%;
+	max-width: 80%;
+	min-width: 50%;
 	display: block;
 	margin: 0 auto;
     animation: fadeIn 0.5s;
@@ -99,11 +100,14 @@ export default defineComponent({
     100% {opacity:1;}
 }
 .create-channel .create-channel-box {
+	display: flex;
+	flex-direction: column;
+	width: auto;
 	margin: 0 auto;
 }
 .create-channel .create-channel-inputs {
 	text-align: left;
-	width: 50%;
+	width: 100%;
 	margin: 0 auto;
 }
 .create-channel .error-channel {

@@ -8,6 +8,7 @@ import { User } from '../../users/user.entity';
 
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelUserDto } from './dto/update-channel-users.dto';
+import { JoinPrivateChannelDto } from './dto/join-private-channel.dto';
 import { MessageController } from '../message/message.controller';
 import { UsersService } from 'src/users/users.service';
 
@@ -53,7 +54,8 @@ export class ChannelController {
 	@Post(':channelName')
 	async addChannelUser(@Res() res, @Param('channelName') channelName: string, @Body() UpdateChannelUserDto: UpdateChannelUserDto) :Promise<void> {
 
-		console.log("newUser: " + UpdateChannelUserDto.newUser);
+		console.log("Try to add user in channel");
+
 
 		if (await this.channelDataService.findUserInChannel(channelName, UpdateChannelUserDto.newUser)) {
 			return res.status(HttpStatus.CONFLICT).json({
@@ -62,12 +64,37 @@ export class ChannelController {
 		}
 		else {
 			this.channelDataService.addUserAsUser(channelName, UpdateChannelUserDto.newUser);
+			console.log("newUser: " + UpdateChannelUserDto.newUser);
 			return (
-					res.status(HttpStatus.CREATED).json ({
-						message: `"User successfully added to channel !" + "channelName"`
+				res.status(HttpStatus.CREATED).json ({
+					message: `"User successfully added to channel !" + "channelName"`
 
-					})
+				})
 			);
+		}
+	}
+
+	@Public()
+	@Post(':channelName/join-private-channel')
+	async UserJoinPrivateChannel(@Res() res, @Param('channelName') channelName: string, @Body() JoinPrivateChannelDto: JoinPrivateChannelDto) {
+		console.log("Trying to join channel: " + channelName);
+		if (!await this.channelDataService.findOne(channelName)) {
+			return res.status(HttpStatus.CONFLICT).json({
+				message: "Channel does not exist.",
+				value: false,
+			})
+		}
+		else if (this.channelDataService.passwordMatch(channelName, JoinPrivateChannelDto.password)) {
+			return res.status(HttpStatus.OK).json({
+				message: "Joining channel",
+				value: true,
+			})
+		}
+		else {
+			return res.status(HttpStatus.CONFLICT).json({
+				message: "Password does not match",
+				value: false,
+			})
 		}
 	}
 

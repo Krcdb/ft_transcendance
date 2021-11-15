@@ -46,6 +46,12 @@ class ChannelDataService {
         return http.post(`messages/${channelName}`, message);
     }
 
+    // CONDITIONS
+
+    JoinPrivateChannel(channelName: string, channelPassword: any) : Promise<any> {
+        return http.post(`channel/${channelName}/join-private-channel`, channelPassword);
+    }
+
 }
 
 export default new ChannelDataService();

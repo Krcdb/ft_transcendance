@@ -5,7 +5,8 @@
 
     <CreateChannel :owner="user" v-if="this.navBarSelection == 0"/>
     <ChannelList :owner="user" v-if="this.navBarSelection == 1"/>
-    <UserList :owner="user" v-if="this.navBarSelection == 2"/>
+    <JoinPrivateChannel :owner="user" v-if="this.navBarSelection == 2"/>
+    <UserList :owner="user" v-if="this.navBarSelection == 3"/>
 
 
     <!--
@@ -39,6 +40,7 @@ import ChatMessage from "@/types/ChatMessage";
 import UserList from "@/components/chat/NavBar/UserList.vue";
 import CreateChannel from "@/components/chat/NavBar/CreateChannel.vue";
 import ChannelList from "@/components/chat/NavBar/ChannelList.vue";
+import JoinPrivateChannel from "@/components/chat/NavBar/JoinPrivateChannel.vue"
 
 //import ChannelElement from "@/components/chat/Channel/Channel.vue";
 
@@ -68,6 +70,7 @@ export default defineComponent({
         UserList,
         ChannelList,
         CreateChannel,
+        JoinPrivateChannel,
 //        ChannelElement, // tmp
 
         //GlobalChatInfo,
