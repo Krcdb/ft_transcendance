@@ -6,15 +6,26 @@
       <div v-if="user.isActive" id="online-circle"></div>
       <div v-else id="offline-circle"></div>
     </div>
-    <div class="container">
+    <div class="row">
+      <div clas="column">
       <Avatar :user="user" />
-      <div class="user-info">
-        <p>Victories: {{ user.nbVictories }}</p>
-        <p>Losses: {{ user.nbLosses }}</p>
-        <p>Level: {{ user.ladderLevel }}</p>
-        <br />
       </div>
-    <AchievementsList :userId="user.id"/>
+      <div clas="column">
+        <div class="user-info">
+          <p>Victories: {{ user.nbVictories }}</p>
+          <p>Losses: {{ user.nbLosses }}</p>
+          <p>Level: {{ user.ladderLevel }}</p>
+          <br />
+        </div>
+      </div>
+      <div class="row-bottom">
+        <div clas="column">
+        <AchievementsList :userId="user.id" />
+        </div>
+        <div clas="column">
+        <MatchHistory :user="user" />
+      </div>
+      </div>
     </div>
   </div>
 
@@ -28,12 +39,14 @@
 import { defineComponent } from "vue";
 import User from "@/types/User";
 import AchievementsList from "./AchievementsList.vue";
+import MatchHistory from "./MatchHistory.vue"
 import Avatar from "./Avatar.vue";
 
 export default defineComponent({
   name: "User",
   components: {
     AchievementsList,
+    MatchHistory,
     Avatar,
   },
   props: {
@@ -51,11 +64,31 @@ export default defineComponent({
 </script>
 
 <style scoped>
+[class|="row"] {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+.row-bottom {
+  gap: 10%;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  flex: 1;
+}
 .container {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+}
+.container>.top-container {
+  background-color: turquoise;
 }
 .user-info {
   margin: 5%;

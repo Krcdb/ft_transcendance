@@ -44,7 +44,6 @@ import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 import Avatar from "./Avatar.vue";
 
-
 export default defineComponent({
   name: "users-friend",
   components: {

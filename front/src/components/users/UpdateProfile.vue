@@ -8,7 +8,7 @@
     <div class="edit-form">
       <div class="change-avatar">
         <p>Current avatar:</p>
-            <Avatar :user="user" />
+        <Avatar :user="user" />
         <form @submit.prevent="handleSubmit">
           <div class="file-browsing-div">
             <input
@@ -40,20 +40,20 @@
           </label>
         </div>
         <div class="update-username">
-            <h3>Change User Name</h3>
-            <label for="userName">
-              <input
-                type="text"
-                maxlength="12"
-                class="form-control"
-                required
-                v-model="newUserName"
-                :placeholder="user.userName"
-              />
-              <button @click="updateUserName" class="btn btn-success">
-                Submit
-              </button>
-            </label>
+          <h3>Change User Name</h3>
+          <label for="userName">
+            <input
+              type="text"
+              maxlength="12"
+              class="form-control"
+              required
+              v-model="newUserName"
+              :placeholder="user.userName"
+            />
+            <button @click="updateUserName" class="btn btn-success">
+              Submit
+            </button>
+          </label>
         </div>
         <p>{{ msg }}</p>
         <router-link to="/profile">
