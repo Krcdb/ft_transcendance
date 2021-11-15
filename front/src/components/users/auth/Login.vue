@@ -11,17 +11,23 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { login } from "@/statics/log.methods";
 
 export default defineComponent({
   name: "Login",
   data() {
     return {
-      url: "",
+      url: "https://api.intra.42.fr/oauth/authorize?",
+      query: {
+        client_id: process.env.VUE_APP_FT_CLIENT_ID,
+        redirect_uri: process.env.VUE_APP_FT_REDIRECT_URL,
+        response_type: "code",
+      },
     };
   },
   mounted() {
-    this.url = login.loginUser();
+    this.url += Object.entries(this.query)
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join("&");
   },
 });
 </script>
