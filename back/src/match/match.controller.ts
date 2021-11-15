@@ -3,10 +3,16 @@ import { Public } from "src/auth/utils/public.decorator";
 import { MatchService } from "./match.service";
 import { PostMatchDto } from './dto/post-match.dto';
 import { CreateMatchDto } from './dto/create-match.dto';
+import { Match } from "./match.entity";
 
 @Controller('game')
 export class MatchController {
     constructor(private readonly matchService: MatchService) {}
+
+    @Get(':id')
+    async findOne(@Param('id') id: number): Promise<Match> {
+        return await this.matchService.findOne(id);
+    }
 
     // fonction temporaire pour faire des tests
     @Post()

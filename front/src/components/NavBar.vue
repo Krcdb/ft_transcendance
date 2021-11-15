@@ -13,7 +13,7 @@
     <div class="nav-wrapper">
       <ul>
         <!-- <li><router-link class="active" to="/">Home</router-link></li> -->
-        <li><router-link to="/game">Game</router-link></li>
+        <li><router-link to="/Play">Play</router-link></li>
         <li><router-link to="/chat">Chat</router-link></li>
         <li><router-link to="/users">Users</router-link></li>
         <li class="user-login">
@@ -22,7 +22,7 @@
             to="/profile"
             class="user-login"
           >
-            {{ user.userName }}
+            {{ user.userName }} 
           </router-link>
         </li>
       </ul>

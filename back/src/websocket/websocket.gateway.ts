@@ -7,7 +7,7 @@ import { UsersService } from "src/users/users.service";
 
 
 @WebSocketGateway( { cors: true } )
-export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect{
+export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
 	@WebSocketServer()
 	server : Server;
 
@@ -28,11 +28,13 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
 		}
 		else
 			socket.data.user = user;
+			socket.data.page = socket.handshake.auth.page;
 	};
 	
 	handleDisconnect(socket: Socket) {
-		if (socket.data.user)
-			socket.disconnect();
+		this.gameService.removeFromQueue(socket.data.user);
+		socket.disconnect();
+		console.log(`${socket.data.user} disconnected`);
 	}
 
 	@SubscribeMessage('searchGame')
@@ -40,8 +42,18 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
 		return this.gameService.searchGame(socket);
 	}
 	
+	@SubscribeMessage('playerJoin')
+	async playerJoin(socket: Socket) {
+		return this.gameService.playerJoin(socket);
+	}
+
 	@SubscribeMessage('playerNewKeyEvent')
 	async playerNewKeyEvent(socket: Socket, payload: any) {
 		return this.gameService.playerNewKeyEvent(payload);
+	}
+	
+	@SubscribeMessage('playerReady')
+	async playerReady(socket: Socket, payload: any) {
+		return this.gameService.playerReady(socket, payload);
 	}
 }

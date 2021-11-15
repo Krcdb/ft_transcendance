@@ -32,7 +32,7 @@ export class GameService {
 	constructor(
 		@Inject(forwardRef(() => WebsocketService))
 		private readonly socketService: WebsocketService,
-		@Inject(forwardRef(() => WebsocketService))
+		@Inject(forwardRef(() => MatchService))
 		private readonly matchService: MatchService,
 		@InjectRepository(Match)
         private readonly matchRepository: Repository<Match>,
@@ -51,6 +51,24 @@ export class GameService {
 					this.matchPlayers(user, opponent);
 			}
 		}
+	}
+
+	async playerJoin(socket: Socket) {
+		this.socketService.printAllSocketsFromPage(socket.handshake.auth.userId, "play");
+	}
+
+	async playerReady(socket: Socket, uuid: string) {
+		const game = this.games.get(uuid);
+
+		if (!game)
+			return ;
+		socket.emit(`startGame${uuid}`, GameOptions);
+		socket.join(uuid);
+		if (game.player1.id === socket.handshake.auth.userId)
+			game.player1Ready = true;
+		if (game.player2.id === socket.handshake.auth.userId)
+			game.player2Ready = true;
+		
 	}
 
 	async createGame(player1: User, player2: User) {
@@ -95,11 +113,10 @@ export class GameService {
 	}
 
 	matchPlayers(player1: User, player2: User) {
-		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(player1), 1);
-		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(player2), 1);
+		this.removeFromQueue(player1);
+		this.removeFromQueue(player2);
 		this.logger.log('match found');
 		this.createGame(player1, player2);
-		//this.socketService.server.emit('matchFound');
 	}
 
 	async searchGame(socket: Socket) {
@@ -108,6 +125,10 @@ export class GameService {
 			this.matchmakingQueue.push(user);
 			this.logger.log(user.userName, "added to queue");
 		}
+	}
+
+	removeFromQueue(user: User) {
+		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(user), 1);
 	}
 
 	playerNewKeyEvent(payload: any) {
@@ -119,7 +140,7 @@ export class GameService {
 	}
 
 	async gameReady(user: User, uuid: string) {
-		const socket = await this.socketService.getSocketFromUserId(user.id);
+		const socket = await this.socketService.getSocketFromUserId(user.id, "play");
 		if (socket)
 			socket.emit('matchFound', uuid);
 		else

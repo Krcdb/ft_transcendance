@@ -61,7 +61,19 @@ export class Game {
 		this.p2 = new Paddle(this.options.PADDLE_WIDTH, this.options.PADDLE_HEIGHT);
 		this.ball = new Ball(this.options.BALL_SIZE);
 	
-		this.reset();
+		this.p1.setXY(
+			this.options.PADDLE_MARGIN,
+			this.height / 2 - this.options.PADDLE_HEIGHT / 2,
+		);
+		this.p2.setXY(
+			this.width - this.options.PADDLE_WIDTH - this.options.PADDLE_MARGIN,
+			this.height / 2 - this.options.PADDLE_HEIGHT / 2,
+		);
+		this.ball.setXY(
+			this.width / 2 - this.ball.size / 2,
+			this.height / 2 - this.ball.size / 2,
+		);
+		this.setBallDirection();
 	}
 
 	playerNewKeyEvent(payload: any){

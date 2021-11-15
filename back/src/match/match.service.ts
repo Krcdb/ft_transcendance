@@ -19,7 +19,7 @@ export class MatchService {
         const match = new Match();
         match.playerOne = userOneId;
         match.playerTwo = userTwoId;
-        match.scorePlayerOne = 0;
+        match.scorePlayerOne = 0; 
         match.scorePlayerTwo = 0;
         return await this.matchRepository.save(match);
     }

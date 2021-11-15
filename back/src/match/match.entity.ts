@@ -1,9 +1,9 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 export enum GameState {
-  WAITING_ALL = 'waiting_all',
-  IN_PROGRESS = 'in_progress',
-  FINISHED = 'finished',
+  WAITING_ALL,
+  IN_PROGRESS,
+  FINISHED,
 }
 
 @Entity()
@@ -11,7 +11,7 @@ export class Match {
   @PrimaryGeneratedColumn()
   matchId: string;
 
-  @Column({ enum: GameState, type: 'enum', default: GameState.WAITING_ALL })
+  @Column({ enum: GameState, default: GameState.WAITING_ALL })
   state: GameState;
 
   @Column("int")
@@ -20,9 +20,9 @@ export class Match {
   @Column("int")
   playerTwo: number;
 
-  @Column("int")
+  @Column("int", {nullable: true, default : 0})
   scorePlayerOne: number;
 
-  @Column("int")
+  @Column("int", {nullable: true, default : 0})
   scorePlayerTwo: number;
 }
