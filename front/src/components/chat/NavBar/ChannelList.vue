@@ -146,6 +146,7 @@ export default defineComponent({
 			.then((response : ResponseData) => {
 				console.log("Can join channel !");
 				localStorage.setItem("channel-name", channel.channelName);
+				this.$router.push("/Channel/" + channel.channelName);
 
 				// todo ! nouvelle page channel avec en url le nom du channel et l'id de l'owner
 				// puis dans le channel récupérer le nom et le channel en entier et le User avec l'owner

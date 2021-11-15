@@ -1,42 +1,45 @@
 <template>
-	<div class="Channel-Pannel">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<div class="d-flex container">
 
 		<!-- PLAYERS LIST -->
-		<div class="List-Players">
+		<div class="container">
 
-			{{ user.userName }}
-			{{ channel.channelName }}
+			<div class="d-flex align-items-baseline">
+				<h6 class="m-0">ChannelName: {{ channel.channelName }}</h6>
+				<h6 class="m-2">Owner: {{ user.userName }}</h6>
+			</div>
 
-			<div class="Player-List">
-
-				<h4>Joueurs connectés au salon</h4>
-				<ul class="Player-List-ul">
-					<li class="Player-List-Element" v-for="player in PlayerList" :key="player.id">
-						<img :src="`https://avatars.dicebear.com/api/avataaars/${player.id}.svg`"/>
-						<h4> {{ player.userName }} </h4>
+			<div class="d-flex player-list">
+				<div class="align-items-center">
+					<p>Joueurs connectés au salon</p>
+					<li class="list-group-item d-flex mt-2 align-items-center" v-for="player in PlayerList" :key="player.id">
+						<img :src="`https://avatars.dicebear.com/api/avataaars/${player.id}.svg`" width="64"/>
+						<p class="mt-4"> {{ player.userName }} </p>
 					</li>
-				</ul>
+				</div>
 			</div>
 		</div>
 
-		<div class="Messages-Box">
-			<h4>Message Box</h4>
+		<div class="message-box container d-flex flex-column">
+			<h4 class="mt-4">Message Box {{ channel.channelName }}</h4>
 			<hr>
-
 			<div class="Mesages">
-				<ul class="Players-Messages">
-					<li class="Players-List-Messages" v-for="message in Messages" :key="message.id">
+				<ul class="list-group" style="height:512px">
+					<li class="Plist-group-item" v-for="message in Messages" :key="message.id">
 						<MessageComponent :message="message"/>
 					</li>
 				</ul>
 			</div>
+
+			<div class="bottom">
+
+			<hr>
+			<p>Message: <input type="text" v-model="currentMessage.message"></p>
+			<button type="button" name="button" class="btn btn-secondary m-2" style="width:75%"
+			@click="SendMessage">Envoyer</button>
+			</div>
 		</div>
-
-
-		<hr>
-		<h4>Message: <input type="text" v-model="currentMessage.message"></h4>
-		<button type="button" name="button"
-		@click="SendMessage">Envoyer</button>
 
 
 	</div>
@@ -189,6 +192,16 @@ export default defineComponent({
 				});
 			}
 		},
+
+		async delay(ms: number) {
+			return new Promise( resolve => setTimeout(resolve, ms) );
+		},
+		async checkMessages() {
+			// solution temporaire, utiliser les websockets, ça... c'est vraiment de la giga merde !
+			await this.getMessages();
+			this.delay(10000);
+			await this.checkMessages();
+		},
 		// SocketHandler
 		refreshChannelMessages() {
 			console.log("refresh");
@@ -200,6 +213,7 @@ export default defineComponent({
 			await this.getMessages();
 
 			await this.getAllPlayersInChannel();
+			await this.checkMessages();
 		}
 	},
 	mounted() {
@@ -210,6 +224,12 @@ export default defineComponent({
 
 <style media="screen">
 
+.player-list {
+	position: relative;
+	overflow-x: hidden;
+}
+
+/*
 .Player-List {
 	display: inline-block;
 	float: left;
@@ -249,6 +269,13 @@ export default defineComponent({
 	border-radius: 12px;
 	color: white;
 	overflow-x: hidden;
+}
+*/
+
+
+.message-box {
+	overflow-x: hidden;
+	border: 1px solid black;
 }
 
 </style>

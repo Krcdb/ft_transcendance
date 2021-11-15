@@ -28,12 +28,14 @@ export default defineComponent({
 	},
 	methods: {
 		JoinPrivateChannel(channel: Channel) {
-			console.log("trying to Join");
-
-			ChannelDataService.JoinPrivateChannel(channel.channelName, channel.password)
-			.then((response: ResponseData) => {
-				console.log("Join");
-				console.log("response: " + response.data);
+			let data = {
+				password: channel.password,
+			};
+			ChannelDataService.canJoinChannel(channel.channelName, data)
+			.then((response : ResponseData) => {
+				console.log("Can join channel !");
+				localStorage.setItem("channel-name", channel.channelName);
+				this.$router.push("/Channel/" + channel.channelName);
 
 			})
             .catch((e: Error) => {

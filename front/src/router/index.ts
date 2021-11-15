@@ -75,6 +75,11 @@ const routes = [
 		component: () => import("../components/chat/Channel/Channel.vue"),
 		props: true,
 	},
+	{
+		path: "/Channel/:channelName",
+		name: "channelName",
+		component: () => import("../components/chat/Channel/Channel.vue"),
+	}
 ];
 
 const router = createRouter({

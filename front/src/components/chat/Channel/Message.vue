@@ -1,10 +1,11 @@
 <template>
-	<div class="message">
-		<div class="message-box"  :class="this.sender ? 'sender' : 'not-sender'">
-			<h4>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<div class="container mt-2">
+		<div class="float-left" :class="this.sender ? 'sender' : 'not-sender'">
+			<p :class="this.sender ? 'text-sender' : 'text-not-sender'">
 				{{ this.owner.userName }} :
 				{{ this.message.message }}
-			</h4>
+			</p>
 
 		</div>
 	</div>
@@ -68,6 +69,7 @@ export default defineComponent({
 </script>
 
 <style media="screen">
+/*
 .message {
 	width: 100%;
 	display: inline-block;
@@ -84,13 +86,32 @@ export default defineComponent({
 	font-size: 24px;
 }
 
+*/
+
 .sender {
-	float: left;
+	float: right;
 	background-color: lightgreen;
+	border-radius: 20px;
+	width: 75%;
 }
 
 .not-sender {
-	float: right;
+	float: left;
 	background-color: darkred;
+	border-radius: 20px;
+	width: 75%;
+}
+
+.text-sender {
+	color: white;
+	transform: translate(0, 25%);
+	float: right;
+	margin-right: 15px;
+}
+.text-not-sender {
+	color: white;
+	transform: translate(0, 25%);
+	float: left;
+	margin-left: 15px;
 }
 </style>
