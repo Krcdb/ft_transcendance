@@ -7,20 +7,14 @@
       <div v-else id="offline-circle"></div>
     </div>
     <div class="container">
-      <img
-        v-if="user.avatar"
-        :src="`http://localhost:3000/users/${user.id}/avatar`"
-      />
-      <img
-        v-else
-        :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
-      />
+      <Avatar :user="user" />
       <div class="user-info">
         <p>Victories: {{ user.nbVictories }}</p>
         <p>Losses: {{ user.nbLosses }}</p>
         <p>Level: {{ user.ladderLevel }}</p>
         <br />
       </div>
+    <AchievementsList :userId="user.id"/>
     </div>
   </div>
 
@@ -33,9 +27,15 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import User from "@/types/User";
+import AchievementsList from "./AchievementsList.vue";
+import Avatar from "./Avatar.vue";
 
 export default defineComponent({
   name: "User",
+  components: {
+    AchievementsList,
+    Avatar,
+  },
   props: {
     user: {
       type: Object as () => User,
@@ -53,11 +53,19 @@ export default defineComponent({
 <style scoped>
 .container {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
 }
 .user-info {
   margin: 5%;
+  width: 300px;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
 }
 .user-status {
   display: flex;
@@ -78,6 +86,11 @@ h4 {
   margin-right: 10px;
 }
 .friend-status {
+  background-color: #4bbd4b;
+  font-weight: bold;
+  color: white;
+  margin-right: 0%;
+  padding: 5px;
   margin-right: 5px;
 }
 </style>

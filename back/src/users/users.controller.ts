@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Res, Param, Post, UploadedFile, UseInterceptors, NotFoundException } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Res, Param, Post, UploadedFile, UseInterceptors, NotFoundException,  } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { UsersService } from './users.service';
@@ -9,6 +9,7 @@ import { HttpStatus } from '@nestjs/common';
 import { Public } from 'src/auth/utils/public.decorator';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { IdDto } from './dto/id.dto';
+import { AchievementsInterface } from 'src/achievements/achievements';
 
 @Controller('users')
 export class UsersController {
@@ -66,8 +67,12 @@ export class UsersController {
     }
     })
   }))
-  uploadAvatar(@Param('id') id: number, @UploadedFile() file) {
-    this.usersService.setAvatar(id, `${file.filename}`);
+  async uploadAvatar(@Res() res, @Param('id') id: number, @UploadedFile() file): Promise<User>  {
+    const user = await this.usersService.setAvatar(id, `${file.filename}`);
+    return res.status(HttpStatus.OK).json({
+      message: "Avatar has been successfully uploaded",
+      user
+    })
   }
 
   // -> add user as friend
@@ -111,37 +116,43 @@ export class UsersController {
 
   // -> get all users
   @Get()
-  findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  async findAll(): Promise<User[]> {
+    return await this.usersService.findAll();
   }
 
   // -> get one user
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<User> {
-    return this.usersService.findOne(id);
+  async findOne(@Param('id') id: number): Promise<User> {
+    return await this.usersService.findOne(id);
+  }
+
+  // -> get all achievements 
+  @Get(':id/achievements')
+  getAchievements(@Param('id') id: number): Promise<AchievementsInterface[]> {
+    return this.usersService.getAchievements(id);
   }
 
   // -> get one user Friends
   @Get(':id/friends')
-  getFriends(@Param('id') id: number): Promise<User[]> {
-    return this.usersService.getFriends(id);
+  async getFriends(@Param('id') id: number): Promise<User[]> {
+    return await this.usersService.getFriends(id);
   }
 
   // -> get one user Blocked Users
   @Get(':id/blocked')
-  getBlocked(@Param('id') id: number): Promise<User[]> {
-    return this.usersService.getBlocked(id);
+  async getBlocked(@Param('id') id: number): Promise<User[]> {
+    return await this.usersService.getBlocked(id);
   }
 
   // -> get all users except blocked ones
   @Get(':id/non-block-users')
-  getUsersexceptBlocked(@Param('id') id: number): Promise<User[]> {
-    return this.usersService.getUsersexceptBlocked(id);
+  async getUsersexceptBlocked(@Param('id') id: number): Promise<User[]> {
+    return await this.usersService.getUsersexceptBlocked(id);
   }
   // -> logout 
   @Get('logout/:id')
-  logout(@Param('id') id: number): Promise<User> {
-    return this.usersService.updateLogState(id, false);
+  async logout(@Param('id') id: number): Promise<User> {
+    return await this.usersService.updateLogState(id, false);
   }
 
   // -> get avatar picture (should be the only public request)
@@ -158,19 +169,25 @@ export class UsersController {
     return getAvatarFile();
   }
 
+  @Public()
+  @Get('achievements/:class')
+  serveAchievImage(@Param('class') class_name: string, @Res() res) : Promise<any> {
+    return res.sendFile(`${class_name}_icon.png`, { root: "src/achievements/images"});
+  }
+
   // -------- // 
   //  DELETE  //
   // -------- // 
 
   // -> delete the user
   @Delete(':id')
-  remove(@Param('id') id: number): Promise<void> {
-    return this.usersService.remove(id);
+  async remove(@Param('id') id: number): Promise<void> {
+    return await this.usersService.remove(id);
   }
 
   // -> delete the user avatar picture
   @Delete(':id/avatar')
-  removeAvatar(@Param('id') id: number): Promise<void> {
-    return this.usersService.removeAvatar(id);
+  async removeAvatar(@Param('id') id: number): Promise<void> {
+    return await this.usersService.removeAvatar(id);
   }
 }

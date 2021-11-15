@@ -15,7 +15,6 @@ import { UsersService } from 'src/users/users.service';
 export class ChannelController {
 	constructor(
 		private readonly channelDataService: ChannelDataService,
-		// private readonly usersService: UsersService
 	) {}
 
 	// ------ //
@@ -78,8 +77,8 @@ export class ChannelController {
   	// ------ //
 	@Public()
 	@Get(':channelName')
-	getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
-		return (this.channelDataService.findOne(channelName));
+	async getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
+		return (await this.channelDataService.findOne(channelName));
 	}
 
 	@Public()
@@ -90,8 +89,8 @@ export class ChannelController {
 
 	@Public()
 	@Get()
-	findAllChannels() : Promise<Channel[]> {
-		return (this.channelDataService.findAll());
+	async findAllChannels() : Promise<Channel[]> {
+		return (await this.channelDataService.findAll());
 	}
 
 	// ------- //

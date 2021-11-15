@@ -44,20 +44,20 @@ export class MessageController {
 
 	@Public()// get all messages from a channel
 	@Get(':channelName/msg')
-	findAll(@Param('channelName') channelName: string): Promise<Message[]> {
-		return this.messageService.findAllInChannel(channelName);
+	async findAll(@Param('channelName') channelName: string): Promise<Message[]> {
+		return await this.messageService.findAllInChannel(channelName);
 	}
 
 	@Public()  // get one message by its id
 	@Get(':id')
-	findOne(@Param('id') id: number): Promise<Message> {
-		return this.messageService.findOne(id);
+	async findOne(@Param('id') id: number): Promise<Message> {
+		return await this.messageService.findOne(id);
 	}
 
 	@Public()  // get all messages of a user by its id
 	@Get(':owner/')
-	findAllByUserId(@Param('owner') ownerId: number): Promise<Message[]> {
-		return this.messageService.findAllByUser(ownerId);
+	async findAllByUserId(@Param('owner') ownerId: number): Promise<Message[]> {
+		return await this.messageService.findAllByUser(ownerId);
 	}
 
 	// ------- //
@@ -65,7 +65,7 @@ export class MessageController {
 	// ------- //
 
 	@Delete(':id')
-  	remove(@Param('id') id: number): Promise<void> {
-		return this.messageService.remove(id);
+  	async remove(@Param('id') id: number): Promise<void> {
+		return await this.messageService.remove(id);
 	}
 }

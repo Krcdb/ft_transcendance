@@ -38,8 +38,8 @@ export class User {
   @Column("int", {nullable: true, default : 1000})
   ladderLevel: number;
 
-  @Column("varchar", {nullable: true, array: true})
-  achievements: string[];  // ou id[] ?
+  @Column("int", {nullable: true, array: true})
+  achievements: number[];
 
     // --------------- //
     // USERS RELATIONS //

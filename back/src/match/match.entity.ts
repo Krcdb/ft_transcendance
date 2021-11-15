@@ -1,14 +1,19 @@
-import { User } from 'src/users/user.entity';
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
 export class Match {
   @PrimaryGeneratedColumn()
   matchId: number;
 
-  @Column("int", {nullable: true})
-  players: number[];
+  @Column("int")
+  playerOne: number;
 
-  @Column("int", {nullable: true})
-  scores: number[];
+  @Column("int")
+  playerTwo: number;
+
+  @Column("int")
+  scorePlayerOne: number;
+
+  @Column("int")
+  scorePlayerTwo: number;
 }
