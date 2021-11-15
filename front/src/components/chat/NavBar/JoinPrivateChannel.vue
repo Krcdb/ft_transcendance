@@ -1,13 +1,13 @@
 <template>
-	<div class="join-private-channel">
-		<div class="container">
-			<h1>Join private Channel</h1>
-			<h4>Channel Name:  <input type="text" v-model="channel.channelName"></h4>
-			<h4>Channel Password:  <input type="password" v-model="channel.password"></h4>
+	<div class="container-fluid">
+		<hr>
+		<h4>Join private Channel</h4>
+		<br>
+		<p>Channel Name:  <input type="text" v-model="channel.channelName"></p>
+		<p>Channel Password:  <input type="password" v-model="channel.password"></p>
 
-			<button type="button" name="button"
-			@click="JoinPrivateChannel(this.channel)">Join Channel</button>
-		</div>
+		<button type="button" class="btn btn-secondary"
+		@click="JoinPrivateChannel(this.channel)">Join Channel</button>
 	</div>
 </template>
 

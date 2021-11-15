@@ -1,36 +1,45 @@
-<template id="">
-	<div class="container create-channel">
+<template>
+	<div class="container-fluid">
 		<hr>
-		<div class="create-channel-box">
+		<div class="text-center">
+			<div class="justify-content-center">
+				<h4>Create new Channel</h4>
 
-			<h1>Créer un Salon</h1>
+				<p>Channel Name:  <input type="text"
+					v-model="this.channel.channelName"></p>
+					<p>Password: <input type="text"
+						v-model="this.channel.password"></p>
+						<p>Public Channel: <input type="checkbox"
+							v-model="this.channel.isPublic"></p>
 
-			<div class="create-channel-inputs">
+							<button class="btn btn-secondary" type="button" name="button"
+							@click="CreateChannel">
+							Create</button>
+						</div>
+					</div>
 
-				<h4>Nom du salon: <input type="text"
-					v-model="this.channel.channelName"></h4>
-				<h4>Mot de passe (laissez vide si aucun): <input type="text"
-					v-model="this.channel.password"></h4>
-				<h4>Salon publique: <input type="checkbox"
-					v-model="this.channel.isPublic"></h4>
+					<hr>
+
+					<div class="container-fluid">
+
+						<div class="d-flex justify-content-center" v-if="isLoading">
+							<div class="spinner-border" role="status">
+								<span class="sr-only"></span>
+							</div>
+						</div>
+
+						<div class="alert alert-danger" role="alert"
+						v-if="this.state == 1">
+						<h6>Le salon existe déjà</h6>
+					</div>
+					<div class="alert alert-success" role="alert"
+					v-if="this.state == 2">
+					<h6>Le salon à bien été créé</h6>
+				</div>
+
 			</div>
-
-			<button class="btn btn-success" type="button" name="button"
-			@click="CreateChannel">
-			Créer</button>
 		</div>
-
-		<div class="error-channel"
-			v-if="this.state == 1">
-			<h3>Le salon existe déjà</h3>
-		</div>
-		<div class="success-channel"
-			v-if="this.state == 2">
-			<h3>Le salon à bien été créé</h3>
-		</div>
-
-	</div>
-</template>
+	</template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
@@ -48,6 +57,7 @@ export default defineComponent({
 		return {
 			channel: {} as Channel,
 			state: 0,
+			isLoading: false,
 		}
 	},
     props: {
@@ -57,7 +67,13 @@ export default defineComponent({
         },
     },
 	methods: {
-		CreateChannel() {
+		async delay(ms: number) {
+			return new Promise( resolve => setTimeout(resolve, ms) );
+		},
+		async CreateChannel() {
+
+			this.isLoading = true;
+			this.state = 0;
 
 			let data = {
 				channelName: this.channel.channelName as string,
@@ -71,22 +87,27 @@ export default defineComponent({
 			console.log("password: " + this.channel.password);
 			console.log("owner: " + this.owner.userName);
 
+			await this.delay(1000);
 
 			ChannelDataService.createChannel(data)
 			.then((response: ResponseData) => {
 				console.log("create Channel");
 				this.state = 2;
+				this.isLoading = false;
 			})
             .catch((e: Error) => {
 				this.state = 1;
                 console.log("Error: " + e);
+				this.isLoading = false;
             });
+			this.isLoading = false;
 		}
 	},
 });
 </script>
 
-<style media="screen">
+<style>
+/*
 .create-channel {
 	max-width: 80%;
 	min-width: 50%;
@@ -131,5 +152,5 @@ export default defineComponent({
 	padding: 15px;
 	color: white;
 }
-
+*/
 </style>

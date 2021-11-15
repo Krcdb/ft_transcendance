@@ -1,25 +1,30 @@
 <template>
-    <div class="chat">
-        <div class="select-user" v-if="!userSelected">
-            <h3>Seclectionnez votre profile</h3>
+    <div class="container">
+        <div v-if="!userSelected">
+            <h4>Seclectionnez votre profile</h4>
             <div class="no-user-created">
                 <h4 class="warning" v-if="this.users.length <= 0">No user found, create user first</h4>
             </div>
 
-            <button class="" name="button"
-            :class="{ active: index == currentIndex} "
-            v-for="(user, index) in users"
-            :key="index"
-            @click="selectUser(user)"
-            >
-            <img :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`" alt="">
-            {{ user.userName }}
-        </button>
+            <div class="justify-content-center">
+                <ul class="list-group">
+                    <li class="list-group-item"
+                    :class="{ active: index == currentIndex} "
+                    v-for="(user, index) in users"
+                    :key="index">
+                    <button class="btn" name="button" @click="selectUser(user)" width="128">
+                        <img :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`" alt="" width="64">
+                        {{ user.userName }}
+                    </button>
+                    <hr>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <div class="welcome-User" v-else>
         <h3>Bienvenue: <strong> {{ this.currentUser.userName }} </strong> </h3>
-        <img :src="`https://avatars.dicebear.com/api/avataaars/${this.currentUser.id}.svg`" alt="">
+        <img :src="`https://avatars.dicebear.com/api/avataaars/${this.currentUser.id}.svg`" alt="" width="128">
     </div>
 
 </div>
@@ -79,7 +84,8 @@ export default defineComponent({
 });
 </script>
 
-<style>
+<style scoped>
+/*
 .userChatInput {
     display: inline-block;
     width: 0 auto;
@@ -133,4 +139,5 @@ button img{
 .warning {
     color: orange;
 }
+*/
 </style>

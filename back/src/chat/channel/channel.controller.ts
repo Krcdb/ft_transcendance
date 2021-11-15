@@ -8,7 +8,7 @@ import { User } from '../../users/user.entity';
 
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelUserDto } from './dto/update-channel-users.dto';
-import { JoinPrivateChannelDto } from './dto/join-private-channel.dto';
+import { ChannelPasswordDto } from './dto/channel-password.dto';
 import { MessageController } from '../message/message.controller';
 import { UsersService } from 'src/users/users.service';
 
@@ -23,7 +23,7 @@ export class ChannelController {
 	// ------ //
 
 	@Public()
-	@Post()
+	@Post('createChannel')
 	async createChannel(@Res() res, @Body() createChannelDto: CreateChannelDto) {
 		if (await this.channelDataService.channelAlreadyExists(createChannelDto.channelName)) {
 			return res.status(HttpStatus.CONFLICT).json({
@@ -76,7 +76,7 @@ export class ChannelController {
 
 	@Public()
 	@Post(':channelName/join-private-channel')
-	async UserJoinPrivateChannel(@Res() res, @Param('channelName') channelName: string, @Body() JoinPrivateChannelDto: JoinPrivateChannelDto) {
+	async UserJoinPrivateChannel(@Res() res, @Param('channelName') channelName: string, @Body() ChannelPasswordDto: ChannelPasswordDto) {
 		console.log("Trying to join channel: " + channelName);
 		if (!await this.channelDataService.findOne(channelName)) {
 			return res.status(HttpStatus.CONFLICT).json({
@@ -84,7 +84,7 @@ export class ChannelController {
 				value: false,
 			})
 		}
-		else if (this.channelDataService.passwordMatch(channelName, JoinPrivateChannelDto.password)) {
+		else if (this.channelDataService.passwordMatch(channelName, ChannelPasswordDto.password)) {
 			return res.status(HttpStatus.OK).json({
 				message: "Joining channel",
 				value: true,
@@ -109,7 +109,7 @@ export class ChannelController {
 	}
 
 	@Public()
-	@Get('/:channelName/:messagesHistory')
+	@Get(':channelName/:messagesHistory')
 	getChannelHistory(@Param('channelName') channelName: string) : Promise<number[]> {
 		return (this.channelDataService.getMessageHistory(channelName));
 	}
@@ -120,14 +120,30 @@ export class ChannelController {
 		return (await this.channelDataService.findAll());
 	}
 
+	@Public()
+	@Get(':channelName/can-join-channel')
+	async canJoinChannel(@Res() res, @Param('channelName') ChannelName: string, @Body() ChannelPasswordDto: ChannelPasswordDto) : Promise<boolean> {
+		if (await this.channelDataService.passwordMatch(ChannelName, ChannelPasswordDto.password)) {
+			return res.status(HttpStatus.OK).json({
+				message: "Can join channel",
+				value: true,
+			})
+		} else {
+			return res.status(HttpStatus.CONFLICT).json({
+				message: "Cannot join channel",
+				value: false,
+			})
+		}
+	}
+
 	// ------- //
 	//  DELETE //
 	// ------- //
 
 	@Public()
-	@Delete('/:channelName/:id')
-	deleteChannel(@Param('channelName') channelName : string, @Param('id') id : number) {
-		this.channelDataService.removeUserAsUser(channelName, id);
+	@Delete(':channelName')
+	async deleteChannel(@Param('channelName') channelName : string) {
+		await this.channelDataService.deleteOne(channelName);
 		return ("successfully deleted");
 	}
 

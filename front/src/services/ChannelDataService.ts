@@ -8,7 +8,7 @@ class ChannelDataService {
     // CHANNEL
 
     createChannel(channel: Channel) : Promise<any> {
-        return http.post('/chat', channel);
+        return http.post('/channel/createChannel', channel);
     }
     getAllActiveUser() : Promise <any> {
         return http.get('/users/');
@@ -48,10 +48,13 @@ class ChannelDataService {
 
     // CONDITIONS
 
+    canJoinChannel(channelName: string, channelPassword: any) : Promise<any> {
+        return http.get(`channel/${channelName}/can-join-channel`, channelPassword);
+    }
+
     JoinPrivateChannel(channelName: string, channelPassword: any) : Promise<any> {
         return http.post(`channel/${channelName}/join-private-channel`, channelPassword);
     }
-
 }
 
 export default new ChannelDataService();

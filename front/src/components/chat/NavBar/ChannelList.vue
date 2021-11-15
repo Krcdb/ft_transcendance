@@ -1,70 +1,67 @@
 <template id="">
-    <div class="channel-list">
-        <h1>List des salons créés</h1>
+    <div class="container-fluid">
+        <hr>
+        <h4>Channel list</h4>
 
         <div class="no-channel" v-if="this.ChannelList.length <= 0">
-            <h4>Aucun salon créé...</h4>
+            <h6>No channel found...</h6>
         </div>
 
-        <h4>Rechercher un salon: <input type="text" name="" value=""></h4>
+        <div class="input-group mb-3 justify-content-center">
+            <p>Rechercher un salon: <input type="text"
+				placeholder="Search a channel..."
+				v-model="this.search"
+		        @input="searchhandler"
+		        @change="searchhandler"
+			></p>
+        </div>
 
-        <ul class="channel-list-list">
-            <li class="channel-list-element" v-for="channel in ChannelList" :key="channel.id">
-                <!-- todo, v-if channel public -->
-                <div class="channel-info-left">
-                    <h4>{{ channel.channelName }}</h4>
-                    <img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`" alt="">
-                </div>
+        <hr>
 
-                <div class="channel-info-center">
+        <div class="container justify-content-center">
+            <ul class="list-group">
+                <li class="list-group-item" v-for="channel in filteredChannelList" :key="channel.id">
 
-                    <h4>Propriétaire: {{ this.getUserByID(channel.owner).userName }} </h4>
-                    <h5>Salon publique: {{ channel.isPublic ? "OUI" : "NON"}}</h5>
-                    <!--{{ channel.password }}-->
-                </div>
+                    <div class="d-flex align-items-center" v-if="channel.isPublic">
 
+                        <div class="row col-sm-2">
+                            <p>{{ channel.channelName }}</p>
+                            <img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`" alt="" width="128">
+                        </div>
 
-                <div class="channel-info-right">
-                    <div class="buttons-join-channel">
+                        <div class="row col-sm-4">
+                            <p>Owner: {{ this.getUserByID(channel.owner).userName }} </p>
+                            <p>Public Channel: {{ channel.isPublic ? "Yes" : "No"}}</p>
+                        </div>
 
-                    <!--    <router-link class="channel-link" :to="'/chat/channel/' + channel.channelName"> -->
-                    <router-link class="channel-link" :to="{name: 'Channel',
-                    params: {channel: channel, owner: this.owner}}">
-                            <button class="btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
+                        <div class="row col-sm-4">
+                            <p>Password: <input id="password" type="password" name="password" value=""></p>
+                            <!--    <router-link class="channel-link" :to="'/chat/channel/' + channel.channelName"> -->
+                            <!-- <router-link class="channel-link" :to="{name: 'Channel',
+                            params: {channel: channel, owner: this.owner}}"> -->
+                            <button class="btn btn-secondary" style="margin: 15px;" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
                             type="button" name="button"
-                            @click="updateCurrentChannel(channel)">
+                            @click="joinChannel(channel)">
                             Rejoindre</button>
-                        </router-link>
+                    <!--    </router-link> -->
 
-                        <!-- DEBUG
-                        <router-link
-                        :to="{ name: 'MyComponent',
-                        params: { exampleProp: examplePropValue }}">
-                        Link to My Component
-                    </router-link>
-                -->
-
-
+                        <div class="col col-sm-12" v-if=" this.getUserByID(channel.owner).id === this.owner.id">
+                            <button type="button" name="button" class="btn btn-danger"
+                            @click="deleteChannel(channel)">Supprimer le salon</button>
+                            <div class="p-auto mx-auto" style="margin: 15px;" v-if="this.isDeletingChannel">
+                                <div class="spinner-border" role="status">
+                                    <span class="sr-only"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h5>Mot de passe: <input id="password" type="password" name="password" value=""></h5>
-                    <div class="channel-delete"
-                    v-if=" this.getUserByID(channel.owner).id === this.owner.id">
-                    <button type="button" name="button" class="btn-red"
-                    @click="deleteChannel(channel)">Supprimer le salon</button>
-                </div>
             </div>
+            <br>
+            <hr>
+            <br>
         </li>
     </ul>
-
-    <h1>info !</h1>
-    <ul>
-
-        <li class="tmp" v-for="user in UserList" :key="user.id">
-            <p>
-                {{ user.userName }} : {{ user.id }}
-            </p>
-        </li>
-    </ul>
+</div>
 
 </div>
 </template>
@@ -86,6 +83,9 @@ export default defineComponent({
         return {
             UserList: [] as User[],
             ChannelList: [] as Channel[],
+			filteredChannelList: [] as Channel[],
+            isDeletingChannel: false,
+			search: "",
         };
     },
     props: {
@@ -95,10 +95,11 @@ export default defineComponent({
         },
     },
     methods: {
-        refreshChannelList() {
+        async refreshChannelList() {
             ChannelDataService.getAllChannels()
             .then((response : ResponseData) => {
                 this.ChannelList = response.data;
+				this.filteredChannelList = response.data;
             })
             .catch((e: Error) => {
                 console.log("Error: " + e);
@@ -116,18 +117,44 @@ export default defineComponent({
             let user =  this.UserList.find(x => x.id == tosearch);
             return user;
         },
-        deleteChannel(channel: Channel) {
+        async delay(ms: number) {
+            return new Promise( resolve => setTimeout(resolve, ms) );
+        },
+        async deleteChannel(channel: Channel) {
+            this.isDeletingChannel = true;
+			await this.delay(500);
             ChannelDataService.deleteChannel(channel.channelName)
             .then((response : ResponseData) => {
                 console.log("Channel Successfully deleted");
                 this.refreshChannelList();
+                this.isDeletingChannel = false;
             })
             .catch((e: Error) => {
                 console.log("Error: " + e);
+                this.isDeletingChannel = false;
             });
         },
-        updateCurrentChannel(channel : Channel) {
-            localStorage.setItem("channel-name", channel.channelName);
+		searchhandler() {
+			this.filteredChannelList = this.ChannelList.filter((channel) =>
+			channel.channelName.toLowerCase().includes(this.search.toLowerCase()));
+		},
+        joinChannel(channel : Channel) {
+			let data = {
+				password: channel.password,
+			};
+			ChannelDataService.canJoinChannel(channel.channelName, data)
+			.then((response : ResponseData) => {
+				console.log("Can join channel !");
+				localStorage.setItem("channel-name", channel.channelName);
+
+				// todo ! nouvelle page channel avec en url le nom du channel et l'id de l'owner
+				// puis dans le channel récupérer le nom et le channel en entier et le User avec l'owner
+				// (voir code servane)
+
+			})
+            .catch((e: Error) => {
+                console.log("Error: " + e);
+            });
         },
     },
     mounted() {
@@ -137,6 +164,7 @@ export default defineComponent({
 </script>
 
 <style media="screen">
+/*
 .channel-list {
     display: block;
     position: relative;
@@ -240,6 +268,6 @@ export default defineComponent({
 .btn-red {
     background-color: darkred;
 }
-
+*/
 
 </style>

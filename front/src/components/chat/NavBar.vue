@@ -1,55 +1,31 @@
 <template>
-	<div class="chat-nav-bar">
-		<div class="container">
 
-			<ul class="list">
-				<li class="list-item" >
-					<div class="col">
-
-						<button class="btn btn-primary element" type="btn btn-success" name="button"
-						@click="changeNavSelection(0)"
-						>
-						<h4>Créer un salon</h4>
-					</button>
-
-				</div>
-			</li>
-
-			<li class="list-item" >
-				<div class="col">
-
-					<button class="btn btn-primary element" type="btn btn-success" name="button"
-					@click="changeNavSelection(1)">
-					<h4>Rejoindre un salon</h4>
-				</button>
-
-			</div>
-		</li>
-
-		<li class="list-item" >
-			<div class="col">
-
-				<button class="btn btn-primary element" type="btn btn-success" name="button"
-				@click="changeNavSelection(2)">
-				<h4>Rejoindre un salon privé</h4>
-			</button>
-
+	<div class="container-fluid">
+		<div class="">
+			<ul class="list-group list-group-horizontal justify-content-center">
+				<li class="list-group-item">
+					<button class="btn btn-primary"
+						:class='currentButtonIsActive(0) ? "btn-success" : "btn-primary"'
+							@click="changeNavSelection(0)">Create a channel</button>
+				</li>
+				<li class="list-group-item">
+					<button class="btn btn-primary"
+						:class='currentButtonIsActive(1) ? "btn-success" : "btn-primary"'
+							@click="changeNavSelection(1)">Join a channel</button>
+				</li>
+				<li class="list-group-item">
+					<button class="btn btn-primary"
+						:class='currentButtonIsActive(2) ? "btn-success" : "btn-primary"'
+							@click="changeNavSelection(2)">Join a private channel</button>
+				</li>
+				<li class="list-group-item">
+					<button class="btn btn-primary"
+						:class='currentButtonIsActive(3) ? "btn-success" : "btn-primary"'
+							@click="changeNavSelection(3)">List of friends connected</button>
+				</li>
+			</ul>
 		</div>
-	</li>
-
-		<li class="list-item" >
-			<div class="col">
-
-				<button class="btn btn-primary element" type="btn btn-success" name="button"
-				@click="changeNavSelection(3)">
-				<h4>Liste des joueurs connectés</h4>
-			</button>
-
-		</div>
-	</li>
-</ul>
-</div>
-</div>
+	</div>
 </template>
 
 <script lang="ts">
@@ -57,18 +33,28 @@
 import { defineComponent } from "vue";
 export default defineComponent({
 	name: "char-nav-bar",
+	data() {
+		return ({
+			nav: -1 as number,
+		});
+	},
 	methods: {
 		changeNavSelection(value: number) {
+			this.nav = value;
 			this.$emit("switchNavBarSelection", value);
 			console.log("change selection emit: " + value);
-		}
+		},
+		currentButtonIsActive(value: number) {
+			return (this.nav === value);
+		},
 	}
 });
 
 </script>
 
-<style media="screen">
+<style scoped>
 @import url("https://fonts.googleapis.com/css?family=Varela+Round");
+/*
 .chat-nav-bar {
 	font-family: "Varela Round", sans-serif;
 
@@ -114,5 +100,6 @@ export default defineComponent({
 	background-color: rgba(40, 40, 40, 255);
 	transition: 0.25s;
 }
+*/
 
 </style>

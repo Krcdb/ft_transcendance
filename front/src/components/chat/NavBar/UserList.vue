@@ -1,12 +1,15 @@
 <template>
-    <div class="user-user-list">
-        <ul class="user">
-            <li class="user-list" v-for="user in usersList" :key="user.id">
-                <div class="user-list-element">
-                    <img :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"/>
-                    <div class="list-user-info">
-                        <div class="user-top">
-                            <h4>{{ user.userName }}</h4>
+    <div class="container">
+        <hr>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <div class="list-inline-item" v-for="user in usersList" :key="user.id">
+                    <div class="user-list-element">
+                        <img :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`" width="128"/>
+
+                        <br>
+                        <div class="d-flex align-items-center">
+                            <h6>{{ user.userName }}</h6>
                             <div class="user-status">
                                 <div v-if="user.isActive" id="online-circle"></div>
                                 <div v-else id="offline-circle"></div>
@@ -14,10 +17,15 @@
                         </div>
                         <button class="button" :class="user.isActive? 'btn-actif' : 'btn-inactif'" type="button" name="button">Envoyer un message privé</button>
                     </div>
+                    <hr>
                 </div>
-                <hr>
-            </li>
-        </ul>
+
+                <div class="" v-if="usersList.length <= 0">
+                    <h6>Add a friend first :)</h6>
+                </div>
+
+            </div>
+        </div>
     </div>
 </template>
 
@@ -48,7 +56,7 @@ export default defineComponent({
             //let tmpList: [] as User[];
             let tmpList: Array<User>;
 
-            UserDataService.getAll()
+            UserDataService.getFriends(this.owner.id)
             .then((response : ResponseData) => {
 
                 for (let index = 0; index < response.data.length; index++) {
@@ -74,6 +82,7 @@ export default defineComponent({
 </script>
 
 <style media="screen">
+/*
 .user-user-list {
     display: block;
     position: relative;
@@ -153,5 +162,5 @@ export default defineComponent({
 .btn-inactif {
     background-color: red;
 }
-
+*/
 </style>
