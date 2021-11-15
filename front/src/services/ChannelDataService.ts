@@ -8,7 +8,7 @@ class ChannelDataService {
     // CHANNEL
 
     createChannel(channel: Channel) : Promise<any> {
-        return http.post('/chat', channel);
+        return http.post('/channel/createChannel', channel);
     }
     getAllActiveUser() : Promise <any> {
         return http.get('/users/');

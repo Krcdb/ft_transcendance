@@ -1,56 +1,45 @@
-<template id="">
+<template>
     <div class="channel-list">
-        <h1>List des salons créés</h1>
-
-        <div class="no-channel" v-if="this.ChannelList.length <= 0">
-            <h4>Aucun salon créé...</h4>
-        </div>
-
-        <h4>Rechercher un salon: <input type="text" name="" value=""></h4>
-
-        <ul class="channel-list-list">
-            <li class="channel-list-element" v-for="channel in ChannelList" :key="channel.id">
-                <!-- todo, v-if channel public -->
-                <div class="channel-info-left">
-                    <h4>{{ channel.channelName }}</h4>
-                    <img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`" alt="">
+        <div class="container">
+            <div class="container-fluid">
+                <h1>List des salons créés</h1>
+                <div class="no-channel" v-if="this.ChannelList.length <= 0">
+                    <h4>Aucun salon créé...</h4>
                 </div>
+                <h4>Rechercher un salon: <input type="text" name="" value=""></h4>
+            </div>
 
-                <div class="channel-info-center">
+            <ul class="channel-list-list container">
+                <li class="container" v-for="channel in ChannelList" :key="channel.id">
+                    <div class="channel-list-element" v-if="channel.isPublic">
 
-                    <h4>Propriétaire: {{ this.getUserByID(channel.owner).userName }} </h4>
-                    <h5>Salon publique: {{ channel.isPublic ? "OUI" : "NON"}}</h5>
-                    <!--{{ channel.password }}-->
-                </div>
+                        <div class="channel-info-left">
+                            <h4>{{ channel.channelName }}</h4>
+                            <img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`" alt="">
+                        </div>
 
-
-                <div class="channel-info-right">
-                    <div class="buttons-join-channel">
-
-                    <!--    <router-link class="channel-link" :to="'/chat/channel/' + channel.channelName"> -->
-                    <router-link class="channel-link" :to="{name: 'Channel',
-                    params: {channel: channel, owner: this.owner}}">
-                            <button class="btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
-                            type="button" name="button"
-                            @click="updateCurrentChannel(channel)">
-                            Rejoindre</button>
-                        </router-link>
-
-                        <!-- DEBUG
-                        <router-link
-                        :to="{ name: 'MyComponent',
-                        params: { exampleProp: examplePropValue }}">
-                        Link to My Component
-                    </router-link>
-                -->
+                        <div class="channel-info-center">
+                            <h4>Propriétaire: {{ this.getUserByID(channel.owner).userName }} </h4>
+                            <h5>Salon publique: {{ channel.isPublic ? "OUI" : "NON"}}</h5>
+                        </div>
 
 
+                        <div class="channel-info-right">
+                            <div class="buttons-join-channel">
+                                <router-link class="channel-link" :to="{name: 'Channel',
+                                params: {channel: channel, owner: this.owner}}">
+                                <button class="btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
+                                type="button" name="button"
+                                @click="updateCurrentChannel(channel)">
+                                Rejoindre</button>
+                            </router-link>
+                        </div>
+                        <h5>Mot de passe: <input id="password" type="password" name="password" value=""></h5>
+                        <div class="channel-delete"
+                        v-if=" this.getUserByID(channel.owner).id === this.owner.id">
+                        <button type="button" name="button" class="btn-red"
+                        @click="deleteChannel(channel)">Supprimer le salon</button>
                     </div>
-                    <h5>Mot de passe: <input id="password" type="password" name="password" value=""></h5>
-                    <div class="channel-delete"
-                    v-if=" this.getUserByID(channel.owner).id === this.owner.id">
-                    <button type="button" name="button" class="btn-red"
-                    @click="deleteChannel(channel)">Supprimer le salon</button>
                 </div>
             </div>
         </li>
@@ -66,6 +55,7 @@
         </li>
     </ul>
 
+</div>
 </div>
 </template>
 
@@ -95,7 +85,7 @@ export default defineComponent({
         },
     },
     methods: {
-        refreshChannelList() {
+        async refreshChannelList() {
             ChannelDataService.getAllChannels()
             .then((response : ResponseData) => {
                 this.ChannelList = response.data;
@@ -116,7 +106,7 @@ export default defineComponent({
             let user =  this.UserList.find(x => x.id == tosearch);
             return user;
         },
-        deleteChannel(channel: Channel) {
+        async deleteChannel(channel: Channel) {
             ChannelDataService.deleteChannel(channel.channelName)
             .then((response : ResponseData) => {
                 console.log("Channel Successfully deleted");
@@ -136,7 +126,8 @@ export default defineComponent({
 });
 </script>
 
-<style media="screen">
+<style>
+
 .channel-list {
     display: block;
     position: relative;

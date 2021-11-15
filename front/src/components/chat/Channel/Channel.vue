@@ -57,6 +57,7 @@ import MessageComponent from "./Message.vue";
 import VueSocketIO from 'vue-socket.io';
 
 export default defineComponent({
+
 	data() {
 		return {
 			PlayerList: [] as User[],
@@ -193,6 +194,9 @@ export default defineComponent({
 		refreshChannelMessages() {
 			console.log("refresh");
 		},
+		async connect() {
+			//
+		},
 		async init() {
 			await this.getUser(Number(localStorage.getItem("user-id")));
 			await this.getChannel(String(localStorage.getItem("channel-name")));
@@ -200,9 +204,13 @@ export default defineComponent({
 			await this.getMessages();
 
 			await this.getAllPlayersInChannel();
+
+			//await this.connect();
 		}
 	},
 	mounted() {
+		//let app = require('express')();
+
 		this.init();
 	},
 });
