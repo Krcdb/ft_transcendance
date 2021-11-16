@@ -1,33 +1,36 @@
 <template>
-    <div class="container">
-        <div v-if="!userSelected">
-            <h4>Seclectionnez votre profile</h4>
-            <div class="no-user-created">
-                <h4 class="warning" v-if="this.users.length <= 0">No user found, create user first</h4>
-            </div>
-
-            <div class="justify-content-center">
-                <ul class="list-group">
-                    <li class="list-group-item"
-                    :class="{ active: index == currentIndex} "
-                    v-for="(user, index) in users"
-                    :key="index">
-                    <button class="btn" name="button" @click="selectUser(user)">
-                        <Avatar :user="user" />
-                        {{ user.userName }}
-                    </button>
-                    <hr>
-                </li>
-            </ul>
-        </div>
+  <div class="container">
+    <div v-if="!userSelected">
+      <h4>Seclectionnez votre profile</h4>
+      <div class="no-user-created">
+        <h4 class="warning" v-if="this.users.length <= 0">
+          No user found, create user first
+        </h4>
+      </div>
+      <div class="justify-content-center">
+        <ul class="list-group">
+          <li
+            class="list-group-item"
+            :class="{ active: index == currentIndex }"
+            v-for="(user, index) in users"
+            :key="index"
+          >
+            <button class="btn" name="button" @click="selectUser(user)">
+              <Avatar :user="user" />
+              {{ user.userName }}
+            </button>
+            <hr />
+          </li>
+        </ul>
+      </div>
     </div>
-
     <div class="welcome-user" v-else>
-        <h3>Bienvenue: <strong> {{ this.currentUser.userName }} </strong> </h3>
-        <Avatar :user="this.currentUser" />
+      <h3>
+        Bienvenue: <strong> {{ this.currentUser.userName }} </strong>
+      </h3>
+      <Avatar :user="this.currentUser" />
     </div>
-
-</div>
+  </div>
 </template>
 
 <script lang="ts">

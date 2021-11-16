@@ -37,7 +37,7 @@
 			</div>
 		</div>
 
-		<div class="message-box container d-flex flex-column">
+		<div class="message-box container d-flex flex-column" id="my-message-box">
 			<h4 class="mt-4">{{ channel.channelName }}</h4>
 			<hr>
 			<div class="Mesages">
@@ -51,7 +51,7 @@
 			<div class="bottom">
 
 			<hr>
-			<p>Message: <input type="text" v-model="currentMessage.message"></p>
+			<textarea placeholder="Type your message here ..." v-model="currentMessage.message"></textarea>
 			<button type="button" name="button" class="btn btn-secondary m-2" style="width:75%"
 			@click="SendMessage">Envoyer</button>
 			</div>
@@ -215,7 +215,6 @@ export default defineComponent({
 				});
 			}
 		},
-
 		async delay(ms: number) {
 			return new Promise( resolve => setTimeout(resolve, ms) );
 		},
@@ -333,10 +332,22 @@ export default defineComponent({
 }
 */
 
-
-.message-box {
-	overflow-x: hidden;
-	border: 1px solid black;
+.list-group {
+	overflow-y: auto;
 }
 
+.message-box {
+	/* overflow-x: hidden; */
+	border: 1px solid black;
+}
+textarea {
+  width: 95%;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  resize: none;
+}
 </style>
