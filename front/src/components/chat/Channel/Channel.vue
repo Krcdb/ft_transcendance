@@ -6,23 +6,39 @@
 		<div class="container">
 
 			<div class="d-flex align-items-baseline">
-				<h6 class="m-0">ChannelName: {{ channel.channelName }}</h6>
+				<!-- <h6 class="m-0">Channel Name: {{ channel.channelName }}</h6> -->
 				<h6 class="m-2">Owner: {{ user.userName }}</h6>
 			</div>
 
 			<div class="d-flex player-list">
 				<div class="align-items-center">
-					<p>Joueurs connectés au salon</p>
-					<li class="list-group-item d-flex mt-2 align-items-center" v-for="player in PlayerList" :key="player.id">
-						<img :src="`https://avatars.dicebear.com/api/avataaars/${player.id}.svg`" width="64"/>
-						<p class="mt-4"> {{ player.userName }} </p>
+					<p>Users connected to the channel</p>
+					<ul class="list">
+					<li class="list-item" v-for="player in PlayerList" :key="player.id">
+						<Avatar :user="player" />
+						<div class="list-item-content">
+							<router-link class="profile-link" :to="'/users/' + player.id">
+								<h4>{{ player.userName }}</h4>
+							</router-link>
+						</div>
+						<!-- <div class="friend-status" v-if="friends.indexOf(user.id) !== -1">
+							Friend
+						</div> -->
+						<!-- <div class="me-status" v-if="player.id == user.id">Me</div> -->
+						<div class="user-status">
+							<div v-if="player.isActive" id="online-circle"></div>
+							<div v-else id="offline-circle"></div>
+						</div>
+						<!-- <Avatar :user="player" />
+						<p class="mt-4"> {{ player.userName }} </p> -->
 					</li>
+					</ul>
 				</div>
 			</div>
 		</div>
 
 		<div class="message-box container d-flex flex-column">
-			<h4 class="mt-4">Message Box {{ channel.channelName }}</h4>
+			<h4 class="mt-4">{{ channel.channelName }}</h4>
 			<hr>
 			<div class="Mesages">
 				<ul class="list-group" style="height:512px">
@@ -54,10 +70,9 @@ import UserDataService from "@/services/UserDataService";
 import ResponseData from "@/types/ResponseData";
 import Channel from "@/types/Channel";
 import Message from "@/types/ChatMessage";
-
 import MessageComponent from "./Message.vue";
-
 import VueSocketIO from 'vue-socket.io';
+import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
 	data() {
@@ -82,6 +97,7 @@ export default defineComponent({
 	},
 	components: {
 		MessageComponent,
+		Avatar,
 	},
 	methods: {
 		async getAllPlayersInChannel() {
@@ -124,6 +140,7 @@ export default defineComponent({
 		async getChannel(name: string) {
 			await ChannelDataService.getChannel(name)
 			.then((response : ResponseData) => {
+				console.log("response = ", response.data);
 				this.channel = response.data;
 			})
 			.catch((e: Error) => {
@@ -174,18 +191,24 @@ export default defineComponent({
 			.catch((e: Error) => {
 				console.log(e);
 			});
-
 			this.currentMessage.id = 0;
 			this.currentMessage.owner = this.user.id;
 			this.currentMessage.message = "";
 		},
 		async SendMessage() {
+			console.log("Message = ", this.currentMessage);
+			const data = {
+				"owner": this.currentMessage.owner as number,
+				"message": this.currentMessage.message as string,
+			};
 			if (this.currentMessage.message != "") {
-				await ChannelDataService.sendMessageToChannel(this.channel.channelName, this.currentMessage)
+				await ChannelDataService.sendMessageToChannel(this.channel.channelName, data)
 				.then((response : ResponseData) => {
 					console.log("SendMessage: " + response.data);
 					//this.$socket.emit('message', this.currentMessage.message);
+					this.currentMessage.message = "";
 					this.getMessages();
+
 				})
 				.catch((e: Error) => {
 					console.log(e);
@@ -211,7 +234,6 @@ export default defineComponent({
 			await this.getChannel(String(localStorage.getItem("channel-name")));
 			await this.initChannel();
 			await this.getMessages();
-
 			await this.getAllPlayersInChannel();
 			await this.checkMessages();
 		}
@@ -222,13 +244,52 @@ export default defineComponent({
 });
 </script>
 
-<style media="screen">
-
+<style media="screen" scoped>
+.container img {
+	width: 64px;
+	height: 64px;
+	object-fit: contain;
+}
+.list {
+  background-color: white;
+  border-radius: 2px;
+  list-style: none;
+}
 .player-list {
 	position: relative;
 	overflow-x: hidden;
 }
-
+.list-item-content {
+  margin-left: 20px;
+  margin-right: auto;
+}
+/* .me-status {
+  background-color: black;
+  font-weight: bold;
+  font-size: 10px;
+  color: white;
+  padding: 5px;
+} */
+.profile-link {
+  color: black;
+  text-decoration: none;
+  align-content: center;
+}
+.profile-link h4 {
+  font-size: 18px;
+}
+.list-item {
+  display: flex;
+  align-content: center;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  align-items: center;
+}
+.user-status {
+  margin-left: 5%;
+  margin-right: 0%;
+}
 /*
 .Player-List {
 	display: inline-block;

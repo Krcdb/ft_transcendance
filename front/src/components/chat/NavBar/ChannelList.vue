@@ -31,11 +31,13 @@
 
                         <div class="row col-sm-4">
                             <p>Owner: {{ this.getUserByID(channel.owner).userName }} </p>
-                            <p>Public Channel: {{ channel.isPublic ? "Yes" : "No"}}</p>
+                            <!-- <p>Public Channel: {{ channel.isPublic ? "Yes" : "No"}}</p> -->
                         </div>
 
                         <div class="row col-sm-4">
-                            <p>Password: <input id="password" type="password" name="password" value=""></p>
+                            <div v-if="!channel.password" class="password" >
+                                <p>Password: <input id="password" type="password" name="password" value=""></p>
+                            </div>
                             <!--    <router-link class="channel-link" :to="'/chat/channel/' + channel.channelName"> -->
                             <!-- <router-link class="channel-link" :to="{name: 'Channel',
                             params: {channel: channel, owner: this.owner}}"> -->
@@ -155,6 +157,7 @@ export default defineComponent({
 			})
             .catch((e: Error) => {
                 console.log("Error: " + e);
+
             });
         },
     },

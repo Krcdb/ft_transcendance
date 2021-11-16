@@ -109,7 +109,7 @@ export class ChannelController {
 	}
 
 	@Public()
-	@Get(':channelName/:messagesHistory')
+	@Get(':channelName/messagesHistory')
 	getChannelHistory(@Param('channelName') channelName: string) : Promise<number[]> {
 		return (this.channelDataService.getMessageHistory(channelName));
 	}
@@ -123,6 +123,7 @@ export class ChannelController {
 	@Public()
 	@Get(':channelName/can-join-channel')
 	async canJoinChannel(@Res() res, @Param('channelName') ChannelName: string, @Body() ChannelPasswordDto: ChannelPasswordDto) : Promise<boolean> {
+		// console.log("password")
 		if (await this.channelDataService.passwordMatch(ChannelName, ChannelPasswordDto.password)) {
 			return res.status(HttpStatus.OK).json({
 				message: "Can join channel",

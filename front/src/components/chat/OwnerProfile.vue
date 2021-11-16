@@ -12,8 +12,8 @@
                     :class="{ active: index == currentIndex} "
                     v-for="(user, index) in users"
                     :key="index">
-                    <button class="btn" name="button" @click="selectUser(user)" width="128">
-                        <img :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`" alt="" width="64">
+                    <button class="btn" name="button" @click="selectUser(user)">
+                        <Avatar :user="user" />
                         {{ user.userName }}
                     </button>
                     <hr>
@@ -22,9 +22,9 @@
         </div>
     </div>
 
-    <div class="welcome-User" v-else>
+    <div class="welcome-user" v-else>
         <h3>Bienvenue: <strong> {{ this.currentUser.userName }} </strong> </h3>
-        <img :src="`https://avatars.dicebear.com/api/avataaars/${this.currentUser.id}.svg`" alt="" width="128">
+        <Avatar :user="this.currentUser" />
     </div>
 
 </div>
@@ -37,11 +37,15 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
+import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
     // 1: selectionner son utilisateur parmi la liste des user crées.
 
     name: "owner-profile",
+    components: {
+        Avatar,
+    },
     data() {
         return {
             users: [] as User[],
@@ -85,6 +89,16 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.container img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+.welcome-user img {
+    width: 128px;
+    height: 128px;
+    object-fit: contain;
+}
 /*
 .userChatInput {
     display: inline-block;

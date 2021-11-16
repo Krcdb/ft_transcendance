@@ -5,8 +5,7 @@
             <div class="container-fluid">
                 <div class="list-inline-item" v-for="user in usersList" :key="user.id">
                     <div class="user-list-element">
-                        <img :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`" width="128"/>
-
+                        <Avatar :user="user" />
                         <br>
                         <div class="d-flex align-items-center">
                             <h6>{{ user.userName }}</h6>
@@ -36,9 +35,13 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import ResponseData from "@/types/ResponseData";
 import User from "@/types/User";
+import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
     name: "user-menu",
+    components: {
+        Avatar,
+    },
     data() {
         return {
             currentIndex: -1,
@@ -82,6 +85,11 @@ export default defineComponent({
 </script>
 
 <style media="screen">
+.user-list-element img {
+    width: 128px;
+    height: 128px;
+    object-fit: contain;
+}
 /*
 .user-user-list {
     display: block;

@@ -133,7 +133,8 @@ export class ChannelDataService {
 
 	async getMessageHistory(channelName: string) : Promise<any> {
 		const channel = await this.channelRepository.findOne(channelName);
-		return (channel.messagesHistory);
+		if (channel != undefined)
+			return (channel.messagesHistory);
 	}
 
   	////////////////////////////////
@@ -156,6 +157,8 @@ export class ChannelDataService {
 		const channel = await this.channelRepository.findOne(channelName);
 		if (!channel)
 			return (false);
+		else if (!channel.password)
+			return (true);
 		else if (channel.password === password)
 			return (true);
 		return (false);

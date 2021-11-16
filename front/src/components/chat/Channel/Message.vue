@@ -1,12 +1,11 @@
 <template>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-	<div class="container mt-2">
-		<div class="float-left" :class="this.sender ? 'sender' : 'not-sender'">
+	<div class="container" :class="this.sender ? 'message-sender' : 'message-not-sender'">
+		{{ this.owner.userName }}
+		<div :class="this.sender ? 'sender' : 'not-sender'">
 			<p :class="this.sender ? 'text-sender' : 'text-not-sender'">
-				{{ this.owner.userName }} :
 				{{ this.message.message }}
 			</p>
-
 		</div>
 	</div>
 </template>
@@ -68,50 +67,49 @@ export default defineComponent({
 });
 </script>
 
-<style media="screen">
-/*
-.message {
-	width: 100%;
-	display: inline-block;
-	margin: 0 auto;
+<style media="screen" scoped>
+.container {
+	display: flex;
+	flex-direction: column;
 }
+.message-sender {
+	float: right;
 
-.message-box {
-	width: 50%;
-	border: 4px solid lightgreen;
-	border-radius: 8px;
 }
-
-.message-box h4 {
-	font-size: 24px;
+.container.message-sender {
+	align-items: flex-end;
 }
-
-*/
-
+.container.message-not-sender {
+	align-items: flex-start;
+}
+.message-not-sender {
+	float: left;
+}
 .sender {
 	float: right;
-	background-color: lightgreen;
+	background-color: #218aff;
 	border-radius: 20px;
 	width: 75%;
+	padding: 3px;
 }
-
 .not-sender {
 	float: left;
-	background-color: darkred;
+	background-color: 	grey;
 	border-radius: 20px;
 	width: 75%;
+	padding: 3px;
 }
-
 .text-sender {
 	color: white;
 	transform: translate(0, 25%);
-	float: right;
+	text-align: right;
 	margin-right: 15px;
+	object-fit: contain;
 }
 .text-not-sender {
 	color: white;
 	transform: translate(0, 25%);
-	float: left;
+	text-align: left;
 	margin-left: 15px;
 }
 </style>
