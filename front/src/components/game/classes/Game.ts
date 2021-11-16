@@ -1,6 +1,8 @@
 /* eslint-disable */
 import { Paddle } from './Paddle';
 import { Ball } from './Ball';
+import { GameOptionsInterface, GameDataUpdate } from '@/types/Game';
+import io, { Socket } from "socket.io-client";
 
 enum Keys {
     P_KEY = 80,
@@ -10,21 +12,36 @@ enum Keys {
 }
 
 export class Game {
-	private canvas: any;
-	private context: any;
-	private player1: Paddle;
-	private player2: Paddle;
-	private ball: Ball;
-	public static keysPressed: boolean[] = [];
-	public player1Score: number;
-	public player2Score: number;
+	gameOptions: GameOptionsInterface;
+	uuid: string;
+	playerSide: string;
+	playerId: string;
+	canvas: any;
+	context: any;
+	socket: Socket;
+	public keyPressed: number[] = [];
+	
+	player1: Paddle;
+	player2: Paddle;
+	ball: Ball;
+	
+	player1Score: number;
+	player2Score: number;
 
 
-	constructor(){
+	constructor(socket: Socket, gameOptions: GameOptionsInterface, uuid: string, playerSide: string, playerId: string){
+		this.socket = socket;
+		this.gameOptions = gameOptions;
+		this.uuid = uuid;
+		this.playerSide = playerSide;
+		this.playerId = playerId;
 		this.canvas = document.getElementById("game-canvas") as HTMLCanvasElement;
 		this.context = this.canvas.getContext("2d");
         this.context.font = "30px Arial";
 		
+		this.canvas.style.width = String(this.gameOptions.CANVAS_WIDTH) + 'px';
+		this.canvas.style.height = String(this.gameOptions.CANVAS_HEIGHT) + 'px';
+
 		window.addEventListener("keydown",function(e){
 			Game.keysPressed[e.which] = true;
 		});
@@ -35,36 +52,27 @@ export class Game {
 		
 		this.player1Score = 0;
 		this.player2Score = 0;
-
-		var paddleWidth:number = 20,
-			paddleHeight:number = 60,
-			ballSize:number = 10,
-			wallOffset:number = 20;
 		
-		this.player1 = new Paddle(10, this.canvas.height / 2 - paddleHeight / 2, paddleWidth, paddleHeight, Keys.W_KEY, Keys.S_KEY)
-		this.player2 = new Paddle(this.canvas.width - (10 + paddleWidth), this.canvas.height / 2 - paddleHeight / 2, paddleWidth, paddleHeight, Keys.P_KEY, Keys.L_KEY)
-        this.ball = new Ball(this.canvas.width / 2 - ballSize / 2, this.canvas.height / 2 - ballSize / 2, ballSize);    
+		this.player1 = new Paddle(10, this.gameOptions.CANVAS_HEIGHT! / 2 - this.gameOptions.PADDLE_HEIGHT! / 2, this.gameOptions.PADDLE_WIDTH!, this.gameOptions.PADDLE_HEIGHT!);
+		this.player2 = new Paddle(this.gameOptions.CANVAS_WIDTH! - (10 + this.gameOptions.PADDLE_WIDTH!), this.gameOptions.CANVAS_HEIGHT! / 2 - this.gameOptions.PADDLE_HEIGHT! / 2, this.gameOptions.PADDLE_WIDTH!, this.gameOptions.PADDLE_HEIGHT!);
+        this.ball = new Ball(this.gameOptions.CANVAS_WIDTH! / 2 - this.gameOptions.BALL_SIZE! / 2, this.gameOptions.CANVAS_HEIGHT! / 2 - this.gameOptions.BALL_SIZE! / 2, this.gameOptions.BALL_SIZE!);    
 	}
 
-	update() {
-		this.player1.update(this.canvas);
-		this.player2.update(this.canvas);
-		//this.ball.update(this.player1, this.player2,this.canvas, this)
+	updateGame(data: GameDataUpdate) {
+		this.player1Score = Number(data.player1?.score);
+		this.player2Score = Number(data.player2?.score);
+		this.player1.setXY(data.player1?.x, data.player1?.y);
+		this.player2.setXY(data.player2?.x, data.player2?.y);
+		this.ball.setXY(data.ball?.x, data.ball?.y);
 	}
 
 	draw() {
 		this.context.fillStyle = "#000";
-		this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+		this.context.fillRect(0, 0, this.gameOptions.CANVAS_WIDTH, this.gameOptions.CANVAS_HEIGHT);
 		this.player1.draw(this.context);
 		this.player2.draw(this.context);
 		this.ball.draw(this.context);
 		this.context.fillText(this.player1Score, 280, 50);
         this.context.fillText(this.player2Score, 390, 50);
 	}
-
-	gameLoop(){
-        this.update();
-		this.draw();
-        requestAnimationFrame(this.gameLoop.bind(this));
-    }
 }

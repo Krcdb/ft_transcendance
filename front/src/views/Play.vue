@@ -1,6 +1,6 @@
 <template>
   	<div class="play">
-    	<h1>W/S for player 1 || P/L for player 2</h1>
+    	<h1>W to move UP | S to move DOWN</h1>
     	<br />
 		<button class="button" v-on:click="findMatch">Find a match</button>
   	</div>

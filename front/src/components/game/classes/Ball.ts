@@ -13,7 +13,7 @@ export class Ball {
 		this.size = size;
 	}
 
-	setXY(x: number, y: number){
+	setXY(x: any, y: any){
 		this.x = x;
 		this.y = y;
 	}

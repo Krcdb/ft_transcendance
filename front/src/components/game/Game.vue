@@ -35,7 +35,7 @@ export default defineComponent({
 			uuid: {} as number,
 			match: {} as Match,
 			game: {} as Game,
-			gameOption: {} as GameOptionsInterface,
+			gameOptions: {} as GameOptionsInterface,
 			state: 'loading' as string,
 			playerSide: "spectate" as string,
 			player1: "" as string,
@@ -57,10 +57,13 @@ export default defineComponent({
 				this.player2 = String(this.match.playerTwo);
 				this.state = 'loaded';
 				socket.on(`startGame${this.uuid}`, (payload) => {
-					this.gameOption = payload;
-					this.launchMatch();
+					this.gameOptions = payload;
+					this.game = new Game(socket, this.gameOptions, String(this.uuid), this.playerSide, String(localStorage.getItem('user-id')));
 				});
-				socket.on("updateGame", this.updateGame.bind(this));
+				socket.on("updateGame", (payload) => {
+					if (this.game)
+						this.game.updateGame(payload);
+				});
 				socket.emit("playerReady", this.uuid);
 				console.log(`match loaded | uuid : ${this.match.matchId}`);
 			});
@@ -68,9 +71,6 @@ export default defineComponent({
 		launchMatch() {
 			console.log("launch match");
 		},
-		updateGame() {
-
-		}
 	},
     mounted() {
 		this.loadData();

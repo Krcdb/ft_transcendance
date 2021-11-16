@@ -1,7 +1,7 @@
 export enum GameState {
-	WAITING_ALL = 'waiting_all',
-	IN_PROGRESS = 'in_progress',
-	FINISHED = 'finished',
+	WAITING_ALL,
+	IN_PROGRESS,
+	FINISHED,
 }
 
 export class GameOptionsInterface {
@@ -15,7 +15,9 @@ export class GameOptionsInterface {
 	PLAYER_MOVE: number | undefined
 };
 
+
 export class GameDataUpdate {
+	state: GameState | undefined
 	ball: {
 		x: number
 		y: number
