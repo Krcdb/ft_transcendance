@@ -21,28 +21,30 @@
 			</div>
 		</div>
 
-		<div class="message-box container d-flex flex-column">
+		<!-- CHAT BOX -->
+		<div class="d-flex flex-column container-fluid">
 			<h4 class="mt-4">Message Box {{ channel.channelName }}</h4>
 			<hr>
-			<div class="Mesages">
-				<ul class="list-group" style="height:512px">
-					<li class="Plist-group-item" v-for="message in Messages" :key="message.id">
-						<MessageComponent :message="message"/>
-					</li>
-				</ul>
+			<div class="message-box container d-flex flex-column" ref="ScrollBar">
+				<div class="Mesages">
+					<ul class="list-group" style="height:512px">
+						<li class="Plist-group-item" v-for="message in Messages" :key="message.id">
+							<MessageComponent :message="message"/>
+						</li>
+					</ul>
+				</div>
 			</div>
 
 			<div class="bottom">
 
-			<hr>
-			<p>Message: <input type="text" v-model="currentMessage.message"></p>
-			<button type="button" name="button" class="btn btn-secondary m-2" style="width:75%"
-			@click="SendMessage">Envoyer</button>
+				<hr>
+				<p>Message: <input type="text" v-model="currentMessage.message"></p>
+				<button type="button" name="button" class="btn btn-secondary m-2" style="width:75%"
+				@click="SendMessage">Envoyer</button>
 			</div>
+
 		</div>
-
-
-	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -58,6 +60,15 @@ import Message from "@/types/ChatMessage";
 import MessageComponent from "./Message.vue";
 
 import VueSocketIO from 'vue-socket.io';
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3000", {
+	auth: {
+		token: localStorage.getItem('user-token'),
+		userId: localStorage.getItem('user-id'),
+		page: 'channel'
+	}
+});
 
 export default defineComponent({
 	data() {
@@ -184,27 +195,21 @@ export default defineComponent({
 				await ChannelDataService.sendMessageToChannel(this.channel.channelName, this.currentMessage)
 				.then((response : ResponseData) => {
 					console.log("SendMessage: " + response.data);
-					//this.$socket.emit('message', this.currentMessage.message);
-					this.getMessages();
+					socket.emit('sendMessage', this.channel.channelName);
 				})
 				.catch((e: Error) => {
 					console.log(e);
 				});
 			}
 		},
-
-		async delay(ms: number) {
-			return new Promise( resolve => setTimeout(resolve, ms) );
-		},
 		async checkMessages() {
-			// solution temporaire, utiliser les websockets, ça... c'est vraiment de la giga merde !
 			await this.getMessages();
-			this.delay(10000);
-			await this.checkMessages();
-		},
-		// SocketHandler
-		refreshChannelMessages() {
-			console.log("refresh");
+			await this.getAllPlayersInChannel();
+
+			let scrollBar = (this.$refs.ScrollBar) as any;
+			scrollBar.scrollTop = scrollBar.scrollHeight;
+
+			console.log("Refresh CHannel");
 		},
 		async init() {
 			await this.getUser(Number(localStorage.getItem("user-id")));
@@ -213,7 +218,12 @@ export default defineComponent({
 			await this.getMessages();
 
 			await this.getAllPlayersInChannel();
-			await this.checkMessages();
+
+			socket.emit('JoinChannel', this.channel.channelName);
+			socket.on('refreshChannelMessages', (uuid: string) => {
+				console.log('Init Socket ON: ' + uuid);
+				this.checkMessages();
+			});
 		}
 	},
 	mounted() {
@@ -276,6 +286,7 @@ export default defineComponent({
 .message-box {
 	overflow-x: hidden;
 	border: 1px solid black;
+	scroll-behavior: smooth;
 }
 
 </style>

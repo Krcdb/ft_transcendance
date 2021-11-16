@@ -8,7 +8,7 @@ import { CreateChannelDto } from './dto/create-channel.dto';
 import { UsersService } from 'src/users/users.service';
 import { MessageService } from '../message/message.service';
 
-import { Socket } from "socket.io";
+import { Socket, Server } from "socket.io";
 import { WebsocketService } from "src/websocket/websocket.service";
 
 @Injectable()
@@ -172,42 +172,40 @@ export class ChannelDataService {
 	// - join socket user
 
 
-	async addSocketUser(userId: number) {
-		//await this.socketGateway.handleConnection(await this.socketService.getSocketFromUserId(userId));
-		const socket = await this.socketService.getSocketFromUserId(userId);
-		console.log("socket: " + socket);
+	//userSockets: Socket = new Map<Socket, string>();
 
+	async addSocketUser(socket: Socket, channelName: string) {
+		//if (this.userSockets.has(socket)) {
+		//	console.log("SOCKET : User Already in channel !");
+		//} else {
+		//	console.log("SOCKET : User Join Channel");
+		//	this.userSockets.set(socket, channelName);
+		//}
+
+	//	if (this.userSockets.indexOf(socket) == -1) {
+		//	this.userSockets.push(socket);
+		//	console.log("SOCKET : User Join Channel");
+		//}
+		//else
+		//	console.log("SOCKET : User Already in channel !");
 	}
 
-//	async get
+	//	async get
 
-	async refreshChannelMessages(channelName: string) : Promise<any> {
-		const AllSockets = await this.socketService.getSocketsFromChannel(await this.findOne(channelName)) as Array<Socket>;
-
+	async refreshChannelMessages(server: Server, socket: Socket, channelName: string) : Promise<any> {
 		const allUsers = (await this.findOne(channelName)).users as Array<number>;
 
-		console.log("\tConnectedUsers");
 		for (let index = 0; index < allUsers.length; index++) {
 			const element = allUsers[index];
-			console.log("AllUSers [" + index + "]" + " = " + element);
-
-			const socket = await this.socketService.getSocketFromUserId(element);
-			if (socket)
-				socket.emit('refreshChannelMessages');
-			else {
+			console.log("User: " + element);
+			const currentSocket = await this.socketService.getSocketFromUserId(element);
+			if (currentSocket) {
+				console.log("Socket send to user: " + element);
+				currentSocket.emit('refreshChannelMessages');
+			} else {
 				console.log("socket: for ID : " + element + " is null");
 			}
 		}
-
-		for (const s of AllSockets) {
-			const socket = s[1];
-			socket.emit('refreshChannelMessages');
-			console.log('Refresh Channel Message for socket: ' + socket);
-		}
-
-		//this.socketService.server.emit('refreshChannelMessages');
-		console.log("refreshChannelMessages");
 		return (true);
 	}
-
 }

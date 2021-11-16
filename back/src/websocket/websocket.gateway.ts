@@ -53,8 +53,21 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
 
 	// Chat
 
+	@SubscribeMessage('JoinChannel')
+	async userJoinChannel(socket: Socket, channelName: string) {
+		console.log("SOCKET : CHANNEL : User Join Channel");
+		this.channelService.addSocketUser(socket, channelName);
+		return this.channelService.refreshChannelMessages(this.server, socket, channelName);
+	}
+
+	@SubscribeMessage('sendMessage')
+	async userSendMessage(socket: Socket, channelName: string) {
+		console.log("SOCKET : CHANNEL : refreshChannelMessages");
+		return this.channelService.refreshChannelMessages(this.server, socket, channelName);
+	}
+
 	@SubscribeMessage('refreshChannelMessages')
-	async refreshChannelMessages(channelName: string) {
-		return this.channelService.refreshChannelMessages(channelName);
+	async refreshChannelMessages(socket: Socket, channelName: string) {
+		return this.channelService.refreshChannelMessages(this.server, socket, channelName);
 	}
 }
