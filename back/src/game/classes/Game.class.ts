@@ -16,8 +16,6 @@ export interface GameOptionsInterface {
 }
 
 enum Keys {
-    P_KEY = 80,
-	L_KEY = 76,
 	W_KEY = 87,
 	S_KEY = 83
 }
@@ -46,7 +44,8 @@ export class Game {
   	player1Ready: Boolean = false;
 	player2Ready: Boolean = false;
 
-	keysPressed: boolean[] = [];
+	keysPressedP1: boolean[] = [];
+	keysPressedP2: boolean[] = [];
 
 	constructor(player1: User, player2: User,options: GameOptionsInterface, uuid: string) {
 		this.player1 = player1;
@@ -76,8 +75,11 @@ export class Game {
 		this.setBallDirection();
 	}
 
-	playerNewKeyEvent(payload: any){
-		this.keysPressed = payload.key;
+	playerInput(payload: any){
+		if (payload.playerId === this.player1.id)
+			this.keysPressedP1 = payload.keysPressed;
+		else if (payload.playerId === this.player2.id)
+			this.keysPressedP2 = payload.keysPressed;
 	}
 
 	gameLoop(server: Server) {
@@ -122,12 +124,12 @@ export class Game {
 
 	checkPlayerMove() {
 		//check P1 Moves
-		if (this.keysPressed[Keys.W_KEY]) {
+		if (this.keysPressedP1[Keys.W_KEY]) {
 			this.p1.yVel = -1;
 			if (this.p1.y <= this.options.PADDLE_MARGIN)
 				this.p1.yVel = 0;
 		}
-		else if (this.keysPressed[Keys.S_KEY]) {
+		else if (this.keysPressedP1[Keys.S_KEY]) {
 			this.p1.yVel = 1;
 			if (this.p1.y + this.p1.height >= this.options.CANVAS_HEIGHT - this.options.PADDLE_MARGIN)
 				this.p1.yVel = 0;
@@ -137,12 +139,12 @@ export class Game {
 		}
 		this.p1.y += this.p1.yVel * this.p1.speed;
 		//check P2 Moves
-		if (this.keysPressed[Keys.P_KEY]) {
+		if (this.keysPressedP2[Keys.W_KEY]) {
 			this.p2.yVel = -1;
 			if (this.p2.y <= this.options.PADDLE_MARGIN)
 				this.p2.yVel = 0;
 		}
-		else if (this.keysPressed[Keys.L_KEY]) {
+		else if (this.keysPressedP2[Keys.S_KEY]) {
 			this.p2.yVel = 1;
 			if (this.p2.y + this.p2.height >= this.options.CANVAS_HEIGHT - this.options.PADDLE_MARGIN)
 				this.p2.yVel = 0;

@@ -131,11 +131,10 @@ export class GameService {
 		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(user), 1);
 	}
 
-	playerNewKeyEvent(payload: any) {
+	playerInput(payload: any) {
 		const game = this.games.get(payload.uuid);
-
 		if (game) {
-			game.playerNewKeyEvent(payload)
+			game.playerInput(payload)
 		}
 	}
 

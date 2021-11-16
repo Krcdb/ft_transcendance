@@ -68,9 +68,6 @@ export default defineComponent({
 				console.log(`match loaded | uuid : ${this.match.matchId}`);
 			});
 		},
-		launchMatch() {
-			console.log("launch match");
-		},
 	},
     mounted() {
 		this.loadData();

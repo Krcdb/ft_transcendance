@@ -19,7 +19,8 @@ export class Game {
 	canvas: any;
 	context: any;
 	socket: Socket;
-	public keyPressed: number[] = [];
+	public static keysPressed: boolean[] = [];
+
 	
 	player1: Paddle;
 	player2: Paddle;
@@ -64,6 +65,13 @@ export class Game {
 		this.player1.setXY(data.player1?.x, data.player1?.y);
 		this.player2.setXY(data.player2?.x, data.player2?.y);
 		this.ball.setXY(data.ball?.x, data.ball?.y);
+		this.draw();
+		if (this.playerSide !== "spectate")
+			this.socket.emit("playerInput", {keyPressed: Game.keysPressed, playerId: this.playerId})
+	}
+
+	checkMove() {
+
 	}
 
 	draw() {

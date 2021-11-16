@@ -47,9 +47,9 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 		return this.gameService.playerJoin(socket);
 	}
 
-	@SubscribeMessage('playerNewKeyEvent')
-	async playerNewKeyEvent(socket: Socket, payload: any) {
-		return this.gameService.playerNewKeyEvent(payload);
+	@SubscribeMessage('playerInput')
+	async playerInput(socket: Socket, payload: any) {
+		return this.gameService.playerInput(payload);
 	}
 	
 	@SubscribeMessage('playerReady')
