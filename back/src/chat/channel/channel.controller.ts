@@ -115,6 +115,16 @@ export class ChannelController {
 	}
 
 	@Public()
+	@Get(':channelName/channel-exist')
+	async channelExist(@Param('channelName') channelName: string) : Promise<any> {
+		console.log("checking channel: " + channelName);
+
+		if (await this.channelDataService.findOne(channelName))
+			return (true);
+		return (false);
+	}
+
+	@Public()
 	@Get()
 	async findAllChannels() : Promise<Channel[]> {
 		return (await this.channelDataService.findAll());

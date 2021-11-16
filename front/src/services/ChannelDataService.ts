@@ -7,7 +7,7 @@ class ChannelDataService {
 
     // CHANNEL
 
-    createChannel(channel: Channel) : Promise<any> {
+    createChannel(channel: any) : Promise<any> {
         return http.post('/channel/createChannel', channel);
     }
     getAllActiveUser() : Promise <any> {
@@ -23,14 +23,14 @@ class ChannelDataService {
         return http.get(`/channel/${channelName}`);
     }
     deleteChannel(channelName : string) : Promise<any> {
-        return http.delete(`channel/${channelName}`);
+        return http.delete(`/channel/${channelName}`);
     }
     addChannelUser(channelName : string, id : any) : Promise<any> {
-        return http.post(`channel/${channelName}`, id);
+        return http.post(`/channel/${channelName}`, id);
     }
 
     getMessagesInChannel(channelName : string) : Promise<any> {
-        return http.get(`channel/${channelName}/messagesHistory`);
+        return http.get(`/channel/${channelName}/messagesHistory`);
     }
 
     // MESSAGES
@@ -48,12 +48,16 @@ class ChannelDataService {
 
     // CONDITIONS
 
+    channelExist(channelName: string) : Promise<any> {
+        return http.get(`/channel/${channelName}/channel-exist`);
+    }
+
     canJoinChannel(channelName: string, channelPassword: any) : Promise<any> {
-        return http.get(`channel/${channelName}/can-join-channel`, channelPassword);
+        return http.get(`/channel/${channelName}/can-join-channel`, channelPassword);
     }
 
     JoinPrivateChannel(channelName: string, channelPassword: any) : Promise<any> {
-        return http.post(`channel/${channelName}/join-private-channel`, channelPassword);
+        return http.post(`/channel/${channelName}/join-private-channel`, channelPassword);
     }
 }
 

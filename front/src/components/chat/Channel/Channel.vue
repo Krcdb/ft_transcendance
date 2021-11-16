@@ -80,17 +80,6 @@ export default defineComponent({
 			currentMessage: {} as Message,
 		};
 	},
-	sockets: {
-		connect: function () {
-			console.log('socket connected');
-		},
-		customEmit: function (data: number) {
-			console.log('this method was fired by the socket server. eg: io.emit("customEmit", data)' + data);
-		},
-		refreshChannelMessages: function() {
-			console.log("refresh socket");
-		},
-	},
 	components: {
 		MessageComponent,
 	},
@@ -104,19 +93,21 @@ export default defineComponent({
 
 				console.log("Users Length: " + users.length);
 
+				if (users.length != this.PlayerList.length) {
+					this.PlayerList = [];
+					for (let index = 0; index < users.length; index++) {
+						const element = users[index];
+						console.log("Element : " + element);
 
-				for (let index = 0; index < users.length; index++) {
-					const element = users[index];
-					console.log("Element : " + element);
+						UserDataService.get(element)
+						.then((responseUser: ResponseData) => {
+							this.PlayerList.push(responseUser.data);
+						})
+						.catch((e: Error) => {
+							console.log(e);
+						});
 
-					UserDataService.get(element)
-					.then((responseUser: ResponseData) => {
-						this.PlayerList.push(responseUser.data);
-					})
-					.catch((e: Error) => {
-						console.log(e);
-					});
-
+					}
 				}
 			})
 			.catch((e: Error) => {

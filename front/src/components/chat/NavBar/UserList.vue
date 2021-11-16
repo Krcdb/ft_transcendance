@@ -15,16 +15,27 @@
                                 <div v-else id="offline-circle"></div>
                             </div>
                         </div>
-                        <button class="button" :class="user.isActive? 'btn-actif' : 'btn-inactif'" type="button" name="button">Envoyer un message privé</button>
+                        <button class="button" :class="user.isActive? 'btn-actif' : 'btn-inactif'" type="button" name="button" @click="sendPrivateMessage(user.id)">Envoyer un message privé</button>
                     </div>
                     <hr>
                 </div>
 
-                <div class="" v-if="usersList.length <= 0">
-                    <h6>Add a friend first :)</h6>
-                </div>
+				<div class="" v-if="usersList.length <= 0">
+					<h6>Add a friend first :)</h6>
+				</div>
+			</div>
 
-            </div>
+			<div class="d-flex justify-content-center" v-if="isLoading">
+				<div class="spinner-border" role="status">
+					<span class="sr-only"></span>
+				</div>
+			</div>
+
+				<div class="alert alert-danger" role="alert"
+				v-if="this.error == true">
+				<h6>Error: can't send private message</h6>
+			</div>
+
         </div>
     </div>
 </template>
@@ -36,6 +47,9 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import ResponseData from "@/types/ResponseData";
 import User from "@/types/User";
+import Channel from "@/types/Channel";
+
+import ChannelDataService from '@/services/ChannelDataService';
 
 export default defineComponent({
     name: "user-menu",
@@ -43,6 +57,8 @@ export default defineComponent({
         return {
             currentIndex: -1,
             usersList: [] as User[],
+			isLoading: false,
+			error: false,
         }
     },
     props: {
@@ -63,13 +79,71 @@ export default defineComponent({
                     if (response.data[index].id != this.owner.id){
                         this.usersList.push(response.data[index]);
                     }
-
                 }
                 //this.usersList = response.data;
                 console.log("BURGER MENU | Refresh List");
             })
             .catch((e: Error) => {
                 console.log("Burger Error: " + e);
+            });
+        },
+		async delay(ms: number) {
+			return new Promise( resolve => setTimeout(resolve, ms) );
+		},
+        async sendPrivateMessage(id: number) {
+			this.isLoading = true;
+			this.error = false;
+            const channelName = this.owner.id + id;
+
+			await this.delay(1000);
+
+            //await ChannelDataService.channelExist(String(channelName))
+            await ChannelDataService.getChannel(String(channelName))
+            .then((response : ResponseData) => {
+				console.log("Channel exist: " + response.data);
+
+                if (!response.data) {
+
+                    let data = {
+        				channelName: String(channelName) as string,
+        				password: "" as string,
+        				isPublic: false as boolean,
+        				owner: this.owner.id as number
+        			};
+
+					this.delay(1000);
+
+                    ChannelDataService.createChannel(data)
+                    .then((response : ResponseData) => {
+                        console.log("Channel " + channelName + " created !");
+						this.isLoading = false;
+                    })
+                    .catch((e: Error) => {
+                        console.log("Error: " + e);
+						this.isLoading = false;
+						this.error = true;
+                    });
+                }
+            })
+            .catch((e: Error) => {
+                console.log("Error: " + e);
+				this.isLoading = false;
+				this.error = true;
+            });
+			this.isLoading = false;
+
+            let data = {
+                password: "",
+            };
+
+            ChannelDataService.canJoinChannel(String(channelName), data)
+            .then((response : ResponseData) => {
+                console.log("Can join channel !");
+                localStorage.setItem("channel-name", String(channelName));
+                this.$router.push("/Channel/" + String(channelName));
+            })
+            .catch((e: Error) => {
+                console.log("Error: " + e);
             });
         }
     },
