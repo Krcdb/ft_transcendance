@@ -4,7 +4,7 @@ import { Server, Socket } from "socket.io";
 import { WebsocketService } from "./websocket.service";
 import { User } from "src/users/user.entity";
 import { UsersService } from "src/users/users.service";
-
+import { ChannelDataService } from "src/chat/channel/channel.service";
 
 @WebSocketGateway( { cors: true } )
 export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect{
@@ -15,6 +15,7 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
     	private readonly websocketService: WebsocketService,
 		private readonly gameService: GameService,
 		private readonly usersSerive: UsersService,
+		private readonly channelService: ChannelDataService,
 	) {}
 
 	afterInit(server: Server) {
@@ -29,7 +30,7 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
 		else
 			socket.data.user = user;
 	};
-	
+
 	handleDisconnect(socket: Socket) {
 		if (socket.data.user)
 			socket.disconnect();
@@ -39,9 +40,21 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
 	async searchGame(socket: Socket) {
 		return this.gameService.searchGame(socket);
 	}
-	
+
+	@SubscribeMessage('createGame')
+	async createGame() {
+		//return this.gameService.createGame();
+	}
+
 	@SubscribeMessage('playerNewKeyEvent')
 	async playerNewKeyEvent(socket: Socket, payload: any) {
 		return this.gameService.playerNewKeyEvent(payload);
+	}
+
+	// Chat
+
+	@SubscribeMessage('refreshChannelMessages')
+	async refreshChannelMessages(channelName: string) {
+		return this.channelService.refreshChannelMessages(channelName);
 	}
 }

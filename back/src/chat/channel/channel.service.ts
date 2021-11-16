@@ -2,10 +2,14 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
+import { User } from '../../users/user.entity';
 import { CreateChannelDto } from './dto/create-channel.dto';
 
 import { UsersService } from 'src/users/users.service';
 import { MessageService } from '../message/message.service';
+
+import { Socket } from "socket.io";
+import { WebsocketService } from "src/websocket/websocket.service";
 
 @Injectable()
 export class ChannelDataService {
@@ -14,8 +18,8 @@ export class ChannelDataService {
 		private readonly channelRepository: Repository<Channel>,
 		@Inject(forwardRef(() => UsersService))
 		private readonly usersService: UsersService,
-		// @Inject(forwardRef(() => MessageService))
-		// private readonly messageService: MessageService
+		@Inject(forwardRef(() => WebsocketService))
+		private readonly socketService: WebsocketService,
 	) {}
 
 	async create(createChannelDto: CreateChannelDto): Promise <Channel> {
@@ -57,12 +61,16 @@ export class ChannelDataService {
 			return (true);
 		return (false);
 	}
-	
+	async findUserInChannel(channelName: string, userID: number) : Promise<number> {
+		const channel = await this.findOne(channelName);
+		const found = channel.users.find(element => element === userID);
+		return found;
+	}
+
 	/////////////////////////////////////////
 	//  Gestion des listes d'utilisateurs  //
   	/////////////////////////////////////////
 
-		// Ajout
 	async addUserAsUser(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.users.push(userId);
@@ -83,7 +91,7 @@ export class ChannelDataService {
 		channel.muteList.push(userId);
 		await this.channelRepository.save(channel);
 	}
-	
+
 		// Retrait
 	async removeUserAsUser(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
@@ -121,6 +129,88 @@ export class ChannelDataService {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.messagesHistory.push(messageId);
 		await this.channelRepository.save(channel);
+	}
+
+	async getMessageHistory(channelName: string) : Promise<any> {
+		const channel = await this.channelRepository.findOne(channelName);
+		if (channel != undefined)
+			return (channel.messagesHistory);
+	}
+
+  	////////////////////////////////
+	//  DESTRUCTION DES CHANNELS  //
+  	////////////////////////////////
+
+	async deleteOne(channelName : string) : Promise<any> {
+		const channel = await this.channelRepository.findOne(channelName);
+		this.channelRepository.delete(channel);
+		if (!channel)
+			return (true);
+		return (false);
+	}
+
+  	////////////////////////////////
+	//  	  JOIN CHANNEL 	 	  //
+  	////////////////////////////////
+
+	async passwordMatch(channelName: string, password: string) : Promise<boolean> {
+		const channel = await this.channelRepository.findOne(channelName);
+		if (!channel)
+			return (false);
+		else if (!channel.password)
+			return (true);
+		else if (channel.password === password)
+			return (true);
+		return (false);
+	}
+
+  	////////////////////////////////
+	// 			 SOCKETS  		  //
+  	////////////////////////////////
+
+	// todo
+	//
+	// - add socket user when connected to channel
+	// - destory socket user when disconnect to channel
+	// - join socket user
+
+
+	async addSocketUser(userId: number) {
+		//await this.socketGateway.handleConnection(await this.socketService.getSocketFromUserId(userId));
+		const socket = await this.socketService.getSocketFromUserId(userId);
+		console.log("socket: " + socket);
+
+	}
+
+//	async get
+
+	async refreshChannelMessages(channelName: string) : Promise<any> {
+		const AllSockets = await this.socketService.getSocketsFromChannel(await this.findOne(channelName)) as Array<Socket>;
+
+		const allUsers = (await this.findOne(channelName)).users as Array<number>;
+
+		console.log("\tConnectedUsers");
+		for (let index = 0; index < allUsers.length; index++) {
+			const element = allUsers[index];
+			console.log("AllUSers [" + index + "]" + " = " + element);
+
+			const socket = await this.socketService.getSocketFromUserId(element);
+			if (socket)
+				socket.emit('refreshChannelMessages');
+			else {
+				console.log("socket: for ID : " + element + " is null");
+			}
+		}
+
+		for (const s of AllSockets) {
+			const socket = s[1];
+			socket.emit('refreshChannelMessages');
+			console.log('Refresh Channel Message for socket: ' + socket);
+		}
+
+		//this.socketService.server.emit('refreshChannelMessages');
+		console.log("refreshChannelMessages");
+		return (true);
 	}
 
 }

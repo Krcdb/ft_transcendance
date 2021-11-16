@@ -69,27 +69,38 @@ const routes = [
     name: "update-profile",
     component: () => import("../components/users/UpdateProfile.vue"),
   },
+	{
+		path: "/Channel",
+		name: "Channel",
+		component: () => import("../components/chat/Channel/Channel.vue"),
+		props: true,
+	},
+	{
+		path: "/Channel/:channelName",
+		name: "channelName",
+		component: () => import("../components/chat/Channel/Channel.vue"),
+	}
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes,
+	history: createWebHistory(process.env.BASE_URL),
+	routes,
 });
 
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem("user-token");
-  if (
-    !token &&
-    to.path !== "/login" &&
-    to.path !== "/auth/42" &&
-    to.path !== "/illegal-login" &&
-    to.path !== "/2FLogin"
-  )
-    next({ path: "/login" });
-  else {
-    http.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    next();
-  }
+	const token = localStorage.getItem("user-token");
+	if (
+		!token &&
+		to.path !== "/login" &&
+		to.path !== "/auth/42" &&
+		to.path !== "/illegal-login" &&
+		to.path !== "/2FLogin"
+	)
+	next({ path: "/login" });
+	else {
+		http.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+		next();
+	}
 });
 
 export default router;

@@ -11,39 +11,44 @@ import { ChannelDataService } from '../channel/channel.service'
 import { User } from '../../users/user.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
 
-@Controller('chat')
+@Controller('messages')
 export class MessageController {
-	constructor(private readonly messageService: MessageService) {}
+	constructor(
+		private readonly messageService: MessageService,
+		private readonly channelService: ChannelDataService,
+	) {}
 
-	// ------ // 
+	// ------ //
   	//  POST  //
 	// ------ //
-	  
+
 	@Public()
-	@Post(':channelName/')
+	@Post(':channelName')
 	async postMessageOnChannel(@Param('channelName') channelName: string,
-		@Res() res, @Body() createMessageDto: CreateMessageDto) {	
+		@Res() res, @Body() createMessageDto: CreateMessageDto) {
 		const msg = await this.messageService.create(createMessageDto, channelName);
+		console.log("msg = ", msg);
 		if (msg == null)
 			return res.status(HttpStatus.NOT_FOUND).json({
 				message: "Couldn't find channel with given name" });
-		await this.messageService.addMessageToHistories(msg.id);
+		await this.messageService.addMessageToHistories(msg);
+		await this.channelService.refreshChannelMessages(channelName);
 		return res.status(HttpStatus.CREATED).json({
 			message: "Message has been created successfully",
 			msg
 		})
 	}
 
-	// ------ // 
+	// ------ //
 	//   GET  //
-	// ------ // 
+	// ------ //
 
 	@Public()// get all messages from a channel
 	@Get(':channelName/msg')
 	async findAll(@Param('channelName') channelName: string): Promise<Message[]> {
 		return await this.messageService.findAllInChannel(channelName);
 	}
-	
+
 	@Public()  // get one message by its id
 	@Get(':id')
 	async findOne(@Param('id') id: number): Promise<Message> {
@@ -56,9 +61,9 @@ export class MessageController {
 		return await this.messageService.findAllByUser(ownerId);
 	}
 
-	// ------- // 
+	// ------- //
 	//  DELETE //
-	// ------- // 
+	// ------- //
 
 	@Delete(':id')
   	async remove(@Param('id') id: number): Promise<void> {
