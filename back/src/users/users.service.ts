@@ -62,7 +62,13 @@ export class UsersService {
       user.achievements.push(achiev);
     }
   }
-  
+
+  async getUsersInTab(usersIds: number[]): Promise<User[]> {
+    const users = await this.usersRepository.find({
+      id: In(usersIds),
+    });
+    return users;
+  }
   
   /////////////////////////////////////////
   // Recherche et gestion d'utilisateurs //
@@ -190,18 +196,12 @@ export class UsersService {
   
   async getFriends(id: number):  Promise<User[]> {
     const user = await this.usersRepository.findOne(id);
-    const friends = await this.usersRepository.find({
-      id: In(user.friends),
-    });
-    return friends;
+    return this.getUsersInTab(user.friends);
   }
 
   async getBlocked(id: number):  Promise<User[]> {
     const user = await this.usersRepository.findOne(id);
-    const blockedUsers = await this.usersRepository.find({
-      id: In(user.blockedUsers),
-    });
-    return blockedUsers;
+    return this.getUsersInTab(user.blockedUsers);
   }
 
   async getUsersexceptBlocked(id:number): Promise<User[]> {

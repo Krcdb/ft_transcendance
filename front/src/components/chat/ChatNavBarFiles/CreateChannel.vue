@@ -49,13 +49,13 @@ import http from '@/http-common';
 import ChannelDataService from '@/services/ChannelDataService';
 import ResponseData from "@/types/ResponseData";
 
-import Channel from "@/types/Channel";
+import CreateChannel from "@/types/CreateChannel";
 import User from "@/types/User";
 
 export default defineComponent({
 	data() {
 		return {
-			channel: {} as Channel,
+			channel: {} as CreateChannel,
 			state: 0,
 			isLoading: false,
 		}
@@ -79,7 +79,7 @@ export default defineComponent({
 				channelName: this.channel.channelName as string,
 				password: this.channel.password as string,
 				isPublic: this.channel.isPublic as boolean,
-				owner: this.owner.id as number
+				owner: this.owner.id as number,
 			};
 
 			console.log("CreateChannel: " + this.channel.channelName);

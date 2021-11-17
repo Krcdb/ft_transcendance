@@ -1,13 +1,14 @@
 /* eslint-disable */
 import http from "@/http-common";
 import Channel from "@/types/Channel";
+import CreateChannel from "@/types/CreateChannel";
 // import { CreateChannelDto } f
 
 class ChannelDataService {
 
     // CHANNEL
 
-    createChannel(channel: Channel) : Promise<any> {
+    createChannel(channel: CreateChannel) : Promise<any> {
         return http.post('/channel/createChannel', channel);
     }
     getAllActiveUser() : Promise <any> {
@@ -20,7 +21,7 @@ class ChannelDataService {
         return http.get(`/channel/${channelName}`);
     }
     getAllUsersInChannel(channelName : string) : Promise<any> {
-        return http.get(`/channel/${channelName}`);
+        return http.get(`/channel/${channelName}/users`);
     }
     deleteChannel(channelName : string) : Promise<any> {
         return http.delete(`channel/${channelName}`);
