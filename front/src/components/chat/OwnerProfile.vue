@@ -95,12 +95,10 @@ export default defineComponent({
 .container img {
     width: 64px;
     height: 64px;
-    object-fit: contain;
 }
 .welcome-user img {
     width: 128px;
     height: 128px;
-    object-fit: contain;
 }
 /*
 .userChatInput {

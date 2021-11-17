@@ -86,7 +86,6 @@ export default defineComponent({
 .list-img img {
   width: 64px;
   height: 64px;
-  object-fit: contain;
 }
 h3 {
   font-size: 30px;

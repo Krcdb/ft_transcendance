@@ -15,21 +15,23 @@
 				@change="searchhandler"
 				></p>
 			</div>
-			<hr>
-			<div class="container justify-content-center">
-				<ul class="list-group">
+			<div class="channel-info container justify-content-center">
+				<ul class="channel-info list-group">
 					<li class="list-group-item" v-for="(channel, index) in filteredChannelList" :key="channel.id">
-
 						<div class="d-flex align-items-center" v-if="channel.isPublic">
-
 							<div class="row col-sm-2">
-								<p>{{ channel.channelName }}</p>
+								<h4>{{ channel.channelName }}</h4>
 								<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`" alt="" width="128">
 							</div>
 
 							<div class="row col-sm-4">
-								<p>Owner: {{ this.getUserByID(channel.owner).userName }} </p>
-								<p>Public Channel: {{ channel.isPublic ? "Yes" : "No"}}</p>
+                                <p>Owner</p>
+                                <div class="mini-user-info">
+                                    <Avatar :user="this.getUserByID(channel.owner)" />
+                                      <h4>{{ this.getUserByID(channel.owner).userName }}</h4>
+								    <p class="public-tag" v-if="channel.isPublic">Public</p>
+								    <p v-else class="private-tag">Private</p>
+                                </div>
 							</div>
 
 							<div class="d-flex flex-column">
@@ -49,7 +51,7 @@
 									@click="joinChannel(channel, this.password[index], index)">
 									Rejoindre</button>
 
-									<div class="m-2" v-if=" this.getUserByID(channel.owner).id === this.owner.id">
+									<div class="m-2" v-if="channel.owner === this.owner.id">
 										<button type="button" name="button" class="btn btn-danger"
 										@click="deleteChannel(channel)">Supprimer le salon</button>
 										<div class="p-auto mx-auto" style="margin: 15px;" v-if="this.isDeletingChannel">
@@ -65,9 +67,9 @@
 									</div>
 								</div>
 							</div>
-						<br>
-						<hr>
-						<br>
+						<!-- <br> -->
+						<!-- <hr> -->
+						<!-- <br> -->
 					</div>
 				</li>
 			</ul>
@@ -85,6 +87,7 @@ import Channel from "@/types/Channel";
 import UserDataService from '@/services/UserDataService';
 import ChannelDataService from '@/services/ChannelDataService';
 import ResponseData from "@/types/ResponseData";
+import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
     name: "channel-list",
@@ -99,6 +102,9 @@ export default defineComponent({
 			password: [] as string[],
 			isLoading: [] as boolean[],
         };
+    },
+    components: {
+        Avatar,
     },
     props: {
         owner: {
@@ -193,7 +199,34 @@ export default defineComponent({
 });
 </script>
 
-<style media="screen">
+<style media="screen" scoped>
+.mini-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10%;
+}
+
+.mini-user-info.profile-link {
+  color: black;
+  text-decoration: none;
+}
+
+.mini-user-info img {
+    border: 2px solid #ddd;
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+}
+.public-tag {
+  background-color: #4bbd4b;
+  font-weight: bold;
+  color: white;
+  padding: 5px;
+}
+.channel-info {
+    border: 0;
+}
 /*
 .channel-list {
     display: block;

@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar">
+  <nav class="main-navbar">
     <div class="logo-wrapper">
       <router-link class="active" to="/">
         <img
@@ -68,10 +68,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.navbar {
+.main-navbar {
   width: 100%;
 }
-.navbar div {
+.main-navbar div {
   display: flex;
   height: 60px;
 }

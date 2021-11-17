@@ -120,7 +120,6 @@ p {
 }
 .sender-avatar img {
   border: 2px solid #ddd;
-  object-fit: contain;
   border-radius: 100%;
   width: 42px;
   height: 42px;

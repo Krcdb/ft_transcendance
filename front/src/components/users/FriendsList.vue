@@ -89,7 +89,6 @@ export default defineComponent({
 .friend-img img {
   width: 40px;
   height: 40px;
-  object-fit: contain;
 }
 .friend-wrapper h3 {
   font-size: 20px;

@@ -235,7 +235,6 @@ export default defineComponent({
 .container img {
     width: 64px;
     height: 64px;
-    object-fit: contain;
 }
 .list {
     background-color: white;

@@ -132,6 +132,12 @@ export class ChannelController {
 	}
 
 	@Public()
+	@Get('public')
+	async findAllPublicChannels() : Promise<Channel[]> {
+		return (await this.channelDataService.findAllPublicChannels ());
+	}
+
+	@Public()
 	@Get(':channelName/can-join-channel')
 	async canJoinChannel(@Res() res, @Param('channelName') ChannelName: string, @Body() ChannelPasswordDto: ChannelPasswordDto) : Promise<boolean> {
 		console.log("can join channel ?: " + ChannelPasswordDto.password);
