@@ -32,7 +32,6 @@ export class MessageController {
 			return res.status(HttpStatus.NOT_FOUND).json({
 				message: "Couldn't find channel with given name" });
 		await this.messageService.addMessageToHistories(msg);
-		await this.channelService.refreshChannelMessages(channelName); // tmp peut etre a retirer
 		return res.status(HttpStatus.CREATED).json({
 			message: "Message has been created successfully",
 			msg

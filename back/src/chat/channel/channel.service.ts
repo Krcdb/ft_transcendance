@@ -205,6 +205,8 @@ export class ChannelDataService {
 	async refreshChannelMessages(server: Server, socket: Socket, channelName: string) : Promise<any> {
 		const allUsers = (await this.findOne(channelName)).users as Array<number>;
 
+		server.to(channelName).emit('refreshChannelMessages');
+
 		for (let index = 0; index < allUsers.length; index++) {
 			const element = allUsers[index];
 			console.log("User: " + element);
