@@ -58,19 +58,20 @@ export default defineComponent({
 				this.state = 'loaded';
 				socket.on(`startGame${this.uuid}`, (payload) => {
 					this.gameOptions = payload;
-					this.game = new Game(socket, this.gameOptions, String(this.uuid), this.playerSide, String(localStorage.getItem('user-id')));
+					console.log(`game started !!!`);
+					this.game = new Game(socket, this.gameOptions, this.uuid, this.playerSide, String(localStorage.getItem('user-id')));
 				});
 				socket.on("updateGame", (payload) => {
 					if (this.game)
 						this.game.updateGame(payload);
 				});
 				socket.emit("playerReady", this.uuid);
-				console.log(`match loaded | uuid : ${this.match.matchId}`);
+				console.log(`match loaded | uuid : ${this.match.matchId}\nplayer side : ${this.playerSide}`);
 			});
 		},
 	},
     mounted() {
 		this.loadData();
-    },
+	},
 });
 </script>

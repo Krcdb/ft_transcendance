@@ -1,7 +1,4 @@
 /* eslint-disable */
-import { Game } from "./Game"
-import { Paddle } from "./Paddle"
-
 export class Ball {
 	x: number;
 	y: number;

@@ -17,7 +17,7 @@ const GameOptions: GameOptionsInterface = {
 	PADDLE_HEIGHT: 60,
 	PADDLE_MARGIN: 10,
 	BALL_SIZE: 10,
-	PLAYER_MOVE: 12,
+	PLAYER_MOVE: 3,
 };
 
 @Injectable()
@@ -59,16 +59,22 @@ export class GameService {
 
 	async playerReady(socket: Socket, uuid: string) {
 		const game = this.games.get(uuid);
-
-		if (!game)
+		if (!game) {
+			console.log(`game not found in playerReady`);
 			return ;
+		}
 		socket.emit(`startGame${uuid}`, GameOptions);
 		socket.join(uuid);
-		if (game.player1.id === socket.handshake.auth.userId)
+		if (game.player1.id === socket.data.user?.id) {
 			game.player1Ready = true;
-		if (game.player2.id === socket.handshake.auth.userId)
+		}
+		if (game.player2.id === socket.data.user?.id) {
 			game.player2Ready = true;
-		
+		}
+		if (game.started)
+			return ;
+		if (game.player1Ready && game.player2Ready)
+			game.startGame(this.socketService.server);
 	}
 
 	async createGame(player1: User, player2: User) {
@@ -90,7 +96,8 @@ export class GameService {
 		game.intervalRef = setInterval(async () => {
 			game.gameLoop(this.socketService.server);
 			if (game.started && match.state !== GameState.IN_PROGRESS) {
-			  	match.state = GameState.IN_PROGRESS;
+				match.state = GameState.IN_PROGRESS;
+				console.log("state -> in progress");
 			  	await this.matchRepository.update(match.matchId, { state: match.state });
 			}
 			if (game.player1Score !== match.scorePlayerOne || game.player2Score !== match.scorePlayerTwo) {
@@ -123,7 +130,7 @@ export class GameService {
 		const user = await this.usersService.findOne(socket.handshake.auth.userId);
 		if (this.matchmakingQueue.find(x => x.id == user.id) === undefined) {
 			this.matchmakingQueue.push(user);
-			this.logger.log(user.userName, "added to queue");
+			this.logger.log(user.userName, "added to queue"); 
 		}
 	}
 
@@ -131,11 +138,12 @@ export class GameService {
 		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(user), 1);
 	}
 
-	playerInput(payload: any) {
+	async playerInput(payload: any) {
 		const game = this.games.get(payload.uuid);
-		if (game) {
-			game.playerInput(payload)
-		}
+		if (game)
+			game.playerInput(payload);
+		else
+			console.log(`input game not found : ${payload.uuid}`);
 	}
 
 	async gameReady(user: User, uuid: string) {
