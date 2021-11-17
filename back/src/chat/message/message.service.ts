@@ -33,8 +33,8 @@ export class MessageService {
     //  Gestion des messages    //
     //////////////////////////////
 
-    async addMessageToHistories(msgId: number) : Promise<void> {
-        const message = await this.messageRepository.findOne(msgId);
+    async addMessageToHistories(message: Message) : Promise<void> {
+        // const message = await this.messageRepository.findOne(msgId);
         await this.usersService.addMessageToHistory(message.owner, message.id);
         await this.channelService.addMessageToHistory(message.channelName, message.id);
     }

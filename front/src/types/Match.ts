@@ -1,9 +1,10 @@
 import { GameState } from './Game';
-export class Match {
-	matchId: string | undefined;
-	state: GameState | undefined;
-	playerOne: number | undefined;
-	playerTwo: number | undefined;
-	scorePlayerOne: number | undefined;
-	scorePlayerTwo: number | undefined;
-}
+
+export default interface Match{
+	matchId: number;
+	state: GameState;
+    playerOne: number;
+    playerTwo: number;
+    scorePlayerOne: number;
+    scorePlayerTwo: number;
+  }

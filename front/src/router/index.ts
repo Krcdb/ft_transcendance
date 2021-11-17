@@ -50,12 +50,12 @@ const routes = [
   {
     path: "/profile",
     name: "Profile",
-    component: () => import("../components/users/UserProfile.vue"),
+    component: () => import("../views/Profile.vue"),
   },
   {
     path: "/users",
     name: "users",
-    component: () => import("../components/users/UsersList.vue"),
+    component: () => import("../views/Users.vue"),
   },
   {
     path: "/users/:id",
@@ -66,6 +66,17 @@ const routes = [
     path: "/update-profile",
     name: "update-profile",
     component: () => import("../components/users/UpdateProfile.vue"),
+  },
+  {
+    path: "/Channel",
+    name: "Channel",
+    component: () => import("../components/chat/Channel/Channel.vue"),
+    props: true,
+  },
+  {
+    path: "/Channel/:channelName",
+    name: "channelName",
+    component: () => import("../components/chat/Channel/Channel.vue"),
   },
 ];
 

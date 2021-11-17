@@ -18,39 +18,63 @@
 			<div class="debug">
 
 				debug: <br>
-				{{ this.newChannel.channelName }} <br>
-				{{ this.newChannel.password }} <br>
-				{{ this.owner }} <br>
+				channelName: {{ this.newChannel.channelName }} <br>
+				channelPassword: {{ this.newChannel.password }} <br>
+				Owner: {{ this.owner }} <br>
 			</div>
-
 		</div>
 		<hr>
-		<div class="list">
+
+		<div class="list" v-if="this.channelList > 0">
+			<!--
 			<h3>Liste des salons crées</h3>
 
-			<div class="list-salons">
-
+			<div class="list-salons"
+			:class="{ active, index == currentIndex} "
+			v-for="(channel, index) in channelList"
+			:key="index"
+			>
+			{{ channel.channelName }}
 			</div>
+		-->
 		</div>
+
+
+		<!--
+		<ErrorChat
+		:error_message="'olala'"
+		:description="'cpascool'"
+		:button_left="'Confirmer'"
+		:button_right="'retour'"
+		/>
+		-->
+
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
-import ChannelDataService from '@/services/ChannelDataService';
+import ChannelDataService from "@/services/ChannelDataService";
 import ResponseData from "@/types/ResponseData";
 
 import User from "@/types/User";
 import Channel from "@/types/Channel";
+
+//import ErrorChat from "./Error.vue";
 
 export default defineComponent({
 	name: "menu-chat",
 	data() {
 		return {
 			newChannel: {} as Channel,
+			channelList: [] as Channel[],
+			currentIndex: -1,
 		};
 	},
+	//components: {
+	//	ErrorChat,
+	//},
 	props: {
 		owner: {
 			type: Object as () => User,
@@ -64,11 +88,25 @@ export default defineComponent({
 			ChannelDataService.createChannel(this.newChannel)
 			.then((response: ResponseData) => {
 				console.log("Response LOG: " + response.data);
+				this.channelList = response.data;
 			})
 			.catch((e: Error) => {
 				console.log("CreateChannel Error: " + e);
 			});
 		},
+		getAllChannel() {
+			ChannelDataService.getAllChannels()
+			.then((response: ResponseData) => {
+				console.log("Channel List: " + response.data);
+				this.channelList = response.data;
+			})
+			.catch((e: Error) => {
+				console.log("Get AllChannel Error: " + e);
+			})
+		}
+	},
+	mounted() {
+		this.getAllChannel();
 	},
 });
 </script>

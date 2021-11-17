@@ -6,6 +6,8 @@ import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { JwtService } from '@nestjs/jwt';
 import { User } from './user.entity';
 import * as fs from 'fs';
+import { enumAchievements, allAchievement } from 'src/achievements/achievements';
+import { AchievementsInterface } from 'src/achievements/achievements';
 // import { ChannelDataService } from '../chat/channel/channel.service';
 // import { MessageService } from '../chat/message/message.service';
 
@@ -38,6 +40,36 @@ export class UsersService {
       return await this.usersRepository.save(user);
   }
 
+
+  ///////////
+  // Utils //
+  ///////////
+
+  async setAchievementAsync(userId: number, achiev: enumAchievements): Promise<User> {
+    const user = await this.usersRepository.findOne(userId);
+    if (user.achievements.indexOf(achiev) === -1)
+    {
+      user.achievements.push(achiev);
+      await this.usersRepository.save(user);
+    }
+    return user;
+  }
+
+  // to use only if this.usersRepository.save(user); after
+  setAchievement(user: User, achiev: enumAchievements) {
+    if (user.achievements.indexOf(achiev) === -1)
+    {
+      user.achievements.push(achiev);
+    }
+  }
+
+  async getUsersInTab(usersIds: number[]): Promise<User[]> {
+    const users = await this.usersRepository.find({
+      id: In(usersIds),
+    });
+    return users;
+  }
+  
   /////////////////////////////////////////
   // Recherche et gestion d'utilisateurs //
   /////////////////////////////////////////
@@ -78,9 +110,11 @@ export class UsersService {
   // Gestion du profil //
   ///////////////////////
 
-  public async setAvatar(id: number, avatarUrl: string): Promise<void>  {
-    await this.DeleteOldAvatarFile(id);
+  // AVATAR //
+  async setAvatar(id: number, avatarUrl: string): Promise<User>  {
+    this.DeleteOldAvatarFile(id);
     await this.usersRepository.update(id, {avatar: avatarUrl});
+    return this.setAchievementAsync(id, enumAchievements.UPLOAD_AVATAR);
   }
 
   async getAvatar(id: number) : Promise<String>  {
@@ -103,14 +137,25 @@ export class UsersService {
     await this.usersRepository.update(id, {avatar: null});
   }
 
+  // Other //
   async updateUserName(id: number, updateUserNameDto: UpdateUserNameDto): Promise<User> {
     await this.usersRepository.update(id, {userName: updateUserNameDto.newUserName});
-    return await this.usersRepository.findOne(id);
+    return this.setAchievementAsync(id, enumAchievements.CHANGE_NAME);
   }
 
   async updateLogState(id: number, isLog: boolean): Promise<User> {
     await this.usersRepository.update(id, {isActive: isLog});
     return await this.usersRepository.findOne(id);
+  }
+
+  async getAchievements(id: number): Promise<AchievementsInterface[]> {
+    const user = await this.usersRepository.findOne(id);
+    let achievements: AchievementsInterface[] = [];
+    user.achievements.forEach( achiev_id => {
+      achievements.push(allAchievement[allAchievement.map(x => x.id).indexOf(achiev_id)]);
+    });
+    achievements.reverse();
+    return achievements;
   }
 
   ///////////////////////////
@@ -151,18 +196,12 @@ export class UsersService {
   
   async getFriends(id: number):  Promise<User[]> {
     const user = await this.usersRepository.findOne(id);
-    const friends = await this.usersRepository.find({
-      id: In(user.friends),
-    });
-    return friends;
+    return this.getUsersInTab(user.friends);
   }
 
   async getBlocked(id: number):  Promise<User[]> {
     const user = await this.usersRepository.findOne(id);
-    const blockedUsers = await this.usersRepository.find({
-      id: In(user.blockedUsers),
-    });
-    return blockedUsers;
+    return this.getUsersInTab(user.blockedUsers);
   }
 
   async getUsersexceptBlocked(id:number): Promise<User[]> {
@@ -176,6 +215,7 @@ export class UsersService {
     });
     return users;
   }
+
   // Ajout de l'utilisateur
   async addAsFriend(userId: number, id: number) : Promise<string> {
     const user = await this.usersRepository.findOne(userId);
@@ -184,7 +224,19 @@ export class UsersService {
       return "You can't add a blocked user as friend";
     if (user.friends.indexOf(id) === -1) {
       user.friends.push(id);
-      await this.usersRepository.save(user);   // seems necessary but i don't know why
+      if (user.friends.length > 0)
+        this.setAchievement(user, enumAchievements.ADD_ONE_FRIEND);
+      if (user.friends.length >= 3)
+        this.setAchievement(user, enumAchievements.ADD_3_FRIEND);
+      if (user.friends.length >= 5)
+        this.setAchievement(user, enumAchievements.ADD_5_FRIEND);
+      if (user.friends.length >= 10)
+        this.setAchievement(user, enumAchievements.ADD_10_FRIEND);
+      if (user.friends.length >= 50)
+        this.setAchievement(user, enumAchievements.ADD_50_FRIEND);
+      if (user.friends.length >= 100)
+        this.setAchievement(user, enumAchievements.ADD_100_FRIEND);
+      await this.usersRepository.save(user);
       return "Successfully added to your friends";
     }
     else
@@ -205,15 +257,25 @@ export class UsersService {
 
   async addAsBlocked(userId: number, blockedId: number) : Promise<string> {
     const user = await this.usersRepository.findOne(userId);
-    const blocked = await this.usersRepository.findOne(blockedId);
     await this.removeFromFriends(userId, blockedId);
     if (user.blockedUsers.indexOf(blockedId) === -1)
     {
       if (user.friends.indexOf(blockedId) !== -1)
         user.friends.splice(user.friends.indexOf(blockedId), 1);
       user.blockedUsers.push(blockedId);
+      if (user.blockedUsers.length > 0)
+        this.setAchievement(user, enumAchievements.BLOCK_ONE_USER);
+      if (user.blockedUsers.length >= 3)
+        this.setAchievement(user, enumAchievements.BLOCK_3_USER);
+      if (user.blockedUsers.length >= 5)
+        this.setAchievement(user, enumAchievements.BLOCK_5_USER);
+      if (user.blockedUsers.length >= 10)
+        this.setAchievement(user, enumAchievements.BLOCK_10_USER);
+      if (user.blockedUsers.length >= 50)
+        this.setAchievement(user, enumAchievements.BLOCK_50_USER);
+      if (user.blockedUsers.length >= 100)
+        this.setAchievement(user, enumAchievements.BLOCK_100_USER);
       await this.usersRepository.save(user);
-      await this.usersRepository.save(blocked);
       return "Successfully Blocked";
     }
     else
@@ -222,13 +284,12 @@ export class UsersService {
   
   async removeFromBlocked(userId: number, blockedId: number) : Promise<string> {
     const user = await this.usersRepository.findOne(userId);
-    const blocked = await this.usersRepository.findOne(blockedId);
     if (user.blockedUsers.indexOf(blockedId) === -1)
       return "This user is not Blocked";
     else {
       user.blockedUsers.splice(user.blockedUsers.indexOf(blockedId), 1);
+      this.setAchievement(user, enumAchievements.UNBLOCK_AN_USER);
       await this.usersRepository.save(user);
-      await this.usersRepository.save(blocked);
       return "Successfully Unblocked";
     }
   }
@@ -312,7 +373,8 @@ export class UsersService {
   }
 
   async turnOnTwoFAuth(id: number) {
-    return await this.usersRepository.update(id, {
+    const user = await this.setAchievementAsync(id, enumAchievements.ACTIVATE_2FA);
+    return this.usersRepository.update(id, {
       isTwoFAuthEnabled: true
     });
   }

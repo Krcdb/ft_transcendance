@@ -1,5 +1,6 @@
 export default interface ChatMessage {
+    id: number;
     message: string;
-    owner: string;
+    owner: number;
     sender: boolean;
 }
