@@ -27,14 +27,19 @@ export class MatchService {
         return await this.matchRepository.find();
     }
     async findAllWithUser(userId: number) : Promise<Match[]> {
-        return await this.matchRepository.find({ playerOne: userId, playerTwo: userId});
+        return await this.matchRepository.find({
+            where: [
+                { playerOne: userId }, 
+                { playerTwo: userId },
+            ]
+        });
     }
-    async findOne(matchId: number): Promise<Match> {
+    async findOne(matchId: string): Promise<Match> {
         return await this.matchRepository.findOne(matchId);
     }
 
     // fonction temporaire pour faire des tests
-    async simulateMatch(matchId: number, playerOneScore: number, playerTwoScore: number) : Promise<void> {
+    async simulateMatch(matchId: string, playerOneScore: number, playerTwoScore: number) : Promise<void> {
         const match = await this.matchRepository.findOne(matchId);
         match.scorePlayerOne = playerOneScore;
         match.scorePlayerTwo = playerTwoScore;
@@ -42,7 +47,7 @@ export class MatchService {
     }
 
     // testée et approuvée !!
-    async updateUsersAfterGame(matchId: number): Promise<void> {
+    async updateUsersAfterGame(matchId: string): Promise<void> {
         const match = await this.matchRepository.findOne(matchId);
         let winnerId = match.playerOne;
         let loserId = match.playerTwo;

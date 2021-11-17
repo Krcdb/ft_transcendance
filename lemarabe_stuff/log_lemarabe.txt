@@ -29,6 +29,11 @@ _______________________________________________________________________
 * * * * * * * * * * * * * JOURNAL DE BORD * * * * * * * * * * * * * * * 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+[17 novembre]
+Le dump comporte aussi des matches maintenant.
+J'ai corrigé les fonctions de service qui utilisent matchId pour que ce
+soit une string au lieu d'un number.
+
 [10 novembre]
 J'ai push sur master mes modifs de la veille, pas celles d'aujourd'hui.
 Aujourd'hui j'ai fait du ménage :

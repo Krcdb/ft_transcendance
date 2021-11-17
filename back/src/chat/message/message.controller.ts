@@ -37,9 +37,15 @@ export class MessageController {
 	//   GET  //
 	// ------ //
 
+	@Public()// get all messages
+	@Get()
+	async findAll() : Promise<Message[]> {
+		return await this.messageService.findAll();
+	}
+
 	@Public()// get all messages from a channel
 	@Get(':channelName/msg')
-	async findAll(@Param('channelName') channelName: string): Promise<Message[]> {
+	async findAllInChannel(@Param('channelName') channelName: string): Promise<Message[]> {
 		return await this.messageService.findAllInChannel(channelName);
 	}
 

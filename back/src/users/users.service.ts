@@ -158,7 +158,7 @@ export class UsersService {
   // Historique des matchs //
   ///////////////////////////
   
-  async addMatchToHistory(userId: number, matchId: number) : Promise<void> {
+  async addMatchToHistory(userId: number, matchId: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.matchHistory.push(matchId);
     await this.usersRepository.save(user);

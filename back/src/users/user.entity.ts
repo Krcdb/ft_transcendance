@@ -23,8 +23,8 @@ export class User {
     // MATCHES & GAME STATS //
     // -------------------- //
 
-  @Column("int", {nullable: true, array: true})
-  matchHistory: number[];
+  @Column("varchar", {nullable: true, array: true})
+  matchHistory: string[];
 
   @Column("int", {nullable: true})
   nbVictories: number;
