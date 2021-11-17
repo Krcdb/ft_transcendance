@@ -114,8 +114,10 @@ export default defineComponent({
     },
     methods: {
         async refreshChannelList() {
-            await ChannelDataService.getAllChannels()
+            // await ChannelDataService.getAllChannels()
+            await ChannelDataService.getAllPublicChannels()
             .then((response : ResponseData) => {
+                console.log("response = ", response.data);
                 this.ChannelList = response.data;
 				this.filteredChannelList = response.data;
             })
@@ -166,7 +168,7 @@ export default defineComponent({
 				password: current_password,
 			};
 
-			//ChannelDataService.canJoinChannel(channel.channelName, data)
+			ChannelDataService.canJoinChannel(channel.channelName, data)
 			await ChannelDataService.getChannel(channel.channelName)
 			.then((response : ResponseData) => {
 				console.log("Can join channel: " + response.data.password);

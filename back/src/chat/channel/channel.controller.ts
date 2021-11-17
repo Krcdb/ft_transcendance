@@ -99,7 +99,18 @@ export class ChannelController {
   	//  GET   //
   	// ------ //
 	@Public()
-	@Get(':channelName')
+	@Get()
+	async findAllChannels() : Promise<Channel[]> {
+	  return (await this.channelDataService.findAll());
+	}
+	@Public()
+	@Get('public')
+	async findAllPublicChannels(): Promise<Channel[]> {
+	  return (await this.channelDataService.findAllPublicChannels());
+	}
+
+	@Public()
+	@Get('/infos/:channelName')
 	async getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
 		return (await this.channelDataService.findOne(channelName));
 	}
@@ -125,17 +136,7 @@ export class ChannelController {
 		return (false);
 	}
 
-	@Public()
-	@Get()
-	async findAllChannels() : Promise<Channel[]> {
-		return (await this.channelDataService.findAll());
-	}
 
-	@Public()
-	@Get('public')
-	async findAllPublicChannels() : Promise<Channel[]> {
-		return (await this.channelDataService.findAllPublicChannels ());
-	}
 
 	@Public()
 	@Get(':channelName/can-join-channel')
