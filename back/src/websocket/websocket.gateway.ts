@@ -4,7 +4,7 @@ import { Server, Socket } from "socket.io";
 import { WebsocketService } from "./websocket.service";
 import { User } from "src/users/user.entity";
 import { UsersService } from "src/users/users.service";
-import { ChannelDataService } from "src/chat/channel/channel.service";
+import { ChannelService } from "src/chat/channel/channel.service";
 
 @WebSocketGateway( { cors: true } )
 export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect{
@@ -15,7 +15,7 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
     	private readonly websocketService: WebsocketService,
 		private readonly gameService: GameService,
 		private readonly usersSerive: UsersService,
-		private readonly channelService: ChannelDataService,
+		private readonly channelService: ChannelService,
 	) {}
 
 	afterInit(server: Server) {

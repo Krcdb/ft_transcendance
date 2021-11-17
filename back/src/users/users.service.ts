@@ -8,8 +8,6 @@ import { User } from './user.entity';
 import * as fs from 'fs';
 import { enumAchievements, allAchievement } from 'src/achievements/achievements';
 import { AchievementsInterface } from 'src/achievements/achievements';
-// import { ChannelDataService } from '../chat/channel/channel.service';
-// import { MessageService } from '../chat/message/message.service';
 
 @Injectable()
 export class UsersService {

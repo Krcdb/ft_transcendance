@@ -1,17 +1,16 @@
 import { Body, Controller, Get, Delete, Post, Res, Param } from '@nestjs/common';
-
 import { HttpStatus } from '@nestjs/common';
 import { Public } from 'src/auth/utils/public.decorator';
-
 import { Message } from './message.entity'
 import { MessageService } from './message.service'
+import { ChannelService } from '../channel/channel.service'
 import { CreateMessageDto } from './dto/create-message.dto';
 
 @Controller('messages')
 export class MessageController {
 	constructor(
 		private readonly messageService: MessageService,
-		private readonly channelService: ChannelDataService,
+		private readonly channelService: ChannelService,
 	) {}
 
 	// ------ //
