@@ -1,4 +1,5 @@
 import User from "@/types/User";
+import Channel from "@/types/Channel";
 import { createStore } from "vuex";
 
 export default createStore({

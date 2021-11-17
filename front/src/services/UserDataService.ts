@@ -2,6 +2,11 @@
 import http from "@/http-common";
 
 class TutorialDataService {
+  /////////
+  // GET //
+  /////////
+
+  // USER
   getAll(): Promise<any> {
     return http.get("/users");
   }
@@ -9,38 +14,55 @@ class TutorialDataService {
   get(id: number): Promise<any> {
     return http.get(`/users/${id}`);
   }
-
+  
   getAvatar(id: number): Promise<any> {
     return http.get(`/users/${id}/avatar`);
   }
-
-  create(data: any): Promise<any> {
-    return http.post("/users", data);
+  
+  getAchievements(id: number): Promise<any> {
+    return http.get(`/users/${id}/achievements`);
   }
 
+  // AUTH
   login(data: any): Promise<any> {
     return http.get("/login", data);
   }
+  
+    get42Token(code: string) : Promise<any> {
+      return http.get(`/auth/42?code=${code}`);
+    }
+  
+  // USER RELATIONS
+  getFriends(id: number): Promise<any> {
+    return http.get(`/users/${id}/friends`);
+  }
 
+  getBlocked(id: number): Promise<any> {
+    return http.get(`/users/${id}/blocked`);
+  }
+
+  getNonBlocked(id: number): Promise<any> {
+    return http.get(`/users/${id}/non-block-users`);
+  }
+
+  //////////
+  // POST //
+  //////////
+
+  // USER
+  create(data: any): Promise<any> {
+    return http.post("/users", data);
+  }
+  
   updateUserName(id: number, data: any) : Promise<any>{
     return http.post(`/users/${id}`, data);
   }
-
+  
   uploadAvatar(id: number, avatar: FormData): Promise<any> {
     return http.post(`/users/${id}/avatar`, avatar);
   }
 
-  delete(id: number): Promise<any> {
-    return http.delete(`/users/${id}`);
-  }
-  deleteAvatar(id: number): Promise<any> {
-    return http.delete(`/users/${id}/avatar`);
-  }
-
-  get42Token(code: string) : Promise<any> {
-    return http.get(`/auth/42?code=${code}`);
-  }
-
+  // AUTH
   generateQRcode(data:any): Promise<any> {
     return http.post("/2fa/generate", data, { responseType: "arraybuffer" });
   }
@@ -57,6 +79,7 @@ class TutorialDataService {
     return http.post("/2fa/authenticate", data);
   }
 
+  // USER RELATIONS
   addToFriends(id: number, data: any): Promise<any> {
     return http.post(`/users/${id}/friends`, data);
   }
@@ -73,18 +96,16 @@ class TutorialDataService {
     return http.post(`/users/${id}/unblock`, data);
   }
 
-  getFriends(id: number): Promise<any> {
-    return http.get(`/users/${id}/friends`);
+  ////////////
+  // DELETE //
+  ////////////
+  delete(id: number): Promise<any> {
+    return http.delete(`/users/${id}`);
   }
 
-  getBlocked(id: number): Promise<any> {
-    return http.get(`/users/${id}/blocked`);
+  deleteAvatar(id: number): Promise<any> {
+    return http.delete(`/users/${id}/avatar`);
   }
-
-  getNonBlocked(id: number): Promise<any> {
-    return http.get(`/users/${id}/non-block-users`);
-  }
-
 }
 
 export default new TutorialDataService();

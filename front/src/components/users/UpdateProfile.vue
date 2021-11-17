@@ -8,14 +8,7 @@
     <div class="edit-form">
       <div class="change-avatar">
         <p>Current avatar:</p>
-        <img
-          v-if="user.avatar"
-          :src="`http://localhost:3000/users/${user.id}/avatar`"
-        />
-        <img
-          v-else
-          :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`"
-        />
+        <Avatar :user="user" />
         <form @submit.prevent="handleSubmit">
           <div class="file-browsing-div">
             <input
@@ -47,22 +40,20 @@
           </label>
         </div>
         <div class="update-username">
-          <div class="form-group">
-            <h3>Change User Name</h3>
-            <label for="userName">
-              <input
-                type="text"
-                maxlength="12"
-                class="form-control"
-                required
-                v-model="newUserName"
-                :placeholder="user.userName"
-              />
-              <button @click="updateUserName" class="btn btn-success">
-                Submit
-              </button>
-            </label>
-          </div>
+          <h3>Change User Name</h3>
+          <label for="userName">
+            <input
+              type="text"
+              maxlength="12"
+              class="form-control"
+              required
+              v-model="newUserName"
+              :placeholder="user.userName"
+            />
+            <button @click="updateUserName" class="btn btn-success">
+              Submit
+            </button>
+          </label>
         </div>
         <p>{{ msg }}</p>
         <router-link to="/profile">
@@ -84,9 +75,13 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
+import Avatar from "./Avatar.vue";
 
 export default defineComponent({
-    name: "User",
+  name: "User",
+  components: {
+    Avatar,
+  },
   data() {
     return {
       file: "",
@@ -185,6 +180,7 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   gap: 5%;
+  flex-wrap: wrap;
 }
 .change-avatar{
     display: flex;
@@ -193,7 +189,6 @@ export default defineComponent({
 .other-change {
   display: flex;
   flex-direction: column;
-  gap: 30px;
 }
 
 img {
@@ -209,6 +204,20 @@ h4 {
   margin-left: auto;
   margin-right: auto;
 }
+h3 {
+  font-size: 1.4em;
+  margin: 0%;
+}
+
+.update-username {
+  margin-top: 10%;
+  margin-bottom: 5%;
+}
+
+input[type="text"] {
+  font-size: 1.2em;
+}
+
 .profile-link {
   color: black;
   text-decoration: none;
@@ -217,9 +226,7 @@ h4 {
 .deletebtn {
   background-color: #f44336;
 }
-.update-username {
-  margin: 2%;
-}
+
 .file-browsing-div {
   margin: 5%;
 }

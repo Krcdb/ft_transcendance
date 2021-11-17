@@ -26,6 +26,9 @@ export class MatchService {
     async findAll() : Promise<Match[]> {
         return await this.matchRepository.find();
     }
+    async findAllWithUser(userId: number) : Promise<Match[]> {
+        return await this.matchRepository.find({ playerOne: userId, playerTwo: userId});
+    }
     async findOne(matchId: number): Promise<Match> {
         return await this.matchRepository.findOne(matchId);
     }

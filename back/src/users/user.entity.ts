@@ -35,7 +35,7 @@ export class User {
   @Column("int", {nullable: true, default : 1000})
   ladderLevel: number;
 
-  @Column("varchar", {nullable: true, array: true})
+  @Column("int", {nullable: true, array: true})
   achievements: number[];
 
     // --------------- //

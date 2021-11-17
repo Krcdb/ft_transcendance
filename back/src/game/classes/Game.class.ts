@@ -1,6 +1,8 @@
 import { Paddle } from "src/game/classes/Paddle.class"
 import { Ball } from "src/game/classes/Ball.class"
-import { Server } from "socket.io"
+import { Server, Socket } from "socket.io"
+import { User } from "src/users/user.entity";
+import { GameState } from "src/match/match.entity";
 
 export interface GameOptionsInterface {
 	FPS: number;
@@ -21,6 +23,8 @@ enum Keys {
 }
 
 export class Game {
+	player1: User;
+	player2: User;
 	options: GameOptionsInterface;
 	uuid: string;
 	intervalRef: any;
@@ -37,9 +41,16 @@ export class Game {
 	player1Score: number;
 	player2Score: number;
 
+	started: Boolean = false;
+  	state: GameState = GameState.WAITING_ALL;
+  	player1Ready: Boolean = false;
+	player2Ready: Boolean = false;
+
 	keysPressed: boolean[] = [];
 
-	constructor(options: GameOptionsInterface, uuid: string) {
+	constructor(player1: User, player2: User,options: GameOptionsInterface, uuid: string) {
+		this.player1 = player1;
+		this.player2 = player2;
 		this.options = options;
 		this.uuid = uuid;
 
@@ -53,28 +64,32 @@ export class Game {
 		this.reset();
 	}
 
-	playerNewKeyEvent(key: boolean[]){
-		this.keysPressed = key;
+	playerNewKeyEvent(payload: any){
+		this.keysPressed = payload.key;
 	}
 
 	gameLoop(server: Server) {
-		this.update();
+		if (!this.started)
+			return ;
+		if (this.state === GameState.IN_PROGRESS)
+			this.update();
 	
 		server.to(this.uuid).emit('updateGame', {
-		  ball: {
-			x: this.ball.x,
-			y: this.ball.y,
-		  },
-		  player1: {
-			x: this.p1.x,
-			y: this.p1.y,
-			score: this.player1Score,
-		  },
-		  player2: {
-			x: this.p2.x,
-			y: this.p2.y,
-			score: this.player2Score,
-		  }
+			state: this.state,
+			ball: {
+				x: this.ball.x,
+				y: this.ball.y,
+			},
+		  	player1: {
+				x: this.p1.x,
+				y: this.p1.y,
+				score: this.player1Score,
+		  	},
+		 	player2: {
+				x: this.p2.x,
+				y: this.p2.y,
+				score: this.player2Score,
+		  	}
 		});
 	}
 
@@ -180,5 +195,27 @@ export class Game {
 
 		this.ball.x = this.ball.xVel * this.ball.speed;
 		this.ball.y = this.ball.yVel * this.ball.speed;
+	}
+
+	matchDone(server: Server) {
+		this.state = GameState.FINISHED;
+		clearInterval(this.intervalRef);
+		server.to(this.uuid).emit('updateGame', {
+			state: this.state,
+			ball: {
+				x: this.ball.x,
+				y: this.ball.y,
+			},
+		  	player1: {
+				x: this.p1.x,
+				y: this.p1.y,
+				score: this.player1Score,
+		  	},
+		 	player2: {
+				x: this.p2.x,
+				y: this.p2.y,
+				score: this.player2Score,
+		  	}
+		});
 	}
 }

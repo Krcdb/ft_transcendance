@@ -1,5 +1,5 @@
 <template>
-  <div v-if="users.length" class="formfield-select--container">
+  <div v-if="users.length" class="custom-select">
     <select id="mon_select" onchange="location = this.value">
       <option>Blocked users</option>
       <option
@@ -46,10 +46,11 @@ export default defineComponent({
 </script>
 
 <style scopped>
-.formfield-select--container select {
+.custom-select select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   border: 0;
+  padding: 5px;
 }
 </style>
