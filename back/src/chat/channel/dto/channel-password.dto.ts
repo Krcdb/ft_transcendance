@@ -1,6 +1,6 @@
 import { IsString } from 'class-validator';
 
-export class ChannelPasswordDto{
+export class ChannelPasswordDto {
 	@IsString()
 	password: string;
 }

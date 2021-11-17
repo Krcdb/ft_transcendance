@@ -1,69 +1,78 @@
 <template id="">
-    <div class="container-fluid">
-        <hr>
-        <h4>Channel list</h4>
+	<div class="container-fluid">
+		<hr>
+		<h4>Channel list</h4>
 
-        <div class="no-channel" v-if="this.ChannelList.length <= 0">
-            <h6>No channel found...</h6>
-        </div>
+		<div class="no-channel" v-if="this.ChannelList.length <= 0">
+			<h6>No channel found...</h6>
+		</div>
 
-        <div class="input-group mb-3 justify-content-center">
-            <p>Rechercher un salon: <input type="text"
+		<div class="input-group mb-3 justify-content-center">
+			<p>Rechercher un salon: <input type="text"
 				placeholder="Search a channel..."
 				v-model="this.search"
-		        @input="searchhandler"
-		        @change="searchhandler"
-			></p>
-        </div>
+				@input="searchhandler"
+				@change="searchhandler"
+				></p>
+			</div>
+			<hr>
+			<div class="container justify-content-center">
+				<ul class="list-group">
+					<li class="list-group-item" v-for="(channel, index) in filteredChannelList" :key="channel.id">
 
-        <hr>
+						<div class="d-flex align-items-center" v-if="channel.isPublic">
 
-        <div class="container justify-content-center">
-            <ul class="list-group">
-                <li class="list-group-item" v-for="channel in filteredChannelList" :key="channel.id">
+							<div class="row col-sm-2">
+								<p>{{ channel.channelName }}</p>
+								<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`" alt="" width="128">
+							</div>
 
-                    <div class="d-flex align-items-center" v-if="channel.isPublic">
+							<div class="row col-sm-4">
+								<p>Owner: {{ this.getUserByID(channel.owner).userName }} </p>
+								<p>Public Channel: {{ channel.isPublic ? "Yes" : "No"}}</p>
+							</div>
 
-                        <div class="row col-sm-2">
-                            <p>{{ channel.channelName }}</p>
-                            <img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`" alt="" width="128">
-                        </div>
+							<div class="d-flex flex-column">
 
-                        <div class="row col-sm-4">
-                            <p>Owner: {{ this.getUserByID(channel.owner).userName }} </p>
-                            <p>Public Channel: {{ channel.isPublic ? "Yes" : "No"}}</p>
-                        </div>
+								<!-- PASSWORD -->
+								<div class="d-flex flex-row">
+									<p>Password: <input v-model="password[index]" type="password"></p> <!-- v-if="channel.password != null" -->
+									<div class="alert alert-danger" role="alert" v-if="errorMSG[index]" style="height:52px;margin-left:12px;transform:translate(0, -20%)">
+										<p>{{ errorMSG[index] }}</p>
+									</div>
+								</div>
 
-                        <div class="row col-sm-4">
-                            <p>Password: <input id="password" type="password" name="password" value=""></p>
-                            <!--    <router-link class="channel-link" :to="'/chat/channel/' + channel.channelName"> -->
-                            <!-- <router-link class="channel-link" :to="{name: 'Channel',
-                            params: {channel: channel, owner: this.owner}}"> -->
-                            <button class="btn btn-secondary" style="margin: 15px;" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
-                            type="button" name="button"
-                            @click="joinChannel(channel)">
-                            Rejoindre</button>
-                    <!--    </router-link> -->
+								<div class="d-flex flex-row">
 
-                        <div class="col col-sm-12" v-if=" this.getUserByID(channel.owner).id === this.owner.id">
-                            <button type="button" name="button" class="btn btn-danger"
-                            @click="deleteChannel(channel)">Supprimer le salon</button>
-                            <div class="p-auto mx-auto" style="margin: 15px;" v-if="this.isDeletingChannel">
-                                <div class="spinner-border" role="status">
-                                    <span class="sr-only"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-            </div>
-            <br>
-            <hr>
-            <br>
-        </li>
-    </ul>
-</div>
+									<button class="btn btn-secondary m-2" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
+									type="button" name="button"
+									@click="joinChannel(channel, this.password[index], index)">
+									Rejoindre</button>
 
-</div>
+									<div class="m-2" v-if=" this.getUserByID(channel.owner).id === this.owner.id">
+										<button type="button" name="button" class="btn btn-danger"
+										@click="deleteChannel(channel)">Supprimer le salon</button>
+										<div class="p-auto mx-auto" style="margin: 15px;" v-if="this.isDeletingChannel">
+											<div class="spinner-border" role="status">
+												<span class="sr-only"></span>
+											</div>
+										</div>
+									</div>
+									<div class="d-flex justify-content-center m-4" v-if="isLoading[index] === true">
+										<div class="spinner-border" role="status">
+											<span class="sr-only"></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						<br>
+						<hr>
+						<br>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
 </template>
 
 <script lang="ts">
@@ -86,6 +95,9 @@ export default defineComponent({
 			filteredChannelList: [] as Channel[],
             isDeletingChannel: false,
 			search: "",
+			errorMSG: [] as string[],
+			password: [] as string[],
+			isLoading: [] as boolean[],
         };
     },
     props: {
@@ -96,7 +108,7 @@ export default defineComponent({
     },
     methods: {
         async refreshChannelList() {
-            ChannelDataService.getAllChannels()
+            await ChannelDataService.getAllChannels()
             .then((response : ResponseData) => {
                 this.ChannelList = response.data;
 				this.filteredChannelList = response.data;
@@ -138,23 +150,40 @@ export default defineComponent({
 			this.filteredChannelList = this.ChannelList.filter((channel) =>
 			channel.channelName.toLowerCase().includes(this.search.toLowerCase()));
 		},
-        joinChannel(channel : Channel) {
+        async joinChannel(channel : Channel, current_password: string, index: number) {
+			this.errorMSG[index] = "";
+			this.isLoading[index] = true;
+			await this.delay(1000);
+			console.log("Try to join channel, password: " + channel.password + " | current password: " + current_password);
+
 			let data = {
-				password: channel.password,
+				password: current_password,
 			};
-			ChannelDataService.canJoinChannel(channel.channelName, data)
+
+			//ChannelDataService.canJoinChannel(channel.channelName, data)
+			await ChannelDataService.getChannel(channel.channelName)
 			.then((response : ResponseData) => {
-				console.log("Can join channel !");
-				localStorage.setItem("channel-name", channel.channelName);
-				this.$router.push("/Channel/" + channel.channelName);
+				console.log("Can join channel: " + response.data.password);
+				console.log("Password Match ?: " + response.data.password + " " + current_password);
 
-				// todo ! nouvelle page channel avec en url le nom du channel et l'id de l'owner
-				// puis dans le channel récupérer le nom et le channel en entier et le User avec l'owner
-				// (voir code servane)
+				this.delay(1000);
 
+				if (response.data.password == current_password) {
+					localStorage.setItem("channel-name", channel.channelName);
+					this.$router.push("/Channel/" + channel.channelName);
+				} else {
+					//
+					if (response.data.password == null)
+						this.errorMSG[index] = "This channel has no password";
+					else
+						this.errorMSG[index] = "Invalid password";
+					this.isLoading[index] = false;
+				}
 			})
             .catch((e: Error) => {
                 console.log("Error: " + e);
+				this.errorMSG[index] = "Error: " + e;
+				this.isLoading[index] = false;
             });
         },
     },

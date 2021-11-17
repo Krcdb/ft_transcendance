@@ -52,8 +52,9 @@ class ChannelDataService {
         return http.get(`/channel/${channelName}/channel-exist`);
     }
 
+    // a retirer
     canJoinChannel(channelName: string, channelPassword: any) : Promise<any> {
-        return http.get(`/channel/${channelName}/can-join-channel`, channelPassword);
+        return http.get(`channel/${channelName}/can-join-channel`, channelPassword);
     }
 
     JoinPrivateChannel(channelName: string, channelPassword: any) : Promise<any> {

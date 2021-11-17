@@ -133,6 +133,7 @@ export class ChannelController {
 	@Public()
 	@Get(':channelName/can-join-channel')
 	async canJoinChannel(@Res() res, @Param('channelName') ChannelName: string, @Body() ChannelPasswordDto: ChannelPasswordDto) : Promise<boolean> {
+		console.log("can join channel ?: " + ChannelPasswordDto.password);
 		if (await this.channelDataService.passwordMatch(ChannelName, ChannelPasswordDto.password)) {
 			return res.status(HttpStatus.OK).json({
 				message: "Can join channel",

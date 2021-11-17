@@ -110,9 +110,6 @@ export default defineComponent({
         				isPublic: false as boolean,
         				owner: this.owner.id as number
         			};
-
-					this.delay(1000);
-
                     ChannelDataService.createChannel(data)
                     .then((response : ResponseData) => {
                         console.log("Channel " + channelName + " created !");
@@ -130,6 +127,8 @@ export default defineComponent({
 				this.isLoading = false;
 				this.error = true;
             });
+
+			await this.delay(1000);
 			this.isLoading = false;
 
             let data = {
