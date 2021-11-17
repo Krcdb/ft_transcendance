@@ -15,6 +15,7 @@
     <JoinPrivateChannel :owner="user" v-if="this.navBarSelection == 2"/>
     <UserList :owner="user" v-if="this.navBarSelection == 3"/>
 
+    <BurgerMenu />
 
     <!--
     <ChannelElement :owner="user" :channel="currentChannel"/>
@@ -47,7 +48,9 @@ import ChatMessage from "@/types/ChatMessage";
 import UserList from "@/components/chat/ChatNavBarFiles/UserList.vue";
 import CreateChannel from "@/components/chat/ChatNavBarFiles/CreateChannel.vue";
 import ChannelList from "@/components/chat/ChatNavBarFiles/ChannelList.vue";
-import JoinPrivateChannel from "@/components/chat/ChatNavBarFiles/JoinPrivateChannel.vue"
+import JoinPrivateChannel from "@/components/chat/ChatNavBarFiles/JoinPrivateChannel.vue";
+
+import BurgerMenu from "@/components/chat/BurgerMenu/BurgerMenu.vue";
 
 //import ChannelElement from "@/components/chat/Channel/Channel.vue";
 
@@ -78,6 +81,7 @@ export default defineComponent({
         ChannelList,
         CreateChannel,
         JoinPrivateChannel,
+        BurgerMenu,
 //        ChannelElement, // tmp
 
         //GlobalChatInfo,
@@ -130,6 +134,10 @@ export default defineComponent({
         bootstrapScript.setAttribute('integrity', 'sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM');
         bootstrapScript.setAttribute('crossorigin', 'anonymous');
         document.head.appendChild(bootstrapScript);
+
+        let awesomeFontScript = document.createElement('script');
+        awesomeFontScript.setAttribute('src', 'https://kit.fontawesome.com/e575a33b19.js');
+        awesomeFontScript.setAttribute('crossorigin', 'anonymous');
     }
 });
 </script>
