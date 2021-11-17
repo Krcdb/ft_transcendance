@@ -142,8 +142,6 @@ export class GameService {
 		const game = this.games.get(payload.uuid);
 		if (game)
 			game.playerInput(payload);
-		else
-			console.log(`input game not found : ${payload.uuid}`);
 	}
 
 	async gameReady(user: User, uuid: string) {

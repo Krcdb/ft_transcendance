@@ -210,7 +210,7 @@ export class ChannelDataService {
 		for (let index = 0; index < allUsers.length; index++) {
 			const element = allUsers[index];
 			console.log("User: " + element);
-			const currentSocket = await this.socketService.getSocketFromUserId(element);
+			const currentSocket = await this.socketService.getSocketFromUserId(element, 'channel');
 			if (currentSocket) {
 				console.log("Socket send to user: " + element);
 				currentSocket.emit('refreshChannelMessages');

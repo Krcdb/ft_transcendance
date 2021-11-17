@@ -198,11 +198,11 @@ export class Game {
 		//Wall collision
 		if (this.ball.y <= this.options.PADDLE_MARGIN || this.ball.y + this.ball.size >= this.options.CANVAS_HEIGHT - this.options.PADDLE_MARGIN)
 			this.ball.yVel = -this.ball.yVel;
-		if (this.ball.x <= 1) {
+		if (this.ball.x <= this.options.PADDLE_MARGIN) {
 			this.player2Score++;
 			this.reset();
 		}
-		if (this.ball.x + this.ball.size >= this.options.CANVAS_WIDTH + 1) {
+		if (this.ball.x + this.ball.size >= this.options.CANVAS_WIDTH - this.options.PADDLE_MARGIN) {
 			this.player1Score++;
 			this.reset();
 		}

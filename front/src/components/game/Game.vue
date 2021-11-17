@@ -14,7 +14,7 @@
 import { defineComponent } from "vue";
 import { Game } from "./classes/Game";
 import { GameDataUpdate, GameOptionsInterface } from "@/types/Game"
-import { Match } from "@/types/Match"
+import Match from "@/types/Match"
 import MatchDataService from "@/services/MatchServices"
 import http from "@/http-common";
 import io from "socket.io-client";
