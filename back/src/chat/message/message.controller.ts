@@ -1,21 +1,16 @@
-import { Body, Controller, Get, Delete, Post, Res, Param, Inject } from '@nestjs/common';
-
+import { Body, Controller, Get, Delete, Post, Res, Param } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { Public } from 'src/auth/utils/public.decorator';
-
 import { Message } from './message.entity'
 import { MessageService } from './message.service'
-import { UsersService } from '../../users/users.service'
-import { Channel } from '../channel/channel.entity'
-import { ChannelDataService } from '../channel/channel.service'
-import { User } from '../../users/user.entity';
+import { ChannelService } from '../channel/channel.service'
 import { CreateMessageDto } from './dto/create-message.dto';
 
 @Controller('messages')
 export class MessageController {
 	constructor(
 		private readonly messageService: MessageService,
-		private readonly channelService: ChannelDataService,
+		private readonly channelService: ChannelService,
 	) {}
 
 	// ------ //
@@ -42,9 +37,15 @@ export class MessageController {
 	//   GET  //
 	// ------ //
 
+	@Public()// get all messages
+	@Get()
+	async findAll() : Promise<Message[]> {
+		return await this.messageService.findAll();
+	}
+
 	@Public()// get all messages from a channel
 	@Get(':channelName/msg')
-	async findAll(@Param('channelName') channelName: string): Promise<Message[]> {
+	async findAllInChannel(@Param('channelName') channelName: string): Promise<Message[]> {
 		return await this.messageService.findAllInChannel(channelName);
 	}
 

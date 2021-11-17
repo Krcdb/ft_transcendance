@@ -6,13 +6,12 @@ import { User } from '../../users/user.entity';
 import { CreateChannelDto } from './dto/create-channel.dto';
 
 import { UsersService } from 'src/users/users.service';
-import { MessageService } from '../message/message.service';
 
 import { Socket, Server } from "socket.io";
 import { WebsocketService } from "src/websocket/websocket.service";
 
 @Injectable()
-export class ChannelDataService {
+export class ChannelService {
 	constructor(
 		@InjectRepository(Channel)
 		private readonly channelRepository: Repository<Channel>,

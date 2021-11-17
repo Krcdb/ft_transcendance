@@ -9,11 +9,6 @@ import { Match } from "./match.entity";
 export class MatchController {
     constructor(private readonly matchService: MatchService) {}
 
-    @Get(':id')
-    async findOne(@Param('id') id: number): Promise<Match> {
-        return await this.matchService.findOne(id);
-    }
-
     // fonction temporaire pour faire des tests
     @Post()
     @Public()
@@ -25,7 +20,7 @@ export class MatchController {
     // fonction temporaire pour faire des tests
     @Post(':id')
     @Public()
-    async endMatch(@Param('id') matchId: number, @Body() postMatchDto: PostMatchDto) {
+    async endMatch(@Param('id') matchId: string, @Body() postMatchDto: PostMatchDto) {
         const match = await this.matchService.findOne(matchId);
         await this.matchService.simulateMatch(matchId, postMatchDto.scorePlayerOne, postMatchDto.scorePlayerTwo);
         await this.matchService.updateUsersAfterGame(matchId);
@@ -35,6 +30,18 @@ export class MatchController {
     @Public()
     async findAllMatches() {
         return await this.matchService.findAll();
+    }
+
+    @Get(':id')
+    @Public()
+    async findOne(@Param('id') matchId: string) {
+        return await this.matchService.findOne(matchId);
+    }
+
+    @Get('user/:id')
+    @Public()
+    async findAllWithUser(@Param('id') userId: number) {
+        return await this.matchService.findAllWithUser(userId);
     }
 
 }
