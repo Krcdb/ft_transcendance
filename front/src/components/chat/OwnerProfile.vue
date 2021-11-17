@@ -1,33 +1,36 @@
 <template>
-    <div class="container">
-        <div v-if="!userSelected">
-            <h4>Seclectionnez votre profile</h4>
-            <div class="no-user-created">
-                <h4 class="warning" v-if="this.users.length <= 0">No user found, create user first</h4>
-            </div>
-
-            <div class="justify-content-center">
-                <ul class="list-group">
-                    <li class="list-group-item"
-                    :class="{ active: index == currentIndex} "
-                    v-for="(user, index) in users"
-                    :key="index">
-                    <button class="btn" name="button" @click="selectUser(user)" width="128">
-                        <img :src="`https://avatars.dicebear.com/api/avataaars/${user.id}.svg`" alt="" width="64">
-                        {{ user.userName }}
-                    </button>
-                    <hr>
-                </li>
-            </ul>
-        </div>
+  <div class="container">
+    <div v-if="!userSelected">
+      <h4>Seclectionnez votre profile</h4>
+      <div class="no-user-created">
+        <h4 class="warning" v-if="this.users.length <= 0">
+          No user found, create user first
+        </h4>
+      </div>
+      <div class="justify-content-center">
+        <ul class="list-group">
+          <li
+            class="list-group-item"
+            :class="{ active: index == currentIndex }"
+            v-for="(user, index) in users"
+            :key="index"
+          >
+            <button class="btn" name="button" @click="selectUser(user)">
+              <Avatar :user="user" />
+              {{ user.userName }}
+            </button>
+            <hr />
+          </li>
+        </ul>
+      </div>
     </div>
-
-    <div class="welcome-User" v-else>
-        <h3>Bienvenue: <strong> {{ this.currentUser.userName }} </strong> </h3>
-        <img :src="`https://avatars.dicebear.com/api/avataaars/${this.currentUser.id}.svg`" alt="" width="128">
+    <div class="welcome-user" v-else>
+      <h3>
+        Bienvenue: <strong> {{ this.currentUser.userName }} </strong>
+      </h3>
+      <Avatar :user="this.currentUser" />
     </div>
-
-</div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -37,11 +40,15 @@ import { defineComponent } from "vue";
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
+import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
     // 1: selectionner son utilisateur parmi la liste des user crées.
 
     name: "owner-profile",
+    components: {
+        Avatar,
+    },
     data() {
         return {
             users: [] as User[],
@@ -85,6 +92,16 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.container img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+.welcome-user img {
+    width: 128px;
+    height: 128px;
+    object-fit: contain;
+}
 /*
 .userChatInput {
     display: inline-block;

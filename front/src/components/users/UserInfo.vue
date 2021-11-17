@@ -8,7 +8,7 @@
     </div>
     <div class="row">
       <div clas="column">
-      <Avatar :user="user" />
+        <Avatar :user="user" />
       </div>
       <div clas="column">
         <div class="user-info">
@@ -20,11 +20,11 @@
       </div>
       <div class="row-bottom">
         <div clas="column">
-        <AchievementsList :userId="user.id" />
+          <AchievementsList :userId="user.id" />
         </div>
         <div clas="column">
-        <MatchHistory :user="user" />
-      </div>
+          <MatchHistory :user="user" />
+        </div>
       </div>
     </div>
   </div>
@@ -39,7 +39,7 @@
 import { defineComponent } from "vue";
 import User from "@/types/User";
 import AchievementsList from "./AchievementsList.vue";
-import MatchHistory from "./MatchHistory.vue"
+import MatchHistory from "./MatchHistory.vue";
 import Avatar from "./Avatar.vue";
 
 export default defineComponent({
@@ -87,7 +87,7 @@ export default defineComponent({
   align-items: center;
   justify-content: center;
 }
-.container>.top-container {
+.container > .top-container {
   background-color: turquoise;
 }
 .user-info {

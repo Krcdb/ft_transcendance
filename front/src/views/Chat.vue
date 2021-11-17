@@ -1,5 +1,10 @@
 <template>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous"
+    >
 
     <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
 
@@ -37,12 +42,12 @@ import User from "@/types/User";
 import Channel from "@/types/Channel";
 
 import OwnerProfile from '@/components/chat/OwnerProfile.vue';
-import NavBar from "@/components/chat/NavBar.vue";
+import NavBar from "@/components/chat/ChatNavBar.vue";
 import ChatMessage from "@/types/ChatMessage";
-import UserList from "@/components/chat/NavBar/UserList.vue";
-import CreateChannel from "@/components/chat/NavBar/CreateChannel.vue";
-import ChannelList from "@/components/chat/NavBar/ChannelList.vue";
-import JoinPrivateChannel from "@/components/chat/NavBar/JoinPrivateChannel.vue"
+import UserList from "@/components/chat/ChatNavBarFiles/UserList.vue";
+import CreateChannel from "@/components/chat/ChatNavBarFiles/CreateChannel.vue";
+import ChannelList from "@/components/chat/ChatNavBarFiles/ChannelList.vue";
+import JoinPrivateChannel from "@/components/chat/ChatNavBarFiles/JoinPrivateChannel.vue"
 
 //import ChannelElement from "@/components/chat/Channel/Channel.vue";
 

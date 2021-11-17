@@ -53,5 +53,4 @@ export default defineComponent({
   border: 0;
   padding: 5px;
 }
-
 </style>

@@ -53,12 +53,8 @@ export class ChannelController {
 	@Public()
 	@Post(':channelName')
 	async addChannelUser(@Res() res, @Param('channelName') channelName: string, @Body() UpdateChannelUserDto: UpdateChannelUserDto) :Promise<void> {
-
-		console.log("Try to add user in channel");
-
-
 		if (await this.channelDataService.findUserInChannel(channelName, UpdateChannelUserDto.newUser)) {
-			return res.status(HttpStatus.CONFLICT).json({
+			return res.status(HttpStatus.OK).json({
 				message: "User already in channel"
 			})
 		}
@@ -108,8 +104,13 @@ export class ChannelController {
 		return (await this.channelDataService.findOne(channelName));
 	}
 
+	@Get(':channelName/users')
+	async getUsersinChannel(@Param('channelName') channelName: string) : Promise<User[]> {
+		return (await this.channelDataService.getUsersinChannel(channelName));
+	}
+
 	@Public()
-	@Get(':channelName/:messagesHistory')
+	@Get(':channelName/messagesHistory')
 	getChannelHistory(@Param('channelName') channelName: string) : Promise<number[]> {
 		return (this.channelDataService.getMessageHistory(channelName));
 	}

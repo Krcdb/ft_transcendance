@@ -3,6 +3,11 @@
 export default interface Channel {
 	channelName: string;
 	isPublic: boolean;
-	password: string;
+	password: string; //shouldn't be in the front (maybe a bool instead like "isProtected")
 	owner: number;
+	messagesHistory: number[];
+	admins: number[];
+	users: number[];
+	banList: number[];
+	muteList: number[];
 }

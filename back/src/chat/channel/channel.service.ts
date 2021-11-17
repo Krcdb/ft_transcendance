@@ -61,19 +61,26 @@ export class ChannelDataService {
 			return (true);
 		return (false);
 	}
-	async findUserInChannel(channelName: string, userID: number) : Promise<number> {
+	async findUserInChannel(channelName: string, userID: number) : Promise<boolean> {
 		const channel = await this.findOne(channelName);
-		const found = channel.users.find(element => element === userID);
-		return found;
+		if (channel.users.indexOf(userID) !== -1)
+			return (true);
+		return (false);
 	}
 
 	/////////////////////////////////////////
 	//  Gestion des listes d'utilisateurs  //
   	/////////////////////////////////////////
 
+	async getUsersinChannel(channelName: string): Promise<User[]> {
+		const channel = await this.channelRepository.findOne(channelName);
+		return this.usersService.getUsersInTab(channel.users);
+	}
+
 	async addUserAsUser(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.users.push(userId);
+		console.log("user added to ", channelName);
 		await this.channelRepository.save(channel);
 	}
 	async addUserAsAdmin(channelName: string, userId: number) : Promise<void> {
@@ -131,9 +138,10 @@ export class ChannelDataService {
 		await this.channelRepository.save(channel);
 	}
 
-	async getMessageHistory(channelName: string) : Promise<any> {
+	async getMessageHistory(channelName: string) : Promise<number[]> {
 		const channel = await this.channelRepository.findOne(channelName);
-		return (channel.messagesHistory);
+		if (channel != undefined)
+			return (channel.messagesHistory);
 	}
 
   	////////////////////////////////
@@ -156,6 +164,8 @@ export class ChannelDataService {
 		const channel = await this.channelRepository.findOne(channelName);
 		if (!channel)
 			return (false);
+		else if (!channel.password)
+			return (true);
 		else if (channel.password === password)
 			return (true);
 		return (false);

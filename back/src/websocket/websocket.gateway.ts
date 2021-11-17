@@ -47,7 +47,7 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
 	}
 
 	@SubscribeMessage('playerNewKeyEvent')
-	async playerNewKeyEvent(payload: any) {
+	async playerNewKeyEvent(socket: Socket, payload: any) {
 		return this.gameService.playerNewKeyEvent(payload);
 	}
 

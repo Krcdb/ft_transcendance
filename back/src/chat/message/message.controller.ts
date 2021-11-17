@@ -23,14 +23,16 @@ export class MessageController {
 	// ------ //
 
 	@Public()
-	@Post(':channelName/')
+	@Post(':channelName')
 	async postMessageOnChannel(@Param('channelName') channelName: string,
 		@Res() res, @Body() createMessageDto: CreateMessageDto) {
 		const msg = await this.messageService.create(createMessageDto, channelName);
+		console.log("msg = ", msg);
 		if (msg == null)
 			return res.status(HttpStatus.NOT_FOUND).json({
 				message: "Couldn't find channel with given name" });
-		await this.messageService.addMessageToHistories(msg.id);
+		await this.messageService.addMessageToHistories(msg);
+		await this.channelService.refreshChannelMessages(channelName); // tmp peut etre a retirer
 		return res.status(HttpStatus.CREATED).json({
 			message: "Message has been created successfully",
 			msg

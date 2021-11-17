@@ -1,14 +1,22 @@
 <template>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-	<div class="container mt-2">
-		<div class="float-left" :class="this.sender ? 'sender' : 'not-sender'">
-			<p :class="this.sender ? 'text-sender' : 'text-not-sender'">
-				{{ this.owner.userName }} :
-				{{ this.message.message }}
-			</p>
-
-		</div>
-	</div>
+  <div
+    class="container"
+    :class="this.sender ? 'message-sender' : 'message-not-sender'"
+  >
+    <div v-if="!this.sender" class="sender-avatar">
+      <Avatar :user="this.owner" />
+    </div>
+    <div class="message-block">
+      <div v-if="!this.sender" class="sender-info">
+        {{ this.owner.userName }}
+      </div>
+      <div :class="this.sender ? 'sender' : 'not-sender'">
+        <p :class="this.sender ? 'text-sender' : 'text-not-sender'">
+          {{ this.message.message }}
+        </p>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -16,102 +24,105 @@ import { defineComponent } from "vue";
 import ChatMessage from "@/types/ChatMessage";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
-import ChannelDataService from "@/services/ChannelDataService";
 import UserDataService from "@/services/UserDataService";
+import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
-	name: "chat-message",
-	data() {
-		return {
-			user: {} as User,
-			owner: {} as User,
-			sender: false as boolean,
-		};
-	},
-	props: {
-		message: {
-			type: Object as () => ChatMessage,
-			required: true,
-		}
-	},
-	methods: {
-		async getUserByID(id: number) {
-			await UserDataService.get(id)
-			.then((response : ResponseData) => {
-				this.user = response.data;
-			})
-			.catch((e: Error) => {
-				console.log(e);
-			});
-		},
-		async getOwnerByID(id: number) {
-			await UserDataService.get(id)
-			.then((response : ResponseData) => {
-				this.owner = response.data;
-			})
-			.catch((e: Error) => {
-				console.log(e);
-			});
-		},
-		async initElements() {
-			await this.getUserByID(Number(localStorage.getItem("user-id")));
-			await this.getOwnerByID(this.message.owner);
-
-			this.sender = (this.user.id === this.message.owner ? true : false);
-			console.log("isSender: " + this.sender + " | " + this.user.id + " == " + this.message.owner);
-
-		},
-	},
-	mounted() {
-		this.initElements();
-	},
+  name: "chat-message",
+  components: {
+    Avatar,
+  },
+  data() {
+    return {
+      owner: {} as User,
+      sender: {} as boolean,
+    };
+  },
+  props: {
+    userId: {
+      type: Number,
+      required: true,
+    },
+    message: {
+      type: Object as () => ChatMessage,
+      required: true,
+    },
+  },
+  methods: {
+    async getOwnerByID(id: number) {
+      await UserDataService.get(id)
+        .then((response: ResponseData) => {
+          this.owner = response.data;
+        })
+        .catch((e: Error) => {
+          console.log(e);
+        });
+    },
+    async initElements() {
+      await this.getOwnerByID(this.message.owner);
+      this.sender = this.userId === this.message.owner ? true : false;
+      console.log("isSender: ", this.sender, " | ", this.userId,  " == ",  this.message.owner);
+    },
+  },
+  mounted() {
+    this.initElements();
+  },
 });
 </script>
 
-<style media="screen">
-/*
-.message {
-	width: 100%;
-	display: inline-block;
-	margin: 0 auto;
+<style media="screen" scoped>
+.container {
+  display: flex;
+	flex: 1 1 75%;
+  word-wrap: break-word;
+  word-break: break-all;
+  /* max-width: 75%; */
 }
-
-.message-box {
-	width: 50%;
-	border: 4px solid lightgreen;
-	border-radius: 8px;
+.message-sender {
+  justify-content: flex-end;
+  margin: 3px;
+  float: right;
 }
-
-.message-box h4 {
-	font-size: 24px;
+.message-not-sender {
+  align-items: flex-start;
+  float: left;
 }
-
-*/
-
+.message-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  max-width: 75%;
+}
 .sender {
-	float: right;
-	background-color: lightgreen;
-	border-radius: 20px;
-	width: 75%;
+  background-color: #218aff;
+  border-radius: 20px;
+  padding: 3px;
 }
-
 .not-sender {
-	float: left;
-	background-color: darkred;
-	border-radius: 20px;
-	width: 75%;
+  background-color: grey;
+  border-radius: 20px;
+  padding: 3px;
 }
-
+p {
+  padding-top: 5px;
+  color: white;
+  margin: 5px;
+}
 .text-sender {
-	color: white;
-	transform: translate(0, 25%);
-	float: right;
-	margin-right: 15px;
+  text-align: right;
 }
 .text-not-sender {
-	color: white;
-	transform: translate(0, 25%);
-	float: left;
-	margin-left: 15px;
+  text-align: left;
+}
+.sender-avatar {
+  align-self: flex-end;
+  margin-right: 3px;
+}
+.sender-avatar img {
+  border: 2px solid #ddd;
+  object-fit: contain;
+  border-radius: 100%;
+  width: 42px;
+  height: 42px;
 }
 </style>

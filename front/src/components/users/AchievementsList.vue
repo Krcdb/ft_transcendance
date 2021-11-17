@@ -122,6 +122,5 @@ export default defineComponent({
 .achievements-info h4 {
   margin: 0;
   font-size: 1.2em;
-  /* font-size: 17px;; */
 }
 </style>

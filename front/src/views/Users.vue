@@ -109,7 +109,6 @@ h3 {
   border-radius: 2px;
   list-style: none;
 }
-
 .list-item {
   display: flex;
   align-content: center;
