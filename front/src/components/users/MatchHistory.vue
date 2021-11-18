@@ -9,8 +9,21 @@
           class="matches-item"
         >
           <div class="matches-info">
-            <h4>{{ matches.playerOne }}</h4>
-            <p>{{ matches.playerTwo }}</p>
+            <div class="player-avatar">
+              <Avatar :user="user" />
+            </div>
+            <div class="player-one">
+              <p>{{ user.userName }}</p>
+              <h4>{{ matches.scorePlayerOne }}</h4>
+            </div>
+            <p>-</p>
+            <div class="player-two">
+                <p>{{ user.userName }}</p>
+                <h4>{{ matches.scorePlayerTwo }}</h4>
+            </div>
+            <div class="player-avatar">
+              <Avatar :user="user" />
+            </div>
           </div>
         </li>
       </ul>
@@ -27,9 +40,13 @@ import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import Match from "@/types/Match";
 import ResponseData from "@/types/ResponseData";
+import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
   name: "users-matches",
+  components: {
+    Avatar,
+  },
   props: {
     user: {
       type: Object as () => User,
@@ -46,7 +63,6 @@ export default defineComponent({
       UserDataService.getMatchHistory(id)
         .then((response: ResponseData) => {
           this.matches = response.data;
-
         })
         .catch((e: Error) => {
           console.log(e);
@@ -54,6 +70,7 @@ export default defineComponent({
     },
   },
   mounted() {
+    console.log("user = ", this.user.userName);
       this.getMatches(this.user.id);
   },
 });
@@ -80,45 +97,32 @@ export default defineComponent({
   align-items: center;
   margin: 3px;
 }
-[class|="achievement-img"] {
-  width: 20%;
-  max-width: 50px;
-  padding: 15px 10px;
+.matches-info {
   display: flex;
   align-items: center;
-}
-[class|="achievement-img"] img {
-  width: 40px;
-  height: 40px;
-}
-
-.achievement-img-user {
-  background-color: #e6c7ff;
-}
-
-.achievement-img-relation {
-  background-color: #b3f4ff;
-}
-.achievement-img-game {
-  background-color: #faffb3;
-}
-.achievement-img-chat {
-  background-color: #bdffb3;
-}
-
-.matches-info {
-  text-align: initial;
+  justify-content: space-around;
   width: 100%;
-  margin-left: 10px;
+  height: 60px;
+}
+[class|="player"] {
+  display:flex;
+  flex-direction: column;
+  /* width: 90%; */
 }
 .matches-info p {
-  margin: 0.1em;
-  font-size: 0.8em;
-  color: #999;
+  margin: 0;
 }
 .matches-info h4 {
   margin: 0;
   font-size: 1.2em;
-  /* font-size: 17px;; */
+}
+.player-avatar {
+  width: 50px;
+}
+.matches-info img {
+  border: 2px solid #ddd;
+  border-radius: 100%;
+  width: 50px;
+  height: 50px;
 }
 </style>
