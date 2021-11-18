@@ -1,4 +1,23 @@
+export enum GameState {
+	WAITING_ALL,
+	IN_PROGRESS,
+	FINISHED,
+}
+
+export class GameOptionsInterface {
+	FPS: number | undefined
+	CANVAS_WIDTH: number | undefined
+	CANVAS_HEIGHT: number | undefined
+	PADDLE_WIDTH: number | undefined
+	PADDLE_HEIGHT: number | undefined
+	PADDLE_MARGIN: number | undefined
+	BALL_SIZE: number | undefined
+	PLAYER_MOVE: number | undefined
+};
+
+
 export class GameDataUpdate {
+	state: GameState | undefined
 	ball: {
 		x: number
 		y: number

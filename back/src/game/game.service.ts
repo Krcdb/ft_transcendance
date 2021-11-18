@@ -17,7 +17,7 @@ const GameOptions: GameOptionsInterface = {
 	PADDLE_HEIGHT: 60,
 	PADDLE_MARGIN: 10,
 	BALL_SIZE: 10,
-	PLAYER_MOVE: 12,
+	PLAYER_MOVE: 3,
 };
 
 @Injectable()
@@ -32,7 +32,7 @@ export class GameService {
 	constructor(
 		@Inject(forwardRef(() => WebsocketService))
 		private readonly socketService: WebsocketService,
-		@Inject(forwardRef(() => WebsocketService))
+		@Inject(forwardRef(() => MatchService))
 		private readonly matchService: MatchService,
 		@InjectRepository(Match)
         private readonly matchRepository: Repository<Match>,
@@ -51,6 +51,30 @@ export class GameService {
 					this.matchPlayers(user, opponent);
 			}
 		}
+	}
+
+	async playerJoin(socket: Socket) {
+		this.socketService.printAllSocketsFromPage(socket.handshake.auth.userId, "play");
+	}
+
+	async playerReady(socket: Socket, uuid: string) {
+		const game = this.games.get(uuid);
+		if (!game) {
+			console.log(`game not found in playerReady`);
+			return ;
+		}
+		socket.emit(`startGame${uuid}`, GameOptions);
+		socket.join(uuid);
+		if (game.player1.id === socket.data.user?.id) {
+			game.player1Ready = true;
+		}
+		if (game.player2.id === socket.data.user?.id) {
+			game.player2Ready = true;
+		}
+		if (game.started)
+			return ;
+		if (game.player1Ready && game.player2Ready)
+			game.startGame(this.socketService.server);
 	}
 
 	async createGame(player1: User, player2: User) {
@@ -72,7 +96,8 @@ export class GameService {
 		game.intervalRef = setInterval(async () => {
 			game.gameLoop(this.socketService.server);
 			if (game.started && match.state !== GameState.IN_PROGRESS) {
-			  	match.state = GameState.IN_PROGRESS;
+				match.state = GameState.IN_PROGRESS;
+				console.log("state -> in progress");
 			  	await this.matchRepository.update(match.matchId, { state: match.state });
 			}
 			if (game.player1Score !== match.scorePlayerOne || game.player2Score !== match.scorePlayerTwo) {
@@ -95,31 +120,32 @@ export class GameService {
 	}
 
 	matchPlayers(player1: User, player2: User) {
-		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(player1), 1);
-		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(player2), 1);
+		this.removeFromQueue(player1);
+		this.removeFromQueue(player2);
 		this.logger.log('match found');
 		this.createGame(player1, player2);
-		//this.socketService.server.emit('matchFound');
 	}
 
 	async searchGame(socket: Socket) {
 		const user = await this.usersService.findOne(socket.handshake.auth.userId);
 		if (this.matchmakingQueue.find(x => x.id == user.id) === undefined) {
 			this.matchmakingQueue.push(user);
-			this.logger.log(user.userName, "added to queue");
+			this.logger.log(user.userName, "added to queue"); 
 		}
 	}
 
-	playerNewKeyEvent(payload: any) {
-		const game = this.games.get(payload.uuid);
+	removeFromQueue(user: User) {
+		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(user), 1);
+	}
 
-		if (game) {
-			game.playerNewKeyEvent(payload)
-		}
+	async playerInput(payload: any) {
+		const game = this.games.get(payload.uuid);
+		if (game)
+			game.playerInput(payload);
 	}
 
 	async gameReady(user: User, uuid: string) {
-		const socket = await this.socketService.getSocketFromUserId(user.id);
+		const socket = await this.socketService.getSocketFromUserId(user.id, "play");
 		if (socket)
 			socket.emit('matchFound', uuid);
 		else

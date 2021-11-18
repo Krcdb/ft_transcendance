@@ -8,8 +8,6 @@ import { User } from './user.entity';
 import * as fs from 'fs';
 import { enumAchievements, allAchievement } from 'src/achievements/achievements';
 import { AchievementsInterface } from 'src/achievements/achievements';
-// import { ChannelDataService } from '../chat/channel/channel.service';
-// import { MessageService } from '../chat/message/message.service';
 
 @Injectable()
 export class UsersService {
@@ -23,7 +21,6 @@ export class UsersService {
       const user = new User();
       user.userName = createUserDto.userName;
       user.id = createUserDto.id;
-      // user.currentMatch = null;
       user.matchHistory = [];
       user.nbLosses = 0;
       user.nbVictories = 0;
@@ -36,7 +33,6 @@ export class UsersService {
       user.channelsUserIsIn = [];
       user.channelsUserIsBanned = [];
       user.channelsUserIsMuted = [];
-      user.messagesHistory = [];
       return await this.usersRepository.save(user);
   }
 
@@ -162,7 +158,7 @@ export class UsersService {
   // Historique des matchs //
   ///////////////////////////
   
-  async addMatchToHistory(userId: number, matchId: number) : Promise<void> {
+  async addMatchToHistory(userId: number, matchId: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.matchHistory.push(matchId);
     await this.usersRepository.save(user);
@@ -349,16 +345,6 @@ export class UsersService {
   async removeFromChannelMuted(userId: number, channelName: string) : Promise<void> {
     const user = await this.usersRepository.findOne(userId);
     user.channelsUserIsMuted.splice(user.channelsUserIsMuted.indexOf(channelName), 1);
-    await this.usersRepository.save(user);
-  }
-  
-  ///////////////////////////
-  // Gestions des messages //
-  ///////////////////////////
-  
-  async addMessageToHistory(userId: number, messageId: number) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-    user.messagesHistory.push(messageId);
     await this.usersRepository.save(user);
   }
   

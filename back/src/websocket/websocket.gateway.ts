@@ -4,10 +4,10 @@ import { Server, Socket } from "socket.io";
 import { WebsocketService } from "./websocket.service";
 import { User } from "src/users/user.entity";
 import { UsersService } from "src/users/users.service";
-import { ChannelDataService } from "src/chat/channel/channel.service";
+import { ChannelService } from "src/chat/channel/channel.service";
 
 @WebSocketGateway( { cors: true } )
-export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnect{
+export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
 	@WebSocketServer()
 	server : Server;
 
@@ -15,7 +15,7 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
     	private readonly websocketService: WebsocketService,
 		private readonly gameService: GameService,
 		private readonly usersSerive: UsersService,
-		private readonly channelService: ChannelDataService,
+		private readonly channelService: ChannelService,
 	) {}
 
 	afterInit(server: Server) {
@@ -29,26 +29,33 @@ export class WebsocketGateway implements OnGatewayConnection, OnGatewayDisconnec
 		}
 		else
 			socket.data.user = user;
+			socket.data.page = socket.handshake.auth.page;
 	};
 
 	handleDisconnect(socket: Socket) {
-		if (socket.data.user)
-			socket.disconnect();
+		this.gameService.removeFromQueue(socket.data.user);
+		socket.disconnect();
+		console.log(`${socket.data.user} disconnected`);
 	}
 
 	@SubscribeMessage('searchGame')
 	async searchGame(socket: Socket) {
 		return this.gameService.searchGame(socket);
 	}
-
-	@SubscribeMessage('createGame')
-	async createGame() {
-		//return this.gameService.createGame();
+	
+	@SubscribeMessage('playerJoin')
+	async playerJoin(socket: Socket) {
+		return this.gameService.playerJoin(socket);
 	}
 
-	@SubscribeMessage('playerNewKeyEvent')
-	async playerNewKeyEvent(socket: Socket, payload: any) {
-		return this.gameService.playerNewKeyEvent(payload);
+	@SubscribeMessage('playerInput')
+	async playerInput(socket: Socket, payload: any) {
+		return this.gameService.playerInput(payload);
+	}
+	
+	@SubscribeMessage('playerReady')
+	async playerReady(socket: Socket, payload: any) {
+		return this.gameService.playerReady(socket, payload);
 	}
 
 	// Chat

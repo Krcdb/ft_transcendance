@@ -12,6 +12,7 @@ import { Match } from 'src/match/match.entity';
     TypeOrmModule.forFeature([Match]),
     forwardRef(() => WebsocketModule),
     forwardRef(() => UsersModule),
+    forwardRef(() => MatchModule),
   ],
   controllers: [GameController],
   providers: [GameService],

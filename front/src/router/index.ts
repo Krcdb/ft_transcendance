@@ -33,16 +33,14 @@ const routes = [
     component: () => import("../components/users/auth/TwoFALogin.vue"),
   },
   {
-    path: "/game",
+    path: "/play",
+    name: "Play",
+    component: () => import("../views/Play.vue"),
+  },
+  {
+    path: "/game/:id",
     name: "Game",
-    component: () => import("../views/Game.vue"),
-    children: [
-      {
-        path: "/games-canvas",
-        name: "GameCanvas",
-        component: () => import("../components/Game/GameCanvas.vue"),
-      },
-    ],
+    component: () => import("../components/Game/Game.vue"),
   },
   {
     path: "/chat",

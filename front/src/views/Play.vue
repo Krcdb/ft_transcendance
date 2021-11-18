@@ -1,6 +1,6 @@
 <template>
-  	<div class="game">
-    	<h1>W/S for player 1 || P/L for player 2</h1>
+  	<div class="play">
+    	<h1>W to move UP | S to move DOWN</h1>
     	<br />
 		<button class="button" v-on:click="findMatch">Find a match</button>
   	</div>
@@ -10,22 +10,15 @@
 /* eslint-disable */
 import { defineComponent } from "vue";
 import io from "socket.io-client";
-//import GameCanvas from "../components/Game/GameCanvas.vue"
 const socket = io("http://localhost:3000", {
 	auth: {
 		token: localStorage.getItem('user-token'),
 		userId: localStorage.getItem('user-id'),
+		page: "play"
 	}
 });
 
 export default defineComponent({
-	/*components: {
-		GameCanvas,
-	},*/
-	data() {
-		return {
-		};
-	},
 	methods: {
 		findMatch: function() {
 			console.log("start matchmaking");
@@ -33,9 +26,9 @@ export default defineComponent({
 		}
 	},
     mounted() {
-		console.log(localStorage.getItem('user-token'))
 		socket.on('matchFound', (uuid: string) => {
-			this.$router.push("/profile" + uuid);
+			console.log("match found | uuid : ", uuid);
+			this.$router.push("/game/" + uuid);
 		})
     },
 });

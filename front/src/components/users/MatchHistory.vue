@@ -58,7 +58,7 @@ export default defineComponent({
     // },
   },
   mounted() {
-      console.log(this.user.matchHistory);
+      // console.log(this.user.matchHistory);
     // this.getAchievements(this.userId);
   },
 });

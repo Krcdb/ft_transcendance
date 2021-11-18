@@ -3,18 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Message } from './message.entity';
 import { CreateMessageDto } from './dto/create-message.dto';
-import { UsersService } from '../../users/users.service';
-import { ChannelDataService } from '../channel/channel.service';
+import { ChannelService } from '../channel/channel.service';
 
 @Injectable()
 export class MessageService {
     constructor(
         @InjectRepository(Message)
         private readonly messageRepository: Repository<Message>,
-        @Inject(forwardRef(() => UsersService))
-        private readonly usersService: UsersService,
-        @Inject(forwardRef(() => ChannelDataService))
-        private readonly channelService: ChannelDataService
+        @Inject(forwardRef(() => ChannelService))
+        private readonly channelService: ChannelService
     ) {}
 
     async create(createMessageDto: CreateMessageDto, channelName: string) : Promise<Message> | null {
@@ -35,7 +32,6 @@ export class MessageService {
 
     async addMessageToHistories(message: Message) : Promise<void> {
         // const message = await this.messageRepository.findOne(msgId);
-        await this.usersService.addMessageToHistory(message.owner, message.id);
         await this.channelService.addMessageToHistory(message.channelName, message.id);
     }
 

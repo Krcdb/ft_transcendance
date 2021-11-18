@@ -2,20 +2,17 @@ import { Body, Controller, Get, Post, Delete, Param, Res} from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common';
 import { Public } from 'src/auth/utils/public.decorator';
 
-import { ChannelDataService } from './channel.service';
+import { ChannelService } from './channel.service';
 import { Channel } from './channel.entity'
-import { User } from '../../users/user.entity';
-
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelUserDto } from './dto/update-channel-users.dto';
 import { ChannelPasswordDto } from './dto/channel-password.dto';
-import { MessageController } from '../message/message.controller';
-import { UsersService } from 'src/users/users.service';
+import { User } from 'src/users/user.entity';
 
 @Controller('channel')
 export class ChannelController {
 	constructor(
-		private readonly channelDataService: ChannelDataService,
+		private readonly channelService: ChannelService,
 	) {}
 
 	// ------ //
@@ -25,12 +22,12 @@ export class ChannelController {
 	@Public()
 	@Post('createChannel')
 	async createChannel(@Res() res, @Body() createChannelDto: CreateChannelDto) {
-		if (await this.channelDataService.channelAlreadyExists(createChannelDto.channelName)) {
+		if (await this.channelService.channelAlreadyExists(createChannelDto.channelName)) {
 			return res.status(HttpStatus.CONFLICT).json({
 				message: "Channel already exists"
 			})
 		}
-		const channel = await this.channelDataService.create(createChannelDto);
+		const channel = await this.channelService.create(createChannelDto);
 		return res.status(HttpStatus.CREATED).json({
 			message: "Channel has been created successfully",
 			channel
@@ -38,7 +35,7 @@ export class ChannelController {
 	}
 
 	// a verifier comment differencier upload avec param et upload comme ça dans la barre
-	// là on doit upload /42Born2Code/ID alors que dans le channelDataService on utilise data en aprametre
+	// là on doit upload /42Born2Code/ID alors que dans le channelService on utilise data en aprametre
 	// a voir comment differencier les 2 datas et update le channel
 
 	/*
@@ -46,20 +43,20 @@ export class ChannelController {
 		@Post(':channelName/:UserID')
 		async addChannelUser(@Param('channelName') channelName : string,
 		@Param('UserID') UserID : number) : Promise<any> {
-			return (this.channelDataService.addUserAsUser(channelName, UserID));
+			return (this.channelService.addUserAsUser(channelName, UserID));
 		}
 	*/
 
 	@Public()
 	@Post(':channelName')
 	async addChannelUser(@Res() res, @Param('channelName') channelName: string, @Body() UpdateChannelUserDto: UpdateChannelUserDto) :Promise<void> {
-		if (await this.channelDataService.findUserInChannel(channelName, UpdateChannelUserDto.newUser)) {
+		if (await this.channelService.findUserInChannel(channelName, UpdateChannelUserDto.newUser)) {
 			return res.status(HttpStatus.OK).json({
 				message: "User already in channel"
 			})
 		}
 		else {
-			this.channelDataService.addUserAsUser(channelName, UpdateChannelUserDto.newUser);
+			this.channelService.addUserAsUser(channelName, UpdateChannelUserDto.newUser);
 			console.log("newUser: " + UpdateChannelUserDto.newUser);
 			return (
 				res.status(HttpStatus.CREATED).json ({
@@ -74,13 +71,13 @@ export class ChannelController {
 	@Post(':channelName/join-private-channel')
 	async UserJoinPrivateChannel(@Res() res, @Param('channelName') channelName: string, @Body() ChannelPasswordDto: ChannelPasswordDto) {
 		console.log("Trying to join channel: " + channelName);
-		if (!await this.channelDataService.findOne(channelName)) {
+		if (!await this.channelService.findOne(channelName)) {
 			return res.status(HttpStatus.CONFLICT).json({
 				message: "Channel does not exist.",
 				value: false,
 			})
 		}
-		else if (this.channelDataService.passwordMatch(channelName, ChannelPasswordDto.password)) {
+		else if (this.channelService.passwordMatch(channelName, ChannelPasswordDto.password)) {
 			return res.status(HttpStatus.OK).json({
 				message: "Joining channel",
 				value: true,
@@ -101,29 +98,35 @@ export class ChannelController {
 	@Public()
 	@Get()
 	async findAllChannels() : Promise<Channel[]> {
-	  return (await this.channelDataService.findAll());
+	  return (await this.channelService.findAll());
 	}
 	@Public()
 	@Get('public')
 	async findAllPublicChannels(): Promise<Channel[]> {
-	  return (await this.channelDataService.findAllPublicChannels());
+	  return (await this.channelService.findAllPublicChannels());
+	}
+	
+	@Public()
+	@Get('public-owners')
+	async findAllPublicChannelsOwners(): Promise<User[]> {
+	  return (await this.channelService.findAllPublicChannelsOwners());
 	}
 
 	@Public()
 	@Get('/infos/:channelName')
 	async getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
-		return (await this.channelDataService.findOne(channelName));
+		return (await this.channelService.findOne(channelName));
 	}
 
 	@Get(':channelName/users')
 	async getUsersinChannel(@Param('channelName') channelName: string) : Promise<User[]> {
-		return (await this.channelDataService.getUsersinChannel(channelName));
+		return (await this.channelService.getUsersinChannel(channelName));
 	}
 
 	@Public()
 	@Get(':channelName/messagesHistory')
 	getChannelHistory(@Param('channelName') channelName: string) : Promise<number[]> {
-		return (this.channelDataService.getMessageHistory(channelName));
+		return (this.channelService.getMessageHistory(channelName));
 	}
 
 	@Public()
@@ -131,18 +134,16 @@ export class ChannelController {
 	async channelExist(@Param('channelName') channelName: string) : Promise<any> {
 		console.log("checking channel: " + channelName);
 
-		if (await this.channelDataService.findOne(channelName))
+		if (await this.channelService.findOne(channelName))
 			return (true);
 		return (false);
 	}
-
-
 
 	@Public()
 	@Get(':channelName/can-join-channel')
 	async canJoinChannel(@Res() res, @Param('channelName') ChannelName: string, @Body() ChannelPasswordDto: ChannelPasswordDto) : Promise<boolean> {
 		console.log("can join channel ?: " + ChannelPasswordDto.password);
-		if (await this.channelDataService.passwordMatch(ChannelName, ChannelPasswordDto.password)) {
+		if (await this.channelService.passwordMatch(ChannelName, ChannelPasswordDto.password)) {
 			return res.status(HttpStatus.OK).json({
 				message: "Can join channel",
 				value: true,
@@ -162,7 +163,7 @@ export class ChannelController {
 	@Public()
 	@Delete(':channelName')
 	async deleteChannel(@Param('channelName') channelName : string) {
-		await this.channelDataService.deleteOne(channelName);
+		await this.channelService.deleteOne(channelName);
 		return ("successfully deleted");
 	}
 
