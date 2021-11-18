@@ -29,8 +29,11 @@ export default defineComponent({
 		socket.on('matchFound', (uuid: string) => {
 			console.log("match found | uuid : ", uuid);
 			this.$router.push("/game/" + uuid);
-		})
-    },
+		});
+	},
+	destroy() {
+		socket.offAny();
+	}
 });
 </script>
 

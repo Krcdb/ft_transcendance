@@ -73,10 +73,6 @@ export class Game {
 			this.width - this.options.PADDLE_WIDTH - this.options.PADDLE_MARGIN,
 			this.height / 2 - this.options.PADDLE_HEIGHT / 2,
 		);
-		this.ball.setXY(
-			this.width / 2 - this.ball.size / 2,
-			this.height / 2 - this.ball.size / 2,
-		);
 		this.setBallDirection();
 	}
 
@@ -136,6 +132,10 @@ export class Game {
         }else{
             this.ball.yVel = -1;
 		}
+		this.ball.setXY(
+			this.width / 2 - this.ball.size / 2,
+			Math.floor(Math.random() * (this.height - this.options.BALL_SIZE - 2 * this.options.PADDLE_MARGIN) + this.options.PADDLE_MARGIN)
+		);
 	}
 
 	checkPlayerMove() {
@@ -187,10 +187,7 @@ export class Game {
 			this.width - this.options.PADDLE_WIDTH - this.options.PADDLE_MARGIN,
 			this.height / 2 - this.options.PADDLE_HEIGHT / 2,
 		);
-		this.ball.setXY(
-			this.width / 2 - this.ball.size / 2,
-			this.height / 2 - this.ball.size / 2,
-		);
+		
 		this.setBallDirection();
 	}
 

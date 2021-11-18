@@ -2,9 +2,18 @@
 	<div>
     	<div v-if="state === 'loading'">Loading...</div>
     	<div v-if="state === 'loaded'">
-    		<div>{{player1}}  VS  {{player2}}</div>
+    		<h2>{{player1}}  VS  {{player2}}</h2>
 			<canvas id="game-canvas"></canvas>
 		</div>
+    	<div v-if="state === 'finished'">
+			<h1>Match done</h1>
+			<div v-if="player1Score > player2Score">
+				<h2>{{player1}} win !!</h2>
+			</div>
+			<div v-else>
+				<h2>{{player2}} win !!</h2>
+			</div>
+    	</div>
   	</div>
   
 </template>
@@ -19,6 +28,7 @@ import MatchDataService from "@/services/MatchServices"
 import http from "@/http-common";
 import io from "socket.io-client";
 import ResponseData from "../../types/ResponseData";
+import UserDataService from "../../services/UserDataService";
 
 const socket = io("http://localhost:3000", {
 	auth: {
@@ -34,6 +44,8 @@ export default defineComponent({
     	return {
 			uuid: {} as number,
 			match: {} as Match,
+			player1Score: {} as number,
+			player2Score: {} as number,
 			game: {} as Game,
 			gameOptions: {} as GameOptionsInterface,
 			state: 'loading' as string,
@@ -43,27 +55,55 @@ export default defineComponent({
     	};
   	},
 	methods: {
+		async getPlayer1Name(playerId: number) {
+			await UserDataService.get(playerId)
+			.then((response: ResponseData) => {
+				this.player1 = response.data.userName;
+			});
+		},
+
+		async getPlayer2Name(playerId: number) {
+			await UserDataService.get(playerId)
+			.then((response: ResponseData) => {
+				this.player2 = response.data.userName;
+			});
+		},
+
 		async loadData() {
 			this.uuid = Number(this.$route.params.id);
 			console.log(`game uuid : ${this.uuid}`);
 			await MatchDataService.get(this.uuid)
 			.then((response: ResponseData) => {
 				this.match = response.data;
+				if (!this.match) {
+					console.log("ERROR: match not found !");
+					this.$router.push("/Play");
+				}
 				if (this.match.playerOne === Number(localStorage.getItem('user-id')))
 					this.playerSide = 'left';
 				else if (this.match.playerTwo === Number(localStorage.getItem('user-id')))
 					this.playerSide = 'right';
-				this.player1 = String(this.match.playerOne);
-				this.player2 = String(this.match.playerTwo);
+				this.getPlayer1Name(this.match.playerOne);
+				this.getPlayer2Name(this.match.playerTwo);
 				this.state = 'loaded';
+				this.player1Score = this.match.scorePlayerOne;
+				this.player2Score = this.match.scorePlayerTwo;
+				if (this.player1Score >= 5 || this.player2Score >= 5)
+					this.state = "finished";
 				socket.on(`startGame${this.uuid}`, (payload) => {
 					this.gameOptions = payload;
 					console.log(`game started !!!`);
 					this.game = new Game(socket, this.gameOptions, this.uuid, this.playerSide, String(localStorage.getItem('user-id')));
 				});
 				socket.on("updateGame", (payload) => {
-					if (this.game)
-						this.game.updateGame(payload);
+					if (this.game) {
+						this.player1Score = payload.player1.score;
+						this.player2Score = payload.player2.score;
+						if (this.player1Score >= 5 || this.player2Score >= 5)
+							this.state = "finished";
+						if (this.state !== "finished")
+							this.game.updateGame(payload);
+					}
 				});
 				socket.emit("playerReady", this.uuid);
 				console.log(`match loaded | uuid : ${this.match.matchId}\nplayer side : ${this.playerSide}`);
@@ -73,5 +113,8 @@ export default defineComponent({
     mounted() {
 		this.loadData();
 	},
+	destroy() {
+		socket.offAny();
+	}
 });
 </script>

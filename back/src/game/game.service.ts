@@ -13,11 +13,11 @@ const GameOptions: GameOptionsInterface = {
 	FPS: 60,
 	CANVAS_WIDTH: 700,
 	CANVAS_HEIGHT: 400,
-	PADDLE_WIDTH: 20,
+	PADDLE_WIDTH: 12,
 	PADDLE_HEIGHT: 60,
 	PADDLE_MARGIN: 10,
 	BALL_SIZE: 10,
-	PLAYER_MOVE: 3,
+	PLAYER_MOVE: 2.5,
 };
 
 @Injectable()
@@ -91,7 +91,7 @@ export class GameService {
 			if (!game.player1Ready || !game.player2Ready) {
 				this.cancelGame(game);
 			}
-		}, 30000);
+		}, 10000);
 
 		game.intervalRef = setInterval(async () => {
 			game.gameLoop(this.socketService.server);
@@ -108,7 +108,7 @@ export class GameService {
 			  	this.matchDone(game);
 			  	return;
 			}
-		  }, 1000 / game.options.FPS);
+		}, 1000 / game.options.FPS);
 	}
 
 	cancelGame(game: Game) {
@@ -116,7 +116,8 @@ export class GameService {
 	}
 
 	matchDone(game: Game) {
-
+		this.matchService.updateUsersAfterGame(game.uuid);
+		this.games.delete(game.uuid);
 	}
 
 	matchPlayers(player1: User, player2: User) {
