@@ -1,85 +1,80 @@
 <template>
-  <div class="achievements-wrapper">
+  <div class="matches-wrapper">
     <h3>Match History</h3>
-    <!-- <div v-if="achievements.length">
-      <ul class="achievements-list">
+    <div v-if="matches.length">
+      <ul class="matches-list">
         <li
-          v-for="achievements in achievements"
-          :key="achievements.id"
-          :class="`achievements-item-${achievements.class}`"
+          v-for="matches in matches"
+          :key="matches.matchId"
+          class="matches-item"
         >
-          <div :class="`achievement-img-${achievements.class}`">
-            <img
-              :src="`http://localhost:3000/users/achievements/${achievements.class}`"
-            />
-          </div>
-          <div class="achievements-info">
-            <h4>{{ achievements.name }}</h4>
-            <p>{{ achievements.description }}</p>
+          <div class="matches-info">
+            <h4>{{ matches.playerOne }}</h4>
+            <p>{{ matches.playerTwo }}</p>
           </div>
         </li>
       </ul>
-    </div> -->
-    <!-- <div v-else>
-      <p>No achievements :(</p>
-    </div> -->
+    </div>
+    <div v-else>
+      <p>No matches :(</p>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Achievements from "@/types/Achievements";
 import UserDataService from "@/services/UserDataService";
-import ResponseData from "@/types/ResponseData";
 import User from "@/types/User";
+import Match from "@/types/Match";
+import ResponseData from "@/types/ResponseData";
 
 export default defineComponent({
-  name: "users-achievements",
+  name: "users-matches",
   props: {
     user: {
       type: Object as () => User,
       required: true,
     },
   },
-//   data() {
-//     return {
-//       achievements: [] as Achievements[],
-//     };
-//   },
+  data() {
+    return {
+      matches: [] as Match[],
+    };
+  },
   methods: {
-    // getAchievements(id: number) {
-    //   UserDataService.getAchievements(id)
-    //     .then((response: ResponseData) => {
-    //       this.achievements = response.data;
-    //     })
-    //     .catch((e: Error) => {
-    //       console.log(e);
-    //     });
-    // },
+    getMatches(id: number) {
+      UserDataService.getMatchHistory(id)
+        .then((response: ResponseData) => {
+          this.matches = response.data;
+
+        })
+        .catch((e: Error) => {
+          console.log(e);
+        });
+    },
   },
   mounted() {
-      // console.log(this.user.matchHistory);
-    // this.getAchievements(this.userId);
+      this.getMatches(this.user.id);
   },
 });
 </script>
 
 <style scopped>
-.achievements-wrapper {
+.matches-wrapper {
   display: flex;
   flex-direction: column;
   width: 300px;
 }
-.achievements-wrapper h3 {
+.matches-wrapper h3 {
   font-size: 20px;
 }
-.achievements-list {
+.matches-list {
   list-style: none;
   padding: 0px;
   max-height: 300px;
   overflow-y: auto;
 }
-[class|="achievements-item"] {
+[class|="matches-item"] {
   display: flex;
   border: 1px solid rgba(0, 0, 0, 0.1);
   align-items: center;
@@ -111,17 +106,17 @@ export default defineComponent({
   background-color: #bdffb3;
 }
 
-.achievements-info {
+.matches-info {
   text-align: initial;
   width: 100%;
   margin-left: 10px;
 }
-.achievements-info p {
+.matches-info p {
   margin: 0.1em;
   font-size: 0.8em;
   color: #999;
 }
-.achievements-info h4 {
+.matches-info h4 {
   margin: 0;
   font-size: 1.2em;
   /* font-size: 17px;; */

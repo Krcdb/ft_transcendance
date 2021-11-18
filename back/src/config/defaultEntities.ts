@@ -22,7 +22,7 @@ export default {
         {
             id: 100,
             userName: 'Norminet',
-            matchHistory: [0],
+            matchHistory: ["1"],
             nbVictories: 42,
             nbLosses: 0,
             ladderLevel: 1,
@@ -38,7 +38,7 @@ export default {
         {
             id: 101,
             userName: 'Grumpy',
-            matchHistory: [0, 3, 4],
+            matchHistory: ["1", "4", "5"],
             nbVictories: 24,
             nbLosses: 15,
             ladderLevel: 3,
@@ -54,7 +54,7 @@ export default {
         {
             id: 102,
             userName: 'HelloKitty',
-            matchHistory: [3, 6, 7],
+            matchHistory: ["4", "7", "8"],
             nbVictories: 10,
             nbLosses: 12,
             ladderLevel: 7,
@@ -73,7 +73,7 @@ export default {
         {
             id: 200,
             userName: 'Milou',
-            matchHistory: [1, 4],
+            matchHistory: ["2", "5"],
             nbVictories: 40,
             nbLosses: 1,
             ladderLevel: 2,
@@ -89,7 +89,7 @@ export default {
         {
             id: 201,
             userName: 'Lassie',
-            matchHistory: [1, 5],
+            matchHistory: ["2", "6"],
             nbVictories: 30,
             nbLosses: 10,
             ladderLevel: 4,
@@ -105,7 +105,7 @@ export default {
         {
             id: 202,
             userName: 'Idefix',
-            matchHistory: [7],
+            matchHistory: ["8"],
             nbVictories: 20,
             nbLosses: 7,
             ladderLevel: 6,
@@ -124,7 +124,7 @@ export default {
         {
             id: 300,
             userName: 'Nemo',
-            matchHistory: [2, 5],
+            matchHistory: ["3", "6"],
             nbVictories: 10,
             nbLosses: 1,
             ladderLevel: 5,
@@ -140,7 +140,7 @@ export default {
         {
             id: 301,
             userName: 'Dory',
-            matchHistory: [2, 6],
+            matchHistory: ["3", "7"],
             nbVictories: 12,
             nbLosses: 46,
             ladderLevel: 9,

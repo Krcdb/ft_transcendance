@@ -23,14 +23,18 @@ class TutorialDataService {
     return http.get(`/users/${id}/achievements`);
   }
 
+  getMatchHistory(id: number): Promise<any> {
+    return http.get(`/game/user/${id}`);
+  }
+
   // AUTH
   login(data: any): Promise<any> {
     return http.get("/login", data);
   }
   
-    get42Token(code: string) : Promise<any> {
-      return http.get(`/auth/42?code=${code}`);
-    }
+  get42Token(code: string) : Promise<any> {
+    return http.get(`/auth/42?code=${code}`);
+  }
   
   // USER RELATIONS
   getFriends(id: number): Promise<any> {
