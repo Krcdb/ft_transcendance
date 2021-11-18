@@ -27,6 +27,10 @@ class TutorialDataService {
     return http.get(`/game/user/${id}`);
   }
 
+  getPlayersMatchHistory(id: number): Promise<any> {
+    return http.get(`/users/${id}/players`);
+  }
+
   // AUTH
   login(data: any): Promise<any> {
     return http.get("/login", data);

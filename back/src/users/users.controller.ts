@@ -126,6 +126,12 @@ export class UsersController {
     return await this.usersService.findOne(id);
   }
 
+  @Public()
+  @Get(':id/players')
+  async findAllPlayers(@Param('id') id: number): Promise<User[]> {
+    return await this.usersService.findAllPlayersMatchHistory(id);
+  }
+
   // -> get all achievements 
   @Get(':id/achievements')
   getAchievements(@Param('id') id: number): Promise<AchievementsInterface[]> {

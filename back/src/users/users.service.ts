@@ -3,18 +3,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Not, In } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
-import { JwtService } from '@nestjs/jwt';
 import { User } from './user.entity';
 import * as fs from 'fs';
 import { enumAchievements, allAchievement } from 'src/achievements/achievements';
 import { AchievementsInterface } from 'src/achievements/achievements';
+import { MatchService } from 'src/match/match.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-	private readonly usersRepository: Repository<User>,
-	private readonly jwtService: JwtService,
+    private readonly usersRepository: Repository<User>,
+    @Inject(forwardRef(() => MatchService))
+    private readonly matchService: MatchService,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -53,8 +54,7 @@ export class UsersService {
 
   // to use only if this.usersRepository.save(user); after
   setAchievement(user: User, achiev: enumAchievements) {
-    if (user.achievements.indexOf(achiev) === -1)
-    {
+    if (user.achievements.indexOf(achiev) === -1) {
       user.achievements.push(achiev);
     }
   }
@@ -152,6 +152,16 @@ export class UsersService {
     });
     achievements.reverse();
     return achievements;
+  }
+
+  // Not classified **************************************************
+  async findAllPlayersMatchHistory(userId: number): Promise<User[]> {
+    const matches = await this.matchService.findAllWithUser(userId);
+    let usersIds: number[] = [];
+    matches.forEach((match) =>
+        usersIds.push(match.playerOne) && usersIds.push(match.playerTwo)
+    );
+    return await this.getUsersInTab(usersIds.filter((id) => id != userId));
   }
 
   ///////////////////////////
