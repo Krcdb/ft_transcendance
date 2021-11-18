@@ -54,6 +54,7 @@ export default defineComponent({
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Varela+Round");
+
 /*
 .chat-nav-bar {
 	font-family: "Varela Round", sans-serif;

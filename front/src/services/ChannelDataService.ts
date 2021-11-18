@@ -17,8 +17,14 @@ class ChannelDataService {
     getAllChannels() : Promise<any> {
         return http.get(`/channel`);
     }
+    getAllPublicChannels() : Promise<any> {
+        return http.get(`/channel/public`);
+    }
+    getAllPublicChannelsOwners() : Promise<any> {
+        return http.get(`/channel/public-owners`);
+    }
     getChannel(channelName : string) : Promise<any> {
-        return http.get(`/channel/${channelName}`);
+        return http.get(`/channel/infos/${channelName}`);
     }
     getAllUsersInChannel(channelName : string) : Promise<any> {
         return http.get(`/channel/${channelName}/users`);

@@ -160,7 +160,6 @@ export default defineComponent({
 .user-list-element img {
     width: 128px;
     height: 128px;
-    object-fit: contain;
 }
 /*
 .user-user-list {

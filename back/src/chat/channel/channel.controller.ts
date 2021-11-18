@@ -98,11 +98,22 @@ export class ChannelController {
 	@Public()
 	@Get()
 	async findAllChannels() : Promise<Channel[]> {
-		return (await this.channelService.findAll());
+	  return (await this.channelService.findAll());
+	}
+	@Public()
+	@Get('public')
+	async findAllPublicChannels(): Promise<Channel[]> {
+	  return (await this.channelService.findAllPublicChannels());
 	}
 	
 	@Public()
-	@Get(':channelName')
+	@Get('public-owners')
+	async findAllPublicChannelsOwners(): Promise<User[]> {
+	  return (await this.channelService.findAllPublicChannelsOwners());
+	}
+
+	@Public()
+	@Get('/infos/:channelName')
 	async getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
 		return (await this.channelService.findOne(channelName));
 	}
@@ -127,7 +138,6 @@ export class ChannelController {
 			return (true);
 		return (false);
 	}
-
 
 	@Public()
 	@Get(':channelName/can-join-channel')

@@ -51,6 +51,14 @@ export class ChannelService {
 	async findAllPublicChannels() : Promise<Channel[]> {
 		return (await this.channelRepository.find({isPublic: true}));
 	}
+
+	async findAllPublicChannelsOwners() : Promise<User[]> {
+		const channels = await this.findAllPublicChannels();
+		let usersIds: number[] = [];
+		channels.forEach((channel) => usersIds.push(channel.owner));
+		return await this.usersService.getUsersInTab(usersIds);
+	}
+
 	async findAllPrivateChannels() : Promise<Channel[]> {
 		return (await this.channelRepository.find({isPublic: false}));
 	}

@@ -196,7 +196,6 @@ img {
   border-radius: 10px;
   width: 300px;
   height: 300px;
-  object-fit: contain;
 }
 h4 {
   font-size: 30px;

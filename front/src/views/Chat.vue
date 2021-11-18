@@ -11,9 +11,9 @@
     <NavBar @switchNavBarSelection="SwitchNavBarSelection" v-if="this.userSelected"/>
 
     <CreateChannel :owner="user" v-if="this.navBarSelection == 0"/>
-    <ChannelList :owner="user" v-if="this.navBarSelection == 1"/>
-    <JoinPrivateChannel :owner="user" v-if="this.navBarSelection == 2"/>
-    <UserList :owner="user" v-if="this.navBarSelection == 3"/>
+    <ChannelList v-else-if="this.navBarSelection == 1"/>
+    <JoinPrivateChannel :owner="user" v-else-if="this.navBarSelection == 2"/>
+    <UserList :owner="user" v-else-if="this.navBarSelection == 3"/>
 
 
     <!--
@@ -89,7 +89,6 @@ export default defineComponent({
             this.user = value;
             console.log("Handle get user: " + this.user.userName);
             this.userSelected = true;
-
 
             console.log("Switch user");
 

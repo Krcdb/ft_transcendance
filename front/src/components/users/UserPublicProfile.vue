@@ -30,7 +30,7 @@
       <router-link v-if="!isblocked" to="/chat">
         <button class="chat-btn">Start a private chat</button>
       </router-link>
-      <router-link v-if="!isblocked" to="/game">
+      <router-link v-if="!isblocked" to="/play">
         <button class="game-btn">Start a game</button>
       </router-link>
     </div>
@@ -193,7 +193,6 @@ export default defineComponent({
 img {
   width: 300px;
   height: 300px;
-  object-fit: contain;
   border: 5px solid #ddd;
   border-radius: 10px;
 }

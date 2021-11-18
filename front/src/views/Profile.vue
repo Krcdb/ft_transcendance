@@ -102,7 +102,6 @@ export default defineComponent({
 img {
   width: 300px;
   height: 300px;
-  object-fit: contain;
   border: 5px solid #ddd;
   border-radius: 10px;
 }
