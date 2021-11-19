@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user.userName" class="edit-form">
+  <div v-if="user.userName" class="user-info-block">
     <div class="user-status">
       <h4>{{ user.userName }}</h4>
       <div class="friend-status" v-if="isFriend">Friend</div>

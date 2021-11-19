@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user.userName" class="edit-form">
+  <div v-if="user.userName" class="user-profile">
     <UserInfo :user="user" />
     <div class="user-info">
       <router-link to="/update-profile">
@@ -11,41 +11,38 @@
       >
         Logout
       </button>
-      <div id="id01" class="modal">
-        <span
-          onclick="document.getElementById('id01').style.display='none'"
-          class="close"
-          title="Close Modal"
-          >&times;</span
-        >
-        <form class="modal-content">
-          <div class="modal-window">
-            <h1>Log out</h1>
-            <br />
-            <p>Are you sure you want to log out ?</p>
-            <br />
-            <div class="clearfix">
-              <button
-                class="cancelbtn"
-                onclick="document.getElementById('id01').style.display='none'"
-              >
-                Cancel
-              </button>
-              <button type="button" class="deletebtn" @click="logout">
-                Logout
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
     <FriendList />
-    <BlockedList />
+    </div>
     <p>{{ error }}</p>
   </div>
   <div v-else>
     <br />
     <router-link to="/">User</router-link>
+  </div>
+  <div id="id01" class="modal">
+    <span
+      onclick="document.getElementById('id01').style.display='none'"
+      class="close"
+      title="Close Modal"
+      >&times;</span
+  >
+    <form class="modal-content">
+      <div class="modal-window">
+        <h1>Log out</h1>
+        <p>Are you sure you want to log out ?</p>
+        <div class="clearfix">
+          <button
+            class="cancelbtn"
+            onclick="document.getElementById('id01').style.display='none'"
+          >
+            Cancel
+          </button>
+          <button type="button" class="deletebtn" @click="logout">
+            Logout
+          </button>
+        </div>
+      </div>
+    </form>
   </div>
 </template>
 
@@ -56,14 +53,12 @@ import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 import { logout } from "@/statics/log.methods";
 import FriendList from "@/components/users/FriendsList.vue";
-import BlockedList from "@/components/users/BlockedList.vue";
 import UserInfo from "@/components/users//UserInfo.vue";
 
 export default defineComponent({
   name: "User",
   components: {
     FriendList,
-    BlockedList,
     UserInfo,
   },
   data() {

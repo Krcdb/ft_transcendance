@@ -13,7 +13,7 @@
                 <Avatar v-if="match.playerOne === user.id" :user="user" />
                 <Avatar v-else :user="players[index]" />
               </div>
-              <div class="">
+              <div class="player-info-one">
                 <p v-if="match.playerOne === user.id">{{ user.userName }}</p>
                 <p v-else>{{ players[index].userName }}</p>
                 <h4>{{ match.scorePlayerOne }}</h4>
@@ -106,7 +106,7 @@ export default defineComponent({
 .matches-wrapper {
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 350px;
 }
 .matches-wrapper h3 {
   font-size: 20px;
