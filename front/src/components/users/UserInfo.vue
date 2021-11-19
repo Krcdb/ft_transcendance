@@ -72,7 +72,7 @@ export default defineComponent({
   width: 100%;
 }
 .row-bottom {
-  gap: 10%;
+  gap: 50px;
 }
 
 .column {
