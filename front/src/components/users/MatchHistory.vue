@@ -8,7 +8,7 @@
           :key="match.matchId"
           class="matches-item"
         >
-            <div class="block-user-one">
+            <div :class="`block-user-one ${getMeClass(match.playerOne)} ${getWinnerClass(match.scorePlayerOne, match.scorePlayerTwo)}`">
               <div class="player-avatar">
                 <Avatar v-if="match.playerOne === user.id" :user="user" />
                 <Avatar v-else :user="players[index]" />
@@ -20,7 +20,7 @@
               </div>
             </div>
             <div class="separator">-</div>
-            <div class="block-user-two">
+            <div :class="`block-user-two ${getMeClass(match.playerTwo)} ${getWinnerClass(match.scorePlayerTwo, match.scorePlayerOne)}`">
               <div class="player-info-two">
                 <p v-if="match.playerTwo === user.id">{{ user.userName }}</p>
                 <p v-else>{{ players[index].userName }}</p>
@@ -85,6 +85,16 @@ export default defineComponent({
           console.log(e);
         });
     },
+    getWinnerClass(scoreOne: number, scoreTwo: number): string {
+      if (scoreOne > scoreTwo)
+        return "winner";
+      return "loser";
+    },
+    getMeClass(playerId: number): string {
+      if (playerId === this.user.id)
+        return "me-player";
+      return "";
+    }
   },
   mounted() {
     this.getMatches(this.user.id);
@@ -96,7 +106,7 @@ export default defineComponent({
 .matches-wrapper {
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 350px;
 }
 .matches-wrapper h3 {
   font-size: 20px;
@@ -118,6 +128,8 @@ export default defineComponent({
 }
 .matches-item p {
   margin: 0;
+  padding: 3px;
+  border-radius: 10%;
 }
 .matches-item h4 {
   margin: 0;
@@ -146,5 +158,14 @@ export default defineComponent({
   flex-direction: column;
   justify-content: center;
   margin: auto;
+}
+.me-player p {
+  font-weight: bold;
+}
+.winner.me-player img {
+  border-color: #11bf1d;
+}
+.loser.me-player img {
+  border-color: red;
 }
 </style>
