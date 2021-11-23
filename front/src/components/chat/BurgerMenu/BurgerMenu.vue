@@ -15,6 +15,11 @@
                     </button>
                     <hr>
                 </li>
+                <h6>Friend List:</h6>
+                <li class="nav-item" v-for="friend in this.FriendList" :key="friend.id">
+                    {{ friend.userName }}
+                    <hr>
+                </li>
             </ul>
         </div>
     </div>
@@ -22,9 +27,53 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import User from "@/types/User";
+import ChannelDataService from "@/services/ChannelDataService";
+import UserDataService from "@/services/UserDataService";
+import ResponseData from "@/types/ResponseData";
+import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
     name: "burger-menu",
+    data() {
+        return {
+            user: {} as User,
+            FriendList: [] as User[],
+        };
+    },
+    methods: {
+        async getUser(id: number) {
+            await UserDataService.get(id)
+            .then((response: ResponseData) => {
+                this.user = response.data;
+            })
+            .catch((e: Error) => {
+                console.log(e);
+                console.log("Error !");
+            });
+        },
+        async getFriends(id: number) {
+            await UserDataService.getFriends(id)
+            .then((response: ResponseData) => {
+                this.FriendList = response.data;
+            })
+            .catch((e: Error) => {
+                console.log(e);
+                console.log("Error !");
+            });
+        },
+        async init() {
+            console.log("UserID: " + Number(localStorage.getItem("user-id")));
+            await this.getUser(Number(localStorage.getItem("user-id")));
+            await this.getFriends(Number(localStorage.getItem("user-id")));
+            console.log("Friend list: " + this.FriendList);
+        },
+        mounted() {
+            console.log("Mount BurgerMenu");
+
+            this.init();
+        },
+    },
 });
 </script>
 
@@ -64,6 +113,9 @@ export default defineComponent({
     border-radius: 12px;
 }
 
+.burger-menu h6 {
+    color: white;
+}
 
 
 </style>

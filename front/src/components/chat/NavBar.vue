@@ -40,9 +40,10 @@ export default defineComponent({
 	},
 	methods: {
 		changeNavSelection(value: number) {
+			localStorage.setItem("chat-nav-bar-selection", String(value));
 			this.nav = value;
-			this.$emit("switchNavBarSelection", value);
-			console.log("change selection emit: " + value);
+			//this.$emit("switchNavBarSelection", value);
+			//console.log("change selection emit: " + value);
 		},
 		currentButtonIsActive(value: number) {
 			return (this.nav === value);

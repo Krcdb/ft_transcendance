@@ -7,7 +7,7 @@
     >
 
     <BurgerMenu />
-    
+
     <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
 
     <NavBar @switchNavBarSelection="SwitchNavBarSelection" v-if="this.userSelected"/>
@@ -46,10 +46,10 @@ import Channel from "@/types/Channel";
 import OwnerProfile from '@/components/chat/OwnerProfile.vue';
 import NavBar from "@/components/chat/ChatNavBar.vue";
 import ChatMessage from "@/types/ChatMessage";
-import UserList from "@/components/chat/ChatNavBarFiles/UserList.vue";
-import CreateChannel from "@/components/chat/ChatNavBarFiles/CreateChannel.vue";
-import ChannelList from "@/components/chat/ChatNavBarFiles/ChannelList.vue";
-import JoinPrivateChannel from "@/components/chat/ChatNavBarFiles/JoinPrivateChannel.vue";
+import UserList from "@/components/chat/NavBarFiles/UserList.vue";
+import CreateChannel from "@/components/chat/NavBarFiles/CreateChannel.vue";
+import ChannelList from "@/components/chat/NavBarFiles/ChannelList.vue";
+import JoinPrivateChannel from "@/components/chat/NavBarFiles/JoinPrivateChannel.vue";
 
 import BurgerMenu from "@/components/chat/BurgerMenu/BurgerMenu.vue";
 
@@ -102,7 +102,8 @@ export default defineComponent({
             localStorage.setItem("user-name", this.user.userName);
         },
         SwitchNavBarSelection(value : number) {
-            this.navBarSelection = value;
+            //this.navBarSelection = value;
+            localStorage.setItem("chat-nav-bar-selection", String(value));
             console.log("Change NavBar Selection to: " + value);
         },
         refreshConnectedUsers() {

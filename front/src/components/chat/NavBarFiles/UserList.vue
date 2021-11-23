@@ -71,9 +71,6 @@ export default defineComponent({
     },
     methods: {
         refreshList() {
-            //let tmpList: [] as User[];
-            let tmpList: Array<User>;
-
             UserDataService.getFriends(this.owner.id)
             .then((response : ResponseData) => {
 
