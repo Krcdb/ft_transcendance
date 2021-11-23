@@ -6,6 +6,8 @@
         crossorigin="anonymous"
     >
 
+    <BurgerMenu />
+    
     <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
 
     <NavBar @switchNavBarSelection="SwitchNavBarSelection" v-if="this.userSelected"/>
@@ -15,7 +17,6 @@
     <JoinPrivateChannel :owner="user" v-if="this.navBarSelection == 2"/>
     <UserList :owner="user" v-if="this.navBarSelection == 3"/>
 
-    <BurgerMenu />
 
     <!--
     <ChannelElement :owner="user" :channel="currentChannel"/>

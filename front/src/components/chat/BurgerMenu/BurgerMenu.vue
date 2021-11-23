@@ -1,43 +1,23 @@
 <template>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <div class="">
-
-        <!--Navbar-->
-        <nav class="navbar navbar-light light-blue lighten-4">
-
-            <!-- Navbar brand -->
-            <a class="navbar-brand" href="#">Navbar</a>
-
-            <!-- Collapse button -->
-            <button class="navbar-toggler toggler-example" type="button" data-toggle="collapse" data-target="#navbarSupportedContent1"
-            aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation"><span class="dark-blue-text"><i
-                class="fas fa-bars fa-1x"></i></span></button>
-
-                <!-- Collapsible content -->
-                <div class="collapse navbar-collapse" id="navbarSupportedContent1">
-
-                    <!-- Links -->
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Features</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Pricing</a>
-                        </li>
-                    </ul>
-                    <!-- Links -->
-
-                </div>
-                <!-- Collapsible content -->
-
-            </nav>
-            <!--/.Navbar-->
-
-</div>
-
+    <div class="burger-menu">
+        <div class="container-fluid">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <button type="button" name="button">
+                        <img src="@/assets/Chat/envelop-solid.svg" alt="" width="32">
+                    </button>
+                    <hr>
+                </li>
+                <li class="nav-item">
+                    <button type="button" name="button">
+                        <img src="@/assets/Chat/comment-alt-solid.svg" alt="" width="32">
+                    </button>
+                    <hr>
+                </li>
+            </ul>
+        </div>
+    </div>
 </template>
 
 <script lang="ts">
@@ -49,22 +29,41 @@ export default defineComponent({
 </script>
 
 <style media="screen">
-.fa-1x {
-    font-size: 1.5rem;
+
+.burger-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    background-color: rgb(33, 36, 46);
+    height: 100%;
+    width: 100px;
 }
-.navbar-toggler.toggler-example {
-    cursor: pointer;
+
+.burger-menu ul {
+    margin-top: 15px;
 }
-.dark-blue-text {
-    color: #0A38F5;
+
+.burger-menu ul li {
+    margin: 5px;
 }
-.dark-pink-text {
-    color: #AC003A;
+
+.burger-menu ul li img {
+    filter: invert();
+    filter: contrast(25%);
+    transition: 0.2s;
 }
-.dark-amber-text {
-    color: #ff6f00;
+
+.burger-menu ul li img:hover {
+    filter: contrast(0%);
+    transition: 0.2s;
 }
-.dark-teal-text {
-    color: #004d40;
+
+.burger-menu button {
+    background-color: rgba(13, 16, 26);
+    border: 2px solid white;
+    border-radius: 12px;
 }
+
+
+
 </style>

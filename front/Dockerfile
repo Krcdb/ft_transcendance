@@ -10,8 +10,7 @@ RUN npm install -g npm@latest \
 	&& npm install vuex --save \
 	&& npm install vue-3-socket.io --save \
 	&& npm install vue-socket.io --save \
-	&& npm install --save axios vue-property-decorator \
-	&& npm i mdb-ui-kit
+	&& npm install --save axios vue-property-decorator
 
 COPY . /app/
 
