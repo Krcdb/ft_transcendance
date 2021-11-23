@@ -16,8 +16,6 @@ export interface GameOptionsInterface {
 }
 
 enum Keys {
-    P_KEY = 80,
-	L_KEY = 76,
 	W_KEY = 87,
 	S_KEY = 83
 }
@@ -46,13 +44,19 @@ export class Game {
   	player1Ready: Boolean = false;
 	player2Ready: Boolean = false;
 
-	keysPressed: boolean[] = [];
+	p1UpKeyPressed: Boolean = false;
+	p1DownKeyPressed: Boolean = false;
+	p2UpKeyPressed: Boolean = false;
+	p2DownKeyPressed: Boolean = false;
 
 	constructor(player1: User, player2: User,options: GameOptionsInterface, uuid: string) {
 		this.player1 = player1;
 		this.player2 = player2;
 		this.options = options;
 		this.uuid = uuid;
+
+		this.player1Score = 0;
+		this.player2Score = 0;
 
 		this.width = this.options.CANVAS_WIDTH;
 		this.height = this.options.CANVAS_HEIGHT;
@@ -61,11 +65,34 @@ export class Game {
 		this.p2 = new Paddle(this.options.PADDLE_WIDTH, this.options.PADDLE_HEIGHT);
 		this.ball = new Ball(this.options.BALL_SIZE);
 	
-		this.reset();
+		this.p1.setXY(
+			this.options.PADDLE_MARGIN,
+			this.height / 2 - this.options.PADDLE_HEIGHT / 2,
+		);
+		this.p2.setXY(
+			this.width - this.options.PADDLE_WIDTH - this.options.PADDLE_MARGIN,
+			this.height / 2 - this.options.PADDLE_HEIGHT / 2,
+		);
+		this.setBallDirection();
 	}
 
-	playerNewKeyEvent(payload: any){
-		this.keysPressed = payload.key;
+	playerInput(payload: any){
+		if (payload.playerId === String(this.player1.id)) {
+			this.p1UpKeyPressed = payload.upPressed;
+			this.p1DownKeyPressed = payload.downPressed;
+		}
+		else if (payload.playerId === String(this.player2.id)){
+			this.p2UpKeyPressed = payload.upPressed;
+			this.p2DownKeyPressed = payload.downPressed;
+		}
+		else
+			console.log("player not input not found")
+	}
+
+	startGame(server: Server) {
+		this.reset();
+		this.started = true;
+		this.state = GameState.IN_PROGRESS;
 	}
 
 	gameLoop(server: Server) {
@@ -73,7 +100,6 @@ export class Game {
 			return ;
 		if (this.state === GameState.IN_PROGRESS)
 			this.update();
-	
 		server.to(this.uuid).emit('updateGame', {
 			state: this.state,
 			ball: {
@@ -106,16 +132,20 @@ export class Game {
         }else{
             this.ball.yVel = -1;
 		}
+		this.ball.setXY(
+			this.width / 2 - this.ball.size / 2,
+			Math.floor(Math.random() * (this.height - this.options.BALL_SIZE - 2 * this.options.PADDLE_MARGIN) + this.options.PADDLE_MARGIN)
+		);
 	}
 
 	checkPlayerMove() {
 		//check P1 Moves
-		if (this.keysPressed[Keys.W_KEY]) {
+		if (this.p1UpKeyPressed) {
 			this.p1.yVel = -1;
 			if (this.p1.y <= this.options.PADDLE_MARGIN)
 				this.p1.yVel = 0;
 		}
-		else if (this.keysPressed[Keys.S_KEY]) {
+		else if (this.p1DownKeyPressed) {
 			this.p1.yVel = 1;
 			if (this.p1.y + this.p1.height >= this.options.CANVAS_HEIGHT - this.options.PADDLE_MARGIN)
 				this.p1.yVel = 0;
@@ -125,12 +155,12 @@ export class Game {
 		}
 		this.p1.y += this.p1.yVel * this.p1.speed;
 		//check P2 Moves
-		if (this.keysPressed[Keys.P_KEY]) {
+		if (this.p2UpKeyPressed) {
 			this.p2.yVel = -1;
 			if (this.p2.y <= this.options.PADDLE_MARGIN)
 				this.p2.yVel = 0;
 		}
-		else if (this.keysPressed[Keys.L_KEY]) {
+		else if (this.p2DownKeyPressed) {
 			this.p2.yVel = 1;
 			if (this.p2.y + this.p2.height >= this.options.CANVAS_HEIGHT - this.options.PADDLE_MARGIN)
 				this.p2.yVel = 0;
@@ -142,10 +172,11 @@ export class Game {
 	}
 	
 	reset() {
+		console.log("reset");
 		this.paused = true;
 
     	setTimeout(() => {
-      	this.paused = false;
+      		this.paused = false;
 		}, 2000);
 		
 		this.p1.setXY(
@@ -156,10 +187,7 @@ export class Game {
 			this.width - this.options.PADDLE_WIDTH - this.options.PADDLE_MARGIN,
 			this.height / 2 - this.options.PADDLE_HEIGHT / 2,
 		);
-		this.ball.setXY(
-			this.width / 2 - this.ball.size / 2,
-			this.height / 2 - this.ball.size / 2,
-		);
+		
 		this.setBallDirection();
 	}
 
@@ -167,21 +195,21 @@ export class Game {
 		//Wall collision
 		if (this.ball.y <= this.options.PADDLE_MARGIN || this.ball.y + this.ball.size >= this.options.CANVAS_HEIGHT - this.options.PADDLE_MARGIN)
 			this.ball.yVel = -this.ball.yVel;
-		if (this.ball.x <= 0) {
+		if (this.ball.x <= this.options.PADDLE_MARGIN) {
 			this.player2Score++;
 			this.reset();
 		}
-		if (this.ball.x + this.ball.size >= this.options.CANVAS_WIDTH) {
+		if (this.ball.x + this.ball.size >= this.options.CANVAS_WIDTH - this.options.PADDLE_MARGIN) {
 			this.player1Score++;
 			this.reset();
 		}
 		//Paddle collision
 		if (this.ball.x <= this.p1.x + this.p1.width) {
-			if (this.ball.y >= this.p1.height && this.ball.y + this.ball.size <= this.p1.y + this.p1.height)
+			if (this.ball.y >= this.p1.y && this.ball.y + this.ball.size <= this.p1.y + this.p1.height)
 			this.ball.xVel = -this.ball.xVel;
 		}
-		if (this.ball.x + this.ball.size <= this.p1.x) {
-			if (this.ball.y >= this.p2.height && this.ball.y + this.ball.size <= this.p2.y + this.p2.height)
+		if (this.ball.x + this.ball.size >= this.p2.x) {
+			if (this.ball.y >= this.p2.y && this.ball.y + this.ball.size <= this.p2.y + this.p2.height)
 			this.ball.xVel = -this.ball.xVel;
 		}
 	}
@@ -193,8 +221,8 @@ export class Game {
 		if (this.paused)
 			return ;
 
-		this.ball.x = this.ball.xVel * this.ball.speed;
-		this.ball.y = this.ball.yVel * this.ball.speed;
+		this.ball.x += this.ball.xVel * this.ball.speed;
+		this.ball.y += this.ball.yVel * this.ball.speed;
 	}
 
 	matchDone(server: Server) {

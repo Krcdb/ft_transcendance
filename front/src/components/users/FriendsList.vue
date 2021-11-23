@@ -1,14 +1,19 @@
 <template>
   <div class="friends-list-div">
     <h3>Friends</h3>
+    <div class="left-side-friend-list">
+      <div v-if="users.length">
+        <input
+          type="text"
+          placeholder="Search a friend.."
+          v-model="keyword"
+          @input="searchhandler"
+          @change="searchhandler"
+        />
+      </div>
+      <BlockedList />
+    </div>
     <div v-if="users.length" class="friend-wrapper">
-      <input
-        type="text"
-        placeholder="Search a friend.."
-        v-model="keyword"
-        @input="searchhandler"
-        @change="searchhandler"
-      />
       <ul class="friend">
         <li class="friend-item" v-for="user in filteredUsers" :key="user.id">
           <div class="friend-img">
@@ -29,12 +34,12 @@
     <div v-else>
       <p>You currently have no friends :(</p>
     </div>
-    <div>
-      <router-link to="/users">
-        <button class="users-link">Find New Friends</button>
-      </router-link>
-    </div>
   </div>
+        <div>
+        <router-link to="/users">
+          <button class="users-link">Find New Friends</button>
+        </router-link>
+      </div>
 </template>
 
 <script lang="ts">
@@ -43,11 +48,14 @@ import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 import Avatar from "./Avatar.vue";
+import BlockedList from "@/components/users/BlockedList.vue";
+
 
 export default defineComponent({
   name: "users-friend",
   components: {
     Avatar,
+    BlockedList,
   },
   data() {
     return {
@@ -83,15 +91,14 @@ export default defineComponent({
 <style scopped>
 .friends-list-div {
   display: flex;
-  flex-direction: column;
   align-items: center;
+  flex-direction: column;
 }
 .friend-img img {
   width: 40px;
   height: 40px;
-  object-fit: contain;
 }
-.friend-wrapper h3 {
+.friends-list-div h3 {
   font-size: 20px;
   width: fit-content;
   margin-left: auto;
@@ -103,24 +110,20 @@ export default defineComponent({
   font-size: 18px;
   align-content: center;
 }
-.friend {
-  list-style: none;
-  padding: 0px;
-}
 .friend-item {
   display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  margin: 5px;
   align-items: center;
 }
 .friend-item-content {
-  margin-left: 10px;
+  margin-right: 10px;
 }
-.friend-wrapper input[type="text"] {
+.friends-list-div input[type="text"] {
   padding: 6px;
 }
 .user-status {
-  margin-left: auto;
-  margin-right: 5%;
+  margin-right: 5px;
 }
 .user-status .online {
   color: green;
@@ -131,5 +134,16 @@ export default defineComponent({
 .users-link {
   font-size: 14px;
   background-color: grey;
+}
+.friend-wrapper {
+  max-width: 75%;
+}
+.friend-wrapper ul {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
 }
 </style>

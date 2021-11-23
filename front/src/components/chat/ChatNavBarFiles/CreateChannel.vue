@@ -9,7 +9,9 @@
 					v-model="this.channel.channelName"></p>
 					<p>Password: <input type="text"
 						v-model="this.channel.password"></p>
-						<p>Public Channel: <input type="checkbox"
+						<p>Public Channel: <input 
+							type="checkbox"
+							placeholder="false"
 							v-model="this.channel.isPublic"></p>
 
 							<button class="btn btn-secondary" type="button" name="button"
@@ -17,9 +19,7 @@
 							Create</button>
 						</div>
 					</div>
-
 					<hr>
-
 					<div class="container-fluid">
 
 						<div class="d-flex justify-content-center" v-if="isLoading">
@@ -30,11 +30,11 @@
 
 						<div class="alert alert-danger" role="alert"
 						v-if="this.state == 1">
-						<h6>Le salon existe déjà</h6>
+						<h6>Channel already exist</h6>
 					</div>
 					<div class="alert alert-success" role="alert"
 					v-if="this.state == 2">
-					<h6>Le salon à bien été créé</h6>
+					<h6>Channel sucessfully created</h6>
 				</div>
 
 			</div>
@@ -87,7 +87,7 @@ export default defineComponent({
 			console.log("password: " + this.channel.password);
 			console.log("owner: " + this.owner.userName);
 
-			await this.delay(1000);
+			
 
 			ChannelDataService.createChannel(data)
 			.then((response: ResponseData) => {
@@ -102,6 +102,9 @@ export default defineComponent({
             });
 			this.isLoading = false;
 		}
+	},
+	mounted() {
+		this.channel.isPublic = false;
 	},
 });
 </script>

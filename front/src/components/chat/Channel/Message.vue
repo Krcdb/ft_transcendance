@@ -70,13 +70,12 @@ export default defineComponent({
 });
 </script>
 
-<style media="screen" scoped>
+<style scoped>
 .container {
   display: flex;
 	flex: 1 1 75%;
-  word-wrap: break-word;
-  word-break: break-all;
-  /* max-width: 75%; */
+  word-break: break-word;
+  max-width: 75%;
 }
 .message-sender {
   justify-content: flex-end;
@@ -91,7 +90,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  max-width: 75%;
 }
 .sender {
   background-color: #218aff;
@@ -103,8 +101,7 @@ export default defineComponent({
   border-radius: 20px;
   padding: 3px;
 }
-p {
-  padding-top: 5px;
+.message-block p {
   color: white;
   margin: 5px;
 }
@@ -120,7 +117,6 @@ p {
 }
 .sender-avatar img {
   border: 2px solid #ddd;
-  object-fit: contain;
   border-radius: 100%;
   width: 42px;
   height: 42px;

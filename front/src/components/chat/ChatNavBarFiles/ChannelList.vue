@@ -8,38 +8,41 @@
 		</div>
 
 		<div class="input-group mb-3 justify-content-center">
-			<p>Rechercher un salon: <input type="text"
+			<input type="text"
 				placeholder="Search a channel..."
-				v-model="this.search"
+				v-model="search"
 				@input="searchhandler"
-				@change="searchhandler"
-				></p>
+			>
 			</div>
-			<hr>
-			<div class="container justify-content-center">
-				<ul class="list-group">
+			<div class="channel-info container justify-content-center">
+				<ul class="channel-info list-group">
 					<li class="list-group-item" v-for="(channel, index) in filteredChannelList" :key="channel.id">
-
 						<div class="d-flex align-items-center" v-if="channel.isPublic">
-
 							<div class="row col-sm-2">
-								<p>{{ channel.channelName }}</p>
+								<h4>{{ channel.channelName }}</h4>
 								<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`" alt="" width="128">
 							</div>
-
 							<div class="row col-sm-4">
-								<p>Owner: {{ this.getUserByID(channel.owner).userName }} </p>
-								<p>Public Channel: {{ channel.isPublic ? "Yes" : "No"}}</p>
+                                <p>Owner</p>
+                                <div class="mini-user-info" v-if="getOwnerByID(channel.owner)">
+
+                                    <Avatar :user="getOwnerByID(channel.owner)" />
+                                      <h4>{{ getOwnerByID(channel.owner).userName }}</h4>
+								    <p class="public-tag" v-if="channel.isPublic">Public</p>
+								    <p v-else class="private-tag">Private</p>
+                                </div>
 							</div>
 
 							<div class="d-flex flex-column">
 
 								<!-- PASSWORD -->
 								<div class="d-flex flex-row">
-									<p>Password: <input v-model="password[index]" type="password"></p> <!-- v-if="channel.password != null" -->
-									<div class="alert alert-danger" role="alert" v-if="errorMSG[index]" style="height:52px;margin-left:12px;transform:translate(0, -20%)">
-										<p>{{ errorMSG[index] }}</p>
-									</div>
+                                    <form class="password-input">
+                                        <input v-model="password[index]" :id="`password-${index}`" placeholder="password" type="password" autocomplete="on"> <!-- v-if="channel.password != null" -->
+                                        <div class="alert alert-danger" role="alert" v-if="errorMSG[index]" style="height:52px;margin-left:12px;transform:translate(0, -20%)">
+                                            <p>{{ errorMSG[index] }}</p>
+                                        </div>
+                                    </form>
 								</div>
 
 								<div class="d-flex flex-row">
@@ -49,7 +52,7 @@
 									@click="joinChannel(channel, this.password[index], index)">
 									Rejoindre</button>
 
-									<div class="m-2" v-if=" this.getUserByID(channel.owner).id === this.owner.id">
+									<div class="m-2" v-if="channel.owner === this.curenntUserId">
 										<button type="button" name="button" class="btn btn-danger"
 										@click="deleteChannel(channel)">Supprimer le salon</button>
 										<div class="p-auto mx-auto" style="margin: 15px;" v-if="this.isDeletingChannel">
@@ -65,9 +68,6 @@
 									</div>
 								</div>
 							</div>
-						<br>
-						<hr>
-						<br>
 					</div>
 				</li>
 			</ul>
@@ -85,14 +85,16 @@ import Channel from "@/types/Channel";
 import UserDataService from '@/services/UserDataService';
 import ChannelDataService from '@/services/ChannelDataService';
 import ResponseData from "@/types/ResponseData";
+import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
     name: "channel-list",
     data() {
         return {
-            UserList: [] as User[],
+            OwnersList: [] as User[],
             ChannelList: [] as Channel[],
 			filteredChannelList: [] as Channel[],
+            curenntUserId: {} as number,
             isDeletingChannel: false,
 			search: "",
 			errorMSG: [] as string[],
@@ -100,15 +102,12 @@ export default defineComponent({
 			isLoading: [] as boolean[],
         };
     },
-    props: {
-        owner: {
-            type: Object as () => User,
-            required: true,
-        },
+    components: {
+        Avatar,
     },
     methods: {
         async refreshChannelList() {
-            await ChannelDataService.getAllChannels()
+            await ChannelDataService.getAllPublicChannels()
             .then((response : ResponseData) => {
                 this.ChannelList = response.data;
 				this.filteredChannelList = response.data;
@@ -116,18 +115,16 @@ export default defineComponent({
             .catch((e: Error) => {
                 console.log("Error: " + e);
             });
-
-            UserDataService.getAll()
-            .then((response : ResponseData) => {
-                this.UserList = response.data;
-            })
-            .catch((e: Error) => {
-                console.log("Error: " + e);
-            });
+            await this.refreshOwnerList();
         },
-        getUserByID(tosearch: number) {
-            let user =  this.UserList.find(x => x.id == tosearch);
-            return user;
+        async refreshOwnerList() { 
+            await ChannelDataService.getAllPublicChannelsOwners()
+                .then((response : ResponseData) => {
+                    this.OwnersList = response.data;
+                })
+                .catch((e: Error) => {
+                    console.log("Error: " + e);
+                });
         },
         async delay(ms: number) {
             return new Promise( resolve => setTimeout(resolve, ms) );
@@ -146,33 +143,33 @@ export default defineComponent({
                 this.isDeletingChannel = false;
             });
         },
-		searchhandler() {
-			this.filteredChannelList = this.ChannelList.filter((channel) =>
-			channel.channelName.toLowerCase().includes(this.search.toLowerCase()));
+		async searchhandler() {
+			this.filteredChannelList = await this.ChannelList.filter((channel) =>
+			  channel.channelName.toLowerCase().includes(this.search.toLowerCase()));
 		},
         async joinChannel(channel : Channel, current_password: string, index: number) {
-			this.errorMSG[index] = "";
+            this.errorMSG[index] = "";
 			this.isLoading[index] = true;
 			await this.delay(1000);
 			console.log("Try to join channel, password: " + channel.password + " | current password: " + current_password);
 
 			let data = {
-				password: current_password,
+                password: current_password,
 			};
 
-			//ChannelDataService.canJoinChannel(channel.channelName, data)
+			ChannelDataService.canJoinChannel(channel.channelName, data)
 			await ChannelDataService.getChannel(channel.channelName)
 			.then((response : ResponseData) => {
-				console.log("Can join channel: " + response.data.password);
+                console.log("Can join channel: " + response.data.password);
 				console.log("Password Match ?: " + response.data.password + " " + current_password);
 
 				this.delay(1000);
 
 				if (response.data.password == current_password) {
-					localStorage.setItem("channel-name", channel.channelName);
+                    localStorage.setItem("channel-name", channel.channelName);
 					this.$router.push("/Channel/" + channel.channelName);
 				} else {
-					//
+                    //
 					if (response.data.password == null)
 						this.errorMSG[index] = "This channel has no password";
 					else
@@ -186,14 +183,45 @@ export default defineComponent({
 				this.isLoading[index] = false;
             });
         },
+        getOwnerByID(ownerId: number): User {
+           return (this.OwnersList[this.OwnersList.map(x => x.id).indexOf(ownerId)]);
+        },
     },
     mounted() {
+        this.curenntUserId = Number(localStorage.getItem("user-id"));
         this.refreshChannelList();
     },
 });
 </script>
 
-<style media="screen">
+<style media="screen" scoped>
+.mini-user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10%;
+}
+
+.mini-user-info.profile-link {
+  color: black;
+  text-decoration: none;
+}
+
+.mini-user-info img {
+    border: 2px solid #ddd;
+    border-radius: 100%;
+    width: 50px;
+    height: 50px;
+}
+.public-tag {
+  background-color: #4bbd4b;
+  font-weight: bold;
+  color: white;
+  padding: 5px;
+}
+.channel-info {
+    border: 0;
+}
 /*
 .channel-list {
     display: block;

@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar">
+  <nav class="main-navbar">
     <div class="logo-wrapper">
       <router-link class="active" to="/">
         <img
@@ -13,7 +13,7 @@
     <div class="nav-wrapper">
       <ul>
         <!-- <li><router-link class="active" to="/">Home</router-link></li> -->
-        <li><router-link to="/game">Game</router-link></li>
+        <li><router-link to="/Play">Play</router-link></li>
         <li><router-link to="/chat">Chat</router-link></li>
         <li><router-link to="/users">Users</router-link></li>
         <li class="user-login">
@@ -22,7 +22,7 @@
             to="/profile"
             class="user-login"
           >
-            {{ user.userName }}
+            {{ user.userName }} 
           </router-link>
         </li>
       </ul>
@@ -68,10 +68,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.navbar {
+.main-navbar {
   width: 100%;
 }
-.navbar div {
+.main-navbar div {
   display: flex;
   height: 60px;
 }

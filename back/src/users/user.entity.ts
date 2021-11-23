@@ -1,5 +1,4 @@
 import { Entity, Column, PrimaryColumn } from 'typeorm';
-// import { Match } from '../match/match.entity'
 
 @Entity()
 export class User {
@@ -24,10 +23,8 @@ export class User {
     // MATCHES & GAME STATS //
     // -------------------- //
 
-  // currentMatch: Match;
-
-  @Column("int", {nullable: true, array: true})
-  matchHistory: number[];
+  @Column("varchar", {nullable: true, array: true})
+  matchHistory: string[];
 
   @Column("int", {nullable: true})
   nbVictories: number;
@@ -69,9 +66,6 @@ export class User {
   
   @Column("varchar", {nullable: true, array: true})
   channelsUserIsMuted: string[];
-  
-  @Column("int", {nullable: true, array: true})
-  messagesHistory: number[];
   
     // -------------------------- //
     // TWO FACTOR AUTHENTICATION  //

@@ -1,129 +1,171 @@
 <template>
-  <div class="achievements-wrapper">
+  <div class="matches-wrapper">
     <h3>Match History</h3>
-    <!-- <div v-if="achievements.length">
-      <ul class="achievements-list">
+    <div v-if="matches.length && players.length">
+      <ul class="matches-list">
         <li
-          v-for="achievements in achievements"
-          :key="achievements.id"
-          :class="`achievements-item-${achievements.class}`"
+          v-for="(match, index) in matches"
+          :key="match.matchId"
+          class="matches-item"
         >
-          <div :class="`achievement-img-${achievements.class}`">
-            <img
-              :src="`http://localhost:3000/users/achievements/${achievements.class}`"
-            />
-          </div>
-          <div class="achievements-info">
-            <h4>{{ achievements.name }}</h4>
-            <p>{{ achievements.description }}</p>
+            <div :class="`block-user-one ${getMeClass(match.playerOne)} ${getWinnerClass(match.scorePlayerOne, match.scorePlayerTwo)}`">
+              <div class="player-avatar">
+                <Avatar v-if="match.playerOne === user.id" :user="user" />
+                <Avatar v-else :user="players[index]" />
+              </div>
+              <div class="player-info-one">
+                <p v-if="match.playerOne === user.id">{{ user.userName }}</p>
+                <p v-else>{{ players[index].userName }}</p>
+                <h4>{{ match.scorePlayerOne }}</h4>
+              </div>
+            </div>
+            <div class="separator">-</div>
+            <div :class="`block-user-two ${getMeClass(match.playerTwo)} ${getWinnerClass(match.scorePlayerTwo, match.scorePlayerOne)}`">
+              <div class="player-info-two">
+                <p v-if="match.playerTwo === user.id">{{ user.userName }}</p>
+                <p v-else>{{ players[index].userName }}</p>
+                <h4>{{ match.scorePlayerTwo }}</h4>
+              </div>
+              <div class="player-avatar">
+                <Avatar v-if="match.playerTwo === user.id" :user="user" />
+                <Avatar v-else :user="players[index]" />
+              </div>
           </div>
         </li>
       </ul>
-    </div> -->
-    <!-- <div v-else>
-      <p>No achievements :(</p>
-    </div> -->
+    </div>
+    <div v-else>
+      <p>No matches :(</p>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Achievements from "@/types/Achievements";
 import UserDataService from "@/services/UserDataService";
-import ResponseData from "@/types/ResponseData";
 import User from "@/types/User";
+import Match from "@/types/Match";
+import ResponseData from "@/types/ResponseData";
+import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
-  name: "users-achievements",
+  name: "users-matches",
+  components: {
+    Avatar,
+  },
   props: {
     user: {
       type: Object as () => User,
       required: true,
     },
   },
-//   data() {
-//     return {
-//       achievements: [] as Achievements[],
-//     };
-//   },
+  data() {
+    return {
+      matches: [] as Match[],
+      players: [] as User[],
+    };
+  },
   methods: {
-    // getAchievements(id: number) {
-    //   UserDataService.getAchievements(id)
-    //     .then((response: ResponseData) => {
-    //       this.achievements = response.data;
-    //     })
-    //     .catch((e: Error) => {
-    //       console.log(e);
-    //     });
-    // },
+    async getMatches(id: number) {
+      UserDataService.getMatchHistory(id)
+        .then((response: ResponseData) => {
+          this.matches = response.data;
+          this.getPlayers(id);
+        })
+        .catch((e: Error) => {
+          console.log(e);
+        });
+    },
+    async getPlayers(id: number) {
+      UserDataService.getPlayersMatchHistory(id)
+        .then((response: ResponseData) => {
+          this.players = response.data;
+        })
+        .catch((e: Error) => {
+          console.log(e);
+        });
+    },
+    getWinnerClass(scoreOne: number, scoreTwo: number): string {
+      if (scoreOne > scoreTwo)
+        return "winner";
+      return "loser";
+    },
+    getMeClass(playerId: number): string {
+      if (playerId === this.user.id)
+        return "me-player";
+      return "";
+    }
   },
   mounted() {
-      console.log(this.user.matchHistory);
-    // this.getAchievements(this.userId);
+    this.getMatches(this.user.id);
   },
 });
 </script>
 
 <style scopped>
-.achievements-wrapper {
+.matches-wrapper {
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 350px;
 }
-.achievements-wrapper h3 {
+.matches-wrapper h3 {
   font-size: 20px;
 }
-.achievements-list {
+.matches-list {
   list-style: none;
   padding: 0px;
   max-height: 300px;
   overflow-y: auto;
 }
-[class|="achievements-item"] {
+.matches-item {
   display: flex;
+  justify-content: center;
   border: 1px solid rgba(0, 0, 0, 0.1);
   align-items: center;
+  justify-content: space-between;
   margin: 3px;
+  width: 98%;
 }
-[class|="achievement-img"] {
-  width: 20%;
-  max-width: 50px;
-  padding: 15px 10px;
-  display: flex;
-  align-items: center;
+.matches-item p {
+  margin: 0;
+  padding: 3px;
+  border-radius: 10%;
 }
-[class|="achievement-img"] img {
-  width: 40px;
-  height: 40px;
-}
-
-.achievement-img-user {
-  background-color: #e6c7ff;
-}
-
-.achievement-img-relation {
-  background-color: #b3f4ff;
-}
-.achievement-img-game {
-  background-color: #faffb3;
-}
-.achievement-img-chat {
-  background-color: #bdffb3;
-}
-
-.achievements-info {
-  text-align: initial;
-  width: 100%;
-  margin-left: 10px;
-}
-.achievements-info p {
-  margin: 0.1em;
-  font-size: 0.8em;
-  color: #999;
-}
-.achievements-info h4 {
+.matches-item h4 {
   margin: 0;
   font-size: 1.2em;
-  /* font-size: 17px;; */
+}
+.player-avatar {
+  margin: 5px;
+  /* width: 50px; */
+}
+.matches-item img {
+  border: 2px solid #ddd;
+  border-radius: 100%;
+  width: 50px;
+  height: 50px;
+}
+[class|="block-user"] {
+  display: flex;
+  width: 100%;
+}
+.block-user-two {
+  display: flex;
+  justify-content: flex-end;
+}
+[class|="player-info"] {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+}
+.me-player p {
+  font-weight: bold;
+}
+.winner.me-player img {
+  border-color: #11bf1d;
+}
+.loser.me-player img {
+  border-color: red;
 }
 </style>

@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { Channel } from './channel.entity';
 import { ChannelController } from './channel.controller';
-import { ChannelDataService } from './channel.service';
+import { ChannelService } from './channel.service';
 
 import { UsersModule } from 'src/users/users.module';
 import { WebsocketModule } from 'src/websocket/websocket.module';
@@ -14,8 +14,8 @@ import { WebsocketModule } from 'src/websocket/websocket.module';
 		forwardRef(() => UsersModule),
 		forwardRef(() => WebsocketModule),
 	],
-	providers: [ ChannelDataService ],
+	providers: [ ChannelService ],
 	controllers: [ ChannelController ],
-	exports: [ ChannelDataService ]
+	exports: [ ChannelService ]
 })
 export class ChannelModule {}

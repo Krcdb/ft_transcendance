@@ -23,3 +23,9 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+img {
+  object-fit: contain;
+}
+</style>

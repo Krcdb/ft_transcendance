@@ -6,13 +6,12 @@ import { User } from '../../users/user.entity';
 import { CreateChannelDto } from './dto/create-channel.dto';
 
 import { UsersService } from 'src/users/users.service';
-import { MessageService } from '../message/message.service';
 
 import { Socket, Server } from "socket.io";
 import { WebsocketService } from "src/websocket/websocket.service";
 
 @Injectable()
-export class ChannelDataService {
+export class ChannelService {
 	constructor(
 		@InjectRepository(Channel)
 		private readonly channelRepository: Repository<Channel>,
@@ -52,6 +51,14 @@ export class ChannelDataService {
 	async findAllPublicChannels() : Promise<Channel[]> {
 		return (await this.channelRepository.find({isPublic: true}));
 	}
+
+	async findAllPublicChannelsOwners() : Promise<User[]> {
+		const channels = await this.findAllPublicChannels();
+		let usersIds: number[] = [];
+		channels.forEach((channel) => usersIds.push(channel.owner));
+		return await this.usersService.getUsersInTab(usersIds);
+	}
+
 	async findAllPrivateChannels() : Promise<Channel[]> {
 		return (await this.channelRepository.find({isPublic: false}));
 	}
@@ -210,7 +217,7 @@ export class ChannelDataService {
 		for (let index = 0; index < allUsers.length; index++) {
 			const element = allUsers[index];
 			console.log("User: " + element);
-			const currentSocket = await this.socketService.getSocketFromUserId(element);
+			const currentSocket = await this.socketService.getSocketFromUserId(element, 'channel');
 			if (currentSocket) {
 				console.log("Socket send to user: " + element);
 				currentSocket.emit('refreshChannelMessages');

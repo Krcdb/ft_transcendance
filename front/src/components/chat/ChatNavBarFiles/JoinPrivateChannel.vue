@@ -3,11 +3,12 @@
 		<hr>
 		<h4>Join private Channel</h4>
 		<br>
-		<p>Channel Name:  <input type="text" v-model="channel.channelName"></p>
-		<p>Channel Password:  <input type="password" v-model="channel.password"></p>
-
-		<button type="button" class="btn btn-secondary"
-		@click="JoinPrivateChannel(this.channel)">Join Channel</button>
+		<form>
+			<p>Channel Name:  <input type="text" v-model="channel.channelName"></p>
+			<p>Channel Password:  <input type="password" v-model="channel.password" autocomplete="on"></p>
+			<button type="button" class="btn btn-secondary"
+			@click="JoinPrivateChannel(this.channel)">Join Channel</button>
+		</form>
 	</div>
 </template>
 

@@ -15,7 +15,6 @@ export default {
             channelsUserIsIn: [],
             channelsUserIsBanned: [],
             channelsUserIsMuted: [],
-            messagesHistory: []
         },
         ////////////
         /// CATS ///
@@ -23,7 +22,7 @@ export default {
         {
             id: 100,
             userName: 'Norminet',
-            matchHistory: [0],
+            matchHistory: ["1"],
             nbVictories: 42,
             nbLosses: 0,
             ladderLevel: 1,
@@ -35,12 +34,11 @@ export default {
             channelsUserIsIn: ['CatClub'],
             channelsUserIsBanned: ['DogClub'],
             channelsUserIsMuted: [],
-            messagesHistory: [1]
         },
         {
             id: 101,
             userName: 'Grumpy',
-            matchHistory: [0, 3, 4],
+            matchHistory: ["1", "4", "5"],
             nbVictories: 24,
             nbLosses: 15,
             ladderLevel: 3,
@@ -52,12 +50,11 @@ export default {
             channelsUserIsIn: ['CatClub'],
             channelsUserIsBanned: ['DogClub'],
             channelsUserIsMuted: [],
-            messagesHistory: [2]
         },
         {
             id: 102,
             userName: 'HelloKitty',
-            matchHistory: [3, 6, 7],
+            matchHistory: ["4", "7", "8"],
             nbVictories: 10,
             nbLosses: 12,
             ladderLevel: 7,
@@ -76,7 +73,7 @@ export default {
         {
             id: 200,
             userName: 'Milou',
-            matchHistory: [1, 4],
+            matchHistory: ["2", "5"],
             nbVictories: 40,
             nbLosses: 1,
             ladderLevel: 2,
@@ -88,12 +85,11 @@ export default {
             channelsUserIsIn: ['DogClub'],
             channelsUserIsBanned: ['CatClub'],
             channelsUserIsMuted: [],
-            messagesHistory: [3]
         },
         {
             id: 201,
             userName: 'Lassie',
-            matchHistory: [1, 5],
+            matchHistory: ["2", "6"],
             nbVictories: 30,
             nbLosses: 10,
             ladderLevel: 4,
@@ -105,12 +101,11 @@ export default {
             channelsUserIsIn: ['DogClub'],
             channelsUserIsBanned: ['CatClub'],
             channelsUserIsMuted: [],
-            messagesHistory: [4]
         },
         {
             id: 202,
             userName: 'Idefix',
-            matchHistory: [7],
+            matchHistory: ["8"],
             nbVictories: 20,
             nbLosses: 7,
             ladderLevel: 6,
@@ -129,7 +124,7 @@ export default {
         {
             id: 300,
             userName: 'Nemo',
-            matchHistory: [2, 5],
+            matchHistory: ["3", "6"],
             nbVictories: 10,
             nbLosses: 1,
             ladderLevel: 5,
@@ -141,12 +136,11 @@ export default {
             channelsUserIsIn: ['CatClub', 'DogClub', 'SecretClub'],
             channelsUserIsBanned: [],
             channelsUserIsMuted: [],
-            messagesHistory: [5]
         },
         {
             id: 301,
             userName: 'Dory',
-            matchHistory: [2, 6],
+            matchHistory: ["3", "7"],
             nbVictories: 12,
             nbLosses: 46,
             ladderLevel: 9,
@@ -158,7 +152,6 @@ export default {
             channelsUserIsIn: ['CatClub', 'DogClub', 'SecretClub'],
             channelsUserIsBanned: [],
             channelsUserIsMuted: [],
-            messagesHistory: [6, 8]
         },
         {
             id: 302,
@@ -175,7 +168,6 @@ export default {
             channelsUserIsIn: ['CatClub', 'DogClub', 'SecretClub'],
             channelsUserIsBanned: [],
             channelsUserIsMuted: [],
-            messagesHistory: [7]
         }
     ],
     Channel: [
@@ -280,61 +272,54 @@ export default {
             dateStr: '1636395155'
         },
     ],
-    // Match: [
-    //     {
-    //         matchId: 0,
-    //         playerOne: 100,
-    //         playerTwo: 101,
-    //         scorePlayerOne: 3,
-    //         scorePlayerTwo: 10,
-    //     },
-    //     {
-    //         matchId: 1,
-    //         playerOne: 200,
-    //         playerTwo: 201,
-    //         scorePlayerOne: 3,
-    //         scorePlayerTwo: 10,
-    //     },
-    //     {
-    //         matchId: 2,
-    //         playerOne: 300,
-    //         playerTwo: 301,
-    //         scorePlayerOne: 3,
-    //         scorePlayerTwo: 10,
-    //     },
-    //     {
-    //         matchId: 3,
-    //         playerOne: 102,
-    //         playerTwo: 101,
-    //         scorePlayerOne: 3,
-    //         scorePlayerTwo: 10,
-    //     },        {
-    //         matchId: 4,
-    //         playerOne: 200,
-    //         playerTwo: 101,
-    //         scorePlayerOne: 3,
-    //         scorePlayerTwo: 10,
-    //     },
-    //     {
-    //         matchId: 5,
-    //         playerOne: 300,
-    //         playerTwo: 201,
-    //         scorePlayerOne: 3,
-    //         scorePlayerTwo: 10,
-    //     },
-    //     {
-    //         matchId: 6,
-    //         playerOne: 102,
-    //         playerTwo: 301,
-    //         scorePlayerOne: 3,
-    //         scorePlayerTwo: 10,
-    //     },
-    //     {
-    //         matchId: 7,
-    //         playerOne: 202,
-    //         playerTwo: 102,
-    //         scorePlayerOne: 3,
-    //         scorePlayerTwo: 10,
-    //     },
-    // ]
+    Match: [
+        {
+            playerOne: 100,
+            playerTwo: 101,
+            scorePlayerOne: 4,
+            scorePlayerTwo: 5,
+        },
+        {
+            playerOne: 200,
+            playerTwo: 201,
+            scorePlayerOne: 3,
+            scorePlayerTwo: 5,
+        },
+        {
+            playerOne: 300,
+            playerTwo: 301,
+            scorePlayerOne: 5,
+            scorePlayerTwo: 1,
+        },
+        {
+            playerOne: 102,
+            playerTwo: 101,
+            scorePlayerOne: 5,
+            scorePlayerTwo: 4,
+        },
+        {
+            playerOne: 200,
+            playerTwo: 101,
+            scorePlayerOne: 2,
+            scorePlayerTwo: 5,
+        },
+        {
+            playerOne: 201,
+            playerTwo: 300,
+            scorePlayerOne: 5,
+            scorePlayerTwo: 0,
+        },
+        {
+            playerOne: 102,
+            playerTwo: 301,
+            scorePlayerOne: 5,
+            scorePlayerTwo: 2,
+        },
+        {
+            playerOne: 102,
+            playerTwo: 202,
+            scorePlayerOne: 1,
+            scorePlayerTwo: 5,
+        },
+    ]
 }

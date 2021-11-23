@@ -66,7 +66,7 @@ export default defineComponent({
 .achievements-wrapper {
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 350px;
 }
 .achievements-wrapper h3 {
   font-size: 20px;

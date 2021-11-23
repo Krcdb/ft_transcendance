@@ -3,7 +3,7 @@ export class Ball {
 	y: number;
 	size: number;
   
-	speed = 5;
+	speed = 3;
 	xVel = 0;
 	yVel = 0;
   
