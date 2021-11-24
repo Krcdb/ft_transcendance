@@ -10,6 +10,7 @@
 /* eslint-disable */
 import { defineComponent } from "vue";
 import io from "socket.io-client";
+import SocketServices from "../services/SocketServices"
 const socket = io("http://localhost:3000", {
 	auth: {
 		token: localStorage.getItem('user-token'),
@@ -19,21 +20,42 @@ const socket = io("http://localhost:3000", {
 });
 
 export default defineComponent({
+	data() {
+    	return {
+			inQueue: false as boolean,
+			
+    	};
+	},
 	methods: {
 		findMatch: function() {
 			console.log("start matchmaking");
+			this.inQueue = true;
 			socket.emit('searchGame');
 		}
 	},
+	watch : {
+		'$route': {
+			handler: function() {
+				if (this.inQueue)
+					socket.emit("playerLeaveMatchmaking");
+				socket.offAny();
+			},
+			deep: true,
+			immediate: true,
+		},
+	},
     mounted() {
+		SocketServices.connectGlobalSocketNotif(socket);
 		socket.on('matchFound', (uuid: string) => {
 			console.log("match found | uuid : ", uuid);
+			this.inQueue = false;
 			this.$router.push("/game/" + uuid);
 		});
 	},
-	destroy() {
+	beforeDestroy() {
+		console.log("before destroy");
 		socket.offAny();
-	}
+	},
 });
 </script>
 
