@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@nestjs/common": "^8.0.10",
+    "@nestjs/core": "^8.0.10"
+  }
+}
