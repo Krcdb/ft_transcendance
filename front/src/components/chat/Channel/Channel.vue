@@ -1,66 +1,58 @@
 <template>
-    <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-    crossorigin="anonymous"
-    />
-    <div class="d-flex container">
-        <div class="container">
-            <div class="d-flex player-list">
-                <div class="align-items-center">
-                    <ul class="list">
-                        <li class="list-item" v-for="player in PlayerList" :key="player.id">
-                            <Avatar :user="player" />
-                            <div class="list-item-content">
-                                <router-link class="profile-link" :to="'/users/' + player.id">
-                                    <h4>{{ player.userName }}</h4>
-                                </router-link>
-                                <div class="me-status" v-if="player.id == user.id">Me</div>
-                                <div class="owner-status" v-if="player.id == channel.owner">
-                                    Owner
-                                </div>
-                                <div class="friend-status" v-if="user.friends.indexOf(player.id) !== -1">
-                                    Friend
-                                </div>
+    <div class="channel-component">
+        <div class="player-list">
+            <ul>
+                <li class="player-list-item" v-for="player in PlayerList" :key="player.id">
+                    <Avatar :user="player" />
+                    <div class="list-item-content">
+                        <router-link class="profile-link" :to="'/users/' + player.id">
+                            <h4>{{ player.userName }}</h4>
+                        </router-link>
+                    </div>
+                    <div>
+                        <div class="status-me" v-if="player.id == user.id">Me</div>
+                        <div class="status-owner" v-if="player.id == channel.owner">
+                            Owner
                         </div>
-                        <div class="user-status">
-                            <div v-if="player.isActive" id="online-circle"></div>
-                            <div v-else id="offline-circle"></div>
+                        <div class="status-friend" v-if="user.friends.indexOf(player.id) !== -1">
+                            Friend
                         </div>
-                    </li>
-                </ul>
-            </div>
+                    </div>
+                    <div class="user-state">
+                        <div v-if="player.isActive" id="online-circle"></div>
+                        <div v-else id="offline-circle"></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="message-box">
+            <h4>{{ channel.channelName }}</h4>
+            <hr />
+            <div class="messages">
+                <ul ref="ScrollBar">
+                    <li class="Plist-group-item" v-for="message in Messages" :key="message.id">
+                    <MessageComponent :message="message" :userId="user.id" />
+                </li>
+            </ul>
+        </div>
+        <div class="send-messge-area">
+            <hr />
+            <textarea
+            placeholder="Type your message here ..."
+            v-model="currentMessage.message"
+            ></textarea>
+            <button
+                type="button"
+                name="button"
+                class="btn btn-secondary m-2"
+                style="width: 75%"
+                @click="SendMessage"
+            >
+            Send
+            </button>
         </div>
     </div>
-    <div class="message-box container d-flex flex-column" id="my-message-box">
-        <h4 class="mt-4">{{ channel.channelName }}</h4>
-        <hr />
-        <div class="Messages">
-            <ul class="list-group" style="height: 512px" ref="ScrollBar">
-                <li class="Plist-group-item" v-for="message in Messages" :key="message.id">
-                <MessageComponent :message="message" :userId="user.id" />
-            </li>
-        </ul>
     </div>
-    <div class="bottom">
-        <hr />
-        <textarea
-        placeholder="Type your message here ..."
-        v-model="currentMessage.message"
-        ></textarea>
-        <button
-        type="button"
-        name="button"
-        class="btn btn-secondary m-2"
-        style="width: 75%"
-        @click="SendMessage"
-        >
-        Envoyer
-    </button>
-</div>
-</div>
-</div>
 </template>
 
 <script lang="ts">
@@ -201,15 +193,10 @@ export default defineComponent({
             await this.getMessages();
 
             let scrollBar = (this.$refs.ScrollBar) as any;
-            scrollBar.scrollTop = scrollBar.scrollHeight;
+            if (scrollBar)
+                scrollBar.scrollTop = scrollBar.scrollHeight;
 
             console.log("Refresh CHannel");
-
-
-            // solution temporaire, utiliser les websockets, ça... c'est vraiment de la giga merde !
-            //await this.getMessages();
-            //this.delay(10000);
-            //await this.checkMessages();
         },
         async init() {
             await this.getUser(Number(localStorage.getItem("user-id")));
@@ -233,72 +220,85 @@ export default defineComponent({
 });
 </script>
 
-<style media="screen" scoped>
-.container img {
+<style scoped>
+.channel-component {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    align-items: center;
+}
+.player-list-item img {
     width: 64px;
     height: 64px;
+    margin: 5px;
+    border: 2px solid #ddd;
+    border-radius: 100%;
 }
-.list {
-    background-color: white;
-    border-radius: 2px;
+.player-list ul {
     list-style: none;
+    max-height: 800px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
 }
-.player-list {
-    position: relative;
-    overflow-x: hidden;
+.player-list-item {
+    display: flex;
+    align-items: center;
+    width: 350px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    margin: 5px;
 }
 .list-item-content {
     margin-left: 20px;
     margin-right: auto;
 }
-.me-status {
+[class|="status"] {
+    font-size: 15px;
+    padding: 3px;
+    margin-block: 2px;
+    margin-inline: 10px;
+    font-weight: bold;
+}
+.status-me {
     border: black solid 2px;
-    font-weight: bold;
-    font-size: 12px;
-    padding: 5px;
 }
-.owner-status {
+.status-owner {
     background-color: black;
-    font-weight: bold;
-    font-size: 12px;
     color: white;
-    padding: 5px;
 }
-.friend-status {
+.status-friend {
     background-color: #4bbd4b;
-    font-weight: bold;
-    font-size: 12px;
     color: white;
-    padding: 5px;
 }
 .profile-link {
     color: black;
     text-decoration: none;
-    align-content: center;
 }
 .profile-link h4 {
     font-size: 18px;
+    margin: 0;
 }
-.list-item {
+.messages ul {
+    height: 600px;
+    width: 500px;
+    padding: 0;
+    list-style: none;
+    margin-left: 3px;
     display: flex;
-    align-content: center;
-    padding-bottom: 5px;
-    padding-top: 5px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    align-items: center;
-}
-.user-status {
-    margin-left: 5%;
-    margin-right: 0%;
-}
-
-.list-group {
+    flex-direction: column;
     overflow-y: auto;
     scroll-behavior: smooth;
 }
-
+.user-state {
+    margin-inline: 5px;
+}
 .message-box {
     border: 1px solid black;
+}
+.message-box h4 {
+    font-size: 20px;
+    margin: 5px;
 }
 textarea {
     width: 95%;
@@ -307,7 +307,8 @@ textarea {
     border: 2px solid #ccc;
     border-radius: 10px;
     background-color: #f8f8f8;
-    font-size: 16px;
+    font-size: 15px;
     resize: none;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
 }
 </style>

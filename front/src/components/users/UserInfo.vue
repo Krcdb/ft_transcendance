@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user.userName" class="edit-form">
+  <div v-if="user.userName" class="user-info-block">
     <div class="user-status">
       <h4>{{ user.userName }}</h4>
       <div class="friend-status" v-if="isFriend">Friend</div>
@@ -72,7 +72,7 @@ export default defineComponent({
   width: 100%;
 }
 .row-bottom {
-  gap: 10%;
+  gap: 50px;
 }
 
 .column {
