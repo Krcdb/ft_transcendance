@@ -66,6 +66,24 @@ export class UsersService {
     return users;
   }
   
+  async getPlayersInTab(playersIds: number[]): Promise<User[]> {
+    const users: User[] = [];
+    for (let i = 0; i < playersIds.length; i++) {
+      users.push(await this.findOne(playersIds[i]));
+    }
+    return users;
+  }
+  
+  // Not classified **************************************************
+  async findAllPlayersMatchHistory(userId: number): Promise<User[]> {
+    const matches = await this.matchService.findAllWithUser(userId);
+    let usersIds: number[] = [];
+    matches.forEach((match) =>
+        usersIds.push(match.playerOne) && usersIds.push(match.playerTwo)
+    );
+    return await this.getPlayersInTab(usersIds.filter((id) => id != userId));
+  }
+
   /////////////////////////////////////////
   // Recherche et gestion d'utilisateurs //
   /////////////////////////////////////////
@@ -92,14 +110,14 @@ export class UsersService {
     const user = await this.usersRepository.findOne(id);
     if (user)
       return true;
-    return false;
-  }
-  
-  async userNameAlreadyExists(name: string): Promise<boolean> {
-    const user = await this.usersRepository.findOne({ userName: name });
-    if (user)
+      return false;
+    }
+    
+    async userNameAlreadyExists(name: string): Promise<boolean> {
+      const user = await this.usersRepository.findOne({ userName: name });
+      if (user)
       return true;
-    return false;
+      return false;
   }
   
   ///////////////////////
@@ -154,15 +172,6 @@ export class UsersService {
     return achievements;
   }
 
-  // Not classified **************************************************
-  async findAllPlayersMatchHistory(userId: number): Promise<User[]> {
-    const matches = await this.matchService.findAllWithUser(userId);
-    let usersIds: number[] = [];
-    matches.forEach((match) =>
-        usersIds.push(match.playerOne) && usersIds.push(match.playerTwo)
-    );
-    return await this.getUsersInTab(usersIds.filter((id) => id != userId));
-  }
 
   ///////////////////////////
   // Historique des matchs //
