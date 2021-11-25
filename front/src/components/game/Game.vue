@@ -2,20 +2,19 @@
 	<div>
     	<div v-if="state === 'loading'">Loading...</div>
     	<div v-if="state === 'loaded'">
-    		<h2>{{player1}}  VS  {{player2}}</h2>
+    		<h2>{{player1.userName}}  VS  {{player2.userName}}</h2>
 			<canvas id="game-canvas"></canvas>
 		</div>
     	<div v-if="state === 'finished'">
 			<h1>Match done</h1>
 			<div v-if="player1Score > player2Score">
-				<h2>{{player1}} win !!</h2>
+				<GameFinished :winner="player1" :loser="player2" />
 			</div>
 			<div v-else>
-				<h2>{{player2}} win !!</h2>
+				<GameFinished :winner="player2" :loser="player1" />
 			</div>
     	</div>
   	</div>
-  
 </template>
 
 <script lang="ts">
@@ -29,6 +28,8 @@ import http from "@/http-common";
 import io from "socket.io-client";
 import ResponseData from "../../types/ResponseData";
 import UserDataService from "../../services/UserDataService";
+import User from "@/types/User";
+import GameFinished from "@/components/game/GameFinished.vue";
 
 const socket = io("http://localhost:3000", {
 	auth: {
@@ -50,22 +51,25 @@ export default defineComponent({
 			gameOptions: {} as GameOptionsInterface,
 			state: 'loading' as string,
 			playerSide: "spectate" as string,
-			player1: "" as string,
-			player2: "" as string,
+			player1: {} as User,
+			player2: {} as User,
     	};
   	},
+	components: {
+		GameFinished,
+	},
 	methods: {
-		async getPlayer1Name(playerId: number) {
+		async getPlayer1(playerId: number) {
 			await UserDataService.get(playerId)
 			.then((response: ResponseData) => {
-				this.player1 = response.data.userName;
+				this.player1 = response.data;
 			});
 		},
 
-		async getPlayer2Name(playerId: number) {
+		async getPlayer2(playerId: number) {
 			await UserDataService.get(playerId)
 			.then((response: ResponseData) => {
-				this.player2 = response.data.userName;
+				this.player2 = response.data;
 			});
 		},
 
@@ -83,8 +87,8 @@ export default defineComponent({
 					this.playerSide = 'left';
 				else if (this.match.playerTwo === Number(localStorage.getItem('user-id')))
 					this.playerSide = 'right';
-				this.getPlayer1Name(this.match.playerOne);
-				this.getPlayer2Name(this.match.playerTwo);
+				this.getPlayer1(this.match.playerOne);
+				this.getPlayer2(this.match.playerTwo);
 				this.state = 'loaded';
 				this.player1Score = this.match.scorePlayerOne;
 				this.player2Score = this.match.scorePlayerTwo;
@@ -99,7 +103,7 @@ export default defineComponent({
 					if (this.game) {
 						this.player1Score = payload.player1.score;
 						this.player2Score = payload.player2.score;
-						if (this.player1Score >= 5 || this.player2Score >= 5)
+						if (this.player1Score >= 5 || this.player2Score >= 5) 
 							this.state = "finished";
 						if (this.state !== "finished")
 							this.game.updateGame(payload);
