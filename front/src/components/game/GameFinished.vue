@@ -1,18 +1,50 @@
 <template>
+  <div v-if="state !== 'none'">
     <div :class="`you-${state}`">
-        <img :src="`@/assets/${state}-icon.png`" />
-        <img src="@/assets/loser-icon.png" />
-        <img src="@/assets/winner-icon.png" />
-        <div :class="`player-${state}`">
-            <Avatar class="player-winner-img" :user="you" />
-        </div>
+        <img v-if="state === 'winner'" class="state-icon" src="@/assets/winner-icon.png" />
+        <img v-else class="state-icon" src="@/assets/loser-icon.png" />
+        <Avatar :class="`player-${state}-img`" :user="you" />
     </div>
     <h1 v-if="state === 'winner'"> You Won !</h1>
     <h1 v-else> You Lost :(</h1>
     <div :class="`other-${state}`"> 
+      <div :class="`other-content-${state}`">
         <Avatar :user="other" />
-        <p>{{other.userName}}</p>
+        <router-link class="profile-link" :to="'/users/' + other.id">
+          <p>{{ other.userName }}</p>
+        </router-link>
+      </div>
+      <div class="other-state">
+        <h3 v-if="state === 'loser'">Won !</h3>
+        <h3 v-else>Lost</h3>
+      </div>
     </div>
+  </div>
+  <div v-else>
+    <h2>Winner</h2>
+    <div class="none-winner">
+      <img class="state-icon" src="@/assets/winner-icon.png" />
+      <div :class="`other-content-winner`">
+        <Avatar :user="winner" />
+        <router-link class="profile-link" :to="'/users/' + winner.id">
+          <p>{{ winner.userName }}</p>
+        </router-link>
+      </div>
+    </div>
+    <h2>Loser</h2>
+    <div class="none-loser">
+      <img class="state-icon" src="@/assets/loser-icon.png" />
+      <div :class="`other-content-loser`">
+        <Avatar :user="loser" />
+        <router-link class="profile-link" :to="'/users/' + loser.id">
+          <p>{{ loser.userName }}</p>
+        </router-link>
+      </div>
+    </div>
+  </div>
+    <router-link to="/Play">
+        <button>Back to Game Page</button>
+    </router-link>
 </template>
 
 <script lang="ts">
@@ -48,45 +80,76 @@ export default defineComponent({
         this.you = this.winner;
         this.other = this.loser;
       }
-      else {
+      else if (this.loser.id === Number(localStorage.getItem("user-id"))) {
           this.state = "loser";
           this.you = this.loser;
           this.other = this.winner;
+      }
+      else {
+        this.state = "none";
       }
   },
 });
 </script>
 
 <style scoped>
-.winner {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-}
-.player-winner-img {
-    width: 100px;
-  height: 100px;
-  border: 5px solid #11bf1d;
-  border-radius: 100%;
-}
-.player-loser img {
+[class|="player"] {
   width: 100px;
   height: 100px;
-  border: 5px solid red;
+  border: 5px solid;
   border-radius: 100%;
 }
+.player-winner-img {
+  border-color: #11bf1d;
+}
+.player-loser-img {
+  border-color: red;
+}
+.state-icon {
+  height: 100px;
+  margin-right: 5%;
+}
 
-[class|="other"] img {
+[class|="other"] {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+[class|="other-content"] {
+  border: 3px solid #ddd;
+  border-radius: 10%;
+}
+
+[class|="other-content"] img {
   width: 50px;
   height: 50px;
   border: 5px solid;
   border-radius: 100%;
+  margin: 5px;
 }
-.other-winner img {
+.other-content-winner img {
   border-color: red;
 }
-.other-loser img {
+.other-content-loser img {
   border-color:  #11bf1d;
+}
+.profile-link {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 18px;
+  align-content: center;
+  margin: 5px;
+}
+.other-state {
+  margin: 5px;
+}
+[class|="none"] {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
 }
 </style>

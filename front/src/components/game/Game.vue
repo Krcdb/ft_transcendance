@@ -2,8 +2,9 @@
 	<div>
     	<div v-if="state === 'loading'">Loading...</div>
     	<div v-if="state === 'loaded'">
-    		<h2>{{player1.userName}}  VS  {{player2.userName}}</h2>
+			<GameHeader :player1="player1" :player2="player2" />
 			<canvas id="game-canvas"></canvas>
+			<h1>&#8593; W  &#8595; S</h1>
 		</div>
     	<div v-if="state === 'finished'">
 			<h1>Match done</h1>
@@ -30,6 +31,7 @@ import ResponseData from "../../types/ResponseData";
 import UserDataService from "../../services/UserDataService";
 import User from "@/types/User";
 import GameFinished from "@/components/game/GameFinished.vue";
+import GameHeader from "@/components/game/GameHeader.vue";
 
 const socket = io("http://localhost:3000", {
 	auth: {
@@ -57,6 +59,7 @@ export default defineComponent({
   	},
 	components: {
 		GameFinished,
+		GameHeader,
 	},
 	methods: {
 		async getPlayer1(playerId: number) {
@@ -65,7 +68,6 @@ export default defineComponent({
 				this.player1 = response.data;
 			});
 		},
-
 		async getPlayer2(playerId: number) {
 			await UserDataService.get(playerId)
 			.then((response: ResponseData) => {
