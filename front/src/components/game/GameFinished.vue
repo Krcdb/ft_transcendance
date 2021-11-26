@@ -42,9 +42,9 @@
       </div>
     </div>
   </div>
-    <router-link to="/Play">
-        <button>Back to Game Page</button>
-    </router-link>
+  <router-link to="/Play">
+      <button class="back-game">Back to Game Page</button>
+  </router-link>
 </template>
 
 <script lang="ts">
@@ -116,10 +116,8 @@ export default defineComponent({
   flex-wrap: wrap;
   align-items: center;
 }
-[class|="other-content"] {
-  border: 3px solid #ddd;
-  border-radius: 10%;
-}
+/* [class|="other-content"] {
+} */
 
 [class|="other-content"] img {
   width: 50px;
@@ -151,5 +149,8 @@ export default defineComponent({
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
+}
+.back-game {
+  margin: 50px;
 }
 </style>

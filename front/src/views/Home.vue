@@ -28,8 +28,8 @@
         it's a piece of history after all !
       </p>
       <p>
-        But because sometime we don't have time for an eleven point game, you can choose in how much points you want to 
-        play your game. To move your paddle up, use the [W] key and [S] key to move down, 
+        But because sometime we don't have time for an eleven point game, You can choose in how many 
+        points to play the game. To move your paddle up, use the [W] key and [S] key to move down, 
         simple as that ! You can ask another player to play with you or wait in a queue and 
         be match with another random user waiting to play !
       </p>
@@ -69,7 +69,7 @@
 
 <style scoped>
 .home img {
-  max-width: 50%;
+  width: 30%;
   height: auto;
 }
 .pong-presentation {
@@ -79,7 +79,7 @@
   float: left;
   object-fit: contain;
   border: white 1px solid;
-  margin-right: 5px;
+  margin: 10px;
 }
 .home-page {
   display: flex;
@@ -111,6 +111,5 @@
 }
 .block-presentation {
   width: 25%;
-
 }
 </style>
