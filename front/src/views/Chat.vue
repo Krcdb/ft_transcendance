@@ -6,7 +6,7 @@
         crossorigin="anonymous"
     >
 
-    <BurgerMenu />
+	<BurgerMenu v-if="1 == 1"></BurgerMenu>
 
     <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
 
@@ -26,8 +26,6 @@
 
     <MenuChat :owner="user"/>
 -->
-
-
 </template>
 
 <script lang="ts">
@@ -44,7 +42,7 @@ import User from "@/types/User";
 import Channel from "@/types/Channel";
 
 import OwnerProfile from '@/components/chat/OwnerProfile.vue';
-import NavBar from "@/components/chat/ChatNavBar.vue";
+import NavBar from "@/components/chat/NavBar.vue";
 import ChatMessage from "@/types/ChatMessage";
 import UserList from "@/components/chat/NavBarFiles/UserList.vue";
 import CreateChannel from "@/components/chat/NavBarFiles/CreateChannel.vue";
@@ -93,11 +91,6 @@ export default defineComponent({
         CreateChannel,
         JoinPrivateChannel,
         BurgerMenu,
-//        ChannelElement, // tmp
-
-        //GlobalChatInfo,
-        //Message,
-        //MenuChat
     },
     methods: {
         HandleGetUserSelected: function(value : User) {
@@ -112,8 +105,7 @@ export default defineComponent({
             localStorage.setItem("user-name", this.user.userName);
         },
         SwitchNavBarSelection(value : number) {
-            //this.navBarSelection = value;
-            localStorage.setItem("chat-nav-bar-selection", String(value));
+            this.navBarSelection = value;
             console.log("Change NavBar Selection to: " + value);
         },
         refreshConnectedUsers() {
