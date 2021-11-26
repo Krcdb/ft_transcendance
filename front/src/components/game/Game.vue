@@ -61,6 +61,16 @@ export default defineComponent({
 		GameFinished,
 		GameHeader,
 	},
+	watch : {
+		'$route': {
+			handler: function() {
+				socket.emit("playerLeaveMatch", this.uuid);
+				socket.offAny();
+			},
+			deep: true,
+			immediate: true,
+		},
+	},
 	methods: {
 		async getPlayer1(playerId: number) {
 			await UserDataService.get(playerId)
@@ -85,23 +95,30 @@ export default defineComponent({
 					console.log("ERROR: match not found !");
 					this.$router.push("/Play");
 				}
+
 				if (this.match.playerOne === Number(localStorage.getItem('user-id')))
 					this.playerSide = 'left';
 				else if (this.match.playerTwo === Number(localStorage.getItem('user-id')))
 					this.playerSide = 'right';
 				this.getPlayer1(this.match.playerOne);
 				this.getPlayer2(this.match.playerTwo);
+				// this.getPlayer1Name(this.match.playerOne);
+				// this.getPlayer2Name(this.match.playerTwo);
 				this.state = 'loaded';
+
 				this.player1Score = this.match.scorePlayerOne;
 				this.player2Score = this.match.scorePlayerTwo;
+
 				if (this.player1Score >= 5 || this.player2Score >= 5)
 					this.state = "finished";
+
 				socket.on(`startGame${this.uuid}`, (payload) => {
 					this.gameOptions = payload;
 					console.log(`game started !!!`);
 					this.game = new Game(socket, this.gameOptions, this.uuid, this.playerSide, String(localStorage.getItem('user-id')));
 				});
-				socket.on("updateGame", (payload) => {
+
+				socket.on(`updateGame`, (payload) => {
 					if (this.game) {
 						this.player1Score = payload.player1.score;
 						this.player2Score = payload.player2.score;
@@ -111,6 +128,7 @@ export default defineComponent({
 							this.game.updateGame(payload);
 					}
 				});
+				
 				socket.emit("playerReady", this.uuid);
 				console.log(`match loaded | uuid : ${this.match.matchId}\nplayer side : ${this.playerSide}`);
 			});
@@ -119,8 +137,9 @@ export default defineComponent({
     mounted() {
 		this.loadData();
 	},
-	destroy() {
+	beforeDestroy() {
+		console.log("before destroy");
 		socket.offAny();
-	}
+	},
 });
 </script>

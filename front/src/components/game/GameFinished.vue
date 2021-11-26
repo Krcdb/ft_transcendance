@@ -11,7 +11,7 @@
       <div :class="`other-content-${state}`">
         <Avatar :user="other" />
         <router-link class="profile-link" :to="'/users/' + other.id">
-          <p>{{ other.userName }}</p>
+          <h2>{{ other.userName }}</h2>
         </router-link>
       </div>
       <div class="other-state">
@@ -27,7 +27,7 @@
       <div :class="`other-content-winner`">
         <Avatar :user="winner" />
         <router-link class="profile-link" :to="'/users/' + winner.id">
-          <p>{{ winner.userName }}</p>
+          <h2>{{ winner.userName }}</h2>
         </router-link>
       </div>
     </div>
@@ -37,7 +37,7 @@
       <div :class="`other-content-loser`">
         <Avatar :user="loser" />
         <router-link class="profile-link" :to="'/users/' + loser.id">
-          <p>{{ loser.userName }}</p>
+          <h2>{{ loser.userName }}</h2>
         </router-link>
       </div>
     </div>
@@ -133,7 +133,7 @@ export default defineComponent({
   border-color:  #11bf1d;
 }
 .profile-link {
-  color: black;
+  color: #2c3e50;
   font-weight: bold;
   text-decoration: none;
   font-size: 18px;
