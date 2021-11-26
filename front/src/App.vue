@@ -45,11 +45,13 @@ ul {
   width: 10px;
   height: 10px;
   border-radius: 50%;
+  margin: 2px;
 }
 #offline-circle {
   background: #ff0000;
   width: 10px;
   height: 10px;
   border-radius: 50%;
+  margin: 3px;
 }
 </style>

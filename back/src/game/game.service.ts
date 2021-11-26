@@ -53,8 +53,22 @@ export class GameService {
 		}
 	}
 
-	async playerJoin(socket: Socket) {
-		this.socketService.printAllSocketsFromPage(socket.handshake.auth.userId, "play");
+	async playerLeaveMatchmaking(socket: Socket) {
+		this.removeFromQueue(socket.data.user);
+	}
+
+	async playerLeaveMatch(socket: Socket, uuid: string) {
+		const game = this.games.get(uuid);
+		if (!game) {
+			console.log(`game not found in playerLeaveMatch`);
+			return ;
+		}
+		if (game.player1.id === socket.data.user?.id) {
+			game.player2Score = 5;
+		}
+		if (game.player2.id === socket.data.user?.id) {
+			game.player1Score = 5;
+		}
 	}
 
 	async playerReady(socket: Socket, uuid: string) {
@@ -77,16 +91,7 @@ export class GameService {
 			game.startGame(this.socketService.server);
 	}
 
-	async createGame(player1: User, player2: User) {
-		const match = await this.matchService.create(player1.id, player2.id);
-		console.log("new match | id : ", match.matchId, " | p1 : ", player1.id, " | p2 : ", player2.id);
-		
-		const game = new Game(player1, player2, GameOptions, match.matchId);
-		this.games.set(game.uuid, game);
-
-		this.gameReady(player1, game.uuid);
-		this.gameReady(player2, game.uuid);
-
+	async createGame(game: Game, match: Match) {
 		setTimeout(() => {
 			if (!game.player1Ready || !game.player2Ready) {
 				this.cancelGame(game);
@@ -120,11 +125,38 @@ export class GameService {
 		this.games.delete(game.uuid);
 	}
 
-	matchPlayers(player1: User, player2: User) {
+	async matchUser(socket: Socket, player2Id: string) {
+		const player1 = socket.data.user;
+		const player2 = await this.usersService.findOne(Number(player2Id));
+		
+		const match = await this.matchService.create(player1.id, player2.id);
+		console.log("new match | id : ", match.matchId, " | p1 : ", player1.id, " | p2 : ", player2.id);
+		
+		const game = new Game(player1, player2, GameOptions, match.matchId);
+		this.games.set(game.uuid, game);
+
+		socket.emit("friendMatchRequest", game.uuid);
+		socket = await this.socketService.getSocketFromUserIdNoPage(player2.id);
+		socket.emit("friendMatchRequest", game.uuid);
+
+		this.createGame(game, match);
+	}
+
+	async matchPlayers(player1: User, player2: User) {
 		this.removeFromQueue(player1);
 		this.removeFromQueue(player2);
 		this.logger.log('match found');
-		this.createGame(player1, player2);
+
+		const match = await this.matchService.create(player1.id, player2.id);
+		console.log("new match | id : ", match.matchId, " | p1 : ", player1.id, " | p2 : ", player2.id);
+		
+		const game = new Game(player1, player2, GameOptions, match.matchId);
+		this.games.set(game.uuid, game);
+	
+		this.gameReady(player1, game.uuid);
+		this.gameReady(player2, game.uuid);
+
+		this.createGame(game, match);
 	}
 
 	async searchGame(socket: Socket) {
@@ -136,6 +168,7 @@ export class GameService {
 	}
 
 	removeFromQueue(user: User) {
+		console.log(`${user.userName} removed from queue`);
 		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(user), 1);
 	}
 

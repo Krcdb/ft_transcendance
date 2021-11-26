@@ -14,7 +14,7 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 	constructor(
     	private readonly websocketService: WebsocketService,
 		private readonly gameService: GameService,
-		private readonly usersSerive: UsersService,
+		private readonly usersService: UsersService,
 		private readonly channelService: ChannelService,
 	) {}
 
@@ -23,13 +23,14 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 	}
 
 	async handleConnection(socket: Socket) {
-		const user = await this.usersSerive.findOne(socket.handshake.auth.userId);
+		const user = await this.usersService.findOne(socket.handshake.auth.userId);
 		if (!user) {
 			this.handleDisconnect(socket);
 		}
-		else
+		else {
 			socket.data.user = user;
 			socket.data.page = socket.handshake.auth.page;
+		}
 	};
 
 	handleDisconnect(socket: Socket) {
@@ -38,14 +39,11 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 		console.log(`${socket.data.user} disconnected`);
 	}
 
+	// Match
+
 	@SubscribeMessage('searchGame')
 	async searchGame(socket: Socket) {
 		return this.gameService.searchGame(socket);
-	}
-	
-	@SubscribeMessage('playerJoin')
-	async playerJoin(socket: Socket) {
-		return this.gameService.playerJoin(socket);
 	}
 
 	@SubscribeMessage('playerInput')
@@ -56,6 +54,21 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 	@SubscribeMessage('playerReady')
 	async playerReady(socket: Socket, payload: any) {
 		return this.gameService.playerReady(socket, payload);
+	}
+
+	@SubscribeMessage('playerLeaveMatch')
+	async playerLeaveMatch(socket: Socket, payload: any) {
+		return this.gameService.playerLeaveMatch(socket, payload);
+	}
+
+	@SubscribeMessage('playerLeaveMatchmaking')
+	async playerLeaveMatchmaking(socket: Socket) {
+		return this.gameService.playerLeaveMatchmaking(socket);
+	}
+
+	@SubscribeMessage('matchUser')
+	async matchUser(socket: Socket, payload: any) {
+		return this.gameService.matchUser(socket, payload);
 	}
 
 	// Chat

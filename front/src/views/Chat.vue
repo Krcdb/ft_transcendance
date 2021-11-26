@@ -49,6 +49,16 @@ import CreateChannel from "@/components/chat/ChatNavBarFiles/CreateChannel.vue";
 import ChannelList from "@/components/chat/ChatNavBarFiles/ChannelList.vue";
 import JoinPrivateChannel from "@/components/chat/ChatNavBarFiles/JoinPrivateChannel.vue"
 
+import io from "socket.io-client";
+import SocketServices from "../services/SocketServices"
+const socket = io("http://localhost:3000", {
+	auth: {
+		token: localStorage.getItem('user-token'),
+		userId: localStorage.getItem('user-id'),
+		page: "chat"
+	}
+});
+
 //import ChannelElement from "@/components/chat/Channel/Channel.vue";
 
 //import GlobalChatInfo from '@/components/chat/GlobalChatInfo.vue';
@@ -121,6 +131,7 @@ export default defineComponent({
         console.log("Setup Chat");
     },
     mounted() {
+		SocketServices.connectGlobalSocketNotif(socket);
         this.refreshConnectedUsers();
         console.log("Mount chat !");
 

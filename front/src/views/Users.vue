@@ -38,6 +38,15 @@ import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 import Avatar from "@/components/users/Avatar.vue";
+import io from "socket.io-client";
+import SocketServices from "../services/SocketServices"
+const socket = io("http://localhost:3000", {
+	auth: {
+		token: localStorage.getItem('user-token'),
+		userId: localStorage.getItem('user-id'),
+		page: "users"
+	}
+});
 
 export default defineComponent({
   name: "users-list",
@@ -53,6 +62,15 @@ export default defineComponent({
       currentId: {} as number,
     };
   },
+  watch : {
+		'$route': {
+			handler: function() {
+				socket.offAny();
+			},
+			deep: true,
+			immediate: true,
+		},
+	},
   methods: {
     retrieveusers() {
       UserDataService.getNonBlocked(Number(localStorage.getItem("user-id")))
@@ -76,6 +94,7 @@ export default defineComponent({
     },
   },
   mounted() {
+    SocketServices.connectGlobalSocketNotif(socket);
     this.currentId = Number(localStorage.getItem("user-id"));
     this.retrieveusers();
   },

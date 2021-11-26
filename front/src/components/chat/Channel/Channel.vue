@@ -71,6 +71,7 @@ import Avatar from "@/components/users/Avatar.vue";
 
 import VueSocketIO from 'vue-socket.io';
 import io from "socket.io-client";
+import SocketServices from "../../../services/SocketServices"
 
 const socket = io("http://localhost:3000", {
 	auth: {
@@ -213,6 +214,7 @@ export default defineComponent({
         },
     },
     mounted() {
+		SocketServices.connectGlobalSocketNotif(socket);
         this.init();
     },
 });

@@ -57,7 +57,7 @@ export default defineComponent({
       UserDataService.turn2FAon(data)
         .then(() => {
           this.error = "";
-          this.$router.push("/profile");
+          this.$router.push("/");
         })
         .catch((e) => {
           this.error = e.response.data.message;

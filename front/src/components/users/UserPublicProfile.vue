@@ -30,9 +30,9 @@
       <router-link v-if="!isblocked" to="/chat">
         <button class="chat-btn">Start a private chat</button>
       </router-link>
-      <router-link v-if="!isblocked" to="/play">
-        <button class="game-btn">Start a game</button>
-      </router-link>
+      <button v-if="!isblocked" class="block-btn" @click="startMatch">
+        Start a Match
+      </button>
     </div>
     <p>{{ message }}</p>
   </div>
@@ -49,6 +49,15 @@ import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 import UserInfo from "./UserInfo.vue";
+import io from "socket.io-client";
+import SocketServices from "../../services/SocketServices"
+const socket = io("http://localhost:3000", {
+	auth: {
+		token: localStorage.getItem('user-token'),
+		userId: localStorage.getItem('user-id'),
+		page: "userpage"
+	}
+});
 
 export default defineComponent({
   name: "User",
@@ -65,6 +74,15 @@ export default defineComponent({
       message: "",
     };
   },
+  watch : {
+		'$route': {
+			handler: function() {
+				socket.offAny();
+			},
+			deep: true,
+			immediate: true,
+		},
+	},
   methods: {
     async getUser() {
       await UserDataService.get(Number(this.$route.params.id))
@@ -165,9 +183,13 @@ export default defineComponent({
           console.log(e);
         });
     },
+    async startMatch() {
+      socket.emit("matchUser", this.user.id);
+    }
   },
   mounted() {
     this.getUser();
+		SocketServices.connectGlobalSocketNotif(socket);
     // console.log("me ? ", this.itsMe);
     // this.getConnectedUser();
   },
