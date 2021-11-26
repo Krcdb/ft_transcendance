@@ -6,7 +6,7 @@
 	S_KEY = 83
 } */
 
-import { Game } from "./Game"
+// import { Game } from "./Game"
 
 export class Paddle {
 	public x: number;

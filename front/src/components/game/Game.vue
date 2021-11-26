@@ -102,8 +102,6 @@ export default defineComponent({
 					this.playerSide = 'right';
 				this.getPlayer1(this.match.playerOne);
 				this.getPlayer2(this.match.playerTwo);
-				// this.getPlayer1Name(this.match.playerOne);
-				// this.getPlayer2Name(this.match.playerTwo);
 				this.state = 'loaded';
 
 				this.player1Score = this.match.scorePlayerOne;

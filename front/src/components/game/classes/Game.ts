@@ -28,7 +28,7 @@ export class Game {
 	player1: Paddle;
 	player2: Paddle;
 	ball: Ball;
-	
+
 	player1Score: number;
 	player2Score: number;
 
@@ -42,7 +42,7 @@ export class Game {
 		this.playerId = playerId;
 		this.canvas = document.getElementById("game-canvas") as HTMLCanvasElement;
 		this.context = this.canvas.getContext("2d");
-        this.context.font = "30px Arial";
+        this.context.font = "50px Arial";
 		
 		this.canvas.width = this.gameOptions.CANVAS_WIDTH;
 		this.canvas.height = this.gameOptions.CANVAS_HEIGHT;
@@ -86,10 +86,12 @@ export class Game {
 
 	draw() {
 		this.context.fillStyle = "#000";
-		this.context.fillRect(0, 0, this.gameOptions.CANVAS_WIDTH, this.gameOptions.CANVAS_HEIGHT);
+		this.context.fillRect(0, 0, this.gameOptions.CANVAS_WIDTH, this.gameOptions.CANVAS_HEIGHT);		
 		this.player1.draw(this.context);
 		this.player2.draw(this.context);
 		this.ball.draw(this.context);
+		this.context.fillRect(this.gameOptions.CANVAS_WIDTH! / 2 - 1, 0, 3, this.gameOptions.CANVAS_HEIGHT!);
+		this.context.font = "40px Avenir";
 		this.context.fillText(this.player1Score, 280, 50);
         this.context.fillText(this.player2Score, 390, 50);
 	}

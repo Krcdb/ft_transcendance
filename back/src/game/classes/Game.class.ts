@@ -226,6 +226,7 @@ export class Game {
 	}
 
 	matchDone(server: Server) {
+		console.log("game match done");
 		this.state = GameState.FINISHED;
 		clearInterval(this.intervalRef);
 		server.to(this.uuid).emit('updateGame', {

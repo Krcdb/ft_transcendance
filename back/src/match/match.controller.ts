@@ -21,6 +21,7 @@ export class MatchController {
     @Post(':id')
     @Public()
     async endMatch(@Param('id') matchId: string, @Body() postMatchDto: PostMatchDto) {
+        console.log("endMatch");
         const match = await this.matchService.findOne(matchId);
         await this.matchService.simulateMatch(matchId, postMatchDto.scorePlayerOne, postMatchDto.scorePlayerTwo);
         await this.matchService.updateUsersAfterGame(matchId);

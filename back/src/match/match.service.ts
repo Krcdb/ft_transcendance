@@ -57,10 +57,14 @@ export class MatchService {
             loserId = winnerId;
             winnerId = tmp;
         }
-        await this.usersService.addMatchToHistory(winnerId, matchId);
-        await this.usersService.addMatchToHistory(loserId, matchId);
-        await this.usersService.addVictory(winnerId);
-        await this.usersService.addDefeat(loserId);
-        await this.usersService.updateLadderLevel(winnerId, loserId);
+        try {
+            await this.usersService.addMatchToHistory(match.playerOne, match);
+            await this.usersService.addMatchToHistory(match.playerTwo, match);
+            // await this.usersService.addVictory(winnerId);
+            // await this.usersService.addDefeat(loserId);
+            await this.usersService.updateLadderLevel(winnerId, loserId);
+        } catch(err) {
+            console.log(err);
+        }
     }
 }

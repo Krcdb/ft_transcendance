@@ -70,6 +70,8 @@ export default defineComponent({
       UserDataService.getMatchHistory(id)
         .then((response: ResponseData) => {
           this.matches = response.data;
+          console.log("1 = ", this.matches.length, "2 = ", this.user.matchHistory.length);
+          this.matches.reverse();
           this.getPlayers(id);
         })
         .catch((e: Error) => {
@@ -80,6 +82,8 @@ export default defineComponent({
       UserDataService.getPlayersMatchHistory(id)
         .then((response: ResponseData) => {
           this.players = response.data;
+          this.players.reverse();
+          console.log("players = ", this.players.length);
         })
         .catch((e: Error) => {
           console.log(e);

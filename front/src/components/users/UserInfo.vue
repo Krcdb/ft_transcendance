@@ -30,8 +30,7 @@
   </div>
 
   <div v-else>
-    <br />
-    <p>Please select an <router-link to="/users">User</router-link></p>
+    <p>Loading...</p>
   </div>
 </template>
 

@@ -4,7 +4,7 @@ export default {
             id: 0,
             userName: 'Illegal',
             matchHistory: [],
-            nbVictories: 42,
+            nbVictories: 0,
             nbLosses: 0,
             ladderLevel: 1,
             achievements: [],

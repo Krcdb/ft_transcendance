@@ -16,8 +16,7 @@
     <p>{{ error }}</p>
   </div>
   <div v-else>
-    <br />
-    <router-link to="/">User</router-link>
+    <p>Loading...</p>
   </div>
   <div id="id01" class="modal">
     <span

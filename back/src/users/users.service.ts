@@ -8,6 +8,7 @@ import * as fs from 'fs';
 import { enumAchievements, allAchievement } from 'src/achievements/achievements';
 import { AchievementsInterface } from 'src/achievements/achievements';
 import { MatchService } from 'src/match/match.service';
+import { Match } from 'src/match/match.entity';
 
 @Injectable()
 export class UsersService {
@@ -176,23 +177,26 @@ export class UsersService {
   ///////////////////////////
   // Historique des matchs //
   ///////////////////////////
-  
-  async addMatchToHistory(userId: number, matchId: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-    user.matchHistory.push(matchId);
-    await this.usersRepository.save(user);
-  }
 
-  async addVictory(winnerId: number) : Promise<void> {
-    const winner = await this.usersRepository.findOne(winnerId);
-    winner.nbVictories += 1;
-    await this.usersRepository.save(winner);
-  }
-  
-  async addDefeat(loserId: number) : Promise<void> {
-    const loser = await this.usersRepository.findOne(loserId);
-    loser.nbLosses += 1;
-    await this.usersRepository.save(loser);
+  async addMatchToHistory(userId: number, match: Match) : Promise<void> {
+    const user = await this.usersRepository.findOne(userId);
+    if (user.matchHistory.indexOf(match.matchId) == -1) {
+      user.matchHistory.push(match.matchId);
+      // if ((match.scorePlayerOne > match.scorePlayerTwo && match.playerOne == user.id) ||
+      //       match.scorePlayerTwo > match.scorePlayerOne && match.playerTwo == user.id) {
+      //     user.nbVictories += 1;
+      // }
+      // else {
+      //   user.nbLosses += 1;
+      // }
+      let newMatchHistory: string[] = [user.matchHistory[0]];
+      for (let i = 1; i < user.matchHistory.length; i++) {
+        if (user.matchHistory[i] != user.matchHistory[i-1]) newMatchHistory.push(user.matchHistory[i]);
+      }
+      user.matchHistory = newMatchHistory
+      //call to the function count Victories ans losses here
+      await this.usersRepository.save(user);
+    }
   }
 
   async updateLadderLevel(winnerId: number, loserId: number) : Promise<void> {
