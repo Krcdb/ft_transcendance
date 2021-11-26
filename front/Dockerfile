@@ -5,12 +5,12 @@ WORKDIR /app
 COPY package*.json /app/
 
 RUN npm install -g npm@latest \
-	&& npm install \
-	&& npm install -g @vue/cli \
+	&& npm install -g @vue/cli && npm update -g @vue/cli \
 	&& npm install vuex --save \
 	&& npm install vue-3-socket.io --save \
 	&& npm install vue-socket.io --save \
-	&& npm install --save axios vue-property-decorator
+	&& npm install --save axios vue-property-decorator \
+	&& npm install
 
 COPY . /app/
 
