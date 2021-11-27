@@ -91,17 +91,6 @@ export default defineComponent({
             currentMessage: {} as Message,
         };
     },
-    sockets: {
-        connect: function () {
-            console.log("socket connected");
-        },
-        customEmit: function (data: number) {
-            console.log("this method was fired by the socket server. eg: io.emit('customEmit', data)",  data);
-        },
-        refreshChannelMessages: function()  {
-            console.log("refresh socket");
-        },
-    },
     components: {
         MessageComponent,
         Avatar,

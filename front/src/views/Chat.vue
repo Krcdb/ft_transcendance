@@ -6,6 +6,8 @@
         crossorigin="anonymous"
     >
 
+	<BurgerMenu v-if="1 == 1"></BurgerMenu>
+
     <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
 
     <NavBar @switchNavBarSelection="SwitchNavBarSelection" v-if="this.userSelected"/>
@@ -24,8 +26,6 @@
 
     <MenuChat :owner="user"/>
 -->
-
-
 </template>
 
 <script lang="ts">
@@ -42,12 +42,14 @@ import User from "@/types/User";
 import Channel from "@/types/Channel";
 
 import OwnerProfile from '@/components/chat/OwnerProfile.vue';
-import NavBar from "@/components/chat/ChatNavBar.vue";
+import NavBar from "@/components/chat/NavBar.vue";
 import ChatMessage from "@/types/ChatMessage";
-import UserList from "@/components/chat/ChatNavBarFiles/UserList.vue";
-import CreateChannel from "@/components/chat/ChatNavBarFiles/CreateChannel.vue";
-import ChannelList from "@/components/chat/ChatNavBarFiles/ChannelList.vue";
-import JoinPrivateChannel from "@/components/chat/ChatNavBarFiles/JoinPrivateChannel.vue"
+import UserList from "@/components/chat/NavBarFiles/UserList.vue";
+import CreateChannel from "@/components/chat/NavBarFiles/CreateChannel.vue";
+import ChannelList from "@/components/chat/NavBarFiles/ChannelList.vue";
+import JoinPrivateChannel from "@/components/chat/NavBarFiles/JoinPrivateChannel.vue";
+
+import BurgerMenu from "@/components/chat/BurgerMenu/BurgerMenu.vue";
 
 import io from "socket.io-client";
 import SocketServices from "../services/SocketServices"
@@ -88,11 +90,7 @@ export default defineComponent({
         ChannelList,
         CreateChannel,
         JoinPrivateChannel,
-//        ChannelElement, // tmp
-
-        //GlobalChatInfo,
-        //Message,
-        //MenuChat
+        BurgerMenu,
     },
     methods: {
         HandleGetUserSelected: function(value : User) {
@@ -140,6 +138,10 @@ export default defineComponent({
         bootstrapScript.setAttribute('integrity', 'sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM');
         bootstrapScript.setAttribute('crossorigin', 'anonymous');
         document.head.appendChild(bootstrapScript);
+
+        let awesomeFontScript = document.createElement('script');
+        awesomeFontScript.setAttribute('src', 'https://kit.fontawesome.com/e575a33b19.js');
+        awesomeFontScript.setAttribute('crossorigin', 'anonymous');
     }
 });
 </script>
