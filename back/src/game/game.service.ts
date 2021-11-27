@@ -168,7 +168,7 @@ export class GameService {
 	}
 
 	removeFromQueue(user: User) {
-		console.log(`${user.userName} removed from queue`);
+		// console.log(`${user.userName} removed from queue`);
 		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(user), 1);
 	}
 

@@ -1,0 +1,37 @@
+import { Repository } from 'typeorm';
+import { Channel } from './channel.entity';
+import { User } from '../../users/user.entity';
+import { CreateChannelDto } from './dto/create-channel.dto';
+import { UsersService } from 'src/users/users.service';
+import { Socket, Server } from "socket.io";
+import { WebsocketService } from "src/websocket/websocket.service";
+export declare class ChannelService {
+    private readonly channelRepository;
+    private readonly usersService;
+    private readonly socketService;
+    constructor(channelRepository: Repository<Channel>, usersService: UsersService, socketService: WebsocketService);
+    create(createChannelDto: CreateChannelDto): Promise<Channel>;
+    findOne(channelName: string): Promise<Channel>;
+    findAll(): Promise<Channel[]>;
+    findAllPublicChannels(): Promise<Channel[]>;
+    findAllPublicChannelsOwners(): Promise<User[]>;
+    findAllPrivateChannels(): Promise<Channel[]>;
+    channelAlreadyExists(channelName: string): Promise<any>;
+    findUserInChannel(channelName: string, userID: number): Promise<boolean>;
+    getUsersinChannel(channelName: string): Promise<User[]>;
+    addUserAsUser(channelName: string, userId: number): Promise<void>;
+    addUserAsAdmin(channelName: string, userId: number): Promise<void>;
+    addUserAsBanned(channelName: string, userId: number): Promise<void>;
+    addUserAsMuted(channelName: string, userId: number): Promise<void>;
+    removeUserAsUser(channelName: string, userId: number): Promise<void>;
+    removeUserAsAdmin(channelName: string, userId: number): Promise<void>;
+    removeUserAsBanned(channelName: string, userId: number): Promise<void>;
+    removeUserAsMuted(channelName: string, userId: number): Promise<void>;
+    changeOwner(channelName: string, newOwnerId: number): Promise<void>;
+    addMessageToHistory(channelName: string, messageId: number): Promise<void>;
+    getMessageHistory(channelName: string): Promise<number[]>;
+    deleteOne(channelName: string): Promise<any>;
+    passwordMatch(channelName: string, password: string): Promise<boolean>;
+    addSocketUser(socket: Socket, channelName: string): Promise<void>;
+    refreshChannelMessages(server: Server, socket: Socket, channelName: string): Promise<any>;
+}
