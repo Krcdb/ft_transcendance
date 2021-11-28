@@ -58,31 +58,21 @@ export default defineComponent({
       type: Object as () => User,
       required: true,
     },
+    matches: {
+      type: Object as () => Match[],
+    },
   },
   data() {
     return {
-      matches: [] as Match[],
+      // matches: [] as Match[],
       players: [] as User[],
     };
   },
   methods: {
-    async getMatches(id: number) {
-      UserDataService.getMatchHistory(id)
-        .then((response: ResponseData) => {
-          this.matches = response.data;
-          console.log("1 = ", this.matches.length, "2 = ", this.user.matchHistory.length);
-          this.matches.reverse();
-          this.getPlayers(id);
-        })
-        .catch((e: Error) => {
-          console.log(e);
-        });
-    },
     async getPlayers(id: number) {
       UserDataService.getPlayersMatchHistory(id)
         .then((response: ResponseData) => {
           this.players = response.data;
-          this.players.reverse();
           console.log("players = ", this.players.length);
         })
         .catch((e: Error) => {
@@ -101,7 +91,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.getMatches(this.user.id);
+    this.getPlayers(this.user.id);
   },
 });
 </script>

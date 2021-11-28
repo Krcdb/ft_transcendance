@@ -77,12 +77,12 @@ export class UsersService {
   
   // Not classified **************************************************
   async findAllPlayersMatchHistory(userId: number): Promise<User[]> {
-    const matches = await this.matchService.findAllWithUser(userId);
+    const matches = (await this.matchService.findAllWithUser(userId)).matches;
     let usersIds: number[] = [];
     matches.forEach((match) =>
         usersIds.push(match.playerOne) && usersIds.push(match.playerTwo)
     );
-    return await this.getPlayersInTab(usersIds.filter((id) => id != userId));
+    return await (await this.getPlayersInTab(usersIds.filter((id) => id != userId)));
   }
 
   /////////////////////////////////////////
@@ -182,19 +182,11 @@ export class UsersService {
     const user = await this.usersRepository.findOne(userId);
     if (user.matchHistory.indexOf(match.matchId) == -1) {
       user.matchHistory.push(match.matchId);
-      // if ((match.scorePlayerOne > match.scorePlayerTwo && match.playerOne == user.id) ||
-      //       match.scorePlayerTwo > match.scorePlayerOne && match.playerTwo == user.id) {
-      //     user.nbVictories += 1;
-      // }
-      // else {
-      //   user.nbLosses += 1;
-      // }
       let newMatchHistory: string[] = [user.matchHistory[0]];
       for (let i = 1; i < user.matchHistory.length; i++) {
         if (user.matchHistory[i] != user.matchHistory[i-1]) newMatchHistory.push(user.matchHistory[i]);
       }
       user.matchHistory = newMatchHistory
-      //call to the function count Victories ans losses here
       await this.usersRepository.save(user);
     }
   }

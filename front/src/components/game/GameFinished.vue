@@ -24,7 +24,7 @@
     <h2>Winner</h2>
     <div class="none-winner">
       <img class="state-icon" src="@/assets/winner-icon.png" />
-      <div :class="`other-content-winner`">
+      <div class="other-content-loser">
         <Avatar :user="winner" />
         <router-link class="profile-link" :to="'/users/' + winner.id">
           <h2>{{ winner.userName }}</h2>
@@ -34,7 +34,7 @@
     <h2>Loser</h2>
     <div class="none-loser">
       <img class="state-icon" src="@/assets/loser-icon.png" />
-      <div :class="`other-content-loser`">
+      <div class="other-content-winner">
         <Avatar :user="loser" />
         <router-link class="profile-link" :to="'/users/' + loser.id">
           <h2>{{ loser.userName }}</h2>

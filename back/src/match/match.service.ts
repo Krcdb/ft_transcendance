@@ -26,13 +26,39 @@ export class MatchService {
     async findAll() : Promise<Match[]> {
         return await this.matchRepository.find();
     }
-    async findAllWithUser(userId: number) : Promise<Match[]> {
-        return await this.matchRepository.find({
+
+    async countVictoriesLosses(userId: number, matches: Match[]) {
+        let victories: number = 0;
+        let losses: number  = 0;
+        for (let i = 0; i < matches.length; i++) {
+          if ((matches[i].scorePlayerOne > matches[i].scorePlayerTwo && matches[i].playerOne == userId) ||
+                matches[i].scorePlayerTwo > matches[i].scorePlayerOne && matches[i].playerTwo == userId) {
+             victories += 1;
+          }
+          else {
+            losses += 1;
+          }
+        }
+        return {
+            victories: victories,
+            losses: losses,
+        }
+    }
+
+    async findAllWithUser(userId: number) : Promise<any> {
+        const matches = await this.matchRepository.find({
             where: [
                 { playerOne: userId }, 
                 { playerTwo: userId },
             ]
         });
+        matches.sort((a: Match, b: Match) => (a.matchId > b.matchId ? -1 : 1));
+        const vicandlos = this.countVictoriesLosses(userId, matches);
+        return {
+            matches: matches,
+            victories: (await vicandlos).victories,
+            losses: (await vicandlos).losses,
+        };
     }
     async findOne(matchId: string): Promise<Match> {
         return await this.matchRepository.findOne(matchId);
