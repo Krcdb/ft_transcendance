@@ -9,9 +9,10 @@
     <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
     <NavBar @switchNavBarSelection="SwitchNavBarSelection" v-if="this.userSelected"/>
     <CreateChannel :owner="user" v-if="this.navBarSelection == 0"/>
-    <ChannelList v-else-if="this.navBarSelection == 1"/>
+    <PublicChannelList v-else-if="this.navBarSelection == 1"/>
     <JoinPrivateChannel :owner="user" v-else-if="this.navBarSelection == 2"/>
-    <UserList :owner="user" v-else-if="this.navBarSelection == 3"/>
+    <ChannelList :user="user" v-else-if="this.navBarSelection == 3"/>
+    <!-- <UserList :owner="user" v-else-if="this.navBarSelection == 3"/> -->
 </template>
 
 <script lang="ts">
@@ -32,8 +33,9 @@ import NavBar from "@/components/chat/NavBar.vue";
 import ChatMessage from "@/types/ChatMessage";
 import UserList from "@/components/chat/NavBarFiles/UserList.vue";
 import CreateChannel from "@/components/chat/NavBarFiles/CreateChannel.vue";
-import ChannelList from "@/components/chat/NavBarFiles/ChannelList.vue";
+import PublicChannelList from "@/components/chat/NavBarFiles/PublicChannelList.vue";
 import JoinPrivateChannel from "@/components/chat/NavBarFiles/JoinPrivateChannel.vue";
+import ChannelList from "@/components/chat/NavBarFiles/ChannelsList.vue";
 
 import BurgerMenu from "@/components/chat/BurgerMenu/BurgerMenu.vue";
 
@@ -73,10 +75,11 @@ export default defineComponent({
         OwnerProfile,
         NavBar,
         UserList,
-        ChannelList,
+        PublicChannelList,
         CreateChannel,
         JoinPrivateChannel,
         BurgerMenu,
+        ChannelList,
     },
     methods: {
         HandleGetUserSelected: function(value : User) {

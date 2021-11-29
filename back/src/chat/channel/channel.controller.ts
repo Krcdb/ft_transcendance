@@ -115,6 +115,18 @@ export class ChannelController {
 	}
 
 	@Public()
+	@Get('/user/:userId')
+	async findAllUserChannels(@Param('userId') userId: number): Promise<Channel[]> {
+	  return (await this.channelService.findAllUserChannels(userId));
+	}
+
+	@Public()
+	@Get('/user/:userId/owners')
+	async findAllUserChannelsOwners(@Param('userId') userId: number): Promise<User[]> {
+	  return (await this.channelService.findAllUserChannelsOwners(userId));
+	}
+
+	@Public()
 	@Get('/infos/:channelName')
 	async getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
 		return (await this.channelService.findOne(channelName));

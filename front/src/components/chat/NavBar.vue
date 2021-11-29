@@ -19,7 +19,7 @@
 			<li>
 				<button
 					:class='currentButtonIsActive(3) ? "btn-select" : "btn-primary"'
-						@click="changeNavSelection(3)">List of friends connected</button>
+						@click="changeNavSelection(3)">List of Channels</button>
 			</li>
 		</ul>
 	</div>
