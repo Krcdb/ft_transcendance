@@ -1,31 +1,17 @@
 <template>
-    <link
+    <!-- <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
         rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
         crossorigin="anonymous"
-    >
-
+    > -->
 	<BurgerMenu v-if="1 == 1"></BurgerMenu>
-
     <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
-
     <NavBar @switchNavBarSelection="SwitchNavBarSelection" v-if="this.userSelected"/>
-
     <CreateChannel :owner="user" v-if="this.navBarSelection == 0"/>
     <ChannelList v-else-if="this.navBarSelection == 1"/>
     <JoinPrivateChannel :owner="user" v-else-if="this.navBarSelection == 2"/>
     <UserList :owner="user" v-else-if="this.navBarSelection == 3"/>
-
-
-    <!--
-    <ChannelElement :owner="user" :channel="currentChannel"/>
-
-    <GlobalChatInfo :nbUsers="nbUsers" :userSelected="userSelected"
-    @refreshConnectedUsers="refreshConnectedUsers"/>
-
-    <MenuChat :owner="user"/>
--->
 </template>
 
 <script lang="ts">

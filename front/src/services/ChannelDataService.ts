@@ -61,10 +61,14 @@ class ChannelDataService {
 
     // a retirer
     canJoinChannel(channelName: string, channelPassword: any) : Promise<any> {
+        console.log("channel name = ", channelName);
+        console.log("password =", channelPassword);
+
         return http.get(`channel/${channelName}/can-join-channel`, channelPassword);
     }
 
     JoinPrivateChannel(channelName: string, channelPassword: any) : Promise<any> {
+        console.log("password =", channelPassword);
         return http.post(`/channel/${channelName}/join-private-channel`, channelPassword);
     }
 }

@@ -1,14 +1,22 @@
 <template>
-	<div class="container-fluid">
-		<hr>
-		<h4>Join private Channel</h4>
-		<br>
-		<form>
-			<p>Channel Name:  <input type="text" v-model="channel.channelName"></p>
-			<p>Channel Password:  <input type="password" v-model="channel.password" autocomplete="on"></p>
-			<button type="button" class="btn btn-secondary"
-			@click="JoinPrivateChannel(this.channel)">Join Channel</button>
-		</form>
+	<div class="join-private-channels">
+		<h2>Join private Channel</h2>
+		<label for="chanel-name" >Channel Name
+		<input 
+			type="text"
+			required
+			id="channel-name"
+			v-model="channel.channelName"
+		></label>
+		<label for="password">Password
+		<input 
+			type="password"
+			id="password"
+			v-model="channel.password"
+			autocomplete="on"
+		></label>
+		<button type="button" class="join-btn"
+			@click="JoinPrivateChannel()">Join Channel</button>
 	</div>
 </template>
 
@@ -28,25 +36,30 @@ export default defineComponent({
 		};
 	},
 	methods: {
-		JoinPrivateChannel(channel: Channel) {
+		JoinPrivateChannel() {
 			let data = {
-				password: channel.password,
+				password: this.channel.password,
 			};
-			ChannelDataService.canJoinChannel(channel.channelName, data)
+			console.log("data = ", data);
+			ChannelDataService.JoinPrivateChannel(this.channel.channelName, data)
 			.then((response : ResponseData) => {
 				console.log("Can join channel !");
-				localStorage.setItem("channel-name", channel.channelName);
-				this.$router.push("/Channel/" + channel.channelName);
-
+				localStorage.setItem("channel-name", this.channel.channelName);
+				this.$router.push("/Channel/" + this.channel.channelName);
 			})
-            .catch((e: Error) => {
-                console.log("Error: " + e);
+            .catch((e) => {
+                console.log("Error: " + e.response.data.message);
             });
 		},
 	}
 });
 </script>
 
-<style media="screen">
-
+<style scoped>
+.join-private-channels {
+	display: flex;
+	flex-direction: column;
+    align-items: center;
+	gap: 10px;
+}
 </style>

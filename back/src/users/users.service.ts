@@ -82,7 +82,7 @@ export class UsersService {
     matches.forEach((match) =>
         usersIds.push(match.playerOne) && usersIds.push(match.playerTwo)
     );
-    return await (await this.getPlayersInTab(usersIds.filter((id) => id != userId)));
+    return (await this.getPlayersInTab(usersIds.filter((id) => id != userId)));
   }
 
   /////////////////////////////////////////
@@ -128,7 +128,7 @@ export class UsersService {
   // AVATAR //
   async setAvatar(id: number, avatarUrl: string): Promise<User>  {
     this.DeleteOldAvatarFile(id);
-    await this.usersRepository.update(id, {avatar: avatarUrl});
+    const tmp = await this.usersRepository.update(id, {avatar: avatarUrl});
     return this.setAchievementAsync(id, enumAchievements.UPLOAD_AVATAR);
   }
 
@@ -137,12 +137,12 @@ export class UsersService {
   }
   
   async DeleteOldAvatarFile (id: number) {
-    const myAvatar = await this.usersRepository.findOne(id).then((user) => { return user.avatar;});
+    const myAvatar = await this.usersRepository.findOne(id).then((user: User) => { return user.avatar;});
     if (myAvatar)
     {
       fs.unlink("avatars/" + myAvatar, (err) => {
         if (err) 
-        throw err;
+          console.log(err);
       });
     }
   }

@@ -1,76 +1,67 @@
 <template id="">
-	<div class="container-fluid">
-		<hr>
-		<h4>Channel list</h4>
-
+	<div class="channel-list-page">
+		<h2>Public Channels list</h2>
 		<div class="no-channel" v-if="this.ChannelList.length <= 0">
 			<h6>No channel found...</h6>
 		</div>
-
-		<div class="input-group mb-3 justify-content-center">
+		<div class="challen-list-container">
 			<input type="text"
 				placeholder="Search a channel..."
 				v-model="search"
 				@input="searchhandler"
 			>
-			</div>
-			<div class="channel-info container justify-content-center">
-				<ul class="channel-info list-group">
-					<li class="list-group-item" v-for="(channel, index) in filteredChannelList" :key="channel.id">
-						<div class="d-flex align-items-center" v-if="channel.isPublic">
-							<div class="row col-sm-2">
-								<h4>{{ channel.channelName }}</h4>
-								<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`" alt="" width="128">
-							</div>
-							<div class="row col-sm-4">
-                                <p>Owner</p>
-                                <div class="mini-user-info" v-if="getOwnerByID(channel.owner)">
-
-                                    <Avatar :user="getOwnerByID(channel.owner)" />
-                                      <h4>{{ getOwnerByID(channel.owner).userName }}</h4>
-								    <p class="public-tag" v-if="channel.isPublic">Public</p>
-								    <p v-else class="private-tag">Private</p>
-                                </div>
-							</div>
-
-							<div class="d-flex flex-column">
-
-								<!-- PASSWORD -->
-								<div class="d-flex flex-row">
-                                    <form class="password-input">
-                                        <input v-model="password[index]" :id="`password-${index}`" placeholder="password" type="password" autocomplete="on"> <!-- v-if="channel.password != null" -->
-                                        <div class="alert alert-danger" role="alert" v-if="errorMSG[index]" style="height:52px;margin-left:12px;transform:translate(0, -20%)">
-                                            <p>{{ errorMSG[index] }}</p>
-                                        </div>
-                                    </form>
-								</div>
-
-								<div class="d-flex flex-row">
-
-									<button class="btn btn-secondary m-2" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
-									type="button" name="button"
-									@click="joinChannel(channel, this.password[index], index)">
-									Rejoindre</button>
-
-									<div class="m-2" v-if="channel.owner === this.curenntUserId">
-										<button type="button" name="button" class="btn btn-danger"
-										@click="deleteChannel(channel)">Supprimer le salon</button>
-										<div class="p-auto mx-auto" style="margin: 15px;" v-if="this.isDeletingChannel">
-											<div class="spinner-border" role="status">
-												<span class="sr-only"></span>
-											</div>
-										</div>
-									</div>
-									<div class="d-flex justify-content-center m-4" v-if="isLoading[index] === true">
-										<div class="spinner-border" role="status">
-											<span class="sr-only"></span>
-										</div>
-									</div>
-								</div>
-							</div>
+		</div>
+		<div class="channel-list-div">
+			<ul class="channel-list">
+				<li class="channel-list-item" v-for="(channel, index) in filteredChannelList" :key="channel.channelName">
+					<div class="channel-name">
+						<h4>{{ channel.channelName }}</h4>
+						<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`">
 					</div>
-				</li>
-			</ul>
+					<div class="channel-owner">
+                        <p>Owner</p>
+                        <div class="mini-user-info" v-if="getOwnerByID(channel.owner)">
+                            <Avatar :user="getOwnerByID(channel.owner)" />
+                            <router-link class="profile-link" :to="'/users/' + channel.owner">
+                                <h4>{{ getOwnerByID(channel.owner).userName }}</h4>
+                            </router-link>
+                        </div>
+					</div>
+                    <div class="property-tag">
+                        <p class="public-tag" v-if="channel.isPublic">Public</p>
+						<!-- <p v-else class="private-tag">Private</p> -->
+                    </div>
+					<div class="pass-btn-div">
+						<!-- PASSWORD -->
+                        <form class="password-input">
+                            <input v-model="password[index]" :id="`password-${index}`" placeholder="password" type="password" autocomplete="on"> <!-- v-if="channel.password != null" -->
+                            <!-- <div class="alert alert-danger" role="alert" v-if="errorMSG[index]" style="height:52px;margin-left:12px;transform:translate(0, -20%)"> -->
+                                <p>{{ errorMSG[index] }}</p>
+                            <!-- </div> -->
+                        </form>
+						<div class="btn-div">
+							<button class="joined-btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
+							type="button" name="button"
+							@click="joinChannel(channel, this.password[index], index)">
+							Rejoindre</button>
+							<div class="delete-btn" v-if="channel.owner === this.curenntUserId">
+								<button type="button" name="button"
+								@click="deleteChannel(channel)">Supprimer le salon</button>
+								<!-- <div class="p-auto mx-auto" style="margin: 15px;" v-if="this.isDeletingChannel">
+									<div class="spinner-border" role="status">
+										<span class="sr-only"></span>
+									</div>
+								</div> -->
+							</div>
+							<!-- <div class="d-flex justify-content-center m-4" v-if="isLoading[index] === true">
+								<div class="spinner-border" role="status">
+									<span class="sr-only"></span>
+								</div>
+							</div> -->
+						</div>
+					</div>
+			    </li>
+		    </ul>
 		</div>
 	</div>
 </template>
@@ -201,7 +192,6 @@ export default defineComponent({
   align-items: center;
   border-radius: 10%;
 }
-
 .mini-user-info.profile-link {
   color: black;
   text-decoration: none;
@@ -213,119 +203,64 @@ export default defineComponent({
     width: 50px;
     height: 50px;
 }
+.mini-user-info h4 {
+    margin: 0;
+}
 .public-tag {
   background-color: #4bbd4b;
   font-weight: bold;
   color: white;
   padding: 5px;
+  border-radius: 10px;
 }
 .channel-info {
     border: 0;
 }
-/*
 .channel-list {
-    display: block;
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
-    padding: 0 auto;
-    animation: fadeIn 0.5s;
-}
-
-@keyframes fadeIn {
-    0% {opacity:0;}
-    100% {opacity:1;}
-}
-
-.channel-list-list {
-    display: inline-block;
-    width: 50%;
-    margin: 0 auto;
-}
-
-.channel-list .no-channel {
-    display: block;
-    width: 25%;
-    margin: 0 auto;
-    background-color: orangered;
-    color: white;
-}
-
-.channel-list .no-channel h4 {
-    padding: 15px;
-    text-transform: uppercase;
-}
-
-.channel-list-list .channel-list-element {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    padding: 25px;
-    border-bottom: 3px solid black;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    height: 192px;
-}
-
-
-.channel-list-list .channel-list-element .channel-info-left {
     display: flex;
     flex-direction: column;
-    color: black;
-    //background-color: yellow;
-    margin: 0 auto;
-    position: relative;
-    text-align: center;
-    height: 100%;
-    justify-content: center;
-    align-items: left;
+    align-items: center;
 }
-
-.channel-list-list .channel-list-element .channel-info-center {
+.channel-list-item {
     display: flex;
-    flex-direction: column;
-    color: black;
-    //background-color: red;
-    margin: 0 auto;
-    position: relative;
-    text-align: left;
-    height: 100%;
     justify-content: center;
-    align-items: left;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 10px;
+    width: 70%;
 }
-
-.channel-list-list .channel-list-element .channel-info-right {
-    display: flex;
-    flex-direction: column;
-    color: black;
-    //background-color: blue;
-    margin: 0 auto;
-    position: relative;
-    text-align: left;
-    height: 100%;
-    justify-content: center;
-    align-items: left;
+.channel-name h4 {
+    margin: 0;
 }
-
-.channel-list-list .channel-list-element img {
-    width: 128px;
-    border: 4px solid lightgreen;
-    border-radius: 5px;
-    background-color: rgb(40,40,40);
+.channel-name img {
+    width: 100px;
 }
-.channel-list-list .channel-list-element h4 {
-    font-size: 24px;
-    width: auto;
-    color: black;
+.channel-owner p {
+    margin: 0;
 }
-
-.btn-green {
-    background-color: lightgreen;
+.mini-user-info p{
+    margin: 10px;
 }
-.btn-red {
-    background-color: darkred;
+.channel-list-page input[type="text"],
+.channel-list-page input[type="password"] {
+  padding: 6px;
 }
-*/
-
+.password-input p {
+    margin: 0;
+    color: red;
+}
+.profile-link {
+  color: black;
+  text-decoration: none;
+  font-size: 18px;
+  align-content: center;
+}
+.delete-btn button {
+  background-color: #f44336;
+  font-size: 15px;
+}
 </style>

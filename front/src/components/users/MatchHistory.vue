@@ -15,7 +15,9 @@
               </div>
               <div class="player-info-one">
                 <p v-if="match.playerOne === user.id">{{ user.userName }}</p>
-                <p v-else>{{ players[index].userName }}</p>
+                <router-link v-else class="profile-link" :to="'/users/' + players[index].id">
+                  <p>{{ players[index].userName }}</p>
+                </router-link>
                 <h4>{{ match.scorePlayerOne }}</h4>
               </div>
             </div>
@@ -23,7 +25,9 @@
             <div :class="`block-user-two ${getMeClass(match.playerTwo)} ${getWinnerClass(match.scorePlayerTwo, match.scorePlayerOne)}`">
               <div class="player-info-two">
                 <p v-if="match.playerTwo === user.id">{{ user.userName }}</p>
-                <p v-else>{{ players[index].userName }}</p>
+                <router-link v-else class="profile-link" :to="'/users/' + players[index].id">
+                  <p>{{ players[index].userName }}</p>
+                </router-link>
                 <h4>{{ match.scorePlayerTwo }}</h4>
               </div>
               <div class="player-avatar">
@@ -155,11 +159,18 @@ export default defineComponent({
 }
 .me-player p {
   font-weight: bold;
+  font-size: 18px;
 }
 .winner.me-player img {
   border-color: #11bf1d;
 }
 .loser.me-player img {
   border-color: red;
+}
+.profile-link {
+  color: black;
+  text-decoration: none;
+  align-content: center;
+  font-size: 16px;
 }
 </style>

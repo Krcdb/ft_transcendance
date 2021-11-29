@@ -1,41 +1,38 @@
 <template>
-
-	<div class="container-fluid">
-		<div class="">
-			<ul class="list-group list-group-horizontal justify-content-center">
-				<li class="list-group-item">
-					<button class="btn btn-primary"
-						:class='currentButtonIsActive(0) ? "btn-success" : "btn-primary"'
-							@click="changeNavSelection(0)">Create a channel</button>
-				</li>
-				<li class="list-group-item">
-					<button class="btn btn-primary"
-						:class='currentButtonIsActive(1) ? "btn-success" : "btn-primary"'
-							@click="changeNavSelection(1)">Join a channel</button>
-				</li>
-				<li class="list-group-item">
-					<button class="btn btn-primary"
-						:class='currentButtonIsActive(2) ? "btn-success" : "btn-primary"'
-							@click="changeNavSelection(2)">Join a private channel</button>
-				</li>
-				<li class="list-group-item">
-					<button class="btn btn-primary"
-						:class='currentButtonIsActive(3) ? "btn-success" : "btn-primary"'
-							@click="changeNavSelection(3)">List of friends connected</button>
-				</li>
-			</ul>
-		</div>
+	<div class="chat-navbar">
+		<ul>
+			<li>
+				<button
+					:class='currentButtonIsActive(0) ? "btn-select" : "btn-primary"'
+						@click="changeNavSelection(0)">Create a channel</button>
+			</li>
+			<li>
+				<button
+					:class='currentButtonIsActive(1) ? "btn-select" : "btn-primary"'
+						@click="changeNavSelection(1)">Join a public channel</button>
+			</li>
+			<li>
+				<button
+					:class='currentButtonIsActive(2) ? "btn-select" : "btn-primary"'
+						@click="changeNavSelection(2)">Join a private channel</button>
+			</li>
+			<li>
+				<button
+					:class='currentButtonIsActive(3) ? "btn-select" : "btn-primary"'
+						@click="changeNavSelection(3)">List of friends connected</button>
+			</li>
+		</ul>
 	</div>
 </template>
 
 <script lang="ts">
 
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 export default defineComponent({
 	name: "char-nav-bar",
 	data() {
 		return ({
-			nav: -1 as number,
+			nav: 1 as number,
 		});
 	},
 	methods: {
@@ -46,13 +43,40 @@ export default defineComponent({
 		currentButtonIsActive(value: number) {
 			return (this.nav === value);
 		},
+	},
+	mounted() {
+		this.changeNavSelection(this.nav);
 	}
 });
 
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css?family=Varela+Round");
+.chat-navbar ul {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-primary {
+	font-weight: bold;
+	border-radius: 5px;
+	background-color: white;
+	color: black;
+	border: solid 2px black;
+}
+.btn-select {
+	font-weight: bold;
+	border-radius: 5px;
+	background-color: black;
+	color: white;
+	border: solid 2px black;
+
+}
+.btn-primary:hover {
+	background-color: rgb(206, 206, 206);
+}
+/* @import url("https://fonts.googleapis.com/css?family=Varela+Round"); */
 
 /*
 .chat-nav-bar {

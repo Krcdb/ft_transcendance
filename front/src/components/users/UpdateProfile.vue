@@ -41,7 +41,7 @@
         </div>
         <div class="update-username">
           <h3>Change User Name</h3>
-          <label for="userName">
+          <label>
             <input
               type="text"
               maxlength="12"
@@ -64,8 +64,7 @@
   </div>
 
   <div v-else>
-    <br />
-    <router-link to="/login"><button>Login</button></router-link>
+    <p>Loading...</p>
   </div>
 </template>
 

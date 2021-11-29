@@ -12,7 +12,6 @@
     </div>
     <div class="nav-wrapper">
       <ul>
-        <!-- <li><router-link class="active" to="/">Home</router-link></li> -->
         <li><router-link to="/Play">Play</router-link></li>
         <li><router-link to="/chat">Chat</router-link></li>
         <li><router-link to="/users">Users</router-link></li>

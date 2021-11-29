@@ -30,16 +30,14 @@
       <router-link v-if="!isblocked" to="/chat">
         <button class="chat-btn">Start a private chat</button>
       </router-link>
-      <button v-if="!isblocked" class="block-btn" @click="startMatch">
+      <button v-if="!isblocked" class="match-btn" @click="startMatch">
         Start a Match
       </button>
     </div>
     <p>{{ message }}</p>
   </div>
-
   <div v-else>
-    <br />
-    <p>Please select an <router-link to="/users">User</router-link></p>
+    <p>Loading...</p>
   </div>
 </template>
 
@@ -188,6 +186,7 @@ export default defineComponent({
     }
   },
   mounted() {
+    console.log("here");
     this.getUser();
 		SocketServices.connectGlobalSocketNotif(socket);
     // console.log("me ? ", this.itsMe);
