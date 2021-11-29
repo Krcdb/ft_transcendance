@@ -13,7 +13,7 @@
             <ul class="nav-list">
                 <li class="element">
                     <i class='bx bx-search' ></i>
-                    <input type="text" placeholder="Search...">
+                    <input class="search-bar" type="text" placeholder="Search...">
                     <span class="tooltip">Search</span>
                 </li>
                 <li class="element">
@@ -557,6 +557,8 @@ export default defineComponent({
     z-index: 3;
     transform: translate(2px, 2px);
 }
-
+.search-bar {
+    max-width: 150px;
+}
 
 </style>
