@@ -31,6 +31,10 @@
                     <span class="tooltip">Profile</span>
                 </li>
                 <li class="element">
+                    <!-- Notifications -->
+                    <span class="round-circle" v-if="this.nbNotifications >= 0">
+                        <p>{{ this.nbNotifications }}</p>
+                    </span>
                     <router-link to="#">
                         <i class='bx bx-chat' ></i>
                         <span class="links_name">Messages</span>
@@ -38,6 +42,10 @@
                     <span class="tooltip">Messages</span>
                 </li>
                 <li class="element">
+                    <!-- Achievements -->
+                    <span class="round-circle" v-if="this.nbAchievements >= 0">
+                        <p>{{ this.nbAchievements }}</p>
+                    </span>
                     <router-link to="#">
                         <i class='bx bx-trophy' ></i>
                         <span class="links_name">Achievements</span>
@@ -54,6 +62,25 @@
                 <li class="li_log_out">
                     <i class='bx bx-log-out' id="log_out" ></i>
                 </li>
+
+                <hr class="element">
+
+                <span class="sep_friends">
+                    <i class='bx bxs-user-circle'></i>
+                </span>
+
+                <div class="friend_list">
+                    <li v-for="friend in FriendList"  :key="friend" class="element">
+                        <span :class='friend.isActive ? "round-circle-online" : "round-circle-offline"'></span>
+                        <span :class='friend.isActive ? "round-circle-sub-online" : "round-circle-sub-offline"'></span>
+                    <router-link to="#">
+                        <Avatar :user="friend" class="friend_image"/>
+                        <span class="links_name">{{ friend.userName }}</span>
+                    </router-link>
+                    <span class="tooltip">{{ friend.userName }}</span>
+                    </li>
+                </div>
+
             </ul>
         </div>
 
@@ -76,7 +103,12 @@ export default defineComponent({
         return {
             user: {} as User,
             FriendList: [] as User[],
+            nbNotifications: 0,
+            nbAchievements: 0,
         };
+    },
+    components: {
+        Avatar,
     },
     methods: {
         async getUser(id: number) {
@@ -93,6 +125,8 @@ export default defineComponent({
             await UserDataService.getFriends(id)
             .then((response: ResponseData) => {
                 this.FriendList = response.data;
+                this.FriendList.sort((a, b) => (a.userName > b.userName ? -1 : 1));
+                this.FriendList.sort((a, b) => (a.isActive && !b.isActive ? -1 : 1));
             })
             .catch((e: Error) => {
                 console.log(e);
@@ -399,4 +433,130 @@ export default defineComponent({
         display: none;
     }
 }
+
+/* NOTIFICATIONS (Round circle) */
+
+.round-circle {
+    display: inline-block;
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    background-color: rgb(240, 62, 62);
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+    margin-left: -30px;
+
+    left: 30px;
+    z-index: 3;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+.round-circle p {
+    color: #fff;
+    font-weight: 500;
+    font-family: "Poppins" , sans-serif;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Friends Separator */
+
+.sep_friends {
+
+    display: block;
+    position: relative;
+
+    background: #1d1b31;
+    width: 100%;
+    height: 64px;
+    left: 0px;
+    margin-left: 0px;
+
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    font-size: 22px;
+    font-size: 23px;
+    text-align: center;
+    transition: all 0.25s ease;
+}
+
+/* Friends list */
+
+.friend_list {
+    margin-top: 78px;
+    transition: all 0.25s ease;
+    text-align: center;
+}
+
+.friend_image {
+    border-radius: 12px;
+}
+
+/* Friends status */
+
+.round-circle-online {
+    display: inline-block;
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    background-color: rgb(240, 62, 62);
+    background-color: white;
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+    margin-left: -30px;
+    left: 30px;
+    z-index: 3;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.round-circle-sub-online {
+    display: inline-block;
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    background-color: rgb(123, 237, 95);
+    border-radius: 50%;
+    z-index: 2;
+    pointer-events: none;
+    margin-left: -30px;
+    left: 30px;
+    z-index: 3;
+    transform: translate(2px, 2px);
+}
+
+.round-circle-offline {
+    display: inline-block;
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    background-color: rgb(240, 62, 62);
+    background-color: white;
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+    margin-left: -30px;
+    left: 30px;
+    z-index: 3;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.round-circle-sub-offline {
+    display: inline-block;
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    background-color: rgb(240, 62, 62);
+    border-radius: 50%;
+    z-index: 2;
+    pointer-events: none;
+    margin-left: -30px;
+    left: 30px;
+    z-index: 3;
+    transform: translate(2px, 2px);
+}
+
+
 </style>
