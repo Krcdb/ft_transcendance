@@ -6,9 +6,9 @@ COPY package*.json /app/
 
 RUN npm install -g npm@latest \
 	&& npm install -g @vue/cli && npm update -g @vue/cli \
-	&& npm install vuex --save \
-	&& npm install vue-3-socket.io --save \
-	&& npm install vue-socket.io --save \
+	&& npm install --save vuex  \
+	&& npm install --save vue-3-socket.io  \
+	&& npm install --save vue-socket.io \
 	&& npm install --save axios vue-property-decorator \
 	&& npm install
 
