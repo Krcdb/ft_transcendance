@@ -35,9 +35,7 @@
 						<!-- PASSWORD -->
                         <form class="password-input">
                             <input v-model="password[index]" :id="`password-${index}`" placeholder="password" type="password" autocomplete="on"> <!-- v-if="channel.password != null" -->
-                            <!-- <div class="alert alert-danger" role="alert" v-if="errorMSG[index]" style="height:52px;margin-left:12px;transform:translate(0, -20%)"> -->
-                                <p>{{ errorMSG[index] }}</p>
-                            <!-- </div> -->
+                            <p>{{ errorMSG[index] }}</p>
                         </form>
 						<div class="btn-div">
 							<button class="joined-btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
@@ -46,18 +44,11 @@
 							Rejoindre</button>
 							<div class="delete-btn" v-if="channel.owner === user.id">
 								<button type="button" name="button"
-								@click="deleteChannel(channel)">Supprimer le salon</button>
-								<!-- <div class="p-auto mx-auto" style="margin: 15px;" v-if="this.isDeletingChannel">
-									<div class="spinner-border" role="status">
-										<span class="sr-only"></span>
-									</div>
-								</div> -->
+								@click="deleteChannel(channel, index)">Supprimer le salon</button>
 							</div>
-							<!-- <div class="d-flex justify-content-center m-4" v-if="isLoading[index] === true">
-								<div class="spinner-border" role="status">
-									<span class="sr-only"></span>
-								</div>
-							</div> -->
+                            <div id="loader">
+                                <div v-if="isLoading[index] === true" id="loader-wheel"></div>
+                            </div>
 						</div>
 					</div>
 			    </li>
@@ -85,7 +76,6 @@ export default defineComponent({
             OwnersList: [] as User[],
             ChannelList: [] as Channel[],
 			filteredChannelList: [] as Channel[],
-            isDeletingChannel: false,
 			search: "",
 			errorMSG: [] as string[],
 			password: [] as string[],
@@ -125,18 +115,18 @@ export default defineComponent({
         async delay(ms: number) {
             return new Promise( resolve => setTimeout(resolve, ms) );
         },
-        async deleteChannel(channel: Channel) {
-            this.isDeletingChannel = true;
+        async deleteChannel(channel: Channel, index: number) {
+            this.isLoading[index] = true;
 			await this.delay(500);
             ChannelDataService.deleteChannel(channel.channelName)
             .then((response : ResponseData) => {
                 console.log("Channel Successfully deleted");
                 this.refreshChannelList();
-                this.isDeletingChannel = false;
+                this.isLoading[index] = false;
             })
             .catch((e: Error) => {
                 console.log("Error: " + e);
-                this.isDeletingChannel = false;
+                this.isLoading[index] = false;
             });
         },
 		async searchhandler() {

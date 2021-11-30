@@ -1,6 +1,14 @@
 <template id="">
 	<div class="channel-list-page">
 		<h2>Public Channels list</h2>
+        <button class="reveal-btn" @click="revealElement('join-private'); hideElement('create-channel');">Join Private Channel</button>
+        <button class="reveal-btn" @click="revealElement('create-channel'); hideElement('join-private');">Create Channel</button>
+        <div id="join-private">
+            <JoinPrivateChannel />
+        </div>
+        <div id="create-channel">
+            <CreateChannel :user="user"/>
+        </div>
 		<div class="no-channel" v-if="this.ChannelList.length <= 0">
 			<h6>No channel found...</h6>
 		</div>
@@ -15,7 +23,7 @@
 			<ul class="channel-list">
 				<li class="channel-list-item" v-for="(channel, index) in filteredChannelList" :key="channel.channelName">
 					<div class="channel-name">
-						<h4>{{ channel.channelName }}</h4>
+						<h3>{{ channel.channelName }}</h3>
 						<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`">
 					</div>
 					<div class="channel-owner">
@@ -35,9 +43,7 @@
 						<!-- PASSWORD -->
                         <form class="password-input">
                             <input v-model="password[index]" :id="`password-${index}`" placeholder="password" type="password" autocomplete="on"> <!-- v-if="channel.password != null" -->
-                            <!-- <div class="alert alert-danger" role="alert" v-if="errorMSG[index]" style="height:52px;margin-left:12px;transform:translate(0, -20%)"> -->
                                 <p>{{ errorMSG[index] }}</p>
-                            <!-- </div> -->
                         </form>
 						<div class="btn-div">
 							<button class="joined-btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
@@ -46,20 +52,14 @@
 							Rejoindre</button>
 							<div class="delete-btn" v-if="channel.owner === this.curenntUserId">
 								<button type="button" name="button"
-								@click="deleteChannel(channel)">Supprimer le salon</button>
-								<!-- <div class="p-auto mx-auto" style="margin: 15px;" v-if="this.isDeletingChannel">
-									<div class="spinner-border" role="status">
-										<span class="sr-only"></span>
-									</div>
-								</div> -->
+								    @click="deleteChannel(channel, index)">Supprimer le salon
+                                </button>
 							</div>
-							<!-- <div class="d-flex justify-content-center m-4" v-if="isLoading[index] === true">
-								<div class="spinner-border" role="status">
-									<span class="sr-only"></span>
-								</div>
-							</div> -->
 						</div>
 					</div>
+                    <div id="loader">
+                        <div v-if="isLoading[index] === true" id="loader-wheel"></div>
+                    </div>
 			    </li>
 		    </ul>
 		</div>
@@ -77,6 +77,8 @@ import UserDataService from '@/services/UserDataService';
 import ChannelDataService from '@/services/ChannelDataService';
 import ResponseData from "@/types/ResponseData";
 import Avatar from "@/components/users/Avatar.vue";
+import JoinPrivateChannel from "@/components/chat/NavBarFiles/JoinPrivateChannel.vue";
+import CreateChannel from "@/components/chat/NavBarFiles/CreateChannel.vue";
 
 export default defineComponent({
     name: "channel-list",
@@ -86,7 +88,7 @@ export default defineComponent({
             ChannelList: [] as Channel[],
 			filteredChannelList: [] as Channel[],
             curenntUserId: {} as number,
-            isDeletingChannel: false,
+            // isDeletingChannel: false,
 			search: "",
 			errorMSG: [] as string[],
 			password: [] as string[],
@@ -95,6 +97,14 @@ export default defineComponent({
     },
     components: {
         Avatar,
+        JoinPrivateChannel,
+        CreateChannel,
+    },
+    props: {
+      user: {
+          type: Object as () => User,
+          required: true,
+      },
     },
     methods: {
         async refreshChannelList() {
@@ -120,18 +130,18 @@ export default defineComponent({
         async delay(ms: number) {
             return new Promise( resolve => setTimeout(resolve, ms) );
         },
-        async deleteChannel(channel: Channel) {
-            this.isDeletingChannel = true;
+        async deleteChannel(channel: Channel, index: number) {
+            this.isLoading[index] = true;
 			await this.delay(500);
             ChannelDataService.deleteChannel(channel.channelName)
             .then((response : ResponseData) => {
                 console.log("Channel Successfully deleted");
                 this.refreshChannelList();
-                this.isDeletingChannel = false;
+                this.isLoading[index] = false;
             })
             .catch((e: Error) => {
                 console.log("Error: " + e);
-                this.isDeletingChannel = false;
+                this.isLoading[index] = false;
             });
         },
 		async searchhandler() {
@@ -177,10 +187,26 @@ export default defineComponent({
         getOwnerByID(ownerId: number): User {
            return (this.OwnersList[this.OwnersList.map(x => x.id).indexOf(ownerId)]);
         },
+        revealElement(id: string) {
+            var x = document.getElementById(id);
+            if (x && x.style.display === "none") {
+                x.style.display = "block";
+            } else if (x) {
+                x.style.display = "none";
+            }
+        },
+        hideElement(id:string) {
+            var x = document.getElementById(id);
+            if (x && x.style.display === "block") {
+                x.style.display = "none";
+            } 
+        },
     },
     mounted() {
         this.curenntUserId = Number(localStorage.getItem("user-id"));
         this.refreshChannelList();
+        this.revealElement('create-channel');
+        this.revealElement('join-private');
     },
 });
 </script>
@@ -233,7 +259,7 @@ export default defineComponent({
     padding: 10px;
     width: 70%;
 }
-.channel-name h4 {
+.channel-name h3 {
     margin: 0;
 }
 .channel-name img {
@@ -262,5 +288,28 @@ export default defineComponent({
 .delete-btn button {
   background-color: #f44336;
   font-size: 15px;
+}
+#join-private {
+  display: none;
+  width: 70%;
+  padding: 20px 0;
+  text-align: center;
+  background-color: lightgray;
+  margin-inline: auto;
+  margin-block: 20px;
+}
+#create-channel {
+  display: none;
+  width: 70%;
+  padding: 20px 0;
+  text-align: center;
+  background-color: lightgray;
+  margin-inline: auto;
+  margin-block: 20px;
+}
+.reveal-btn {
+    color:black;
+    background-color: lightgray;
+    margin-bottom: 20px;
 }
 </style>

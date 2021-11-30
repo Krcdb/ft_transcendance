@@ -113,6 +113,7 @@ ul {
   width: 50%;
 }
 li {
+  list-style: none;
   display: flex;
   margin: 5px;
   align-items: center;

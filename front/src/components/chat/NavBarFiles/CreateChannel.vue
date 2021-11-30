@@ -1,30 +1,42 @@
 <template>
 	<div class="create-channel-wrapper">
 		<div class="create-channel">
-			<h2>Create a new Channel</h2>
-			<label for="chanel-name" >Channel Name
-			<input 
-				type="text"
-				required
-				id="channel-name"
-				v-model="this.channel.channelName"
-			></label>
-			<label for="password">Password
-			<input 
-				type="password"
-				id="password"
-				v-model="this.channel.password"
-			></label>
-			<label for="public-channel">Public Channel
-			<input
-				id="public-channel"
-				type="checkbox"
-				v-model="this.channel.isPublic"
-			></label>
-			<button class="create-button" type="button" name="button"
-				@click="CreateChannel">
-				Create
-			</button>
+			<h4>Create a new Channel</h4>
+			<form>
+				<div class="form-div">
+				<label for="create-chanel-name" >Channel Name
+				<input 
+					type="text"
+					required
+					id="create-channel-name"
+					v-model="this.channel.channelName"
+				></label>
+				</div>
+				<div class="form-div">
+				<label for="create-password">Password
+				<input 
+					type="password"
+					id="create-password"
+					autocomplete="off"
+					v-model="this.channel.password"
+				></label>
+				</div>
+				<div class="form-div">
+				<label for="public-channel">Public Channel
+				<input
+					id="public-channel"
+					type="checkbox"
+					v-model="this.channel.isPublic"
+				></label>
+				<p>(channel will be Private if not checked)</p>
+				</div>
+				<div class="form-div">
+				<button class="create-button" type="button" name="button"
+					@click="CreateChannel">
+					Create
+				</button>
+				</div>
+			</form>
 		</div>
 	</div>
 	<div class="messages">
@@ -64,12 +76,12 @@ export default defineComponent({
 			isLoading: false,
 		}
 	},
-    props: {
-        owner: {
-            type: Object as () => User,
-            required: true,
-        },
-    },
+  props: {
+      user: {
+          type: Object as () => User,
+          required: true,
+      },
+  },
 	methods: {
 		async delay(ms: number) {
 			return new Promise( resolve => setTimeout(resolve, ms) );
@@ -83,13 +95,13 @@ export default defineComponent({
 					channelName: this.channel.channelName as string,
 					password: this.channel.password as string,
 					isPublic: this.channel.isPublic as boolean,
-					owner: this.owner.id as number,
+					owner: this.user.id as number,
 				};
 
 				console.log("CreateChannel: " + this.channel.channelName);
 				console.log("public: " + this.channel.isPublic);
 				console.log("password: " + this.channel.password);
-				console.log("owner: " + this.owner.userName);
+				console.log("owner: " + this.user.userName);
 
 				ChannelDataService.createChannel(data)
 				.then((response: ResponseData) => {
@@ -116,14 +128,14 @@ export default defineComponent({
 </script>
 
 <style  scoped>
+h4 {
+    margin: 0;
+}
 .create-channel {
 	display: flex;
 	flex-direction: column;
     align-items: center;
 	gap: 10px;
-}
-label {
-	font-weight: bold;
 }
 .messages {
 	font-size: 20px;
@@ -136,5 +148,12 @@ label {
 }
 .create-button {
 	background-color: #4bbd4b;
+}
+.form-div {
+	margin: 10px;;
+}
+.form-div p {
+	margin: 0;
+	font-size: 12px;
 }
 </style>

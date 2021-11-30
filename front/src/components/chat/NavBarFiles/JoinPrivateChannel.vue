@@ -1,22 +1,34 @@
 <template>
 	<div class="join-private-channels">
-		<h2>Join private Channel</h2>
-		<label for="chanel-name" >Channel Name
-		<input 
-			type="text"
-			required
-			id="channel-name"
-			v-model="channel.channelName"
-		></label>
-		<label for="password">Password
-		<input 
-			type="password"
-			id="password"
-			v-model="channel.password"
-			autocomplete="on"
-		></label>
-		<button type="button" class="join-btn"
-			@click="JoinPrivateChannel()">Join Channel</button>
+		<h4>Join private Channel</h4>
+		<form>
+			<div class="form-div">
+				<label for="chanel-name" >Channel Name
+				<input 
+					type="text"
+					required
+					id="channel-name"
+					v-model="channel.channelName"
+				></label>
+			</div>
+			<div class="form-div">
+				<label for="password">Password
+				<input 
+					type="password"
+					id="password"
+					v-model="channel.password"
+					autocomplete="on"
+				></label>
+			</div>
+			<div class="form-div">
+				<button type="button" class="join-btn"
+					@click="JoinPrivateChannel()">Join Channel
+				</button>
+			</div>
+		</form>
+	</div>
+	<div class="error-message" v-if="error">
+			<p>{{ error }}</p>
 	</div>
 </template>
 
@@ -33,6 +45,7 @@ export default defineComponent({
 	data() {
 		return {
 			channel: {} as Channel,
+			error: "" as string,
 		};
 	},
 	methods: {
@@ -47,19 +60,29 @@ export default defineComponent({
 				localStorage.setItem("channel-name", this.channel.channelName);
 				this.$router.push("/Channel/" + this.channel.channelName);
 			})
-            .catch((e) => {
-                console.log("Error: " + e.response.data.message);
-            });
+      .catch((e) => {
+					this.error =  e.response.data.message;
+          console.log("Error: " + e.response.data.message);
+      });
 		},
 	}
 });
 </script>
 
 <style scoped>
+h4 {
+    margin: 0;
+}
+.form-div {
+	margin: 10px;
+}
 .join-private-channels {
 	display: flex;
 	flex-direction: column;
     align-items: center;
 	gap: 10px;
+}
+.error-message {
+	color: red;
 }
 </style>
