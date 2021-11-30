@@ -1,6 +1,6 @@
 <template>
   <NavBar />
-  <router-view />
+  <router-view :key="$route.fullPath" />
 </template>
 
 <script lang="ts">
@@ -53,5 +53,25 @@ ul {
   height: 10px;
   border-radius: 50%;
   margin: 3px;
+}
+#loader {
+  width: 20px;
+}
+#loader-wheel {
+  animation: spin 1s infinite linear;
+  border: 2px solid rgba(30, 30, 30, 0.5);
+  border-left: 4px solid #fff;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

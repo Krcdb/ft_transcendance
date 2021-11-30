@@ -7,6 +7,7 @@ import { Channel } from './channel.entity'
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelUserDto } from './dto/update-channel-users.dto';
 import { ChannelPasswordDto } from './dto/channel-password.dto';
+import { ChannelsAndOwnersDto } from './dto/channels-and-owners';
 import { User } from 'src/users/user.entity';
 
 @Controller('channel')
@@ -67,17 +68,19 @@ export class ChannelController {
 		}
 	}
 
+	// Nerver Used
 	@Public()
 	@Post(':channelName/join-private-channel')
-	async UserJoinPrivateChannel(@Res() res, @Param('channelName') channelName: string, @Body() ChannelPasswordDto: ChannelPasswordDto) {
+	async UserJoinPrivateChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) {
 		console.log("Trying to join channel: " + channelName);
+		console.log("password : " + channelPasswordDto.password);
 		if (!await this.channelService.findOne(channelName)) {
 			return res.status(HttpStatus.CONFLICT).json({
 				message: "Channel does not exist.",
 				value: false,
 			})
 		}
-		else if (this.channelService.passwordMatch(channelName, ChannelPasswordDto.password)) {
+		else if (this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
 			return res.status(HttpStatus.OK).json({
 				message: "Joining channel",
 				value: true,
@@ -93,8 +96,8 @@ export class ChannelController {
 
 
 	// ------ //
-  	//  GET   //
-  	// ------ //
+  //  GET   //
+  // ------ //
 	@Public()
 	@Get()
 	async findAllChannels() : Promise<Channel[]> {
@@ -102,14 +105,14 @@ export class ChannelController {
 	}
 	@Public()
 	@Get('public')
-	async findAllPublicChannels(): Promise<Channel[]> {
+	async findAllPublicChannels(): Promise<ChannelsAndOwnersDto> {
 	  return (await this.channelService.findAllPublicChannels());
 	}
-	
+
 	@Public()
-	@Get('public-owners')
-	async findAllPublicChannelsOwners(): Promise<User[]> {
-	  return (await this.channelService.findAllPublicChannelsOwners());
+	@Get('/user/:userId')
+	async findAllUserChannels(@Param('userId') userId: number): Promise<ChannelsAndOwnersDto> {
+	  return (await this.channelService.findAllUserChannels(userId));
 	}
 
 	@Public()
@@ -141,9 +144,8 @@ export class ChannelController {
 
 	@Public()
 	@Get(':channelName/can-join-channel')
-	async canJoinChannel(@Res() res, @Param('channelName') ChannelName: string, @Body() ChannelPasswordDto: ChannelPasswordDto) : Promise<boolean> {
-		console.log("can join channel ?: " + ChannelPasswordDto.password);
-		if (await this.channelService.passwordMatch(ChannelName, ChannelPasswordDto.password)) {
+	async canJoinChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) {
+		if (await this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
 			return res.status(HttpStatus.OK).json({
 				message: "Can join channel",
 				value: true,

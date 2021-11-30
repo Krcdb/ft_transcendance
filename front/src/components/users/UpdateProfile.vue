@@ -41,7 +41,7 @@
         </div>
         <div class="update-username">
           <h3>Change User Name</h3>
-          <label for="userName">
+          <label>
             <input
               type="text"
               maxlength="12"
@@ -49,6 +49,7 @@
               required
               v-model="newUserName"
               :placeholder="user.userName"
+              v-on:keyup.enter="updateUserName"
             />
             <button @click="updateUserName" class="btn btn-success">
               Submit
@@ -64,8 +65,7 @@
   </div>
 
   <div v-else>
-    <br />
-    <router-link to="/login"><button>Login</button></router-link>
+    <p>Loading...</p>
   </div>
 </template>
 

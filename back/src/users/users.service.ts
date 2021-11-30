@@ -8,6 +8,7 @@ import * as fs from 'fs';
 import { enumAchievements, allAchievement } from 'src/achievements/achievements';
 import { AchievementsInterface } from 'src/achievements/achievements';
 import { MatchService } from 'src/match/match.service';
+import { Match } from 'src/match/match.entity';
 
 @Injectable()
 export class UsersService {
@@ -76,12 +77,12 @@ export class UsersService {
   
   // Not classified **************************************************
   async findAllPlayersMatchHistory(userId: number): Promise<User[]> {
-    const matches = await this.matchService.findAllWithUser(userId);
+    const matches = (await this.matchService.findAllWithUser(userId)).matches;
     let usersIds: number[] = [];
     matches.forEach((match) =>
         usersIds.push(match.playerOne) && usersIds.push(match.playerTwo)
     );
-    return await this.getPlayersInTab(usersIds.filter((id) => id != userId));
+    return (await this.getPlayersInTab(usersIds.filter((id) => id != userId)));
   }
 
   /////////////////////////////////////////
@@ -127,7 +128,7 @@ export class UsersService {
   // AVATAR //
   async setAvatar(id: number, avatarUrl: string): Promise<User>  {
     this.DeleteOldAvatarFile(id);
-    await this.usersRepository.update(id, {avatar: avatarUrl});
+    const tmp = await this.usersRepository.update(id, {avatar: avatarUrl});
     return this.setAchievementAsync(id, enumAchievements.UPLOAD_AVATAR);
   }
 
@@ -136,12 +137,12 @@ export class UsersService {
   }
   
   async DeleteOldAvatarFile (id: number) {
-    const myAvatar = await this.usersRepository.findOne(id).then((user) => { return user.avatar;});
+    const myAvatar = await this.usersRepository.findOne(id).then((user: User) => { return user.avatar;});
     if (myAvatar)
     {
       fs.unlink("avatars/" + myAvatar, (err) => {
         if (err) 
-        throw err;
+          console.log(err);
       });
     }
   }
@@ -176,23 +177,18 @@ export class UsersService {
   ///////////////////////////
   // Historique des matchs //
   ///////////////////////////
-  
-  async addMatchToHistory(userId: number, matchId: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-    user.matchHistory.push(matchId);
-    await this.usersRepository.save(user);
-  }
 
-  async addVictory(winnerId: number) : Promise<void> {
-    const winner = await this.usersRepository.findOne(winnerId);
-    winner.nbVictories += 1;
-    await this.usersRepository.save(winner);
-  }
-  
-  async addDefeat(loserId: number) : Promise<void> {
-    const loser = await this.usersRepository.findOne(loserId);
-    loser.nbLosses += 1;
-    await this.usersRepository.save(loser);
+  async addMatchToHistory(userId: number, match: Match) : Promise<void> {
+    const user = await this.usersRepository.findOne(userId);
+    if (user.matchHistory.indexOf(match.matchId) == -1) {
+      user.matchHistory.push(match.matchId);
+      let newMatchHistory: string[] = [user.matchHistory[0]];
+      for (let i = 1; i < user.matchHistory.length; i++) {
+        if (user.matchHistory[i] != user.matchHistory[i-1]) newMatchHistory.push(user.matchHistory[i]);
+      }
+      user.matchHistory = newMatchHistory
+      await this.usersRepository.save(user);
+    }
   }
 
   async updateLadderLevel(winnerId: number, loserId: number) : Promise<void> {

@@ -15,7 +15,9 @@
               </div>
               <div class="player-info-one">
                 <p v-if="match.playerOne === user.id">{{ user.userName }}</p>
-                <p v-else>{{ players[index].userName }}</p>
+                <router-link v-else class="profile-link" :to="'/users/' + players[index].id">
+                  <p>{{ players[index].userName }}</p>
+                </router-link>
                 <h4>{{ match.scorePlayerOne }}</h4>
               </div>
             </div>
@@ -23,7 +25,9 @@
             <div :class="`block-user-two ${getMeClass(match.playerTwo)} ${getWinnerClass(match.scorePlayerTwo, match.scorePlayerOne)}`">
               <div class="player-info-two">
                 <p v-if="match.playerTwo === user.id">{{ user.userName }}</p>
-                <p v-else>{{ players[index].userName }}</p>
+                <router-link v-else class="profile-link" :to="'/users/' + players[index].id">
+                  <p>{{ players[index].userName }}</p>
+                </router-link>
                 <h4>{{ match.scorePlayerTwo }}</h4>
               </div>
               <div class="player-avatar">
@@ -58,28 +62,22 @@ export default defineComponent({
       type: Object as () => User,
       required: true,
     },
+    matches: {
+      type: Object as () => Match[],
+    },
   },
   data() {
     return {
-      matches: [] as Match[],
+      // matches: [] as Match[],
       players: [] as User[],
     };
   },
   methods: {
-    async getMatches(id: number) {
-      UserDataService.getMatchHistory(id)
-        .then((response: ResponseData) => {
-          this.matches = response.data;
-          this.getPlayers(id);
-        })
-        .catch((e: Error) => {
-          console.log(e);
-        });
-    },
     async getPlayers(id: number) {
       UserDataService.getPlayersMatchHistory(id)
         .then((response: ResponseData) => {
           this.players = response.data;
+          console.log("players = ", this.players.length);
         })
         .catch((e: Error) => {
           console.log(e);
@@ -97,7 +95,7 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.getMatches(this.user.id);
+    this.getPlayers(this.user.id);
   },
 });
 </script>
@@ -161,11 +159,18 @@ export default defineComponent({
 }
 .me-player p {
   font-weight: bold;
+  font-size: 18px;
 }
 .winner.me-player img {
   border-color: #11bf1d;
 }
 .loser.me-player img {
   border-color: red;
+}
+.profile-link {
+  color: black;
+  text-decoration: none;
+  align-content: center;
+  font-size: 16px;
 }
 </style>

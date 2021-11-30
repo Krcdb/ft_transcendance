@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
 import { User } from '../../users/user.entity';
 import { CreateChannelDto } from './dto/create-channel.dto';
-
+import { ChannelsAndOwnersDto } from './dto/channels-and-owners';
 import { UsersService } from 'src/users/users.service';
 
 import { Socket, Server } from "socket.io";
@@ -48,15 +48,35 @@ export class ChannelService {
 	async findAll() : Promise<Channel[]> {
 		return (await this.channelRepository.find());
 	}
-	async findAllPublicChannels() : Promise<Channel[]> {
-		return (await this.channelRepository.find({isPublic: true}));
+	async findAllPublicChannels() : Promise<ChannelsAndOwnersDto> {
+		const channels = await this.channelRepository.find({isPublic: true});
+		let usersIds: number[] = [];
+		channels.forEach((channel: Channel) => usersIds.push(channel.owner));
+		const owners = await this.usersService.getUsersInTab(usersIds);
+		return {
+			channels: channels,
+			owners: owners,
+		};
 	}
 
-	async findAllPublicChannelsOwners() : Promise<User[]> {
-		const channels = await this.findAllPublicChannels();
+	async findAllUserChannels(userId: number): Promise<ChannelsAndOwnersDto> {
+		const channels = await this.channelRepository.find();
+		let mychannels: Channel[] = [];
 		let usersIds: number[] = [];
-		channels.forEach((channel) => usersIds.push(channel.owner));
-		return await this.usersService.getUsersInTab(usersIds);
+		channels.forEach((chan) => {
+			for (let i = 0; i < chan.users.length; i++) {
+				if (chan.users[i] == userId) {
+					mychannels.push(chan);
+					break ; 
+				}
+			}
+		});
+		mychannels.forEach((channel) => usersIds.push(channel.owner));
+		const owners = await this.usersService.getUsersInTab(usersIds);
+		return {
+			channels: mychannels,
+			owners: owners,
+		};
 	}
 
 	async findAllPrivateChannels() : Promise<Channel[]> {

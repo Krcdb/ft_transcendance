@@ -7,7 +7,7 @@
           No user found, create user first
         </h4>
       </div>
-      <div class="justify-content-center">
+      <div class="select-user">
         <ul class="list-group">
           <li
             class="list-group-item"
@@ -26,7 +26,7 @@
     </div>
     <div class="welcome-user" v-else>
       <h3>
-        Bienvenue: <strong> {{ this.currentUser.userName }} </strong>
+        Welcome {{ this.currentUser.userName }}
       </h3>
       <Avatar :user="this.currentUser" />
     </div>
@@ -99,6 +99,28 @@ export default defineComponent({
 .welcome-user img {
     width: 128px;
     height: 128px;
+}
+.select-user {
+  display: flex;
+  justify-content: center;
+}
+ul {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 50%;
+}
+li {
+  list-style: none;
+  display: flex;
+  margin: 5px;
+  align-items: center;
+}
+button {
+  display: flex;
+  align-items: center;
 }
 /*
 .userChatInput {

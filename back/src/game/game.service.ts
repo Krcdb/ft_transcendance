@@ -54,13 +54,15 @@ export class GameService {
 	}
 
 	async playerLeaveMatchmaking(socket: Socket) {
-		this.removeFromQueue(socket.data.user);
+		await this.removeFromQueue(socket.data.user);
 	}
 
 	async playerLeaveMatch(socket: Socket, uuid: string) {
 		const game = this.games.get(uuid);
+		console.log("uuid = ", uuid);
+		// console.log("game = ", game);
 		if (!game) {
-			console.log(`game not found in playerLeaveMatch`);
+			console.log("game not found in playerLeaveMatch");
 			return ;
 		}
 		if (game.player1.id === socket.data.user?.id) {
@@ -72,7 +74,7 @@ export class GameService {
 	}
 
 	async playerReady(socket: Socket, uuid: string) {
-		const game = this.games.get(uuid);
+		const game = await this.games.get(uuid);
 		if (!game) {
 			console.log(`game not found in playerReady`);
 			return ;
@@ -100,6 +102,7 @@ export class GameService {
 
 		game.intervalRef = setInterval(async () => {
 			game.gameLoop(this.socketService.server);
+			// console.log("Game = ", game);
 			if (game.started && match.state !== GameState.IN_PROGRESS) {
 				match.state = GameState.IN_PROGRESS;
 				console.log("state -> in progress");
@@ -121,6 +124,7 @@ export class GameService {
 	}
 
 	matchDone(game: Game) {
+		console.log("match done");
 		this.matchService.updateUsersAfterGame(game.uuid);
 		this.games.delete(game.uuid);
 	}
@@ -167,8 +171,9 @@ export class GameService {
 		}
 	}
 
-	removeFromQueue(user: User) {
-		// console.log(`${user.userName} removed from queue`);
+	async removeFromQueue(user: User) {
+		if (user)
+			console.log(user.userName, "removed from queue");
 		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(user), 1);
 	}
 

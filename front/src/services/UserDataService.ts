@@ -14,11 +14,11 @@ class TutorialDataService {
   get(id: number): Promise<any> {
     return http.get(`/users/${id}`);
   }
-  
+
   getAvatar(id: number): Promise<any> {
     return http.get(`/users/${id}/avatar`);
   }
-  
+
   getAchievements(id: number): Promise<any> {
     return http.get(`/users/${id}/achievements`);
   }
@@ -35,11 +35,11 @@ class TutorialDataService {
   login(data: any): Promise<any> {
     return http.get("/login", data);
   }
-  
+
   get42Token(code: string) : Promise<any> {
     return http.get(`/auth/42?code=${code}`);
   }
-  
+
   // USER RELATIONS
   getFriends(id: number): Promise<any> {
     return http.get(`/users/${id}/friends`);
@@ -61,11 +61,11 @@ class TutorialDataService {
   create(data: any): Promise<any> {
     return http.post("/users", data);
   }
-  
+
   updateUserName(id: number, data: any) : Promise<any>{
     return http.post(`/users/${id}`, data);
   }
-  
+
   uploadAvatar(id: number, avatar: FormData): Promise<any> {
     return http.post(`/users/${id}/avatar`, avatar);
   }

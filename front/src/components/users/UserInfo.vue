@@ -12,8 +12,8 @@
       </div>
       <div clas="column">
         <div class="user-info">
-          <p>Victories: {{ user.nbVictories }}</p>
-          <p>Losses: {{ user.nbLosses }}</p>
+          <p>Victories: {{ victories }}</p>
+          <p>Losses: {{ losses }}</p>
           <p>Level: {{ user.ladderLevel }}</p>
           <br />
         </div>
@@ -23,21 +23,23 @@
           <AchievementsList :userId="user.id" />
         </div>
         <div clas="column">
-          <MatchHistory :user="user" />
+          <MatchHistory :user="user" :matches="matches" />
         </div>
       </div>
     </div>
   </div>
 
   <div v-else>
-    <br />
-    <p>Please select an <router-link to="/users">User</router-link></p>
+    <p>Loading...</p>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import User from "@/types/User";
+import Match from "@/types/Match";
+import ResponseData from "@/types/ResponseData";
+import UserDataService from "@/services/UserDataService";
 import AchievementsList from "./AchievementsList.vue";
 import MatchHistory from "./MatchHistory.vue";
 import Avatar from "./Avatar.vue";
@@ -59,6 +61,29 @@ export default defineComponent({
       required: false,
       default: false,
     },
+  },
+  data() {
+    return {
+      matches: [] as Match[],
+      victories: {} as number,
+      losses: {} as number,
+    };
+  },
+  methods: {
+    async getMatches(id: number) {
+      UserDataService.getMatchHistory(id)
+        .then((response: ResponseData) => {
+          this.matches = response.data.matches;
+          this.victories = response.data.victories;
+          this.losses = response.data.losses;
+        })
+        .catch((e: Error) => {
+          console.log(e);
+        });
+    },
+  },
+  mounted() {
+    this.getMatches(this.user.id);
   },
 });
 </script>
