@@ -55,7 +55,7 @@ ul {
   margin: 3px;
 }
 #loader {
-  width: 60px;
+  width: 20px;
 }
 #loader-wheel {
   animation: spin 1s infinite linear;

@@ -4,12 +4,12 @@
 			<li>
 				<button
 					:class='currentButtonIsActive(0) ? "btn-select" : "btn-primary"'
-						@click="changeNavSelection(0)">Join a public channel</button>
+						@click="changeNavSelection(0)">Public Channels</button>
 			</li>
 			<li>
 				<button
 					:class='currentButtonIsActive(1) ? "btn-select" : "btn-primary"'
-						@click="changeNavSelection(1)">List of Channels</button>
+						@click="changeNavSelection(1)">Channels you joined</button>
 			</li>
 		</ul>
 	</div>

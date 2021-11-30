@@ -7,7 +7,8 @@
 				<label for="create-chanel-name" >Channel Name
 				<input 
 					type="text"
-					required
+					minlength="1"
+					maxlength="10"
 					id="create-channel-name"
 					v-model="this.channel.channelName"
 				></label>
@@ -88,6 +89,11 @@ export default defineComponent({
 		},
 		async CreateChannel() {
 			if (this.channel.channelName !== undefined) {
+				if (this.channel.channelName.indexOf(' ') != -1) {
+					this.state = 1;
+					this.error = "Channel Name must not have any whitespaces !";
+					return;
+				}
 				this.isLoading = true;
 				this.state = 0;
 
@@ -119,7 +125,7 @@ export default defineComponent({
 				this.state = 1;
 				this.error = "Please enter a channel name";
 			}
-			}
+		},
 	},
 	mounted() {
 		this.channel.isPublic = false;

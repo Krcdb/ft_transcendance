@@ -7,6 +7,7 @@ import { Channel } from './channel.entity'
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateChannelUserDto } from './dto/update-channel-users.dto';
 import { ChannelPasswordDto } from './dto/channel-password.dto';
+import { ChannelsAndOwnersDto } from './dto/channels-and-owners';
 import { User } from 'src/users/user.entity';
 
 @Controller('channel')
@@ -95,8 +96,8 @@ export class ChannelController {
 
 
 	// ------ //
-  	//  GET   //
-  	// ------ //
+  //  GET   //
+  // ------ //
 	@Public()
 	@Get()
 	async findAllChannels() : Promise<Channel[]> {
@@ -104,26 +105,14 @@ export class ChannelController {
 	}
 	@Public()
 	@Get('public')
-	async findAllPublicChannels(): Promise<Channel[]> {
+	async findAllPublicChannels(): Promise<ChannelsAndOwnersDto> {
 	  return (await this.channelService.findAllPublicChannels());
-	}
-	
-	@Public()
-	@Get('public-owners')
-	async findAllPublicChannelsOwners(): Promise<User[]> {
-	  return (await this.channelService.findAllPublicChannelsOwners());
 	}
 
 	@Public()
 	@Get('/user/:userId')
-	async findAllUserChannels(@Param('userId') userId: number): Promise<Channel[]> {
+	async findAllUserChannels(@Param('userId') userId: number): Promise<ChannelsAndOwnersDto> {
 	  return (await this.channelService.findAllUserChannels(userId));
-	}
-
-	@Public()
-	@Get('/user/:userId/owners')
-	async findAllUserChannelsOwners(@Param('userId') userId: number): Promise<User[]> {
-	  return (await this.channelService.findAllUserChannelsOwners(userId));
 	}
 
 	@Public()

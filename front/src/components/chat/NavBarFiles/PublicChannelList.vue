@@ -37,24 +37,41 @@
 					</div>
                     <div class="property-tag">
                         <p class="public-tag" v-if="channel.isPublic">Public</p>
-						<!-- <p v-else class="private-tag">Private</p> -->
                     </div>
 					<div class="pass-btn-div">
 						<!-- PASSWORD -->
                         <form class="password-input">
-                            <input v-model="password[index]" :id="`password-${index}`" placeholder="password" type="password" autocomplete="on"> <!-- v-if="channel.password != null" -->
+                            <input 
+                                v-model="password[index]" 
+                                :id="`password-${index}`" 
+                                placeholder="password" 
+                                type="password" 
+                                autocomplete="on"
+                            > <!-- v-if="channel.password != null" -->
                                 <p>{{ errorMSG[index] }}</p>
                         </form>
 						<div class="btn-div">
-							<button class="joined-btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
-							type="button" name="button"
-							@click="joinChannel(channel, this.password[index], index)">
-							Rejoindre</button>
-							<div class="delete-btn" v-if="channel.owner === this.curenntUserId">
-								<button type="button" name="button"
-								    @click="deleteChannel(channel, index)">Supprimer le salon
+                            <button
+                                v-if="channel.users.indexOf(user.id) != -1"
+                                class="open-btn"
+							    type="button" 
+                                name="button"
+							    @click="joinChannel(channel, this.password[index], index)"
+                            >
+							    Open
+                            </button>
+							<button
+                                v-else
+                                class="joined-btn"
+							    type="button" 
+                                name="button"
+							    @click="joinChannel(channel, this.password[index], index)"
+                            >
+							    Join
+                            </button>
+								<button type="button" name="button" class="delete-btn" v-if="channel.owner === this.curenntUserId"
+								    @click="deleteChannel(channel, index)">Delete
                                 </button>
-							</div>
 						</div>
 					</div>
                     <div id="loader">
@@ -110,22 +127,13 @@ export default defineComponent({
         async refreshChannelList() {
             await ChannelDataService.getAllPublicChannels()
             .then((response : ResponseData) => {
-                this.ChannelList = response.data;
-				this.filteredChannelList = response.data;
+                this.ChannelList = response.data.channels;
+                this.OwnersList = response.data.owners;
+				this.filteredChannelList = response.data.channels;
             })
             .catch((e: Error) => {
                 console.log("Error: " + e);
             });
-            await this.refreshOwnerList();
-        },
-        async refreshOwnerList() { 
-            await ChannelDataService.getAllPublicChannelsOwners()
-                .then((response : ResponseData) => {
-                    this.OwnersList = response.data;
-                })
-                .catch((e: Error) => {
-                    console.log("Error: " + e);
-                });
         },
         async delay(ms: number) {
             return new Promise( resolve => setTimeout(resolve, ms) );
@@ -268,6 +276,9 @@ export default defineComponent({
 .channel-owner p {
     margin: 0;
 }
+.channel-owner {
+    width: 100px;
+}
 .mini-user-info p{
     margin: 10px;
 }
@@ -285,9 +296,8 @@ export default defineComponent({
   font-size: 18px;
   align-content: center;
 }
-.delete-btn button {
+.delete-btn {
   background-color: #f44336;
-  font-size: 15px;
 }
 #join-private {
   display: none;
@@ -307,7 +317,7 @@ export default defineComponent({
   margin-inline: auto;
   margin-block: 20px;
 }
-.reveal-btn {
+.reveal-btn, .joined-btn {
     color:black;
     background-color: lightgray;
     margin-bottom: 20px;

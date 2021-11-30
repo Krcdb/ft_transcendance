@@ -49,6 +49,7 @@
               required
               v-model="newUserName"
               :placeholder="user.userName"
+              v-on:keyup.enter="updateUserName"
             />
             <button @click="updateUserName" class="btn btn-success">
               Submit

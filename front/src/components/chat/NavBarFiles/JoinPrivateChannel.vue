@@ -7,6 +7,8 @@
 				<input 
 					type="text"
 					required
+					minlength="1"
+					maxlength="10"
 					id="channel-name"
 					v-model="channel.channelName"
 				></label>
@@ -56,6 +58,7 @@ export default defineComponent({
 			console.log("data = ", data);
 			ChannelDataService.JoinPrivateChannel(this.channel.channelName, data)
 			.then((response : ResponseData) => {
+				console.log(response);
 				console.log("Can join channel !");
 				localStorage.setItem("channel-name", this.channel.channelName);
 				this.$router.push("/Channel/" + this.channel.channelName);

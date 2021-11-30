@@ -15,7 +15,7 @@
 			<ul class="channel-list">
 				<li class="channel-list-item" v-for="(channel, index) in filteredChannelList" :key="channel.channelName">
 					<div class="channel-name">
-						<h4>{{ channel.channelName }}</h4>
+						<h3>{{ channel.channelName }}</h3>
 						<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`">
 					</div>
 					<div class="channel-owner">
@@ -29,7 +29,7 @@
 					</div>
                     <div class="property-tag">
                         <p class="public-tag" v-if="channel.isPublic">Public</p>
-						<!-- <p v-else class="private-tag">Private</p> -->
+						<p v-else class="private-tag">Private</p>
                     </div>
 					<div class="pass-btn-div">
 						<!-- PASSWORD -->
@@ -41,16 +41,15 @@
 							<button class="joined-btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
 							type="button" name="button"
 							@click="joinChannel(channel, this.password[index], index)">
-							Rejoindre</button>
-							<div class="delete-btn" v-if="channel.owner === user.id">
-								<button type="button" name="button"
-								@click="deleteChannel(channel, index)">Supprimer le salon</button>
-							</div>
-                            <div id="loader">
-                                <div v-if="isLoading[index] === true" id="loader-wheel"></div>
-                            </div>
+							Open
+                            </button>
+							<button type="button" name="button" class="delete-btn" v-if="channel.owner === user.id"
+							@click="deleteChannel(channel, index)">Delete</button>
 						</div>
 					</div>
+                    <div id="loader">
+                        <div v-if="isLoading[index] === true" id="loader-wheel"></div>
+                    </div>
 			    </li>
 		    </ul>
 		</div>
@@ -95,22 +94,13 @@ export default defineComponent({
         async refreshChannelList() {
             await ChannelDataService.getAllUserChannel(this.user.id)
             .then((response : ResponseData) => {
-                this.ChannelList = response.data;
-				this.filteredChannelList = response.data;
+                this.ChannelList = response.data.channels;
+                this.OwnersList = response.data.owners;
+				this.filteredChannelList = response.data.channels;
             })
             .catch((e: Error) => {
                 console.log("Error: " + e);
             });
-            await this.refreshOwnerList();
-        },
-        async refreshOwnerList() { 
-            await ChannelDataService.getAllUserOwners(this.user.id)
-                .then((response : ResponseData) => {
-                    this.OwnersList = response.data;
-                })
-                .catch((e: Error) => {
-                    console.log("Error: " + e);
-                });
         },
         async delay(ms: number) {
             return new Promise( resolve => setTimeout(resolve, ms) );
@@ -208,6 +198,13 @@ export default defineComponent({
   padding: 5px;
   border-radius: 10px;
 }
+.private-tag {
+  background-color: black;
+  font-weight: bold;
+  color: white;
+  padding: 5px;
+  border-radius: 10px;
+}
 .channel-info {
     border: 0;
 }
@@ -228,7 +225,7 @@ export default defineComponent({
     padding: 10px;
     width: 70%;
 }
-.channel-name h4 {
+.channel-name h3 {
     margin: 0;
 }
 .channel-name img {
@@ -254,8 +251,10 @@ export default defineComponent({
   font-size: 18px;
   align-content: center;
 }
-.delete-btn button {
+.delete-btn {
   background-color: #f44336;
-  font-size: 15px;
+}
+.channel-owner {
+    width: 100px;
 }
 </style>
