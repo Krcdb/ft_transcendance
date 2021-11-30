@@ -12,7 +12,6 @@ export interface GameOptionsInterface {
 	PADDLE_HEIGHT: number;
 	PADDLE_MARGIN: number;
 	BALL_SIZE: number;
-	PLAYER_MOVE: number;
 }
 
 enum Keys {
@@ -86,7 +85,7 @@ export class Game {
 			this.p2DownKeyPressed = payload.downPressed;
 		}
 		else
-			console.log("player not input not found")
+			console.log("player in input not found");
 	}
 
 	startGame(server: Server) {
@@ -121,20 +120,14 @@ export class Game {
 
 	setBallDirection() {
 		var randomDirection = Math.floor(Math.random() * 2) + 1; 
-        if(randomDirection % 2){
+        if(randomDirection % 2)
             this.ball.xVel = 1;
-        }else{
+		else
             this.ball.xVel = -1;
-		}
-		randomDirection = Math.floor(Math.random() * 2) + 1;
-		if(randomDirection % 2){
-            this.ball.yVel = 1;
-        }else{
-            this.ball.yVel = -1;
-		}
+		this.ball.yVel = 0;
 		this.ball.setXY(
 			this.width / 2 - this.ball.size / 2,
-			Math.floor(Math.random() * (this.height - this.options.BALL_SIZE - 2 * this.options.PADDLE_MARGIN) + this.options.PADDLE_MARGIN)
+			this.height / 2 - this.ball.size / 2,
 		);
 	}
 
@@ -204,13 +197,23 @@ export class Game {
 			this.reset();
 		}
 		//Paddle collision
-		if (this.ball.x <= this.p1.x + this.p1.width) {
-			if (this.ball.y >= this.p1.y && this.ball.y + this.ball.size <= this.p1.y + this.p1.height)
-			this.ball.xVel = -this.ball.xVel;
+		let normalizedRelativeY: number;
+		let bounceAngle: number;
+		if (this.ball.xVel < 0 && this.ball.x <= this.p1.x + this.p1.width) {
+			if (this.ball.y >= this.p1.y && this.ball.y + this.ball.size <= this.p1.y + this.p1.height) {
+				normalizedRelativeY = ((this.p1.y + (this.options.PADDLE_HEIGHT / 2)) - (this.ball.y + (this.options.BALL_SIZE / 2))) / (this.options.PADDLE_HEIGHT / 2);
+				bounceAngle = normalizedRelativeY * ((Math.PI * 5) / 12);
+				this.ball.yVel = -Math.sin(bounceAngle);
+				this.ball.xVel = Math.cos(bounceAngle);
+			}
 		}
-		if (this.ball.x + this.ball.size >= this.p2.x) {
-			if (this.ball.y >= this.p2.y && this.ball.y + this.ball.size <= this.p2.y + this.p2.height)
-			this.ball.xVel = -this.ball.xVel;
+		if (this.ball.xVel > 0 && this.ball.x + this.ball.size >= this.p2.x) {
+			if (this.ball.y >= this.p2.y && this.ball.y + this.ball.size <= this.p2.y + this.p2.height) {
+				normalizedRelativeY = ((this.p2.y + (this.options.PADDLE_HEIGHT / 2)) - (this.ball.y + (this.options.BALL_SIZE / 2))) / (this.options.PADDLE_HEIGHT / 2);
+				bounceAngle = normalizedRelativeY * ((Math.PI * 5) / 12);
+				this.ball.yVel = -Math.sin(bounceAngle);
+				this.ball.xVel = -Math.cos(bounceAngle);
+			}
 		}
 	}
 

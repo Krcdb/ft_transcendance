@@ -17,7 +17,6 @@ const GameOptions: GameOptionsInterface = {
 	PADDLE_HEIGHT: 60,
 	PADDLE_MARGIN: 10,
 	BALL_SIZE: 10,
-	PLAYER_MOVE: 2.5,
 };
 
 @Injectable()
