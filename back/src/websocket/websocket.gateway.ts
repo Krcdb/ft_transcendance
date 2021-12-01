@@ -42,8 +42,8 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 	// Match
 
 	@SubscribeMessage('searchGame')
-	async searchGame(socket: Socket) {
-		return this.gameService.searchGame(socket);
+	async searchGame(socket: Socket, payload: any) {
+		return this.gameService.searchGame(socket, payload);
 	}
 
 	@SubscribeMessage('playerInput')

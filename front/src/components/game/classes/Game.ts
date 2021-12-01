@@ -3,6 +3,7 @@ import { Paddle } from './Paddle';
 import { Ball } from './Ball';
 import { GameOptionsInterface, GameDataUpdate, GameState } from '@/types/Game';
 import io, { Socket } from "socket.io-client";
+import { Bonus } from './Bonus';
 
 enum Keys {
     P_KEY = 80,
@@ -28,6 +29,7 @@ export class Game {
 	player1: Paddle;
 	player2: Paddle;
 	ball: Ball;
+	bonus: Bonus;
 
 	player1Score: number;
 	player2Score: number;
@@ -61,6 +63,7 @@ export class Game {
 		this.player1 = new Paddle(this.gameOptions.PADDLE_MARGIN!, this.gameOptions.CANVAS_HEIGHT! / 2 - this.gameOptions.PADDLE_HEIGHT! / 2, this.gameOptions.PADDLE_WIDTH!, this.gameOptions.PADDLE_HEIGHT!);
 		this.player2 = new Paddle(this.gameOptions.CANVAS_WIDTH! - (this.gameOptions.PADDLE_MARGIN! + this.gameOptions.PADDLE_WIDTH!), this.gameOptions.CANVAS_HEIGHT! / 2 - this.gameOptions.PADDLE_HEIGHT! / 2, this.gameOptions.PADDLE_WIDTH!, this.gameOptions.PADDLE_HEIGHT!);
         this.ball = new Ball(this.gameOptions.CANVAS_WIDTH! / 2 - this.gameOptions.BALL_SIZE! / 2, this.gameOptions.CANVAS_HEIGHT! / 2 - this.gameOptions.BALL_SIZE! / 2, this.gameOptions.BALL_SIZE!);    
+        this.bonus = new Bonus(-20, -20, 10);    
 	}
 
 	updateGame(data: GameDataUpdate) {
@@ -70,6 +73,7 @@ export class Game {
 		this.player1.setXY(data.player1?.x, data.player1?.y);
 		this.player2.setXY(data.player2?.x, data.player2?.y);
 		this.ball.setXY(data.ball?.x, data.ball?.y);
+		this.bonus.setXY(data.bonus?.x, data.bonus?.y);
 		this.draw();
 		if (this.playerSide !== "spectate") {
 			if (Game.keysPressed[Keys.W_KEY])
@@ -90,6 +94,7 @@ export class Game {
 		this.player1.draw(this.context);
 		this.player2.draw(this.context);
 		this.ball.draw(this.context);
+		this.bonus.draw(this.context);
 		this.context.fillRect(this.gameOptions.CANVAS_WIDTH! / 2 - 1, 0, 3, this.gameOptions.CANVAS_HEIGHT!);
 		this.context.font = "40px Avenir";
 		this.context.fillText(this.player1Score, 280, 50);

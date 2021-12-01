@@ -31,4 +31,8 @@ export class GameDataUpdate {
 		y: number
 		score: number
 	} | undefined
+	bonus: {
+		x: number
+		y: number
+	} | undefined
 }
