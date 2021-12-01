@@ -12,6 +12,7 @@ export class GameOptionsInterface {
 	PADDLE_HEIGHT: number | undefined
 	PADDLE_MARGIN: number | undefined
 	BALL_SIZE: number | undefined
+	BONUS_SIZE: number | undefined
 };
 
 

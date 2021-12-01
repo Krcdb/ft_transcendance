@@ -63,7 +63,7 @@ export class Game {
 		this.player1 = new Paddle(this.gameOptions.PADDLE_MARGIN!, this.gameOptions.CANVAS_HEIGHT! / 2 - this.gameOptions.PADDLE_HEIGHT! / 2, this.gameOptions.PADDLE_WIDTH!, this.gameOptions.PADDLE_HEIGHT!);
 		this.player2 = new Paddle(this.gameOptions.CANVAS_WIDTH! - (this.gameOptions.PADDLE_MARGIN! + this.gameOptions.PADDLE_WIDTH!), this.gameOptions.CANVAS_HEIGHT! / 2 - this.gameOptions.PADDLE_HEIGHT! / 2, this.gameOptions.PADDLE_WIDTH!, this.gameOptions.PADDLE_HEIGHT!);
         this.ball = new Ball(this.gameOptions.CANVAS_WIDTH! / 2 - this.gameOptions.BALL_SIZE! / 2, this.gameOptions.CANVAS_HEIGHT! / 2 - this.gameOptions.BALL_SIZE! / 2, this.gameOptions.BALL_SIZE!);    
-        this.bonus = new Bonus(-20, -20, 10);    
+        this.bonus = new Bonus(0, 0, this.gameOptions.BONUS_SIZE!);    
 	}
 
 	updateGame(data: GameDataUpdate) {
@@ -95,6 +95,7 @@ export class Game {
 		this.player2.draw(this.context);
 		this.ball.draw(this.context);
 		this.bonus.draw(this.context);
+		this.context.fillStyle = "#fff";
 		this.context.fillRect(this.gameOptions.CANVAS_WIDTH! / 2 - 1, 0, 3, this.gameOptions.CANVAS_HEIGHT!);
 		this.context.font = "40px Avenir";
 		this.context.fillText(this.player1Score, 280, 50);

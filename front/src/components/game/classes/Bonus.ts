@@ -16,8 +16,9 @@ export class Bonus {
 	}
 
 	draw(context: any){
-        console.log(`draw bonus  | bonus x : ${this.x}`);
-        context.fillStyle = "#fff";
-        context.fillRect(this.x,this.y,this.size,this.size);
+        if (this.x > 0) {
+            context.fillStyle = "#C0C0C0";
+            context.fillRect(this.x,this.y,this.size,this.size);
+        }
 	}
 }

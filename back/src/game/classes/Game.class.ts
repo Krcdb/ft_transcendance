@@ -12,6 +12,7 @@ export interface GameOptionsInterface {
 	PADDLE_HEIGHT: number;
 	PADDLE_MARGIN: number;
 	BALL_SIZE: number;
+	BONUS_SIZE: number;
 }
 
 enum Keys {
@@ -36,8 +37,8 @@ export class Game {
 	p1: Paddle;
 	p2: Paddle;
 	ball: Ball;
-	bonusX: number;
-	bonusY: number;
+	bonusX: number = -20;
+	bonusY: number = -20;
 	bonusPresent: boolean = false;
 
 
@@ -121,7 +122,11 @@ export class Game {
 				x: this.p2.x,
 				y: this.p2.y,
 				score: this.player2Score,
-		  	}
+			},
+			bonus: {
+				x: this.bonusX,
+				y: this.bonusY,
+			}
 		});
 	}
 
@@ -183,7 +188,7 @@ export class Game {
 		this.bonusY = -20;
 		this.bonusPresent = false;
 
-		this.ball.speed = 5;
+		this.ball.speed = 4;
 
 		this.p1.setXY(
 			this.options.PADDLE_MARGIN,
@@ -249,9 +254,9 @@ export class Game {
 		}
 		if (this.bonusX > 0) {
 			if ((this.ball.x + (this.options.BALL_SIZE / 2)) >= this.bonusX &&
-			(this.ball.x + (this.options.BALL_SIZE / 2)) <= (this.bonusX + this.options.BALL_SIZE) &&
+			(this.ball.x + (this.options.BALL_SIZE / 2)) <= (this.bonusX + this.options.BONUS_SIZE) &&
 			(this.ball.y + (this.options.BALL_SIZE / 2)) >= this.bonusY &&
-			(this.ball.y + (this.options.BALL_SIZE / 2)) <= (this.bonusY + this.options.BALL_SIZE)) {
+			(this.ball.y + (this.options.BALL_SIZE / 2)) <= (this.bonusY + this.options.BONUS_SIZE)) {
 				this.resolveBonus();
 				this.bonusPresent = false;
 				this.bonusX = -20;
