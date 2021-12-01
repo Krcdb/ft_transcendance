@@ -5,10 +5,17 @@ _____  __        __    __
 _______________________________________________________________________
 [OK]    importer le dump
 [OK]    Supprimer le message history de l'utilisateur
+[OK]     Regler le souci de duplicate key qui pop je sais pas trop quand
 [NON]   explorer la db avec pgadmin
 [ ]     Rediger des securites ?? un user qui n'est pas dans un channel
             ne peut pas y poster etc...
-[ ]     Regler le souci de duplicate key qui pop je sais pas trop quand
+[ ] voir pour ajouter un bool isProtected pour savoir si y a un password
+[ ] crypter le password dans la db et ne jamais l'envoyer dans le front
+[ ] revoir l'accès aux channels protégés par des password (voir avec le header authorization)
+→ actuellement tout le monde peut y avoir accès en allant au bon url !
+[ ] enlever le champs password quand il n'y as pas de pasword
+[ ] ajouter un 'show password'
+[ ] owner of a channel can add/change/remove a password to access the channel
 _______________________________________________________________________
 QUESTIONS :
 _______________________________________________________________________

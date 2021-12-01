@@ -51,15 +51,16 @@ let ChannelController = class ChannelController {
             }));
         }
     }
-    async UserJoinPrivateChannel(res, channelName, ChannelPasswordDto) {
+    async UserJoinPrivateChannel(res, channelName, channelPasswordDto) {
         console.log("Trying to join channel: " + channelName);
+        console.log("password : " + channelPasswordDto.password);
         if (!await this.channelService.findOne(channelName)) {
             return res.status(common_2.HttpStatus.CONFLICT).json({
                 message: "Channel does not exist.",
                 value: false,
             });
         }
-        else if (this.channelService.passwordMatch(channelName, ChannelPasswordDto.password)) {
+        else if (this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
             return res.status(common_2.HttpStatus.OK).json({
                 message: "Joining channel",
                 value: true,
@@ -78,8 +79,8 @@ let ChannelController = class ChannelController {
     async findAllPublicChannels() {
         return (await this.channelService.findAllPublicChannels());
     }
-    async findAllPublicChannelsOwners() {
-        return (await this.channelService.findAllPublicChannelsOwners());
+    async findAllUserChannels(userId) {
+        return (await this.channelService.findAllUserChannels(userId));
     }
     async getChannelInfos(channelName) {
         return (await this.channelService.findOne(channelName));
@@ -96,9 +97,8 @@ let ChannelController = class ChannelController {
             return (true);
         return (false);
     }
-    async canJoinChannel(res, ChannelName, ChannelPasswordDto) {
-        console.log("can join channel ?: " + ChannelPasswordDto.password);
-        if (await this.channelService.passwordMatch(ChannelName, ChannelPasswordDto.password)) {
+    async canJoinChannel(res, channelName, channelPasswordDto) {
+        if (await this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
             return res.status(common_2.HttpStatus.OK).json({
                 message: "Can join channel",
                 value: true,
@@ -161,11 +161,12 @@ __decorate([
 ], ChannelController.prototype, "findAllPublicChannels", null);
 __decorate([
     (0, public_decorator_1.Public)(),
-    (0, common_1.Get)('public-owners'),
+    (0, common_1.Get)('/user/:userId'),
+    __param(0, (0, common_1.Param)('userId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], ChannelController.prototype, "findAllPublicChannelsOwners", null);
+], ChannelController.prototype, "findAllUserChannels", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)('/infos/:channelName'),

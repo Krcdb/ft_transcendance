@@ -5,6 +5,7 @@ import { User } from './user.entity';
 import { enumAchievements } from 'src/achievements/achievements';
 import { AchievementsInterface } from 'src/achievements/achievements';
 import { MatchService } from 'src/match/match.service';
+import { Match } from 'src/match/match.entity';
 export declare class UsersService {
     private readonly usersRepository;
     private readonly matchService;
@@ -28,9 +29,7 @@ export declare class UsersService {
     updateUserName(id: number, updateUserNameDto: UpdateUserNameDto): Promise<User>;
     updateLogState(id: number, isLog: boolean): Promise<User>;
     getAchievements(id: number): Promise<AchievementsInterface[]>;
-    addMatchToHistory(userId: number, matchId: string): Promise<void>;
-    addVictory(winnerId: number): Promise<void>;
-    addDefeat(loserId: number): Promise<void>;
+    addMatchToHistory(userId: number, match: Match): Promise<void>;
     updateLadderLevel(winnerId: number, loserId: number): Promise<void>;
     getFriends(id: number): Promise<User[]>;
     getBlocked(id: number): Promise<User[]>;

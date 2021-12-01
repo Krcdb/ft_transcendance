@@ -2,6 +2,7 @@ import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
 import { User } from '../../users/user.entity';
 import { CreateChannelDto } from './dto/create-channel.dto';
+import { ChannelsAndOwnersDto } from './dto/channels-and-owners';
 import { UsersService } from 'src/users/users.service';
 import { Socket, Server } from "socket.io";
 import { WebsocketService } from "src/websocket/websocket.service";
@@ -13,8 +14,8 @@ export declare class ChannelService {
     create(createChannelDto: CreateChannelDto): Promise<Channel>;
     findOne(channelName: string): Promise<Channel>;
     findAll(): Promise<Channel[]>;
-    findAllPublicChannels(): Promise<Channel[]>;
-    findAllPublicChannelsOwners(): Promise<User[]>;
+    findAllPublicChannels(): Promise<ChannelsAndOwnersDto>;
+    findAllUserChannels(userId: number): Promise<ChannelsAndOwnersDto>;
     findAllPrivateChannels(): Promise<Channel[]>;
     channelAlreadyExists(channelName: string): Promise<any>;
     findUserInChannel(channelName: string, userID: number): Promise<boolean>;

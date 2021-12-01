@@ -21,6 +21,7 @@ const fs = require("fs");
 const achievements_1 = require("../achievements/achievements");
 const achievements_2 = require("../achievements/achievements");
 const match_service_1 = require("../match/match.service");
+const match_entity_1 = require("../match/match.entity");
 let UsersService = class UsersService {
     constructor(usersRepository, matchService) {
         this.usersRepository = usersRepository;
@@ -71,10 +72,10 @@ let UsersService = class UsersService {
         return users;
     }
     async findAllPlayersMatchHistory(userId) {
-        const matches = await this.matchService.findAllWithUser(userId);
+        const matches = (await this.matchService.findAllWithUser(userId)).matches;
         let usersIds = [];
         matches.forEach((match) => usersIds.push(match.playerOne) && usersIds.push(match.playerTwo));
-        return await this.getPlayersInTab(usersIds.filter((id) => id != userId));
+        return (await this.getPlayersInTab(usersIds.filter((id) => id != userId)));
     }
     async findOrCreate(id, userName) {
         return await this.findOne(id) || await this.create({ "userName": userName, "id": id });
@@ -104,7 +105,7 @@ let UsersService = class UsersService {
     }
     async setAvatar(id, avatarUrl) {
         this.DeleteOldAvatarFile(id);
-        await this.usersRepository.update(id, { avatar: avatarUrl });
+        const tmp = await this.usersRepository.update(id, { avatar: avatarUrl });
         return this.setAchievementAsync(id, achievements_1.enumAchievements.UPLOAD_AVATAR);
     }
     async getAvatar(id) {
@@ -115,7 +116,7 @@ let UsersService = class UsersService {
         if (myAvatar) {
             fs.unlink("avatars/" + myAvatar, (err) => {
                 if (err)
-                    throw err;
+                    console.log(err);
             });
         }
     }
@@ -140,20 +141,18 @@ let UsersService = class UsersService {
         achievements.reverse();
         return achievements;
     }
-    async addMatchToHistory(userId, matchId) {
+    async addMatchToHistory(userId, match) {
         const user = await this.usersRepository.findOne(userId);
-        user.matchHistory.push(matchId);
-        await this.usersRepository.save(user);
-    }
-    async addVictory(winnerId) {
-        const winner = await this.usersRepository.findOne(winnerId);
-        winner.nbVictories += 1;
-        await this.usersRepository.save(winner);
-    }
-    async addDefeat(loserId) {
-        const loser = await this.usersRepository.findOne(loserId);
-        loser.nbLosses += 1;
-        await this.usersRepository.save(loser);
+        if (user.matchHistory.indexOf(match.matchId) == -1) {
+            user.matchHistory.push(match.matchId);
+            let newMatchHistory = [user.matchHistory[0]];
+            for (let i = 1; i < user.matchHistory.length; i++) {
+                if (user.matchHistory[i] != user.matchHistory[i - 1])
+                    newMatchHistory.push(user.matchHistory[i]);
+            }
+            user.matchHistory = newMatchHistory;
+            await this.usersRepository.save(user);
+        }
     }
     async updateLadderLevel(winnerId, loserId) {
         const winner = await this.usersRepository.findOne(winnerId);

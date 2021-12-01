@@ -162,6 +162,7 @@ class Game {
         this.ball.y += this.ball.yVel * this.ball.speed;
     }
     matchDone(server) {
+        console.log("game match done");
         this.state = match_entity_1.GameState.FINISHED;
         clearInterval(this.intervalRef);
         server.to(this.uuid).emit('updateGame', {

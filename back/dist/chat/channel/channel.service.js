@@ -48,13 +48,33 @@ let ChannelService = class ChannelService {
         return (await this.channelRepository.find());
     }
     async findAllPublicChannels() {
-        return (await this.channelRepository.find({ isPublic: true }));
-    }
-    async findAllPublicChannelsOwners() {
-        const channels = await this.findAllPublicChannels();
+        const channels = await this.channelRepository.find({ isPublic: true });
         let usersIds = [];
         channels.forEach((channel) => usersIds.push(channel.owner));
-        return await this.usersService.getUsersInTab(usersIds);
+        const owners = await this.usersService.getUsersInTab(usersIds);
+        return {
+            channels: channels,
+            owners: owners,
+        };
+    }
+    async findAllUserChannels(userId) {
+        const channels = await this.channelRepository.find();
+        let mychannels = [];
+        let usersIds = [];
+        channels.forEach((chan) => {
+            for (let i = 0; i < chan.users.length; i++) {
+                if (chan.users[i] == userId) {
+                    mychannels.push(chan);
+                    break;
+                }
+            }
+        });
+        mychannels.forEach((channel) => usersIds.push(channel.owner));
+        const owners = await this.usersService.getUsersInTab(usersIds);
+        return {
+            channels: mychannels,
+            owners: owners,
+        };
     }
     async findAllPrivateChannels() {
         return (await this.channelRepository.find({ isPublic: false }));

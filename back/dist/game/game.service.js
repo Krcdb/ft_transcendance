@@ -58,13 +58,14 @@ let GameService = GameService_1 = class GameService {
         }
     }
     async playerLeaveMatchmaking(socket) {
-        this.removeFromQueue(socket.data.user);
+        await this.removeFromQueue(socket.data.user);
     }
     async playerLeaveMatch(socket, uuid) {
         var _a, _b;
         const game = this.games.get(uuid);
+        console.log("uuid = ", uuid);
         if (!game) {
-            console.log(`game not found in playerLeaveMatch`);
+            console.log("game not found in playerLeaveMatch");
             return;
         }
         if (game.player1.id === ((_a = socket.data.user) === null || _a === void 0 ? void 0 : _a.id)) {
@@ -76,7 +77,7 @@ let GameService = GameService_1 = class GameService {
     }
     async playerReady(socket, uuid) {
         var _a, _b;
-        const game = this.games.get(uuid);
+        const game = await this.games.get(uuid);
         if (!game) {
             console.log(`game not found in playerReady`);
             return;
@@ -120,6 +121,7 @@ let GameService = GameService_1 = class GameService {
     cancelGame(game) {
     }
     matchDone(game) {
+        console.log("match done");
         this.matchService.updateUsersAfterGame(game.uuid);
         this.games.delete(game.uuid);
     }
@@ -154,7 +156,9 @@ let GameService = GameService_1 = class GameService {
             this.logger.log(user.userName, "added to queue");
         }
     }
-    removeFromQueue(user) {
+    async removeFromQueue(user) {
+        if (user)
+            console.log(user.userName, "removed from queue");
         this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(user), 1);
     }
     async playerInput(payload) {

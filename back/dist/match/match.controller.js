@@ -27,6 +27,7 @@ let MatchController = class MatchController {
         return match;
     }
     async endMatch(matchId, postMatchDto) {
+        console.log("endMatch");
         const match = await this.matchService.findOne(matchId);
         await this.matchService.simulateMatch(matchId, postMatchDto.scorePlayerOne, postMatchDto.scorePlayerTwo);
         await this.matchService.updateUsersAfterGame(matchId);

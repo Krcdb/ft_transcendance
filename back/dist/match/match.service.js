@@ -34,13 +34,37 @@ let MatchService = class MatchService {
     async findAll() {
         return await this.matchRepository.find();
     }
+    async countVictoriesLosses(userId, matches) {
+        let victories = 0;
+        let losses = 0;
+        for (let i = 0; i < matches.length; i++) {
+            if ((matches[i].scorePlayerOne > matches[i].scorePlayerTwo && matches[i].playerOne == userId) ||
+                matches[i].scorePlayerTwo > matches[i].scorePlayerOne && matches[i].playerTwo == userId) {
+                victories += 1;
+            }
+            else {
+                losses += 1;
+            }
+        }
+        return {
+            victories: victories,
+            losses: losses,
+        };
+    }
     async findAllWithUser(userId) {
-        return await this.matchRepository.find({
+        const matches = await this.matchRepository.find({
             where: [
                 { playerOne: userId },
                 { playerTwo: userId },
             ]
         });
+        matches.sort((a, b) => (a.matchId > b.matchId ? -1 : 1));
+        const vicandlos = this.countVictoriesLosses(userId, matches);
+        return {
+            matches: matches,
+            victories: (await vicandlos).victories,
+            losses: (await vicandlos).losses,
+        };
     }
     async findOne(matchId) {
         return await this.matchRepository.findOne(matchId);
@@ -60,11 +84,14 @@ let MatchService = class MatchService {
             loserId = winnerId;
             winnerId = tmp;
         }
-        await this.usersService.addMatchToHistory(winnerId, matchId);
-        await this.usersService.addMatchToHistory(loserId, matchId);
-        await this.usersService.addVictory(winnerId);
-        await this.usersService.addDefeat(loserId);
-        await this.usersService.updateLadderLevel(winnerId, loserId);
+        try {
+            await this.usersService.addMatchToHistory(match.playerOne, match);
+            await this.usersService.addMatchToHistory(match.playerTwo, match);
+            await this.usersService.updateLadderLevel(winnerId, loserId);
+        }
+        catch (err) {
+            console.log(err);
+        }
     }
 };
 MatchService = __decorate([

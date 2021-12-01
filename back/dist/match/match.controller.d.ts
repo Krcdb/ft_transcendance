@@ -9,5 +9,5 @@ export declare class MatchController {
     endMatch(matchId: string, postMatchDto: PostMatchDto): Promise<void>;
     findAllMatches(): Promise<Match[]>;
     findOne(matchId: string): Promise<Match>;
-    findAllWithUser(userId: number): Promise<Match[]>;
+    findAllWithUser(userId: number): Promise<any>;
 }

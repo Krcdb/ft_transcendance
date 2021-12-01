@@ -29,7 +29,7 @@ export declare class GameService {
     matchUser(socket: Socket, player2Id: string): Promise<void>;
     matchPlayers(player1: User, player2: User): Promise<void>;
     searchGame(socket: Socket): Promise<void>;
-    removeFromQueue(user: User): void;
+    removeFromQueue(user: User): Promise<void>;
     playerInput(payload: any): Promise<void>;
     gameReady(user: User, uuid: string): Promise<void>;
 }

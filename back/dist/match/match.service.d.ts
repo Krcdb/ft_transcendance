@@ -7,7 +7,11 @@ export declare class MatchService {
     constructor(matchRepository: Repository<Match>, usersService: UsersService);
     create(userOneId: number, userTwoId: number): Promise<Match>;
     findAll(): Promise<Match[]>;
-    findAllWithUser(userId: number): Promise<Match[]>;
+    countVictoriesLosses(userId: number, matches: Match[]): Promise<{
+        victories: number;
+        losses: number;
+    }>;
+    findAllWithUser(userId: number): Promise<any>;
     findOne(matchId: string): Promise<Match>;
     simulateMatch(matchId: string, playerOneScore: number, playerTwoScore: number): Promise<void>;
     updateUsersAfterGame(matchId: string): Promise<void>;
