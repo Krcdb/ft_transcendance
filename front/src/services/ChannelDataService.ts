@@ -7,7 +7,6 @@ import CreateChannel from "@/types/CreateChannel";
 class ChannelDataService {
 
     // CHANNEL
-
     createChannel(channel: CreateChannel) : Promise<any> {
         return http.post('/channel/createChannel', channel);
     }
@@ -27,17 +26,22 @@ class ChannelDataService {
         return http.get(`/channel/infos/${channelName}`);
     }
     getAllUsersInChannel(channelName : string) : Promise<any> {
-        return http.get(`/channel/${channelName}/users`);
+        return http.get(`/channel/users/${channelName}`);
     }
     deleteChannel(channelName : string) : Promise<any> {
         return http.delete(`/channel/${channelName}`);
     }
-    addChannelUser(channelName : string, id : any) : Promise<any> {
-        return http.post(`/channel/${channelName}`, id);
+    updateChannelUser(channelName : string, data: any) : Promise<any> {
+        return http.post(`/channel/add-user/${channelName}`, data);
     }
-
     getMessagesInChannel(channelName : string) : Promise<any> {
-        return http.get(`/channel/${channelName}/messagesHistory`);
+        return http.get(`/channel/messagesHistory${channelName}`);
+    }
+    addUserToAdmin(channelName: string, data: any) : Promise<any> {
+        return http.post(`/channel/add-admin/${channelName}`, data);
+    }
+    removeUserFromAdmin(channelName: string, data: any) : Promise<any> {
+        return http.post(`/channel/remove-admin/${channelName}`, data);
     }
 
     // MESSAGES
@@ -56,16 +60,16 @@ class ChannelDataService {
     // CONDITIONS
 
     channelExist(channelName: string) : Promise<any> {
-        return http.get(`/channel/${channelName}/channel-exist`);
+        return http.get(`/channel/channel-exist/${channelName}`);
     }
 
     // a retirer
     canJoinChannel(channelName: string, channelPassword: any) : Promise<any> {
-        return http.get(`channel/${channelName}/can-join-channel`, channelPassword);
+        return http.get(`channel/can-join-channel/${channelName}`, channelPassword);
     }
 
     JoinPrivateChannel(channelName: string, channelPassword: any) : Promise<any> {
-        return http.post(`/channel/${channelName}/join-private-channel`, channelPassword);
+        return http.post(`/channel/join-private-channel/${channelName}`, channelPassword);
     }
 }
 

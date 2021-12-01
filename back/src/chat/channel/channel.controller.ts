@@ -9,6 +9,7 @@ import { UpdateChannelUserDto } from './dto/update-channel-users.dto';
 import { ChannelPasswordDto } from './dto/channel-password.dto';
 import { ChannelsAndOwnersDto } from './dto/channels-and-owners';
 import { User } from 'src/users/user.entity';
+import { IdDto } from 'src/users/dto/id.dto';
 
 @Controller('channel')
 export class ChannelController {
@@ -20,7 +21,7 @@ export class ChannelController {
 	//  POST  //
 	// ------ //
 
-	@Public()
+	// @Public()
 	@Post('createChannel')
 	async createChannel(@Res() res, @Body() createChannelDto: CreateChannelDto) {
 		if (await this.channelService.channelAlreadyExists(createChannelDto.channelName)) {
@@ -40,37 +41,51 @@ export class ChannelController {
 	// a voir comment differencier les 2 datas et update le channel
 
 	/*
-		@Public()
+		// @Public()
 		@Post(':channelName/:UserID')
 		async addChannelUser(@Param('channelName') channelName : string,
 		@Param('UserID') UserID : number) : Promise<any> {
 			return (this.channelService.addUserAsUser(channelName, UserID));
 		}
 	*/
+	@Post('/add-admin/:channelName')
+	async addChannelAdmin(@Res() res, @Param('channelName') channelName: string, @Body() userIdDto: IdDto) :Promise<void> {
+		return this.channelService.addUserAsAdmin(channelName, userIdDto.id);
+	}
 
-	@Public()
-	@Post(':channelName')
-	async addChannelUser(@Res() res, @Param('channelName') channelName: string, @Body() UpdateChannelUserDto: UpdateChannelUserDto) :Promise<void> {
-		if (await this.channelService.findUserInChannel(channelName, UpdateChannelUserDto.newUser)) {
+	@Post('/remove-admin/:channelName')
+	async removeChannelAdmin(@Res() res, @Param('channelName') channelName: string, @Body() userIdDto: IdDto) :Promise<void> {
+		return this.channelService.removeUserAsAdmin(channelName, userIdDto.id);
+	}
+
+	// @Public()
+	@Post('/add-user/:channelName')
+	async addChannelUser(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) :Promise<void> {
+		if (await this.channelService.findUserInChannel(channelName, updateChannelUserDto.user)) {
+			if (!updateChannelUserDto.isjoining) {
+				await this.channelService.userLeftChannel(channelName, updateChannelUserDto.user);
+				return res.status(HttpStatus.OK).json({
+					message: "User removed from channel"
+				})
+			}
 			return res.status(HttpStatus.OK).json({
 				message: "User already in channel"
 			})
 		}
-		else {
-			this.channelService.addUserAsUser(channelName, UpdateChannelUserDto.newUser);
-			console.log("newUser: " + UpdateChannelUserDto.newUser);
+		else if (updateChannelUserDto.isjoining) {
+			this.channelService.addUserAsUser(channelName, updateChannelUserDto.user);
+			console.log("newUser: " + updateChannelUserDto.user);
 			return (
 				res.status(HttpStatus.CREATED).json ({
 					message: `"User successfully added to channel !" + "channelName"`
-
 				})
 			);
 		}
 	}
 
 	// Nerver Used
-	@Public()
-	@Post(':channelName/join-private-channel')
+	// @Public()
+	@Post('join-private-channel/:channelName')
 	async UserJoinPrivateChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) {
 		console.log("Trying to join channel: " + channelName);
 		console.log("password : " + channelPasswordDto.password);
@@ -98,42 +113,42 @@ export class ChannelController {
 	// ------ //
   //  GET   //
   // ------ //
-	@Public()
+	// @Public()
 	@Get()
 	async findAllChannels() : Promise<Channel[]> {
 	  return (await this.channelService.findAll());
 	}
-	@Public()
+	// @Public()
 	@Get('public')
 	async findAllPublicChannels(): Promise<ChannelsAndOwnersDto> {
 	  return (await this.channelService.findAllPublicChannels());
 	}
 
-	@Public()
-	@Get('/user/:userId')
+	// @Public()
+	@Get('user/:userId')
 	async findAllUserChannels(@Param('userId') userId: number): Promise<ChannelsAndOwnersDto> {
 	  return (await this.channelService.findAllUserChannels(userId));
 	}
 
-	@Public()
-	@Get('/infos/:channelName')
+	// @Public()
+	@Get('infos/:channelName')
 	async getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
 		return (await this.channelService.findOne(channelName));
 	}
 
-	@Get(':channelName/users')
+	@Get('users/:channelName')
 	async getUsersinChannel(@Param('channelName') channelName: string) : Promise<User[]> {
 		return (await this.channelService.getUsersinChannel(channelName));
 	}
 
-	@Public()
-	@Get(':channelName/messagesHistory')
+	// @Public()
+	@Get('messagesHistory/:channelName')
 	getChannelHistory(@Param('channelName') channelName: string) : Promise<number[]> {
 		return (this.channelService.getMessageHistory(channelName));
 	}
 
-	@Public()
-	@Get(':channelName/channel-exist')
+	// @Public()
+	@Get('channel-exist/:channelName')
 	async channelExist(@Param('channelName') channelName: string) : Promise<any> {
 		console.log("checking channel: " + channelName);
 
@@ -142,8 +157,8 @@ export class ChannelController {
 		return (false);
 	}
 
-	@Public()
-	@Get(':channelName/can-join-channel')
+	// @Public()
+	@Get('can-join-channel/:channelName')
 	async canJoinChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) {
 		if (await this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
 			return res.status(HttpStatus.OK).json({
@@ -162,7 +177,7 @@ export class ChannelController {
 	//  DELETE //
 	// ------- //
 
-	@Public()
+	// @Public()
 	@Delete(':channelName')
 	async deleteChannel(@Param('channelName') channelName : string) {
 		await this.channelService.deleteOne(channelName);

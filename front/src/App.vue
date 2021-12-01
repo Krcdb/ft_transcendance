@@ -1,4 +1,5 @@
 <template>
+  <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
   <NavBar />
   <router-view :key="$route.fullPath" />
 </template>
@@ -33,6 +34,7 @@ button {
   opacity: 0.9;
   text-decoration: none;
   margin: 5px;
+  cursor: pointer;
 }
 button:hover {
   opacity: 1;

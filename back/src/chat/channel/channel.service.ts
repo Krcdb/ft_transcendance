@@ -28,8 +28,8 @@ export class ChannelService {
 		channel.isPublic = createChannelDto.isPublic;
 		channel.owner = createChannelDto.owner;
 		channel.messagesHistory = [];
-		channel.admins = [];
-		channel.users = [];
+		channel.admins = [createChannelDto.owner];
+		channel.users = [createChannelDto.owner];
 		channel.banList = [];
 		channel.muteList = [];
 		channel.users.push(createChannelDto.owner);
@@ -110,10 +110,28 @@ export class ChannelService {
 		console.log("user added to ", channelName);
 		await this.channelRepository.save(channel);
 	}
+
+	async userLeftChannel(channelName: string, userId: number) {
+		const channel = await this.channelRepository.findOne(channelName);
+		const index = channel.users.indexOf(userId);
+		if (index != -1) {
+			channel.users.splice(index, 1);
+			console.log("user", userId, " removed from ", channelName);
+			if (channel.owner == userId) {
+				channel.owner = null;
+				console.log("owner left...");
+			}
+			await this.channelRepository.save(channel);
+		}
+	}
+
 	async addUserAsAdmin(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
-		channel.admins.push(userId);
-		await this.channelRepository.save(channel);
+		if (channel.admins.indexOf(userId) == -1) {
+			console.log(userId, "added to admin");
+			channel.admins.push(userId);
+			await this.channelRepository.save(channel);
+		}
 	}
 	async addUserAsBanned(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
@@ -126,7 +144,7 @@ export class ChannelService {
 		await this.channelRepository.save(channel);
 	}
 
-		// Retrait
+	// Retrait
 	async removeUserAsUser(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.users.splice(channel.users.indexOf(userId));
@@ -134,8 +152,11 @@ export class ChannelService {
 	}
 	async removeUserAsAdmin(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
-		channel.admins.splice(channel.admins.indexOf(userId));
-		await this.channelRepository.save(channel);
+		if (channel.admins.indexOf(userId) != -1) {
+			console.log("removed from admins");
+			channel.admins.splice(channel.admins.indexOf(userId), 1);
+			await this.channelRepository.save(channel);
+		}
 	}
 	async removeUserAsBanned(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);

@@ -1,6 +1,9 @@
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsBoolean } from 'class-validator';
 
 export class UpdateChannelUserDto {
     @IsNumber()
-    newUser: number;
+    user: number;
+
+    @IsBoolean()
+    isjoining: boolean;
 }

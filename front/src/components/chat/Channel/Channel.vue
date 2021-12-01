@@ -1,26 +1,68 @@
 <template>
     <div class="channel-component">
         <div class="player-list">
+            <button 
+                class="leave-btn"
+			    type="button" 
+                name="button"
+			    @click="leaveChannel()"
+            >
+			    Leave
+            </button>
+            <router-link to="/Chat"><button 
+                class="back-btn"
+			    type="button" 
+                name="button"
+            >
+			    Back to channels list
+            </button></router-link>
             <ul>
                 <li class="player-list-item" v-for="player in PlayerList" :key="player.id">
+                    <div class="user-state">
+                        <div v-if="player.isActive" id="online-circle"></div>
+                        <div v-else id="offline-circle"></div>
+                    </div>
                     <Avatar :user="player" />
                     <div class="list-item-content">
                         <router-link class="profile-link" :to="'/users/' + player.id">
                             <h4>{{ player.userName }}</h4>
                         </router-link>
                     </div>
-                    <div>
-                        <div class="status-me" v-if="player.id == user.id">Me</div>
+                    <div class="status-div">
+                        <button
+                            class="add-admin-btn"
+                            v-if="channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) == -1"
+                            @click="addToAdmin(player.id)"
+                        >
+                            + Admin
+                        </button>
+                        <button
+                            class="remove-admin-btn"
+                            v-else-if="player.id != user.id && channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) !== -1"
+                            @click="removeAdmin(player.id)"
+                        >
+                            - Admin
+                        </button>
+                        <div class="status-admin" v-else-if="channel.admins.indexOf(player.id) !== -1 && player.id != user.id">
+                            Admin
+                        </div>
+                        <div class="status-me" v-if="player.id == user.id">
+                            Me
+                        </div>
                         <div class="status-owner" v-if="player.id == channel.owner">
                             Owner
                         </div>
+                        <!-- <div class="status-admin" v-else-if="channel.admins.indexOf(player.id) !== -1">
+                            Admin
+                        </div> -->
                         <div class="status-friend" v-if="user.friends.indexOf(player.id) !== -1">
                             Friend
                         </div>
                     </div>
-                    <div class="user-state">
-                        <div v-if="player.isActive" id="online-circle"></div>
-                        <div v-else id="offline-circle"></div>
+                    <div class="start-game">
+                        <button v-if="player.id != user.id && player.isActive" class="match-btn" @click="startMatch(player.id)">
+                            <i class='bx bx-joystick'></i>
+                        </button>
                     </div>
                 </li>
             </ul>
@@ -95,7 +137,19 @@ export default defineComponent({
         MessageComponent,
         Avatar,
     },
+    watch : {
+		'$route': {
+			handler: function() {
+				socket.offAny();
+			},
+			deep: true,
+			immediate: true,
+		},
+	},
     methods: {
+        async startMatch(id: number) {
+            socket.emit("matchUser", id);
+        },
         async getAllPlayersInChannel() {
             await ChannelDataService.getAllUsersInChannel(this.channel.channelName)
             .then((response: ResponseData) => {
@@ -138,9 +192,10 @@ export default defineComponent({
             console.log("user ID: " + this.user.id);
             if (this.channel.users.indexOf(this.user.id) == -1) {
                 const data = {
-                    newUser: this.user.id as number,
+                    user: this.user.id as number,
+                    isjoining: true,
                 };
-                await ChannelDataService.addChannelUser(this.channel.channelName, data)
+                await ChannelDataService.updateChannelUser(this.channel.channelName, data)
                 .then((response: ResponseData) => {
                     console.log(response.data.message);
                 })
@@ -173,6 +228,47 @@ export default defineComponent({
                     console.log(e);
                 });
             }
+        },
+        async leaveChannel() {
+            const data = {
+                user: this.user.id as number,
+                isjoining: false,
+            };
+            await ChannelDataService.updateChannelUser(this.channel.channelName, data)
+            .then((response: ResponseData) => {
+                console.log(response.data.message);
+                this.$router.push("/Chat");
+            })
+            .catch((e: Error) => {
+                console.log(e);
+            });
+        },
+        async addToAdmin(playerId: number) {
+            const data = {
+                id: playerId as number,
+            };
+            await ChannelDataService.addUserToAdmin(this.channel.channelName, data)
+                .then(() => {
+                    console.log("user Added To Admin");
+                    this.$router.go(0);
+                })
+                .catch((e: Error) => {
+                    console.log(e);
+                });
+        },
+        async removeAdmin(playerId: number) {
+            console.log("user = ", this.user.id, "player = ", playerId);
+            const data = {
+                id: playerId as number,
+            };
+            await ChannelDataService.removeUserFromAdmin(this.channel.channelName, data)
+            .then((response: ResponseData) => {
+                console.log("remove user from admin");
+                this.$router.go(0);
+            })
+            .catch((e: Error) => {
+                console.log(e);
+            });
         },
         async delay(ms: number) {
             return new Promise((resolve) => setTimeout(resolve, ms));
@@ -219,7 +315,6 @@ export default defineComponent({
 .player-list-item img {
     width: 64px;
     height: 64px;
-    margin: 5px;
     border: 2px solid #ddd;
     border-radius: 100%;
 }
@@ -239,14 +334,15 @@ export default defineComponent({
     margin: 5px;
 }
 .list-item-content {
-    margin-left: 20px;
+    margin-left: 10px;
+    text-align: initial;
+    width: 105px;
     margin-right: auto;
 }
 [class|="status"] {
     font-size: 15px;
     padding: 3px;
     margin-block: 2px;
-    margin-inline: 10px;
     font-weight: bold;
 }
 .status-me {
@@ -254,6 +350,10 @@ export default defineComponent({
 }
 .status-owner {
     background-color: black;
+    color: white;
+}
+.status-admin {
+    background-color: gray;
     color: white;
 }
 .status-friend {
@@ -299,5 +399,48 @@ textarea {
     font-size: 15px;
     resize: none;
     font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+.match-btn {
+    background-color: white;
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+.match-btn i {
+    border: solid black 2px;
+    border-radius: 100%;
+    padding: 5px;
+    margin-right: 5px;
+    font-size: 25px;
+    /* width: 25px; */
+    /* height: 25px; */
+}
+.start-game {
+    width: 50px;
+}
+.status-div {
+    width: 100px;
+    margin: 0;
+}
+.add-admin-btn {
+    margin: 0;
+    font-size: 15px;
+    color: grey;
+    background-color: lightgray;
+    font-weight: bold;
+    padding: 3px;
+    width: 100%;
+}
+.remove-admin-btn {
+    margin: 0;
+    font-size: 15px;
+    color: lightgray;
+    background-color: grey;
+    font-weight: bold;
+    padding: 3px;
+    width: 100%;
+}
+.leave-btn {
+    background-color: #f44336;
 }
 </style>

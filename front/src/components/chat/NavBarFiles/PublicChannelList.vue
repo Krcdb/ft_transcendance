@@ -26,14 +26,18 @@
 						<h3>{{ channel.channelName }}</h3>
 						<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`">
 					</div>
-					<div class="channel-owner">
-                        <p>Owner</p>
-                        <div class="mini-user-info" v-if="getOwnerByID(channel.owner)">
+					<div class="channel-owner" v-if="getOwnerByID(channel.owner)">
+                        <div class="mini-user-info">
+                            <p>Owner</p>
                             <Avatar :user="getOwnerByID(channel.owner)" />
                             <router-link class="profile-link" :to="'/users/' + channel.owner">
                                 <h4>{{ getOwnerByID(channel.owner).userName }}</h4>
                             </router-link>
                         </div>
+					</div>
+                    <div v-else class="channel-owner">
+                        <h4>No Owner</h4>
+                        <p>The original owner left the channel</p>
 					</div>
                     <div class="property-tag">
                         <p class="public-tag" v-if="channel.isPublic">Public</p>
@@ -68,6 +72,15 @@
 							    @click="joinChannel(channel, this.password[index], index)"
                             >
 							    Join
+                            </button>
+                            <button 
+                                v-if="channel.users.indexOf(user.id) != -1"
+                                class="delete-btn"
+							    type="button" 
+                                name="button"
+							    @click="leaveChannel(channel)"
+                            >
+							    Leave
                             </button>
 								<button type="button" name="button" class="delete-btn" v-if="channel.owner === this.curenntUserId"
 								    @click="deleteChannel(channel, index)">Delete
@@ -192,6 +205,21 @@ export default defineComponent({
 				this.isLoading[index] = false;
             });
         },
+        async leaveChannel(channel : Channel) {
+            if (channel.users.indexOf(this.user.id) != -1) {
+                const data = {
+                    user: this.user.id as number,
+                    isjoining: false,
+                };
+                await ChannelDataService.updateChannelUser(channel.channelName, data)
+                .then((response: ResponseData) => {
+                    console.log(response.data.message);
+                })
+                .catch((e: Error) => {
+                    console.log(e);
+                });
+            }
+        },
         getOwnerByID(ownerId: number): User {
            return (this.OwnersList[this.OwnersList.map(x => x.id).indexOf(ownerId)]);
         },
@@ -237,9 +265,6 @@ export default defineComponent({
     width: 50px;
     height: 50px;
 }
-.mini-user-info h4 {
-    margin: 0;
-}
 .public-tag {
   background-color: #4bbd4b;
   font-weight: bold;
@@ -267,13 +292,13 @@ export default defineComponent({
     padding: 10px;
     width: 70%;
 }
-.channel-name h3 {
-    margin: 0;
-}
 .channel-name img {
     width: 100px;
 }
-.channel-owner p {
+.channel-name h3,
+.channel-owner p,
+.channel-owner h4,
+.mini-user-info h4  {
     margin: 0;
 }
 .channel-owner {
@@ -321,5 +346,8 @@ export default defineComponent({
     color:black;
     background-color: lightgray;
     margin-bottom: 20px;
+}
+.pass-btn-div {
+    width: 240px;
 }
 </style>

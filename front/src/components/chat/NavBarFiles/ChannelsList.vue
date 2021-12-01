@@ -38,10 +38,21 @@
                             <p>{{ errorMSG[index] }}</p>
                         </form>
 						<div class="btn-div">
-							<button class="joined-btn" :class="channel.isPublic ? 'btn-green' : 'btn-red'"
-							type="button" name="button"
-							@click="joinChannel(channel, this.password[index], index)">
+							<button 
+                                class="joined-btn"
+							    type="button"
+                                name="button"
+							    @click="joinChannel(channel, this.password[index], index)"
+                            >
 							Open
+                            </button>
+                            <button 
+                                class="delete-btn"
+							    type="button" 
+                                name="button"
+							    @click="leaveChannel(channel)"
+                            >
+							    Leave
                             </button>
 							<button type="button" name="button" class="delete-btn" v-if="channel.owner === user.id"
 							@click="deleteChannel(channel, index)">Delete</button>
@@ -145,7 +156,6 @@ export default defineComponent({
                     localStorage.setItem("channel-name", channel.channelName);
 					this.$router.push("/Channel/" + channel.channelName);
 				} else {
-                    //
 					if (response.data.password == null)
 						this.errorMSG[index] = "This channel has no password";
 					else
@@ -158,6 +168,21 @@ export default defineComponent({
 				this.errorMSG[index] = "Error: " + e;
 				this.isLoading[index] = false;
             });
+        },
+        async leaveChannel(channel : Channel) {
+            if (channel.users.indexOf(this.user.id) != -1) {
+                const data = {
+                    user: this.user.id as number,
+                    isjoining: false,
+                };
+                await ChannelDataService.updateChannelUser(channel.channelName, data)
+                .then((response: ResponseData) => {
+                    console.log(response.data.message);
+                })
+                .catch((e: Error) => {
+                    console.log(e);
+                });
+            }
         },
         getOwnerByID(ownerId: number): User {
            return (this.OwnersList[this.OwnersList.map(x => x.id).indexOf(ownerId)]);
@@ -256,5 +281,8 @@ export default defineComponent({
 }
 .channel-owner {
     width: 100px;
+}
+.pass-btn-div {
+    width: 240px;
 }
 </style>
