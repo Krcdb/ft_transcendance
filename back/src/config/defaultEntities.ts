@@ -170,6 +170,9 @@ export default {
             channelsUserIsMuted: [],
         }
     ],
+    ////////////////
+    /// CHANNELS ///
+    ////////////////
     Channel: [
         {
             channelName: 'CatClub',

@@ -34,7 +34,7 @@
 					<div class="pass-btn-div">
 						<!-- PASSWORD -->
                         <form class="password-input">
-                            <input v-model="password[index]" :id="`password-${index}`" placeholder="password" type="password" autocomplete="on"> <!-- v-if="channel.password != null" -->
+                            <input v-model="password[index]" :id="`password-${index}`" placeholder="password" type="password" autocomplete="off"> <!-- v-if="channel.password != null" -->
                             <p>{{ errorMSG[index] }}</p>
                         </form>
 						<div class="btn-div">
@@ -173,7 +173,7 @@ export default defineComponent({
             if (channel.users.indexOf(this.user.id) != -1) {
                 const data = {
                     user: this.user.id as number,
-                    isjoining: false,
+                    toAdd: false,
                 };
                 await ChannelDataService.updateChannelUser(channel.channelName, data)
                 .then((response: ResponseData) => {

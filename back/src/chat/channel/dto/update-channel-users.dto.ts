@@ -5,5 +5,5 @@ export class UpdateChannelUserDto {
     user: number;
 
     @IsBoolean()
-    isjoining: boolean;
+    toAdd: boolean;
 }

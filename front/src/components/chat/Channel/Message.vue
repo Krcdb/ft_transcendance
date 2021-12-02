@@ -65,7 +65,7 @@ export default defineComponent({
       this.sender = this.user.id === this.message.owner ? true : false;
       if (!this.sender && this.user.blockedUsers.indexOf(this.owner.id) != -1)
         this.isblocked = true;
-      console.log("isSender: ", this.sender, " | ", this.user.id,  " == ",  this.message.owner);
+      // console.log("isSender: ", this.sender, " | ", this.user.id,  " == ",  this.message.owner);
     },
   },
   mounted() {

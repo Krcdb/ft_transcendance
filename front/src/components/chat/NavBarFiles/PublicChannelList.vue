@@ -4,7 +4,7 @@
         <button class="reveal-btn" @click="revealElement('join-private'); hideElement('create-channel');">Join Private Channel</button>
         <button class="reveal-btn" @click="revealElement('create-channel'); hideElement('join-private');">Create Channel</button>
         <div id="join-private">
-            <JoinPrivateChannel />
+            <JoinPrivateChannel :userId="user.id"/>
         </div>
         <div id="create-channel">
             <CreateChannel :user="user"/>
@@ -50,7 +50,7 @@
                                 :id="`password-${index}`" 
                                 placeholder="password" 
                                 type="password" 
-                                autocomplete="on"
+                                autocomplete="off"
                             > <!-- v-if="channel.password != null" -->
                                 <p>{{ errorMSG[index] }}</p>
                         </form>
@@ -142,7 +142,7 @@ export default defineComponent({
             .then((response : ResponseData) => {
                 this.ChannelList = response.data.channels;
                 this.OwnersList = response.data.owners;
-				this.filteredChannelList = response.data.channels;
+				this.filteredChannelList = this.ChannelList.filter((channel) => channel.banList.indexOf(this.user.id) == -1);
             })
             .catch((e: Error) => {
                 console.log("Error: " + e);
@@ -209,7 +209,7 @@ export default defineComponent({
             if (channel.users.indexOf(this.user.id) != -1) {
                 const data = {
                     user: this.user.id as number,
-                    isjoining: false,
+                    toAdd: false,
                 };
                 await ChannelDataService.updateChannelUser(channel.channelName, data)
                 .then((response: ResponseData) => {

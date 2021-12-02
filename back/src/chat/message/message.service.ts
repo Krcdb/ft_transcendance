@@ -17,13 +17,16 @@ export class MessageService {
     async create(createMessageDto: CreateMessageDto, channelName: string) : Promise<Message> | null {
         if (await this.channelService.channelAlreadyExists(channelName) == false)
             return null;
-        const message = new Message();
-        message.channelName = channelName;
-        message.owner = createMessageDto.owner;
-        message.message = createMessageDto.message;
-        // message.date = Date.now();
-        message.dateStr = Date.now().toString();
-        return await this.messageRepository.save(message);
+        if (await this.channelService.userIsAuthorized(channelName, createMessageDto.owner)) {
+            const message = new Message();
+            message.channelName = channelName;
+            message.owner = createMessageDto.owner;
+            message.message = createMessageDto.message;
+            // message.date = Date.now();
+            message.dateStr = Date.now().toString();
+            return await this.messageRepository.save(message);
+        }
+        
     }
 
     //////////////////////////////

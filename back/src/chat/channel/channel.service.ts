@@ -43,6 +43,7 @@ export class ChannelService {
   	/////////////////////////////////////////
 
 	async findOne(channelName: string) : Promise<Channel> {
+		console.log("in find one");
 		return (await this.channelRepository.findOne(channelName));
 	}
 	async findAll() : Promise<Channel[]> {
@@ -95,6 +96,22 @@ export class ChannelService {
 		return (false);
 	}
 
+	async userIsAuthorized(channelName: string, userId: number) : Promise<boolean> {
+		const channel = await this.findOne(channelName);
+		if (channel.users.indexOf(userId) == -1)
+			return (false);
+		if (channel.muteList.indexOf(userId) != -1)
+			return (false);
+		return (true);
+	}
+
+	async userIsBan(channelName: string, userId: number) : Promise<boolean> {
+		const channel = await this.findOne(channelName);
+		if (channel.banList.indexOf(userId) != -1)
+			return (true);
+		return (false);
+	}
+
 	/////////////////////////////////////////
 	//  Gestion des listes d'utilisateurs  //
   	/////////////////////////////////////////
@@ -102,6 +119,11 @@ export class ChannelService {
 	async getUsersinChannel(channelName: string): Promise<User[]> {
 		const channel = await this.channelRepository.findOne(channelName);
 		return this.usersService.getUsersInTab(channel.users);
+	}
+
+	async getBanListChannel(channelName: string): Promise<User[]> {
+		const channel = await this.channelRepository.findOne(channelName);
+		return this.usersService.getUsersInTab(channel.banList);
 	}
 
 	async addUserAsUser(channelName: string, userId: number) : Promise<void> {
@@ -113,10 +135,15 @@ export class ChannelService {
 
 	async userLeftChannel(channelName: string, userId: number) {
 		const channel = await this.channelRepository.findOne(channelName);
-		const index = channel.users.indexOf(userId);
+		let index = channel.users.indexOf(userId);
 		if (index != -1) {
 			channel.users.splice(index, 1);
-			console.log("user", userId, " removed from ", channelName);
+			console.log("user", userId, " removed from users in ", channelName);
+			index = channel.admins.indexOf(userId);
+			if (index != -1) {
+				channel.admins.splice(index, 1);
+				console.log("user", userId, " removed from admin in ", channelName);
+			}
 			if (channel.owner == userId) {
 				channel.owner = null;
 				console.log("owner left...");
@@ -125,56 +152,79 @@ export class ChannelService {
 		}
 	}
 
-	async addUserAsAdmin(channelName: string, userId: number) : Promise<void> {
+	async addUserAsAdmin(channelName: string, userId: number) : Promise<any> {
 		const channel = await this.channelRepository.findOne(channelName);
 		if (channel.admins.indexOf(userId) == -1) {
 			console.log(userId, "added to admin");
 			channel.admins.push(userId);
-			await this.channelRepository.save(channel);
+			return await this.channelRepository.save(channel);
 		}
 	}
-	async addUserAsBanned(channelName: string, userId: number) : Promise<void> {
+	async addUserAsMuted(channelName: string, userId: number) : Promise<any> {
 		const channel = await this.channelRepository.findOne(channelName);
-		channel.banList.push(userId);
-		await this.channelRepository.save(channel);
+		if (channel.muteList.indexOf(userId) == -1 && channel.owner != userId) {
+			channel.muteList.push(userId);
+			console.log(userId, "has been muted in", channelName);
+			return await this.channelRepository.save(channel);
+		}
 	}
-	async addUserAsMuted(channelName: string, userId: number) : Promise<void> {
+	async addUserAsBanned(channelName: string, userId: number) : Promise<any> {
 		const channel = await this.channelRepository.findOne(channelName);
-		channel.muteList.push(userId);
-		await this.channelRepository.save(channel);
+		if (channel.banList.indexOf(userId) == -1 && channel.owner != userId) {
+			channel.banList.push(userId);
+			console.log(userId, "has been banned from", channelName);
+			let index = channel.users.indexOf(userId);
+			if (index != -1) {
+				channel.users.splice(index, 1);
+				console.log("user", userId, " removed from users in ", channelName);
+				index = channel.admins.indexOf(userId);
+				if (index != -1) {
+					channel.admins.splice(index, 1);
+					console.log("user", userId, " removed from admin in ", channelName);
+				}
+			}
+			return await this.channelRepository.save(channel);
+		}
 	}
 
 	// Retrait
-	async removeUserAsUser(channelName: string, userId: number) : Promise<void> {
+	async removeUserAsUser(channelName: string, userId: number) : Promise<any> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.users.splice(channel.users.indexOf(userId));
-		await this.channelRepository.save(channel);
+		return await this.channelRepository.save(channel);
 	}
-	async removeUserAsAdmin(channelName: string, userId: number) : Promise<void> {
+	async removeUserAsAdmin(channelName: string, userId: number) : Promise<any> {
 		const channel = await this.channelRepository.findOne(channelName);
 		if (channel.admins.indexOf(userId) != -1) {
 			console.log("removed from admins");
 			channel.admins.splice(channel.admins.indexOf(userId), 1);
-			await this.channelRepository.save(channel);
+			return await this.channelRepository.save(channel);
 		}
 	}
-	async removeUserAsBanned(channelName: string, userId: number) : Promise<void> {
+	async removeUserAsMuted(channelName: string, userId: number) : Promise<any> {
 		const channel = await this.channelRepository.findOne(channelName);
-		channel.banList.splice(channel.banList.indexOf(userId));
-		await this.channelRepository.save(channel);
+		if (channel.muteList.indexOf(userId) != -1) {
+			channel.muteList.splice(channel.muteList.indexOf(userId), 1);
+			console.log(userId, "has been unmute in", channelName);
+			return await this.channelRepository.save(channel);
+		}
 	}
-	async removeUserAsMuted(channelName: string, userId: number) : Promise<void> {
+	async removeUserAsBanned(channelName: string, userId: number) : Promise<any> {
 		const channel = await this.channelRepository.findOne(channelName);
-		channel.muteList.splice(channel.muteList.indexOf(userId));
-		await this.channelRepository.save(channel);
+		if (channel.banList.indexOf(userId) != -1) {
+			channel.banList.splice(channel.banList.indexOf(userId), 1);
+			console.log(userId, "has been unbanned from", channelName);
+			return await this.channelRepository.save(channel);
+		}
 	}
-		// Changement d'owner  // (owner ne peut pas etre null)
-	async changeOwner(channelName: string, newOwnerId: number) : Promise<void> {
-		const channel = await this.channelRepository.findOne(channelName);
-		await this.usersService.removeFromChannelOwner(channel.owner, channelName);
-		await this.usersService.addToChannelOwner(newOwnerId, channelName);
-		await this.channelRepository.update(channelName, {owner: newOwnerId});
-	}
+	
+	// Changement d'owner  // (owner ne peut pas etre null)
+	// async changeOwner(channelName: string, newOwnerId: number) : Promise<void> {
+	// 	const channel = await this.channelRepository.findOne(channelName);
+	// 	await this.usersService.removeFromChannelOwner(channel.owner, channelName);
+	// 	await this.usersService.addToChannelOwner(newOwnerId, channelName);
+	// 	await this.channelRepository.update(channelName, {owner: newOwnerId});
+	// }
 
   	////////////////////////////////
 	//  Gestion de l'historique   //

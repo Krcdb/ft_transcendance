@@ -48,21 +48,33 @@ export class ChannelController {
 			return (this.channelService.addUserAsUser(channelName, UserID));
 		}
 	*/
-	@Post('/add-admin/:channelName')
-	async addChannelAdmin(@Res() res, @Param('channelName') channelName: string, @Body() userIdDto: IdDto) :Promise<void> {
-		return this.channelService.addUserAsAdmin(channelName, userIdDto.id);
+	@Post('/admin/:channelName')
+	async updateChannelAdmin(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) : Promise<any> {
+		if (updateChannelUserDto.toAdd)
+			return this.channelService.addUserAsAdmin(channelName, updateChannelUserDto.user);
+		else
+			return this.channelService.removeUserAsAdmin(channelName, updateChannelUserDto.user);
 	}
-
-	@Post('/remove-admin/:channelName')
-	async removeChannelAdmin(@Res() res, @Param('channelName') channelName: string, @Body() userIdDto: IdDto) :Promise<void> {
-		return this.channelService.removeUserAsAdmin(channelName, userIdDto.id);
+	@Post('/mute/:channelName')
+	async updateChannelMuteList(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) :Promise<any> {
+		if (updateChannelUserDto.toAdd)
+			return this.channelService.addUserAsMuted(channelName, updateChannelUserDto.user);
+		else
+			return this.channelService.removeUserAsMuted(channelName, updateChannelUserDto.user);
+	}
+	@Post('/ban/:channelName')
+	async updateChannelBanList(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) :Promise<any> {
+		if (updateChannelUserDto.toAdd)
+			return this.channelService.addUserAsBanned(channelName, updateChannelUserDto.user);
+		else
+			return this.channelService.removeUserAsBanned(channelName, updateChannelUserDto.user);
 	}
 
 	// @Public()
-	@Post('/add-user/:channelName')
+	@Post('/update-user/:channelName')
 	async addChannelUser(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) :Promise<void> {
 		if (await this.channelService.findUserInChannel(channelName, updateChannelUserDto.user)) {
-			if (!updateChannelUserDto.isjoining) {
+			if (!updateChannelUserDto.toAdd) {
 				await this.channelService.userLeftChannel(channelName, updateChannelUserDto.user);
 				return res.status(HttpStatus.OK).json({
 					message: "User removed from channel"
@@ -72,7 +84,7 @@ export class ChannelController {
 				message: "User already in channel"
 			})
 		}
-		else if (updateChannelUserDto.isjoining) {
+		else if (updateChannelUserDto.toAdd) {
 			this.channelService.addUserAsUser(channelName, updateChannelUserDto.user);
 			console.log("newUser: " + updateChannelUserDto.user);
 			return (
@@ -110,7 +122,7 @@ export class ChannelController {
 	}
 
 
-	// ------ //
+  // ------ //
   //  GET   //
   // ------ //
 	// @Public()
@@ -133,6 +145,7 @@ export class ChannelController {
 	// @Public()
 	@Get('infos/:channelName')
 	async getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
+		console.log("calling find One");
 		return (await this.channelService.findOne(channelName));
 	}
 
@@ -155,6 +168,11 @@ export class ChannelController {
 		if (await this.channelService.findOne(channelName))
 			return (true);
 		return (false);
+	}
+
+	@Get('banlist/:channelName')
+	async getBanList(@Param('channelName') channelName: string) : Promise<User[]> {
+		return (this.channelService.getBanListChannel(channelName));
 	}
 
 	// @Public()

@@ -7,9 +7,7 @@ import CreateChannel from "@/types/CreateChannel";
 class ChannelDataService {
 
     // CHANNEL
-    createChannel(channel: CreateChannel) : Promise<any> {
-        return http.post('/channel/createChannel', channel);
-    }
+    // GET
     getAllActiveUser() : Promise <any> {
         return http.get('/users/');
     }
@@ -28,31 +26,42 @@ class ChannelDataService {
     getAllUsersInChannel(channelName : string) : Promise<any> {
         return http.get(`/channel/users/${channelName}`);
     }
-    deleteChannel(channelName : string) : Promise<any> {
-        return http.delete(`/channel/${channelName}`);
-    }
-    updateChannelUser(channelName : string, data: any) : Promise<any> {
-        return http.post(`/channel/add-user/${channelName}`, data);
-    }
     getMessagesInChannel(channelName : string) : Promise<any> {
         return http.get(`/channel/messagesHistory${channelName}`);
     }
-    addUserToAdmin(channelName: string, data: any) : Promise<any> {
-        return http.post(`/channel/add-admin/${channelName}`, data);
+    getBanListUsers(channelName: string): Promise<any> {
+        return http.get(`/channel/banlist/${channelName}`);
     }
-    removeUserFromAdmin(channelName: string, data: any) : Promise<any> {
-        return http.post(`/channel/remove-admin/${channelName}`, data);
+    // POST
+    createChannel(channel: CreateChannel) : Promise<any> {
+        return http.post('/channel/createChannel', channel);
+    }
+    updateChannelUser(channelName : string, data: any) : Promise<any> {
+        return http.post(`/channel/update-user/${channelName}`, data);
+    }
+    updateAdmin(channelName: string, data: any) : Promise<any> {
+        return http.post(`/channel/admin/${channelName}`, data);
+    }
+    updateMuteList(channelName: string, data: any) : Promise<any> {
+        return http.post(`/channel/mute/${channelName}`, data);
+    }
+    updateBanList(channelName: string, data: any) : Promise<any> {
+        return http.post(`/channel/ban/${channelName}`, data);
+    }
+    // DELETE
+    deleteChannel(channelName : string) : Promise<any> {
+        return http.delete(`/channel/${channelName}`);
     }
 
     // MESSAGES
-
+    //GET
     getMessagesFromChannel(channelName : string) : Promise<any> {
         return (http.get(`messages/${channelName}/msg`));
     }
     getMessageFromChannel(channelName: string, id : any) : Promise<any> {
         return http.get(`messages/${channelName}/msg/`, id);
     }
-
+    // POST
     sendMessageToChannel(channelName: string, message: any) : Promise<any> {
         return http.post(`messages/${channelName}`, message);
     }
@@ -68,7 +77,7 @@ class ChannelDataService {
         return http.get(`channel/can-join-channel/${channelName}`, channelPassword);
     }
 
-    JoinPrivateChannel(channelName: string, channelPassword: any) : Promise<any> {
+    async JoinPrivateChannel(channelName: string, channelPassword: any) : Promise<any> {
         return http.post(`/channel/join-private-channel/${channelName}`, channelPassword);
     }
 }

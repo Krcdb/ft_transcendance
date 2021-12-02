@@ -10,7 +10,7 @@
 					minlength="1"
 					maxlength="10"
 					id="channel-name"
-					v-model="channel.channelName"
+					v-model="joinChannel.channelName"
 				></label>
 			</div>
 			<div class="form-div">
@@ -18,8 +18,8 @@
 				<input 
 					type="password"
 					id="password"
-					v-model="channel.password"
-					autocomplete="on"
+					v-model="joinChannel.password"
+					autocomplete="off"
 				></label>
 			</div>
 			<div class="form-div">
@@ -46,22 +46,46 @@ export default defineComponent({
 	name: "join-private-channel",
 	data() {
 		return {
+			joinChannel: {} as Channel,
 			channel: {} as Channel,
 			error: "" as string,
 		};
 	},
+	props: {
+		userId: {
+			type: Number,
+			required: true,
+		},
+	},
 	methods: {
-		JoinPrivateChannel() {
+		async getChannel(name: string) {
+            console.log("getChannels private ");
+            await ChannelDataService.getChannel(name)
+            .then((response: ResponseData) => {
+                this.channel = response.data;
+            })
+            .catch((e: Error) => {
+                console.log(e);
+            });
+        },
+		async JoinPrivateChannel() {
 			let data = {
-				password: this.channel.password,
+				password: this.joinChannel.password,
 			};
 			console.log("data = ", data);
-			ChannelDataService.JoinPrivateChannel(this.channel.channelName, data)
-			.then((response : ResponseData) => {
-				console.log(response);
+			await ChannelDataService.JoinPrivateChannel(this.joinChannel.channelName, data)
+			.then(async (response : ResponseData) => {
+				console.log("private response = ", response);
 				console.log("Can join channel !");
-				localStorage.setItem("channel-name", this.channel.channelName);
-				this.$router.push("/Channel/" + this.channel.channelName);
+				await this.getChannel(this.joinChannel.channelName);
+				console.log("indx = ", this.channel.banList.indexOf(this.userId));
+				if (this.channel.banList.indexOf(this.userId) == -1) {
+					localStorage.setItem("channel-name", this.joinChannel.channelName);
+					this.$router.push("/Channel/" + this.joinChannel.channelName);
+				}
+				else {
+					this.error = "You are ban from this channel.";
+				}
 			})
       .catch((e) => {
 					this.error =  e.response.data.message;
