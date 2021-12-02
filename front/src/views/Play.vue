@@ -3,6 +3,7 @@
     	<h1>&#8593; W  &#8595; S </h1>
     	<br />
 		<button class="button" v-on:click="findMatch">Find a match</button>
+		<button class="button" v-on:click="findMatchBonus">Find a match with bonus</button>
   	</div>
 </template>
 
@@ -30,7 +31,12 @@ export default defineComponent({
 		findMatch: function() {
 			console.log("start matchmaking");
 			this.inQueue = true;
-			socket.emit('searchGame');
+			socket.emit('searchGame', false);
+		},
+		findMatchBonus: function() {
+			console.log("start bonus matchmaking");
+			this.inQueue = true;
+			socket.emit('searchGame', true);
 		}
 	},
 	watch : {

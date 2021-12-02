@@ -17,7 +17,7 @@ const GameOptions: GameOptionsInterface = {
 	PADDLE_HEIGHT: 60,
 	PADDLE_MARGIN: 10,
 	BALL_SIZE: 10,
-	PLAYER_MOVE: 2.5,
+	BONUS_SIZE:20,
 };
 
 @Injectable()
@@ -25,6 +25,7 @@ export class GameService {
 	
 	games = new Map<string, Game>();
 	matchmakingQueue: User[] = [];
+	matchmakingBonusQueue: User[] = [];
 
 	matchmakingInterval: NodeJS.Timer = null;
 	checkMatchmakingRef = this.checkMatchmaking.bind(this);
@@ -48,7 +49,15 @@ export class GameService {
 				const opponent = this.matchmakingQueue[i];
 				const eloDiff = Math.abs(opponent.ladderLevel - user.ladderLevel);
 				if (eloDiff < 100)
-					this.matchPlayers(user, opponent);
+					this.matchPlayers(user, opponent, false);
+			}
+		}
+		for (const user of this.matchmakingBonusQueue) {
+			for (let i = this.matchmakingBonusQueue.indexOf(user) + 1; i < this.matchmakingBonusQueue.length; i++) {
+				const opponent = this.matchmakingBonusQueue[i];
+				const eloDiff = Math.abs(opponent.ladderLevel - user.ladderLevel);
+				if (eloDiff < 100)
+					this.matchPlayers(user, opponent, true);
 			}
 		}
 	}
@@ -136,7 +145,7 @@ export class GameService {
 		const match = await this.matchService.create(player1.id, player2.id);
 		console.log("new match | id : ", match.matchId, " | p1 : ", player1.id, " | p2 : ", player2.id);
 		
-		const game = new Game(player1, player2, GameOptions, match.matchId);
+		const game = new Game(player1, player2, GameOptions, match.matchId, false);
 		this.games.set(game.uuid, game);
 
 		socket.emit("friendMatchRequest", game.uuid);
@@ -146,15 +155,15 @@ export class GameService {
 		this.createGame(game, match);
 	}
 
-	async matchPlayers(player1: User, player2: User) {
+	async matchPlayers(player1: User, player2: User, bonus: boolean) {
 		this.removeFromQueue(player1);
 		this.removeFromQueue(player2);
 		this.logger.log('match found');
 
 		const match = await this.matchService.create(player1.id, player2.id);
 		console.log("new match | id : ", match.matchId, " | p1 : ", player1.id, " | p2 : ", player2.id);
-		
-		const game = new Game(player1, player2, GameOptions, match.matchId);
+
+		const game = new Game(player1, player2, GameOptions, match.matchId, bonus);
 		this.games.set(game.uuid, game);
 	
 		this.gameReady(player1, game.uuid);
@@ -163,18 +172,29 @@ export class GameService {
 		this.createGame(game, match);
 	}
 
-	async searchGame(socket: Socket) {
+	async searchGame(socket: Socket, bonus: boolean) {
 		const user = await this.usersService.findOne(socket.handshake.auth.userId);
-		if (this.matchmakingQueue.find(x => x.id == user.id) === undefined) {
-			this.matchmakingQueue.push(user);
-			this.logger.log(user.userName, "added to queue"); 
+		if (!bonus) {
+			if ((this.matchmakingBonusQueue.find(x => x.id == user.id) === undefined) &&
+				(this.matchmakingQueue.find(x => x.id == user.id) === undefined)) {
+				this.matchmakingQueue.push(user);
+				this.logger.log(user.userName, "added to queue"); 
+			}
+		}
+		else {
+			if ((this.matchmakingBonusQueue.find(x => x.id == user.id) === undefined) &&
+				(this.matchmakingQueue.find(x => x.id == user.id) === undefined)) {
+				this.matchmakingBonusQueue.push(user);
+				this.logger.log(user.userName, "added to bonus queue"); 
+			}
 		}
 	}
 
 	async removeFromQueue(user: User) {
-		if (user)
+		if (user) 
 			console.log(user.userName, "removed from queue");
 		this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(user), 1);
+		this.matchmakingBonusQueue.splice(this.matchmakingBonusQueue.indexOf(user), 1);
 	}
 
 	async playerInput(payload: any) {

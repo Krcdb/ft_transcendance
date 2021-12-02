@@ -12,13 +12,14 @@ export interface GameOptionsInterface {
 	PADDLE_HEIGHT: number;
 	PADDLE_MARGIN: number;
 	BALL_SIZE: number;
-	PLAYER_MOVE: number;
+	BONUS_SIZE: number;
 }
 
 enum Keys {
 	W_KEY = 87,
 	S_KEY = 83
 }
+
 
 export class Game {
 	player1: User;
@@ -27,6 +28,7 @@ export class Game {
 	uuid: string;
 	intervalRef: any;
 	paused: boolean = false;
+	bonus: boolean = false;
 
 
 	width: number;
@@ -35,6 +37,10 @@ export class Game {
 	p1: Paddle;
 	p2: Paddle;
 	ball: Ball;
+	bonusX: number = -20;
+	bonusY: number = -20;
+	bonusPresent: boolean = false;
+
 
 	player1Score: number;
 	player2Score: number;
@@ -49,11 +55,12 @@ export class Game {
 	p2UpKeyPressed: Boolean = false;
 	p2DownKeyPressed: Boolean = false;
 
-	constructor(player1: User, player2: User,options: GameOptionsInterface, uuid: string) {
+	constructor(player1: User, player2: User,options: GameOptionsInterface, uuid: string, bonus: boolean) {
 		this.player1 = player1;
 		this.player2 = player2;
 		this.options = options;
 		this.uuid = uuid;
+		this.bonus = bonus;
 
 		this.player1Score = 0;
 		this.player2Score = 0;
@@ -86,7 +93,7 @@ export class Game {
 			this.p2DownKeyPressed = payload.downPressed;
 		}
 		else
-			console.log("player not input not found")
+			console.log("player in input not found");
 	}
 
 	startGame(server: Server) {
@@ -115,26 +122,24 @@ export class Game {
 				x: this.p2.x,
 				y: this.p2.y,
 				score: this.player2Score,
-		  	}
+			},
+			bonus: {
+				x: this.bonusX,
+				y: this.bonusY,
+			}
 		});
 	}
 
 	setBallDirection() {
 		var randomDirection = Math.floor(Math.random() * 2) + 1; 
-        if(randomDirection % 2){
+        if(randomDirection % 2)
             this.ball.xVel = 1;
-        }else{
+		else
             this.ball.xVel = -1;
-		}
-		randomDirection = Math.floor(Math.random() * 2) + 1;
-		if(randomDirection % 2){
-            this.ball.yVel = 1;
-        }else{
-            this.ball.yVel = -1;
-		}
+		this.ball.yVel = 0;
 		this.ball.setXY(
 			this.width / 2 - this.ball.size / 2,
-			Math.floor(Math.random() * (this.height - this.options.BALL_SIZE - 2 * this.options.PADDLE_MARGIN) + this.options.PADDLE_MARGIN)
+			this.height / 2 - this.ball.size / 2,
 		);
 	}
 
@@ -179,6 +184,12 @@ export class Game {
       		this.paused = false;
 		}, 2000);
 		
+		this.bonusX = -20;
+		this.bonusY = -20;
+		this.bonusPresent = false;
+
+		this.ball.speed = 4;
+
 		this.p1.setXY(
 			this.options.PADDLE_MARGIN,
 			this.height / 2 - this.options.PADDLE_HEIGHT / 2,
@@ -204,13 +215,54 @@ export class Game {
 			this.reset();
 		}
 		//Paddle collision
-		if (this.ball.x <= this.p1.x + this.p1.width) {
-			if (this.ball.y >= this.p1.y && this.ball.y + this.ball.size <= this.p1.y + this.p1.height)
-			this.ball.xVel = -this.ball.xVel;
+		let normalizedRelativeY: number;
+		let bounceAngle: number;
+		if (this.ball.xVel < 0 && this.ball.x <= this.p1.x + this.p1.width) {
+			if (this.ball.y >= this.p1.y && this.ball.y + this.ball.size <= this.p1.y + this.p1.height) {
+				normalizedRelativeY = ((this.p1.y + (this.options.PADDLE_HEIGHT / 2)) - (this.ball.y + (this.options.BALL_SIZE / 2))) / (this.options.PADDLE_HEIGHT / 2);
+				bounceAngle = normalizedRelativeY * ((Math.PI * 5) / 12);
+				this.ball.yVel = -Math.sin(bounceAngle);
+				this.ball.xVel = Math.cos(bounceAngle);
+			}
 		}
-		if (this.ball.x + this.ball.size >= this.p2.x) {
-			if (this.ball.y >= this.p2.y && this.ball.y + this.ball.size <= this.p2.y + this.p2.height)
-			this.ball.xVel = -this.ball.xVel;
+		if (this.ball.xVel > 0 && this.ball.x + this.ball.size >= this.p2.x) {
+			if (this.ball.y >= this.p2.y && this.ball.y + this.ball.size <= this.p2.y + this.p2.height) {
+				normalizedRelativeY = ((this.p2.y + (this.options.PADDLE_HEIGHT / 2)) - (this.ball.y + (this.options.BALL_SIZE / 2))) / (this.options.PADDLE_HEIGHT / 2);
+				bounceAngle = normalizedRelativeY * ((Math.PI * 5) / 12);
+				this.ball.yVel = -Math.sin(bounceAngle);
+				this.ball.xVel = -Math.cos(bounceAngle);
+			}
+		}
+	}
+
+	spawnBonus() {
+		this.bonusX = Math.floor(Math.random() * 200) + 250;
+		this.bonusY = Math.floor(Math.random() * 300) + 50;
+		console.log(`bonus spawn | x : ${this.bonusX} | y : ${this.bonusY}`);
+	}
+	
+	resolveBonus() {
+		this.ball.speed += 2;
+	}
+
+	bonusSpawnCollision() {
+		if (!this.bonusPresent) {
+			this.bonusPresent = true;
+			setTimeout(() => {
+				this.spawnBonus();
+		  }, 2000);
+		}
+		if (this.bonusX > 0) {
+			if ((this.ball.x + (this.options.BALL_SIZE / 2)) >= this.bonusX &&
+			(this.ball.x + (this.options.BALL_SIZE / 2)) <= (this.bonusX + this.options.BONUS_SIZE) &&
+			(this.ball.y + (this.options.BALL_SIZE / 2)) >= this.bonusY &&
+			(this.ball.y + (this.options.BALL_SIZE / 2)) <= (this.bonusY + this.options.BONUS_SIZE)) {
+				this.resolveBonus();
+				this.bonusPresent = false;
+				this.bonusX = -20;
+				this.bonusY = -20;
+				console.log(`bonus spawn hit`);
+			}
 		}
 	}
 
@@ -221,6 +273,9 @@ export class Game {
 		if (this.paused)
 			return ;
 
+		if (this.bonus)
+			this.bonusSpawnCollision();
+		
 		this.ball.x += this.ball.xVel * this.ball.speed;
 		this.ball.y += this.ball.yVel * this.ball.speed;
 	}
@@ -244,7 +299,12 @@ export class Game {
 				x: this.p2.x,
 				y: this.p2.y,
 				score: this.player2Score,
-		  	}
+			},
+			bonus: {
+				x: this.bonusX,
+				y: this.bonusY,
+			}
+			  
 		});
 	}
 }
