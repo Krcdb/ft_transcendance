@@ -17,7 +17,7 @@
 			    Back to channels list
             </button></router-link>
             <ul>
-                <li class="player-list-item" v-for="player in PlayerList" :key="player.id">
+                <li class="player-list-item" v-for="player in filteredPlayerList" :key="player.id">
                     <div class="user-state">
                         <div v-if="player.isActive" id="online-circle"></div>
                         <div v-else id="offline-circle"></div>
@@ -29,32 +29,29 @@
                         </router-link>
                     </div>
                     <div class="status-div">
+                        <div class="status-owner" v-if="player.id == channel.owner">
+                            Owner
+                        </div>
                         <button
                             class="add-admin-btn"
-                            v-if="channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) == -1"
+                            v-if="user.id !== player.id && channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) == -1 && player.id != channel.owner"
                             @click="addToAdmin(player.id)"
                         >
                             + Admin
                         </button>
                         <button
                             class="remove-admin-btn"
-                            v-else-if="player.id != user.id && channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) !== -1"
+                            v-else-if="user.id !== player.id && channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) !== -1 && player.id != channel.owner"
                             @click="removeAdmin(player.id)"
                         >
                             - Admin
                         </button>
-                        <div class="status-admin" v-else-if="channel.admins.indexOf(player.id) !== -1 && player.id != user.id">
+                        <div class="status-admin" v-else-if="channel.admins.indexOf(player.id) !== -1 && player.id != channel.owner">
                             Admin
                         </div>
                         <div class="status-me" v-if="player.id == user.id">
                             Me
                         </div>
-                        <div class="status-owner" v-if="player.id == channel.owner">
-                            Owner
-                        </div>
-                        <!-- <div class="status-admin" v-else-if="channel.admins.indexOf(player.id) !== -1">
-                            Admin
-                        </div> -->
                         <div class="status-friend" v-if="user.friends.indexOf(player.id) !== -1">
                             Friend
                         </div>
@@ -73,7 +70,8 @@
             <div class="messages">
                 <ul ref="ScrollBar">
                     <li class="Plist-group-item" v-for="message in Messages" :key="message.id">
-                    <MessageComponent :message="message" :userId="user.id" />
+                        <!-- v-if="user.blockedUsers.indexOf(message.owner) == -1" -->
+                    <MessageComponent  :message="message" :user="user" />
                 </li>
             </ul>
         </div>
@@ -126,7 +124,8 @@ const socket = io("http://localhost:3000", {
 export default defineComponent({
     data() {
         return {
-            PlayerList: [] as User[],
+            playerList: [] as User[],
+            filteredPlayerList: [] as User[],
             user: {} as User,
             channel: {} as Channel,
             Messages: [] as Message[],
@@ -153,7 +152,8 @@ export default defineComponent({
         async getAllPlayersInChannel() {
             await ChannelDataService.getAllUsersInChannel(this.channel.channelName)
             .then((response: ResponseData) => {
-                this.PlayerList = response.data;
+                this.playerList = response.data;
+                this.filteredPlayerList = this.playerList.filter((player) => this.user.blockedUsers.indexOf(player.id) == -1);
             })
             .catch((e: Error) => {
                 console.log(e);

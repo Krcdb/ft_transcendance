@@ -19,7 +19,6 @@
               <Avatar :user="user" />
               {{ user.userName }}
             </button>
-            <hr />
           </li>
         </ul>
       </div>

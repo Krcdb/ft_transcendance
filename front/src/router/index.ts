@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import http from "@/http-common";
+import Vue from 'vue';
 
 const routes = [
     {
@@ -94,7 +95,7 @@ router.beforeEach((to, from, next) => {
         to.path !== "/illegal-login" &&
         to.path !== "/2FLogin"
     )
-    next({ path: "/login" });
+    next({ path: "/login"});
     else {
         http.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         next();
