@@ -42,8 +42,8 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 	// Match
 
 	@SubscribeMessage('searchGame')
-	async searchGame(socket: Socket) {
-		return this.gameService.searchGame(socket);
+	async searchGame(socket: Socket, payload: any) {
+		return this.gameService.searchGame(socket, payload);
 	}
 
 	@SubscribeMessage('playerInput')
@@ -86,8 +86,20 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 		return this.channelService.refreshChannelMessages(this.server, socket, channelName);
 	}
 
+	
 	@SubscribeMessage('refreshChannelMessages')
 	async refreshChannelMessages(socket: Socket, channelName: string) {
 		return this.channelService.refreshChannelMessages(this.server, socket, channelName);
+	}
+	
+	@SubscribeMessage('updateChannel')
+	async updateChannel(socket: Socket, channelName: string) {
+		console.log("SOCKET : CHANNEL : refreshChannelInfos");
+		return this.channelService.refreshChannelInfos(this.server, socket, channelName);
+	}
+
+	@SubscribeMessage('refreshChannelInfos')
+	async refreshChannelInfos(socket: Socket, channelName: string) {
+		return this.channelService.refreshChannelInfos(this.server, socket, channelName);
 	}
 }

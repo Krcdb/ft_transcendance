@@ -19,16 +19,20 @@ export declare class ChannelService {
     findAllPrivateChannels(): Promise<Channel[]>;
     channelAlreadyExists(channelName: string): Promise<any>;
     findUserInChannel(channelName: string, userID: number): Promise<boolean>;
+    userIsAuthorized(channelName: string, userId: number): Promise<boolean>;
+    userIsBan(channelName: string, userId: number): Promise<boolean>;
     getUsersinChannel(channelName: string): Promise<User[]>;
+    getBanListChannel(channelName: string): Promise<User[]>;
     addUserAsUser(channelName: string, userId: number): Promise<void>;
-    addUserAsAdmin(channelName: string, userId: number): Promise<void>;
-    addUserAsBanned(channelName: string, userId: number): Promise<void>;
-    addUserAsMuted(channelName: string, userId: number): Promise<void>;
-    removeUserAsUser(channelName: string, userId: number): Promise<void>;
-    removeUserAsAdmin(channelName: string, userId: number): Promise<void>;
-    removeUserAsBanned(channelName: string, userId: number): Promise<void>;
-    removeUserAsMuted(channelName: string, userId: number): Promise<void>;
-    changeOwner(channelName: string, newOwnerId: number): Promise<void>;
+    userLeftChannel(channelName: string, userId: number): Promise<void>;
+    addUserAsAdmin(channelName: string, userId: number): Promise<any>;
+    addUserAsMuted(channelName: string, userId: number): Promise<any>;
+    addUserAsBanned(channelName: string, userId: number): Promise<any>;
+    addUserAsKicked(channelName: string, userId: number): Promise<any>;
+    removeUserAsUser(channelName: string, userId: number): Promise<any>;
+    removeUserAsAdmin(channelName: string, userId: number): Promise<any>;
+    removeUserAsMuted(channelName: string, userId: number): Promise<any>;
+    removeUserAsBanned(channelName: string, userId: number): Promise<any>;
     addMessageToHistory(channelName: string, messageId: number): Promise<void>;
     getMessageHistory(channelName: string): Promise<number[]>;
     deleteOne(channelName: string): Promise<any>;
@@ -36,4 +40,5 @@ export declare class ChannelService {
     hasPassword(channelName: string): Promise<boolean>;
     addSocketUser(socket: Socket, channelName: string): Promise<void>;
     refreshChannelMessages(server: Server, socket: Socket, channelName: string): Promise<any>;
+    refreshChannelInfos(server: Server, socket: Socket, channelName: string): Promise<any>;
 }

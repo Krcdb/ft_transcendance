@@ -3,7 +3,7 @@ export class Paddle {
 	y: number;
 	width: number;
 	height: number;
-	speed: number = 10;
+	speed: number = 5;
 	yVel: number = 0;
   
 	constructor(w: number, h: number) {

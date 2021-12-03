@@ -25,6 +25,7 @@ declare const _default: {
         users: number[];
         banList: number[];
         muteList: any[];
+        kickList: any[];
         messagesHistory: number[];
     } | {
         channelName: string;
@@ -36,6 +37,7 @@ declare const _default: {
         users: number[];
         banList: any[];
         muteList: any[];
+        kickList: any[];
         messagesHistory: number[];
     })[];
     Message: {

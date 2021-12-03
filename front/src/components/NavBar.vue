@@ -13,7 +13,7 @@
     <div class="nav-wrapper">
       <ul>
         <li><router-link to="/Play">Play</router-link></li>
-        <li><router-link to="/chat">Chat</router-link></li>
+        <li><router-link to="/chat" :user="user">Chat</router-link></li>
         <li><router-link to="/users">Users</router-link></li>
         <li class="user-login">
           <router-link

@@ -14,7 +14,7 @@ export class Channel {
 	@Column({ default: false })
 	isProtected: boolean;
 
-	@Column("int")//, {nullable: true})
+	@Column("int", {nullable: true})
 	owner: number;
 	
 	@Column("int", {nullable: true, array: true})
@@ -31,4 +31,7 @@ export class Channel {
 
 	@Column("int", {nullable: true, array: true})
 	muteList: number[];
+	
+	@Column("int", {nullable: true, array: true})
+	kickList: number[];
 }

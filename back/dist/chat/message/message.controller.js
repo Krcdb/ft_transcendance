@@ -27,7 +27,7 @@ let MessageController = class MessageController {
     async postMessageOnChannel(channelName, res, createMessageDto) {
         const msg = await this.messageService.create(createMessageDto, channelName);
         console.log("msg = ", msg);
-        if (msg == null)
+        if (msg == null || msg == undefined)
             return res.status(common_2.HttpStatus.NOT_FOUND).json({
                 message: "Couldn't find channel with given name"
             });
@@ -54,7 +54,6 @@ let MessageController = class MessageController {
     }
 };
 __decorate([
-    (0, public_decorator_1.Public)(),
     (0, common_1.Post)(':channelName'),
     __param(0, (0, common_1.Param)('channelName')),
     __param(1, (0, common_1.Res)()),
@@ -64,14 +63,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], MessageController.prototype, "postMessageOnChannel", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], MessageController.prototype, "findAll", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
     (0, common_1.Get)(':channelName/msg'),
     __param(0, (0, common_1.Param)('channelName')),
     __metadata("design:type", Function),
@@ -79,7 +76,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], MessageController.prototype, "findAllInChannel", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -87,7 +83,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], MessageController.prototype, "findOne", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
     (0, common_1.Get)(':owner/'),
     __param(0, (0, common_1.Param)('owner')),
     __metadata("design:type", Function),

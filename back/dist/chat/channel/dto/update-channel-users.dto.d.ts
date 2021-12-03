@@ -1,3 +1,4 @@
 export declare class UpdateChannelUserDto {
-    newUser: number;
+    user: number;
+    toAdd: boolean;
 }

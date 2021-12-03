@@ -30,7 +30,7 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Channel.prototype, "isProtected", void 0);
 __decorate([
-    (0, typeorm_1.Column)("int"),
+    (0, typeorm_1.Column)("int", { nullable: true }),
     __metadata("design:type", Number)
 ], Channel.prototype, "owner", void 0);
 __decorate([
@@ -53,6 +53,10 @@ __decorate([
     (0, typeorm_1.Column)("int", { nullable: true, array: true }),
     __metadata("design:type", Array)
 ], Channel.prototype, "muteList", void 0);
+__decorate([
+    (0, typeorm_1.Column)("int", { nullable: true, array: true }),
+    __metadata("design:type", Array)
+], Channel.prototype, "kickList", void 0);
 Channel = __decorate([
     (0, typeorm_1.Entity)()
 ], Channel);

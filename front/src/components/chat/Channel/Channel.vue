@@ -1,42 +1,129 @@
 <template>
-    <div class="channel-component">
+    <div class="channel-component" v-if="!isLoading">
         <div class="player-list">
+            <button 
+                class="leave-btn"
+			    type="button" 
+                name="button"
+			    @click="leaveChannel()"
+            >
+			    Leave
+            </button>
+            <router-link to="/Chat"><button 
+                class="back-btn"
+			    type="button" 
+                name="button"
+            >
+			     Back to channels list <i class='bx bx-exit'></i>
+            </button></router-link>
+            <div class="ban-list" v-if="channel.banList.length && channel.admins.indexOf(user.id) !== -1">
+                <select id="mon_select"  @change="onChange">
+                    <option>Banned users</option>
+                    <option
+                        class="blocked-item"
+                        v-for="banuser in banList"
+                        :key="banuser.id"
+                        :value="banuser.id"
+                    >
+                     {{ banuser.userName }}
+                    </option>
+                </select>
+            </div>
             <ul>
-                <li class="player-list-item" v-for="player in PlayerList" :key="player.id">
+                <li class="player-list-item" v-for="player in filteredPlayerList" :key="player.id">
+                    <div class="user-state">
+                        <div v-if="player.isActive" id="online-circle"></div>
+                        <div v-else id="offline-circle"></div>
+                    </div>
                     <Avatar :user="player" />
                     <div class="list-item-content">
                         <router-link class="profile-link" :to="'/users/' + player.id">
                             <h4>{{ player.userName }}</h4>
                         </router-link>
-                    </div>
-                    <div>
-                        <div class="status-me" v-if="player.id == user.id">Me</div>
-                        <div class="status-owner" v-if="player.id == channel.owner">
-                            Owner
+                        <div class="status-me" v-if="player.id == user.id">
+                            Me
                         </div>
                         <div class="status-friend" v-if="user.friends.indexOf(player.id) !== -1">
                             Friend
                         </div>
                     </div>
-                    <div class="user-state">
-                        <div v-if="player.isActive" id="online-circle"></div>
-                        <div v-else id="offline-circle"></div>
+                    <div class="status-div">
+                        <div class="status-owner" v-if="player.id == channel.owner">
+                            Owner
+                        </div>
+                        <button
+                            class="add-admin-btn"
+                            v-if="user.id !== player.id && channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) == -1 && player.id != channel.owner"
+                            @click="updateAdmin(player.id, true)"
+                        >
+                            + Admin
+                        </button>
+                        <button
+                            class="remove-admin-btn"
+                            v-else-if="user.id !== player.id && channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) !== -1 && player.id != channel.owner"
+                            @click="updateAdmin(player.id, false)"
+                        >
+                            - Admin
+                        </button>
+                        <div class="status-admin" v-else-if="channel.admins.indexOf(player.id) !== -1 && player.id != channel.owner">
+                            Admin
+                        </div>
+                        <button
+                            class="mute-btn"
+                            v-if="user.id != player.id && channel.admins.indexOf(user.id) !== -1 && player.id != channel.owner && channel.muteList.indexOf(player.id) == -1"
+                            @click="updateMute(player.id, true)"
+                        >
+                            Mute
+                        </button>
+                        <button
+                            class="unmute-btn"
+                            v-else-if="channel.admins.indexOf(user.id) !== -1 && player.id != channel.owner && channel.muteList.indexOf(player.id) != -1"
+                            @click="updateMute(player.id, false)"
+                        >
+                            Unmute
+                        </button>
+                        <div class="ban-kick-div">
+                            <button
+                                class="ban-btn"
+                                v-if="user.id != player.id && channel.admins.indexOf(user.id) !== -1 && player.id != channel.owner && channel.banList.indexOf(player.id) == -1"
+                                @click="updateBan(player.id, true)"
+                            >
+                                Ban
+                            </button>
+                            <button
+                                class="kick-btn"
+                                v-if="user.id != player.id && channel.admins.indexOf(user.id) !== -1 && player.id != channel.owner && channel.banList.indexOf(player.id) == -1"
+                                @click="kickUser(player.id)"
+                            >
+                                Kick
+                            </button>
+                        </div>
+                        <div class="status-mute" v-if="channel.muteList.indexOf(player.id) != -1 && channel.admins.indexOf(user.id) == -1">
+                            Muted
+                        </div>
+                    </div>
+                    <div class="start-game">
+                        <button v-if="player.id != user.id && player.isActive" class="match-btn" @click="startMatch(player.id)">
+                            <i class='bx bx-joystick'></i>
+                        </button>
                     </div>
                 </li>
             </ul>
         </div>
         <div class="message-box">
-            <h4>{{ channel.channelName }}</h4>
-            <hr />
+            <div class="box-name">
+                <h4>{{ channel.channelName }}</h4>
+            </div>
             <div class="messages">
                 <ul ref="ScrollBar">
                     <li class="Plist-group-item" v-for="message in Messages" :key="message.id">
-                    <MessageComponent :message="message" :userId="user.id" />
+                        <!-- v-if="user.blockedUsers.indexOf(message.owner) == -1" -->
+                    <MessageComponent  :message="message" :user="user" />
                 </li>
             </ul>
         </div>
-        <div class="send-messge-area">
-            <hr />
+        <!-- v-if="channel.muteList.indexOf(user.id) == -1" -->
+        <div v-if="channel.muteList && channel.muteList.indexOf(user.id) == -1" class="send-message-area">
             <textarea
             placeholder="Type your message here ..."
             v-model="currentMessage.message"
@@ -44,14 +131,20 @@
             <button
                 type="button"
                 name="button"
-                class="btn btn-secondary m-2"
+                class="send-btn"
                 style="width: 75%"
                 @click="SendMessage"
             >
             Send
             </button>
         </div>
+        <div v-else class="mute-message-box">
+            <h3>You have been muted by an Admin, you can't chat until unmuted</h3>
+        </div>
     </div>
+    </div>
+    <div v-else>
+        Loading...
     </div>
 </template>
 
@@ -79,22 +172,53 @@ const socket = io("http://localhost:3000", {
 export default defineComponent({
     data() {
         return {
-            PlayerList: [] as User[],
+            playerList: [] as User[],
+            filteredPlayerList: [] as User[],
+            banList: [] as User[],
             user: {} as User,
             channel: {} as Channel,
             Messages: [] as Message[],
             currentMessage: {} as Message,
+            isLoading: {} as boolean,
         };
     },
     components: {
         MessageComponent,
         Avatar,
     },
+    watch : {
+		'$route': {
+			handler: function() {
+				socket.offAny();
+			},
+			deep: true,
+			immediate: true,
+		},
+	},
     methods: {
+        onChange(e: any) {
+            if(e.target.options.selectedIndex > -1) {
+                const value = Number((e.target.options[e.target.options.selectedIndex].value));
+                this.updateBan(value, false);
+        }
+        },
+        async startMatch(id: number) {
+            socket.emit("matchUser", id);
+        },
         async getAllPlayersInChannel() {
             await ChannelDataService.getAllUsersInChannel(this.channel.channelName)
             .then((response: ResponseData) => {
-                this.PlayerList = response.data;
+                this.playerList = response.data;
+                this.filteredPlayerList = this.playerList.filter((player) => this.user.blockedUsers.indexOf(player.id) == -1);
+            })
+            .catch((e: Error) => {
+                console.log(e);
+            });
+        },
+        async getBanList() {
+            await ChannelDataService.getBanListUsers(this.channel.channelName)
+            .then((response: ResponseData) => {
+                this.banList = response.data;
             })
             .catch((e: Error) => {
                 console.log(e);
@@ -110,6 +234,7 @@ export default defineComponent({
             });
         },
         async getChannel(name: string) {
+            console.log("getChannels");
             await ChannelDataService.getChannel(name)
             .then((response: ResponseData) => {
                 console.log("response = ", response.data);
@@ -131,13 +256,18 @@ export default defineComponent({
         async initChannel() {
             console.log("name: " + this.channel.channelName);
             console.log("user ID: " + this.user.id);
+            // if (this.channel.banList.indexOf(this.user.id) != -1) {
+            //     this.$router.push("/chat");
+            // }
             if (this.channel.users.indexOf(this.user.id) == -1) {
                 const data = {
-                    newUser: this.user.id as number,
+                    user: this.user.id as number,
+                    toAdd: true,
                 };
-                await ChannelDataService.addChannelUser(this.channel.channelName, data)
+                await ChannelDataService.updateChannelUser(this.channel.channelName, data)
                 .then((response: ResponseData) => {
                     console.log(response.data.message);
+                    socket.emit('updateChannel', this.channel.channelName);
                 })
                 .catch((e: Error) => {
                     console.log(e);
@@ -166,34 +296,127 @@ export default defineComponent({
                 })
                 .catch((e: Error) => {
                     console.log(e);
+                    this.checkMessages();
                 });
             }
+        },
+        async leaveChannel() {
+            const data = {
+                user: this.user.id as number,
+                toAdd: false,
+            };
+            await ChannelDataService.updateChannelUser(this.channel.channelName, data)
+            .then((response: ResponseData) => {
+                console.log(response.data.message);
+                socket.emit('updateChannel', this.channel.channelName);
+                // if (userId == this.user.id)
+                    this.$router.push("/Chat");
+            })
+            .catch((e: Error) => {
+                console.log(e);
+            });
+        },
+        async updateAdmin(playerId: number, toAdd: boolean) {
+            const data = {
+                user: playerId as number,
+                toAdd: toAdd as boolean,
+            };
+            return await ChannelDataService.updateAdmin(this.channel.channelName, data)
+            .then((response: ResponseData) => {
+                socket.emit('updateChannel', this.channel.channelName);
+
+            })
+            .catch((e: Error) => {
+                console.log(e);
+            });
+        },
+        async updateMute(playerId: number, toAdd: boolean) {
+            const data = {
+                user: playerId as number,
+                toAdd: toAdd as boolean,
+            };
+            await ChannelDataService.updateMuteList(this.channel.channelName, data)
+                .then((response: ResponseData) => {
+                    socket.emit('updateChannel', this.channel.channelName);
+                })
+                .catch((e: Error) => {
+                    console.log(e);
+                });
+        },
+        async updateBan(playerId: number, toAdd: boolean) {
+            const data = {
+                user: playerId as number,
+                toAdd: toAdd as boolean,
+            };
+            await ChannelDataService.updateBanList(this.channel.channelName, data)
+                .then(async (response: ResponseData) => {
+                    socket.emit('updateChannel', this.channel.channelName);
+                })
+                .catch((e: Error) => {
+                    console.log("error ban");
+                    console.log(e);
+                });
+        },
+        async kickUser(playerId: number) {
+            const data = {
+                id: playerId as number,
+            };
+            await ChannelDataService.kickUser(this.channel.channelName, data)
+                .then(async (response: ResponseData) => {
+                    socket.emit('updateChannel', this.channel.channelName);
+                })
+                .catch((e: Error) => {
+                    console.log("error kick");
+                    console.log(e);
+                });
         },
         async delay(ms: number) {
             return new Promise((resolve) => setTimeout(resolve, ms));
         },
         async checkMessages() {
-
             await this.getMessages();
+            await this.getChannel(String(localStorage.getItem("channel-name")));
+            await this.getAllPlayersInChannel();
 
             let scrollBar = (this.$refs.ScrollBar) as any;
             if (scrollBar)
                 scrollBar.scrollTop = scrollBar.scrollHeight;
 
-            console.log("Refresh CHannel");
+            console.log("Refresh messages");
+        },
+        async refreshChannel() {
+            await this.getChannel(String(localStorage.getItem("channel-name")));
+            await this.getAllPlayersInChannel();
+            await this.getBanList();
+            if (this.channel.banList.indexOf(this.user.id) != -1 || this.channel.kickList.indexOf(this.user.id) != -1 )
+                await this.leaveChannel();
+
+            console.log("Refresh channel");
+        },
+        notifyBanKick() {
+            console.log("You have been kicked or ban, please leave");
         },
         async init() {
+            this.isLoading = true;
             await this.getUser(Number(localStorage.getItem("user-id")));
-            await this.getChannel(String(localStorage.getItem("channel-name")));
+            await this.refreshChannel();
             await this.initChannel();
             await this.getMessages();
-            await this.getAllPlayersInChannel();
             await this.checkMessages();
+            this.isLoading = false;
 
             socket.emit('JoinChannel', this.channel.channelName);
             socket.on('refreshChannelMessages', (uuid: string) => {
                 console.log('Init Socket ON: ' + uuid);
                 this.checkMessages();
+            });
+            socket.on('refreshChannelInfo', (uuid: string) => {
+                console.log('Init Socket ON: ' + uuid);
+                this.refreshChannel();
+            });
+            socket.on('refreshNotifyOfBanKicks', (uuid: string) => {
+                console.log('Init Socket ON: ' + uuid);
+                this.notifyBanKick();
             });
         },
     },
@@ -214,7 +437,6 @@ export default defineComponent({
 .player-list-item img {
     width: 64px;
     height: 64px;
-    margin: 5px;
     border: 2px solid #ddd;
     border-radius: 100%;
 }
@@ -234,26 +456,39 @@ export default defineComponent({
     margin: 5px;
 }
 .list-item-content {
-    margin-left: 20px;
+    margin-left: 10px;
+    text-align: initial;
+    width: 150px;
     margin-right: auto;
 }
 [class|="status"] {
     font-size: 15px;
     padding: 3px;
     margin-block: 2px;
-    margin-inline: 10px;
     font-weight: bold;
 }
 .status-me {
     border: black solid 2px;
+    width: 50%;
+    text-align: center;
 }
 .status-owner {
     background-color: black;
     color: white;
 }
+.status-admin {
+    background-color: gray;
+    color: white;
+}
 .status-friend {
     background-color: #4bbd4b;
     color: white;
+    width: 50%;
+    text-align: center;
+}
+.status-mute {
+    border: gray solid 2px;
+    color: gray;
 }
 .profile-link {
     color: black;
@@ -274,19 +509,30 @@ export default defineComponent({
     overflow-y: auto;
     scroll-behavior: smooth;
 }
+.messages {
+    border-bottom: solid black 1px;
+}
 .user-state {
     margin-inline: 5px;
 }
 .message-box {
     border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-block: 2px;
 }
 .message-box h4 {
     font-size: 20px;
     margin: 5px;
 }
-textarea {
+.send-message-area {
+    width: 100%;
+}
+.send-message-area textarea {
     width: 95%;
     padding: 12px 20px;
+    margin: 5px;
     box-sizing: border-box;
     border: 2px solid #ccc;
     border-radius: 10px;
@@ -294,5 +540,66 @@ textarea {
     font-size: 15px;
     resize: none;
     font-family: Avenir, Helvetica, Arial, sans-serif;
+}
+.match-btn {
+    background-color: white;
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+.match-btn i {
+    border: solid black 2px;
+    border-radius: 100%;
+    padding: 5px;
+    margin-right: 5px;
+    font-size: 25px;
+    /* width: 25px; */
+    /* height: 25px; */
+}
+.start-game {
+    width: 50px;
+}
+.status-div {
+    width: 100px;
+    margin: 0;
+}
+.status-div button {
+    margin: 0;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 3px;
+    width: 100%;
+    border-radius: 10px;
+    margin-block: 2px;
+}
+.add-admin-btn {
+    color: grey;
+    background-color: lightgray;
+}
+.remove-admin-btn {
+    color: lightgray;
+    background-color: grey;
+}
+.mute-btn {
+    background-color: #eda942;
+}
+.unmute-btn {
+    background-color: mediumseagreen;
+}
+.leave-btn,
+.ban-btn {
+    background-color: #f44336;
+}
+.mute-message-box {
+    width: 350px;
+    word-break: break-word;
+}
+.box-name {
+    border-bottom:  1px solid black;
+    width: 100%;
+}
+.ban-kick-div {
+    display: flex;
+    gap: 2px;
 }
 </style>

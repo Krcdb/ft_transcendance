@@ -2,6 +2,7 @@
   <div
     class="container"
     :class="this.sender ? 'message-sender' : 'message-not-sender'"
+    v-if="!this.isblocked"
   >
     <div v-if="!this.sender" class="sender-avatar">
       <Avatar :user="this.owner" />
@@ -36,12 +37,13 @@ export default defineComponent({
     return {
       owner: {} as User,
       sender: {} as boolean,
+      isblocked: false as boolean,
     };
   },
   props: {
-    userId: {
-      type: Number,
-      required: true,
+    user: {
+            type: Object as () => User,
+            required: true,
     },
     message: {
       type: Object as () => ChatMessage,
@@ -60,8 +62,10 @@ export default defineComponent({
     },
     async initElements() {
       await this.getOwnerByID(this.message.owner);
-      this.sender = this.userId === this.message.owner ? true : false;
-      console.log("isSender: ", this.sender, " | ", this.userId,  " == ",  this.message.owner);
+      this.sender = this.user.id === this.message.owner ? true : false;
+      if (!this.sender && this.user.blockedUsers.indexOf(this.owner.id) != -1)
+        this.isblocked = true;
+      // console.log("isSender: ", this.sender, " | ", this.user.id,  " == ",  this.message.owner);
     },
   },
   mounted() {

@@ -26,12 +26,14 @@ let MessageService = class MessageService {
     async create(createMessageDto, channelName) {
         if (await this.channelService.channelAlreadyExists(channelName) == false)
             return null;
-        const message = new message_entity_1.Message();
-        message.channelName = channelName;
-        message.owner = createMessageDto.owner;
-        message.message = createMessageDto.message;
-        message.dateStr = Date.now().toString();
-        return await this.messageRepository.save(message);
+        if (await this.channelService.userIsAuthorized(channelName, createMessageDto.owner)) {
+            const message = new message_entity_1.Message();
+            message.channelName = channelName;
+            message.owner = createMessageDto.owner;
+            message.message = createMessageDto.message;
+            message.dateStr = Date.now().toString();
+            return await this.messageRepository.save(message);
+        }
     }
     async addMessageToHistories(message) {
         await this.channelService.addMessageToHistory(message.channelName, message.id);

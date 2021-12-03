@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Paddle = void 0;
 class Paddle {
     constructor(w, h) {
-        this.speed = 10;
+        this.speed = 5;
         this.yVel = 0;
         this.width = w;
         this.height = h;

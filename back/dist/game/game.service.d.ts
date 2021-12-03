@@ -15,6 +15,7 @@ export declare class GameService {
     private readonly usersService;
     games: Map<string, Game>;
     matchmakingQueue: User[];
+    matchmakingBonusQueue: User[];
     matchmakingInterval: NodeJS.Timer;
     checkMatchmakingRef: any;
     logger: Logger;
@@ -27,8 +28,8 @@ export declare class GameService {
     cancelGame(game: Game): void;
     matchDone(game: Game): void;
     matchUser(socket: Socket, player2Id: string): Promise<void>;
-    matchPlayers(player1: User, player2: User): Promise<void>;
-    searchGame(socket: Socket): Promise<void>;
+    matchPlayers(player1: User, player2: User, bonus: boolean): Promise<void>;
+    searchGame(socket: Socket, bonus: boolean): Promise<void>;
     removeFromQueue(user: User): Promise<void>;
     playerInput(payload: any): Promise<void>;
     gameReady(user: User, uuid: string): Promise<void>;

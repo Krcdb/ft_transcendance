@@ -43,8 +43,8 @@ let WebsocketGateway = class WebsocketGateway {
         socket.disconnect();
         console.log(`${socket.data.user} disconnected`);
     }
-    async searchGame(socket) {
-        return this.gameService.searchGame(socket);
+    async searchGame(socket, payload) {
+        return this.gameService.searchGame(socket, payload);
     }
     async playerInput(socket, payload) {
         return this.gameService.playerInput(payload);
@@ -73,6 +73,13 @@ let WebsocketGateway = class WebsocketGateway {
     async refreshChannelMessages(socket, channelName) {
         return this.channelService.refreshChannelMessages(this.server, socket, channelName);
     }
+    async updateChannel(socket, channelName) {
+        console.log("SOCKET : CHANNEL : refreshChannelInfos");
+        return this.channelService.refreshChannelInfos(this.server, socket, channelName);
+    }
+    async refreshChannelInfos(socket, channelName) {
+        return this.channelService.refreshChannelInfos(this.server, socket, channelName);
+    }
 };
 __decorate([
     (0, websockets_1.WebSocketServer)(),
@@ -81,7 +88,7 @@ __decorate([
 __decorate([
     (0, websockets_1.SubscribeMessage)('searchGame'),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [socket_io_1.Socket]),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", Promise)
 ], WebsocketGateway.prototype, "searchGame", null);
 __decorate([
@@ -132,6 +139,18 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, String]),
     __metadata("design:returntype", Promise)
 ], WebsocketGateway.prototype, "refreshChannelMessages", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('updateChannel'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
+    __metadata("design:returntype", Promise)
+], WebsocketGateway.prototype, "updateChannel", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('refreshChannelInfos'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, String]),
+    __metadata("design:returntype", Promise)
+], WebsocketGateway.prototype, "refreshChannelInfos", null);
 WebsocketGateway = __decorate([
     (0, websockets_1.WebSocketGateway)({ cors: true }),
     __metadata("design:paramtypes", [websocket_service_1.WebsocketService,

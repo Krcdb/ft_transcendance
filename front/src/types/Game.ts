@@ -12,7 +12,7 @@ export class GameOptionsInterface {
 	PADDLE_HEIGHT: number | undefined
 	PADDLE_MARGIN: number | undefined
 	BALL_SIZE: number | undefined
-	PLAYER_MOVE: number | undefined
+	BONUS_SIZE: number | undefined
 };
 
 
@@ -31,5 +31,9 @@ export class GameDataUpdate {
 		x: number
 		y: number
 		score: number
+	} | undefined
+	bonus: {
+		x: number
+		y: number
 	} | undefined
 }

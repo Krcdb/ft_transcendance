@@ -1,9 +1,19 @@
 <template>
 	<BurgerMenu />
-    <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
-    <NavBar @switchNavBarSelection="SwitchNavBarSelection" v-if="this.userSelected"/>
-    <PublicChannelList :user="user" v-if="this.navBarSelection == 0"/>
-    <ChannelList :user="user" v-else-if="this.navBarSelection == 1"/>
+    
+    <!-- FOR USER SELECTION -->
+    <!-- <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
+    <PublicChannelList :user="user" v-if="this.userSelected"/> -->
+    
+    <!-- NO USER SELECTION -->
+    <div v-if="isloading">
+        Loading...
+    </div>
+    <div v-else>
+        <MyProfile :user="user" />
+        <PublicChannelList :user="user" />
+    </div>
+
 </template>
 
 <script lang="ts">
@@ -18,9 +28,11 @@ import Channel from "@/types/Channel";
 import OwnerProfile from '@/components/chat/OwnerProfile.vue';
 import NavBar from "@/components/chat/NavBar.vue";
 import PublicChannelList from "@/components/chat/NavBarFiles/PublicChannelList.vue";
-import ChannelList from "@/components/chat/NavBarFiles/ChannelsList.vue";
+import ChannelList from "@/components/chat/NavBarFiles/myChannelsList.vue";
+import MyProfile from "@/components/chat/MyProfile.vue"
 
 import BurgerMenu from "@/components/chat/BurgerMenu/BurgerMenu.vue";
+
 
 import io from "socket.io-client";
 import SocketServices from "../services/SocketServices"
@@ -41,6 +53,7 @@ export default defineComponent({
             nbUsers: 0,
             navBarSelection: -1,
             currentChannel: {} as Channel, // current connected channel
+            isloading: {} as boolean,
         };
     },
     components: {
@@ -49,8 +62,20 @@ export default defineComponent({
         PublicChannelList,
         BurgerMenu,
         ChannelList,
+        MyProfile,
     },
     methods: {
+        getUser(id: number) {
+            this.isloading = true;
+            UserDataService.get(id)
+            .then((response: ResponseData) => {
+                this.user = response.data;
+                this.isloading = false;
+            })
+            .catch((e: Error) => {
+                console.log(e);
+            });
+        },
         HandleGetUserSelected: function(value : User) {
             this.user = value;
             console.log("Handle get user: " + this.user.userName);
@@ -88,7 +113,8 @@ export default defineComponent({
     },
     mounted() {
 		SocketServices.connectGlobalSocketNotif(socket);
-        this.refreshConnectedUsers();
+        this.getUser(Number(localStorage.getItem("user-id")));
+        // this.refreshConnectedUsers();
         console.log("Mount chat !");
     }
 });

@@ -1,38 +1,43 @@
-<template id="">
+<template>
 	<div class="channel-list-page">
-		<h2>Public Channels list</h2>
-        <button class="reveal-btn" @click="revealElement('join-private'); hideElement('create-channel');">Join Private Channel</button>
-        <button class="reveal-btn" @click="revealElement('create-channel'); hideElement('join-private');">Create Channel</button>
-        <div id="join-private">
-            <JoinPrivateChannel />
+        <button @click="goto()">Explore Public Channels</button>
+        <div class ="form-section">
+            <button class="reveal-btn" @click="revealElement('join-private'); hideElement('create-channel');">Join Private Channel</button>
+            <button class="reveal-btn" @click="revealElement('create-channel'); hideElement('join-private');">Create Channel</button>
+            <div id="join-private">
+                <JoinPrivateChannel :userId="user.id"/>
+            </div>
+            <div id="create-channel">
+                <CreateChannel :user="user"/>
+            </div>
         </div>
-        <div id="create-channel">
-            <CreateChannel :user="user"/>
-        </div>
-		<div class="no-channel" v-if="this.ChannelList.length <= 0">
-			<h6>No channel found...</h6>
-		</div>
-		<div class="challen-list-container">
+        <ChannelList :user="user"/>
+		<h2>Public Channels you could join</h2>
+		<div class="channel-search-div">
 			<input type="text"
 				placeholder="Search a channel..."
 				v-model="search"
 				@input="searchhandler"
 			>
 		</div>
-		<div class="channel-list-div">
-			<ul class="channel-list">
-				<li class="channel-list-item" v-for="(channel, index) in filteredChannelList" :key="channel.channelName">
-					<div class="channel-name">
-						<h3>{{ channel.channelName }}</h3>
+		<div id="to-join-channels" ref="joinChannelRef" class="public-channel-list-div">
+			<ul class="public-channel-list" v-if="this.ChannelList.length">
+				<li class="public-channel-list-item" v-for="(channel, index) in filteredChannelList" :key="channel.channelName">
+					<div class="public-channel-name">
+						<h4>{{ channel.channelName }}</h4>
 						<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`">
 					</div>
-					<div class="channel-owner">
-                        <p>Owner</p>
+					<div class="public-channel-owner">
                         <div class="mini-user-info" v-if="getOwnerByID(channel.owner)">
+                            <p>Owner</p>
                             <Avatar :user="getOwnerByID(channel.owner)" />
                             <router-link class="profile-link" :to="'/users/' + channel.owner">
                                 <h4>{{ getOwnerByID(channel.owner).userName }}</h4>
                             </router-link>
+                        </div>
+                        <div v-else>
+                            <h4>No Owner</h4>
+                            <p>The original owner left the channel</p>
                         </div>
 					</div>
                     <div class="property-tag">
@@ -43,25 +48,16 @@
                         <form class="password-input" v-if="channel.isProtected">
                             <input 
                                 v-model="password[index]" 
-                                :id="`password-${index}`" 
+                                :id="`public-password-${index}`" 
                                 placeholder="password" 
                                 type="password" 
-                                autocomplete="on"
-                            > <!-- v-if="channel.password != null" -->
+                                autocomplete="off"
+                            >
                                 <p>{{ errorMSG[index] }}</p>
                         </form>
 						<div class="btn-div">
-                            <button
-                                v-if="channel.users.indexOf(user.id) != -1"
-                                class="open-btn"
-							    type="button" 
-                                name="button"
-							    @click="joinChannel(channel, this.password[index], index)"
-                            >
-							    Open
-                            </button>
+                            
 							<button
-                                v-else
                                 class="joined-btn"
 							    type="button" 
                                 name="button"
@@ -69,9 +65,6 @@
                             >
 							    Join
                             </button>
-								<button type="button" name="button" class="delete-btn" v-if="channel.owner === this.curenntUserId"
-								    @click="deleteChannel(channel, index)">Delete
-                                </button>
 						</div>
 					</div>
                     <div id="loader">
@@ -79,6 +72,7 @@
                     </div>
 			    </li>
 		    </ul>
+            <h4 v-else>There is no Public Channel to join</h4>
 		</div>
 	</div>
 </template>
@@ -96,6 +90,7 @@ import ResponseData from "@/types/ResponseData";
 import Avatar from "@/components/users/Avatar.vue";
 import JoinPrivateChannel from "@/components/chat/NavBarFiles/JoinPrivateChannel.vue";
 import CreateChannel from "@/components/chat/NavBarFiles/CreateChannel.vue";
+import ChannelList from "@/components/chat/NavBarFiles/myChannelsList.vue";
 
 export default defineComponent({
     name: "channel-list",
@@ -104,7 +99,7 @@ export default defineComponent({
             OwnersList: [] as User[],
             ChannelList: [] as Channel[],
 			filteredChannelList: [] as Channel[],
-            curenntUserId: {} as number,
+            // curenntUserId: {} as number,
             // isDeletingChannel: false,
 			search: "",
 			errorMSG: [] as string[],
@@ -116,6 +111,7 @@ export default defineComponent({
         Avatar,
         JoinPrivateChannel,
         CreateChannel,
+        ChannelList,
     },
     props: {
       user: {
@@ -129,7 +125,8 @@ export default defineComponent({
             .then((response : ResponseData) => {
                 this.ChannelList = response.data.channels;
                 this.OwnersList = response.data.owners;
-				this.filteredChannelList = response.data.channels;
+				this.filteredChannelList = this.ChannelList.filter((channel) => channel.banList.indexOf(this.user.id) == -1 && channel.users.indexOf(this.user.id) == -1);
+                this.ChannelList = this.filteredChannelList;
             })
             .catch((e: Error) => {
                 console.log("Error: " + e);
@@ -161,7 +158,6 @@ export default defineComponent({
 			this.isLoading[index] = true;
 			// await this.delay(1000);
 			// console.log("Try to join channel, password: " + channel.password + " | current password: " + current_password);
-            console.log('ikea');
 			let data = {
                 password: current_password,
 			};
@@ -186,6 +182,21 @@ export default defineComponent({
 				this.isLoading[index] = false;
             });
         },
+        async leaveChannel(channel : Channel) {
+            if (channel.users.indexOf(this.user.id) != -1) {
+                const data = {
+                    user: this.user.id as number,
+                    toAdd: false,
+                };
+                await ChannelDataService.updateChannelUser(channel.channelName, data)
+                .then((response: ResponseData) => {
+                    console.log(response.data.message);
+                })
+                .catch((e: Error) => {
+                    console.log(e);
+                });
+            }
+        },
         getOwnerByID(ownerId: number): User {
            return (this.OwnersList[this.OwnersList.map(x => x.id).indexOf(ownerId)]);
         },
@@ -203,9 +214,12 @@ export default defineComponent({
                 x.style.display = "none";
             } 
         },
+        goto() {
+            var element = this.$refs.joinChannelRef as any;
+            window.scrollTo(0, element.offsetTop);
+        },
     },
     mounted() {
-        this.curenntUserId = Number(localStorage.getItem("user-id"));
         this.refreshChannelList();
         this.revealElement('create-channel');
         this.revealElement('join-private');
@@ -213,7 +227,7 @@ export default defineComponent({
 });
 </script>
 
-<style media="screen" scoped>
+<style scoped>
 .mini-user-info {
   display: flex;
   flex-direction: column;
@@ -231,9 +245,6 @@ export default defineComponent({
     width: 50px;
     height: 50px;
 }
-.mini-user-info h4 {
-    margin: 0;
-}
 .public-tag {
   background-color: #4bbd4b;
   font-weight: bold;
@@ -241,15 +252,12 @@ export default defineComponent({
   padding: 5px;
   border-radius: 10px;
 }
-.channel-info {
-    border: 0;
-}
-.channel-list {
+.public-channel-list {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-.channel-list-item {
+.public-channel-list-item {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -261,26 +269,25 @@ export default defineComponent({
     padding: 10px;
     width: 70%;
 }
-.channel-name h3 {
-    margin: 0;
-}
-.channel-name img {
+.public-channel-name img {
     width: 100px;
 }
-.channel-owner p {
+.public-channel-name h4 {
+    font-size: 20px;
+}
+.public-channel-name h4,
+.public-channel-owner p,
+.public-channel-owner h4 {
     margin: 0;
 }
-.channel-owner {
+.public-channel-owner {
     width: 100px;
-}
-.mini-user-info p{
-    margin: 10px;
 }
 .channel-list-page input[type="text"],
 .channel-list-page input[type="password"] {
   padding: 6px;
 }
-.password-input p {
+.public-password-input p {
     margin: 0;
     color: red;
 }
@@ -315,5 +322,8 @@ export default defineComponent({
     color:black;
     background-color: lightgray;
     margin-bottom: 20px;
+}
+.pass-btn-div {
+    width: 240px;
 }
 </style>

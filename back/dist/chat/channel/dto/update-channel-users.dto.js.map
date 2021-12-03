@@ -1,1 +1,1 @@
-{"version":3,"file":"update-channel-users.dto.js","sourceRoot":"","sources":["../../../../src/chat/channel/dto/update-channel-users.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAA2C;AAE3C,MAAa,oBAAoB;CAGhC;AADG;IADC,IAAA,0BAAQ,GAAE;;qDACK;AAFpB,oDAGC"}
+{"version":3,"file":"update-channel-users.dto.js","sourceRoot":"","sources":["../../../../src/chat/channel/dto/update-channel-users.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,qDAAsD;AAEtD,MAAa,oBAAoB;CAMhC;AAJG;IADC,IAAA,0BAAQ,GAAE;;kDACE;AAGb;IADC,IAAA,2BAAS,GAAE;;mDACG;AALnB,oDAMC"}

@@ -1,5 +1,7 @@
 front/node_modules/
 back/node_modules/
 back/avatars/
+back/dist/
 back/.dockerignore
 front/.dockerignore
+.gitignore

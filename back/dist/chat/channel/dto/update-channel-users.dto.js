@@ -16,6 +16,10 @@ class UpdateChannelUserDto {
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], UpdateChannelUserDto.prototype, "newUser", void 0);
+], UpdateChannelUserDto.prototype, "user", void 0);
+__decorate([
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateChannelUserDto.prototype, "toAdd", void 0);
 exports.UpdateChannelUserDto = UpdateChannelUserDto;
 //# sourceMappingURL=update-channel-users.dto.js.map

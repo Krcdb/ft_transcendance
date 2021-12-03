@@ -31,7 +31,7 @@ const GameOptions = {
     PADDLE_HEIGHT: 60,
     PADDLE_MARGIN: 10,
     BALL_SIZE: 10,
-    PLAYER_MOVE: 2.5,
+    BONUS_SIZE: 20,
 };
 let GameService = GameService_1 = class GameService {
     constructor(socketService, matchService, matchRepository, usersService) {
@@ -41,6 +41,7 @@ let GameService = GameService_1 = class GameService {
         this.usersService = usersService;
         this.games = new Map();
         this.matchmakingQueue = [];
+        this.matchmakingBonusQueue = [];
         this.matchmakingInterval = null;
         this.checkMatchmakingRef = this.checkMatchmaking.bind(this);
         this.logger = new common_1.Logger(GameService_1.name);
@@ -53,7 +54,15 @@ let GameService = GameService_1 = class GameService {
                 const opponent = this.matchmakingQueue[i];
                 const eloDiff = Math.abs(opponent.ladderLevel - user.ladderLevel);
                 if (eloDiff < 100)
-                    this.matchPlayers(user, opponent);
+                    this.matchPlayers(user, opponent, false);
+            }
+        }
+        for (const user of this.matchmakingBonusQueue) {
+            for (let i = this.matchmakingBonusQueue.indexOf(user) + 1; i < this.matchmakingBonusQueue.length; i++) {
+                const opponent = this.matchmakingBonusQueue[i];
+                const eloDiff = Math.abs(opponent.ladderLevel - user.ladderLevel);
+                if (eloDiff < 100)
+                    this.matchPlayers(user, opponent, true);
             }
         }
     }
@@ -130,36 +139,47 @@ let GameService = GameService_1 = class GameService {
         const player2 = await this.usersService.findOne(Number(player2Id));
         const match = await this.matchService.create(player1.id, player2.id);
         console.log("new match | id : ", match.matchId, " | p1 : ", player1.id, " | p2 : ", player2.id);
-        const game = new Game_class_1.Game(player1, player2, GameOptions, match.matchId);
+        const game = new Game_class_1.Game(player1, player2, GameOptions, match.matchId, false);
         this.games.set(game.uuid, game);
         socket.emit("friendMatchRequest", game.uuid);
         socket = await this.socketService.getSocketFromUserIdNoPage(player2.id);
         socket.emit("friendMatchRequest", game.uuid);
         this.createGame(game, match);
     }
-    async matchPlayers(player1, player2) {
+    async matchPlayers(player1, player2, bonus) {
         this.removeFromQueue(player1);
         this.removeFromQueue(player2);
         this.logger.log('match found');
         const match = await this.matchService.create(player1.id, player2.id);
         console.log("new match | id : ", match.matchId, " | p1 : ", player1.id, " | p2 : ", player2.id);
-        const game = new Game_class_1.Game(player1, player2, GameOptions, match.matchId);
+        const game = new Game_class_1.Game(player1, player2, GameOptions, match.matchId, bonus);
         this.games.set(game.uuid, game);
         this.gameReady(player1, game.uuid);
         this.gameReady(player2, game.uuid);
         this.createGame(game, match);
     }
-    async searchGame(socket) {
+    async searchGame(socket, bonus) {
         const user = await this.usersService.findOne(socket.handshake.auth.userId);
-        if (this.matchmakingQueue.find(x => x.id == user.id) === undefined) {
-            this.matchmakingQueue.push(user);
-            this.logger.log(user.userName, "added to queue");
+        if (!bonus) {
+            if ((this.matchmakingBonusQueue.find(x => x.id == user.id) === undefined) &&
+                (this.matchmakingQueue.find(x => x.id == user.id) === undefined)) {
+                this.matchmakingQueue.push(user);
+                this.logger.log(user.userName, "added to queue");
+            }
+        }
+        else {
+            if ((this.matchmakingBonusQueue.find(x => x.id == user.id) === undefined) &&
+                (this.matchmakingQueue.find(x => x.id == user.id) === undefined)) {
+                this.matchmakingBonusQueue.push(user);
+                this.logger.log(user.userName, "added to bonus queue");
+            }
         }
     }
     async removeFromQueue(user) {
         if (user)
             console.log(user.userName, "removed from queue");
         this.matchmakingQueue.splice(this.matchmakingQueue.indexOf(user), 1);
+        this.matchmakingBonusQueue.splice(this.matchmakingBonusQueue.indexOf(user), 1);
     }
     async playerInput(payload) {
         const game = this.games.get(payload.uuid);

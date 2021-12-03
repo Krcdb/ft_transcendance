@@ -9,4 +9,5 @@ export declare class Channel {
     users: number[];
     banList: number[];
     muteList: number[];
+    kickList: number[];
 }

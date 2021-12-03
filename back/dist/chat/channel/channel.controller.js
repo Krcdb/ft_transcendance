@@ -21,6 +21,7 @@ const create_channel_dto_1 = require("./dto/create-channel.dto");
 const update_channel_users_dto_1 = require("./dto/update-channel-users.dto");
 const channel_password_dto_1 = require("./dto/channel-password.dto");
 const user_entity_1 = require("../../users/user.entity");
+const id_dto_1 = require("../../users/dto/id.dto");
 let ChannelController = class ChannelController {
     constructor(channelService) {
         this.channelService = channelService;
@@ -37,15 +38,69 @@ let ChannelController = class ChannelController {
             channel
         });
     }
-    async addChannelUser(res, channelName, UpdateChannelUserDto) {
-        if (await this.channelService.findUserInChannel(channelName, UpdateChannelUserDto.newUser)) {
+    async updateChannelAdmin(res, channelName, updateChannelUserDto) {
+        if (updateChannelUserDto.toAdd) {
+            await this.channelService.addUserAsAdmin(channelName, updateChannelUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "User added to admins"
+            });
+        }
+        else {
+            await this.channelService.removeUserAsAdmin(channelName, updateChannelUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "User removed from admins"
+            });
+        }
+    }
+    async updateChannelMuteList(res, channelName, updateChannelUserDto) {
+        if (updateChannelUserDto.toAdd) {
+            await this.channelService.addUserAsMuted(channelName, updateChannelUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "User added to muted"
+            });
+        }
+        else {
+            await this.channelService.removeUserAsMuted(channelName, updateChannelUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "User removed from muted"
+            });
+        }
+    }
+    async updateChannelBanList(res, channelName, updateChannelUserDto) {
+        if (updateChannelUserDto.toAdd) {
+            await this.channelService.addUserAsBanned(channelName, updateChannelUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "User added to banned"
+            });
+        }
+        else {
+            await this.channelService.removeUserAsBanned(channelName, updateChannelUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "User removed from banned"
+            });
+        }
+    }
+    async addUserAsKicked(res, channelName, idDto) {
+        await this.channelService.addUserAsKicked(channelName, idDto.id);
+        return res.status(common_2.HttpStatus.OK).json({
+            message: "User has been kikcked"
+        });
+    }
+    async addChannelUser(res, channelName, updateChannelUserDto) {
+        if (await this.channelService.findUserInChannel(channelName, updateChannelUserDto.user)) {
+            if (!updateChannelUserDto.toAdd) {
+                await this.channelService.userLeftChannel(channelName, updateChannelUserDto.user);
+                return res.status(common_2.HttpStatus.OK).json({
+                    message: "User removed from channel"
+                });
+            }
             return res.status(common_2.HttpStatus.OK).json({
                 message: "User already in channel"
             });
         }
-        else {
-            this.channelService.addUserAsUser(channelName, UpdateChannelUserDto.newUser);
-            console.log("newUser: " + UpdateChannelUserDto.newUser);
+        else if (updateChannelUserDto.toAdd) {
+            this.channelService.addUserAsUser(channelName, updateChannelUserDto.user);
+            console.log("newUser: " + updateChannelUserDto.user);
             return (res.status(common_2.HttpStatus.CREATED).json({
                 message: `"User successfully added to channel !" + "channelName"`
             }));
@@ -75,6 +130,9 @@ let ChannelController = class ChannelController {
             return (true);
         return (false);
     }
+    async getBanList(channelName) {
+        return (this.channelService.getBanListChannel(channelName));
+    }
     async canJoinChannel(res, channelName, channelPasswordDto) {
         if (!await this.channelService.findOne(channelName)) {
             return res.status(common_2.HttpStatus.NOT_FOUND).json({
@@ -102,7 +160,6 @@ let ChannelController = class ChannelController {
     }
 };
 __decorate([
-    (0, public_decorator_1.Public)(),
     (0, common_1.Post)('createChannel'),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Body)()),
@@ -111,8 +168,43 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "createChannel", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Post)(':channelName'),
+    (0, common_1.Post)('/admin/:channelName'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('channelName')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, update_channel_users_dto_1.UpdateChannelUserDto]),
+    __metadata("design:returntype", Promise)
+], ChannelController.prototype, "updateChannelAdmin", null);
+__decorate([
+    (0, common_1.Post)('/mute/:channelName'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('channelName')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, update_channel_users_dto_1.UpdateChannelUserDto]),
+    __metadata("design:returntype", Promise)
+], ChannelController.prototype, "updateChannelMuteList", null);
+__decorate([
+    (0, common_1.Post)('/ban/:channelName'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('channelName')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, update_channel_users_dto_1.UpdateChannelUserDto]),
+    __metadata("design:returntype", Promise)
+], ChannelController.prototype, "updateChannelBanList", null);
+__decorate([
+    (0, common_1.Post)('/kick/:channelName'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('channelName')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, id_dto_1.IdDto]),
+    __metadata("design:returntype", Promise)
+], ChannelController.prototype, "addUserAsKicked", null);
+__decorate([
+    (0, common_1.Post)('/update-user/:channelName'),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Param)('channelName')),
     __param(2, (0, common_1.Body)()),
@@ -121,60 +213,60 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "addChannelUser", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "findAllChannels", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
     (0, common_1.Get)('public'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "findAllPublicChannels", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Get)('/user/:userId'),
+    (0, common_1.Get)('user/:userId'),
     __param(0, (0, common_1.Param)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "findAllUserChannels", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Get)('/infos/:channelName'),
+    (0, common_1.Get)('infos/:channelName'),
     __param(0, (0, common_1.Param)('channelName')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "getChannelInfos", null);
 __decorate([
-    (0, common_1.Get)(':channelName/users'),
+    (0, common_1.Get)('users/:channelName'),
     __param(0, (0, common_1.Param)('channelName')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "getUsersinChannel", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Get)(':channelName/messagesHistory'),
+    (0, common_1.Get)('messagesHistory/:channelName'),
     __param(0, (0, common_1.Param)('channelName')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "getChannelHistory", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Get)(':channelName/channel-exist'),
+    (0, common_1.Get)('channel-exist/:channelName'),
     __param(0, (0, common_1.Param)('channelName')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "channelExist", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
+    (0, common_1.Get)('banlist/:channelName'),
+    __param(0, (0, common_1.Param)('channelName')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ChannelController.prototype, "getBanList", null);
+__decorate([
     (0, common_1.Post)(':channelName/join-channel'),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Param)('channelName')),
@@ -184,7 +276,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "canJoinChannel", null);
 __decorate([
-    (0, public_decorator_1.Public)(),
     (0, common_1.Delete)(':channelName'),
     __param(0, (0, common_1.Param)('channelName')),
     __metadata("design:type", Function),

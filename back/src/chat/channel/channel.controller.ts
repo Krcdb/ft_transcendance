@@ -9,6 +9,7 @@ import { UpdateChannelUserDto } from './dto/update-channel-users.dto';
 import { ChannelPasswordDto } from './dto/channel-password.dto';
 import { ChannelsAndOwnersDto } from './dto/channels-and-owners';
 import { User } from 'src/users/user.entity';
+import { IdDto } from 'src/users/dto/id.dto';
 
 @Controller('channel')
 export class ChannelController {
@@ -20,7 +21,7 @@ export class ChannelController {
 	//  POST  //
 	// ------ //
 
-	@Public()
+	// @Public()
 	@Post('createChannel')
 	async createChannel(@Res() res, @Body() createChannelDto: CreateChannelDto) {
 		if (await this.channelService.channelAlreadyExists(createChannelDto.channelName)) {
@@ -40,29 +41,88 @@ export class ChannelController {
 	// a voir comment differencier les 2 datas et update le channel
 
 	/*
-		@Public()
+		// @Public()
 		@Post(':channelName/:UserID')
 		async addChannelUser(@Param('channelName') channelName : string,
 		@Param('UserID') UserID : number) : Promise<any> {
 			return (this.channelService.addUserAsUser(channelName, UserID));
 		}
 	*/
+	@Post('/admin/:channelName')
+	async updateChannelAdmin(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) : Promise<any> {
+		if (updateChannelUserDto.toAdd) {
+			await this.channelService.addUserAsAdmin(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User added to admins"
+			})
+		}
+		else {
+			await this.channelService.removeUserAsAdmin(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User removed from admins"
+			})
+		}
+	}
+	@Post('/mute/:channelName')
+	async updateChannelMuteList(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) :Promise<any> {
+		if (updateChannelUserDto.toAdd) {
+			await this.channelService.addUserAsMuted(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User added to muted"
+			})
+		}
+		else {
+			await this.channelService.removeUserAsMuted(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User removed from muted"
+			})
+		}
+	}
+	@Post('/ban/:channelName')
+	async updateChannelBanList(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) :Promise<any> {
+		if (updateChannelUserDto.toAdd) {
+			await this.channelService.addUserAsBanned(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User added to banned"
+			})
+		}
+		else {
+			await this.channelService.removeUserAsBanned(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User removed from banned"
+			})
+		}
+	}
 
-	@Public()
-	@Post(':channelName')
-	async addChannelUser(@Res() res, @Param('channelName') channelName: string, @Body() UpdateChannelUserDto: UpdateChannelUserDto) :Promise<void> {
-		if (await this.channelService.findUserInChannel(channelName, UpdateChannelUserDto.newUser)) {
+	@Post('/kick/:channelName')
+	async addUserAsKicked(@Res() res, @Param('channelName') channelName: string, @Body() idDto: IdDto) :Promise<any> {
+		await this.channelService.addUserAsKicked(channelName, idDto.id);
+		return res.status(HttpStatus.OK).json({
+			message: "User has been kikcked"
+		})
+	}
+
+
+	// @Public()
+	@Post('/update-user/:channelName')
+	async addChannelUser(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) :Promise<void> {
+		if (await this.channelService.findUserInChannel(channelName, updateChannelUserDto.user)) {
+			if (!updateChannelUserDto.toAdd) {
+				await this.channelService.userLeftChannel(channelName, updateChannelUserDto.user);
+				return res.status(HttpStatus.OK).json({
+					message: "User removed from channel"
+				})
+			}
 			return res.status(HttpStatus.OK).json({
 				message: "User already in channel"
 			})
 		}
-		else {
-			this.channelService.addUserAsUser(channelName, UpdateChannelUserDto.newUser);
-			console.log("newUser: " + UpdateChannelUserDto.newUser);
+		else if (updateChannelUserDto.toAdd) {
+			this.channelService.addUserAsUser(channelName, updateChannelUserDto.user);
+			console.log("newUser: " + updateChannelUserDto.user);
 			return (
 				res.status(HttpStatus.CREATED).json ({
 					message: `"User successfully added to channel !" + "channelName"`
-
 				})
 			);
 		}
@@ -71,42 +131,42 @@ export class ChannelController {
   // ------ //
   //  GET   //
   // ------ //
-	@Public()
+	// @Public()
 	@Get()
 	async findAllChannels() : Promise<Channel[]> {
 	  return (await this.channelService.findAll());
 	}
-	@Public()
+	// @Public()
 	@Get('public')
 	async findAllPublicChannels(): Promise<ChannelsAndOwnersDto> {
 	  return (await this.channelService.findAllPublicChannels());
 	}
 
-	@Public()
-	@Get('/user/:userId')
+	// @Public()
+	@Get('user/:userId')
 	async findAllUserChannels(@Param('userId') userId: number): Promise<ChannelsAndOwnersDto> {
 	  return (await this.channelService.findAllUserChannels(userId));
 	}
 
-	@Public()
-	@Get('/infos/:channelName')
+	// @Public()
+	@Get('infos/:channelName')
 	async getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
 		return (await this.channelService.findOne(channelName));
 	}
 
-	@Get(':channelName/users')
+	@Get('users/:channelName')
 	async getUsersinChannel(@Param('channelName') channelName: string) : Promise<User[]> {
 		return (await this.channelService.getUsersinChannel(channelName));
 	}
 
-	@Public()
-	@Get(':channelName/messagesHistory')
+	// @Public()
+	@Get('messagesHistory/:channelName')
 	getChannelHistory(@Param('channelName') channelName: string) : Promise<number[]> {
 		return (this.channelService.getMessageHistory(channelName));
 	}
 
-	@Public()
-	@Get(':channelName/channel-exist')
+	// @Public()
+	@Get('channel-exist/:channelName')
 	async channelExist(@Param('channelName') channelName: string) : Promise<any> {
 		console.log("checking channel: " + channelName);
 
@@ -115,25 +175,12 @@ export class ChannelController {
 		return (false);
 	}
 
-	// @Public()
-	// @Get(':channelName/can-join-channel')
-	// async canJoinChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) {
-	// 	if (await this.channelService.hasPassword(channelName) == false
-	// 	|| await this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
-	// 		console.log('youhou');
-	// 		return res.status(HttpStatus.OK).json({
-	// 			message: "Can join channel",
-	// 			value: true,
-	// 		})
-	// 	} else {
-	// 		return res.status(HttpStatus.CONFLICT).json({
-	// 			message: "Cannot join channel",
-	// 			value: false,
-	// 		})
-	// 	}
-	// }
+	@Get('banlist/:channelName')
+	async getBanList(@Param('channelName') channelName: string) : Promise<User[]> {
+		return (this.channelService.getBanListChannel(channelName));
+	}
 
-	@Public()
+	// @Public()
 	@Post(':channelName/join-channel')
 	async canJoinChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) : Promise<any> {
 		if (!await this.channelService.findOne(channelName)) {
@@ -157,36 +204,11 @@ export class ChannelController {
 		}
 	}
 
-	// @Public()
-	// @Post(':channelName/join-private-channel')
-	// async UserJoinPrivateChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) {
-	// 	console.log("Trying to join channel: " + channelName);
-	// 	console.log("password : " + channelPasswordDto.password);
-	// 	if (!await this.channelService.findOne(channelName)) {
-	// 		return res.status(HttpStatus.NOT_FOUND).json({
-	// 			message: "Channel does not exist.",
-	// 			value: false,
-	// 		})
-	// 	}
-	// 	else if (this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
-	// 		return res.status(HttpStatus.OK).json({
-	// 			message: "Joining channel",
-	// 			value: true,
-	// 		})
-	// 	}
-	// 	else {
-	// 		return res.status(HttpStatus.CONFLICT).json({
-	// 			message: "Password does not match",
-	// 			value: false,
-	// 		})
-	// 	}
-	// }
-
 	// ------- //
 	//  DELETE //
 	// ------- //
 
-	@Public()
+	// @Public()
 	@Delete(':channelName')
 	async deleteChannel(@Param('channelName') channelName : string) {
 		await this.channelService.deleteOne(channelName);

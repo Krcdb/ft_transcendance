@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Ball = void 0;
 class Ball {
     constructor(size) {
-        this.speed = 3;
+        this.speed = 5;
         this.xVel = 0;
         this.yVel = 0;
         this.size = size;

@@ -11,7 +11,7 @@ export interface GameOptionsInterface {
     PADDLE_HEIGHT: number;
     PADDLE_MARGIN: number;
     BALL_SIZE: number;
-    PLAYER_MOVE: number;
+    BONUS_SIZE: number;
 }
 export declare class Game {
     player1: User;
@@ -20,11 +20,15 @@ export declare class Game {
     uuid: string;
     intervalRef: any;
     paused: boolean;
+    bonus: boolean;
     width: number;
     height: number;
     p1: Paddle;
     p2: Paddle;
     ball: Ball;
+    bonusX: number;
+    bonusY: number;
+    bonusPresent: boolean;
     player1Score: number;
     player2Score: number;
     started: Boolean;
@@ -35,7 +39,7 @@ export declare class Game {
     p1DownKeyPressed: Boolean;
     p2UpKeyPressed: Boolean;
     p2DownKeyPressed: Boolean;
-    constructor(player1: User, player2: User, options: GameOptionsInterface, uuid: string);
+    constructor(player1: User, player2: User, options: GameOptionsInterface, uuid: string, bonus: boolean);
     playerInput(payload: any): void;
     startGame(server: Server): void;
     gameLoop(server: Server): void;
@@ -43,6 +47,9 @@ export declare class Game {
     checkPlayerMove(): void;
     reset(): void;
     checkBallCollision(): void;
+    spawnBonus(): void;
+    resolveBonus(): void;
+    bonusSpawnCollision(): void;
     update(): void;
     matchDone(server: Server): void;
 }

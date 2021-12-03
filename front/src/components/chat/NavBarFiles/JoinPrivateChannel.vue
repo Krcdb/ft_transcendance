@@ -10,7 +10,7 @@
 					minlength="1"
 					maxlength="10"
 					id="channel-name"
-					v-model="channel.channelName"
+					v-model="joinChannel.channelName"
 				></label>
 			</div>
 			<div class="form-div">
@@ -19,7 +19,7 @@
 					type="password"
 					id="password"
 					v-model="password"
-					autocomplete="on"
+					autocomplete="off"
 				></label>
 			</div>
 			<div class="form-div">
@@ -46,25 +46,43 @@ export default defineComponent({
 	name: "join-private-channel",
 	data() {
 		return {
+			joinChannel: {} as Channel,
 			channel: {} as Channel,
 			error: "" as string,
 			password: "" as string,
 		};
 	},
+	props: {
+		userId: {
+			type: Number,
+			required: true,
+		},
+	},
 	methods: {
+		async getChannel(name: string) {
+			console.log("getChannels private ");
+			await ChannelDataService.getChannel(name)
+			.then((response: ResponseData) => {
+				this.channel = response.data;
+			})
+			.catch((e: Error) => {
+				console.log(e);
+			});
+		},
 		async JoinPrivateChannel(current_password: string) {
 			let data = {
 				password: current_password,
 			};
 			// console.log("data = ", data);
-			await ChannelDataService.canJoinChannel(this.channel.channelName, data)
+			// console.log(this.joinChannel.channelName);
+			await ChannelDataService.canJoinChannel(this.joinChannel.channelName, data)
 			.then((response : ResponseData) => {
 				console.log("Password Match ? for " + current_password + " -> " + response.data.value);
 				// console.log(response);
 				if (response.data.value == true) {
                     console.log(response.data.message);
-					localStorage.setItem("channel-name", this.channel.channelName);
-					this.$router.push("/Channel/" + this.channel.channelName);
+					localStorage.setItem("channel-name", this.joinChannel.channelName);
+					this.$router.push("/Channel/" + this.joinChannel.channelName);
 				}
 				else {
 					this.error = response.data.message;

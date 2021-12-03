@@ -174,6 +174,7 @@ exports.default = {
             users: [100, 101, 102, 300, 301, 302],
             banList: [200, 201, 202],
             muteList: [],
+            kickList: [],
             messagesHistory: [1, 2]
         },
         {
@@ -186,6 +187,7 @@ exports.default = {
             users: [200, 201, 202, 300, 301, 302],
             banList: [100, 102, 103],
             muteList: [],
+            kickList: [],
             messagesHistory: [3, 4]
         },
         {
@@ -198,6 +200,7 @@ exports.default = {
             users: [300, 301, 302],
             banList: [],
             muteList: [],
+            kickList: [],
             messagesHistory: [5, 6, 7, 8]
         }
     ],

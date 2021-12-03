@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import http from "@/http-common";
+import Vue from 'vue';
 
 const routes = [
     {
@@ -46,6 +47,7 @@ const routes = [
         path: "/chat",
         name: "Chat",
         component: () => import("../views/Chat.vue"),
+        // component: () => import("../components/chat/NavBarFiles/PublicChannelList.vue"),
     },
     {
         path: "/profile",
@@ -94,7 +96,7 @@ router.beforeEach((to, from, next) => {
         to.path !== "/illegal-login" &&
         to.path !== "/2FLogin"
     )
-    next({ path: "/login" });
+    next({ path: "/login"});
     else {
         http.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         next();

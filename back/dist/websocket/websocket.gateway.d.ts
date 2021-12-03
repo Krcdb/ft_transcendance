@@ -14,7 +14,7 @@ export declare class WebsocketGateway implements OnGatewayInit, OnGatewayConnect
     afterInit(server: Server): void;
     handleConnection(socket: Socket): Promise<void>;
     handleDisconnect(socket: Socket): void;
-    searchGame(socket: Socket): Promise<void>;
+    searchGame(socket: Socket, payload: any): Promise<void>;
     playerInput(socket: Socket, payload: any): Promise<void>;
     playerReady(socket: Socket, payload: any): Promise<void>;
     playerLeaveMatch(socket: Socket, payload: any): Promise<void>;
@@ -23,4 +23,6 @@ export declare class WebsocketGateway implements OnGatewayInit, OnGatewayConnect
     userJoinChannel(socket: Socket, channelName: string): Promise<any>;
     userSendMessage(socket: Socket, channelName: string): Promise<any>;
     refreshChannelMessages(socket: Socket, channelName: string): Promise<any>;
+    updateChannel(socket: Socket, channelName: string): Promise<any>;
+    refreshChannelInfos(socket: Socket, channelName: string): Promise<any>;
 }
