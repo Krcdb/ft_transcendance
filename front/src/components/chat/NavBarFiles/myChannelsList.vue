@@ -1,6 +1,6 @@
 <template id="">
 	<div class="channel-list-page">
-		<h2>Public Channels list</h2>
+		<h2>Channels you joined</h2>
 		<div class="no-channel" v-if="this.ChannelList.length <= 0">
 			<h6>You haven't joined any channels</h6>
 		</div>
@@ -15,7 +15,7 @@
 			<ul class="channel-list">
 				<li class="channel-list-item" v-for="(channel, index) in filteredChannelList" :key="channel.channelName">
 					<div class="channel-name">
-						<h3>{{ channel.channelName }}</h3>
+						<h4>{{ channel.channelName }}</h4>
 						<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`">
 					</div>
 					<div class="channel-owner">
@@ -195,7 +195,10 @@ export default defineComponent({
 });
 </script>
 
-<style media="screen">
+<style scoped>
+img {
+    background-color: white;
+}
 .mini-user-info {
   display: flex;
   flex-direction: column;
@@ -206,7 +209,6 @@ export default defineComponent({
   color: black;
   text-decoration: none;
 }
-
 .mini-user-info img {
     border: 2px solid #ddd;
     border-radius: 100%;
@@ -245,13 +247,15 @@ export default defineComponent({
     flex-wrap: wrap;
     justify-content: space-evenly;
     border: 2px solid #ddd;
+    background-color: #f0f0f0;
     border-radius: 10px;
     margin: 5px;
     padding: 10px;
     width: 70%;
 }
-.channel-name h3 {
+.channel-name h4 {
     margin: 0;
+    font-size: 20px;
 }
 .channel-name img {
     width: 100px;
