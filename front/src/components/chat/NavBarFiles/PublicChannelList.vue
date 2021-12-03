@@ -13,9 +13,6 @@
         </div>
         <ChannelList :user="user"/>
 		<h2>Public Channels you could join</h2>
-		<div class="no-channel" v-if="this.ChannelList.length <= 0">
-			<h6>No channel found...</h6>
-		</div>
 		<div class="channel-search-div">
 			<input type="text"
 				placeholder="Search a channel..."
@@ -24,7 +21,7 @@
 			>
 		</div>
 		<div id="to-join-channels" ref="joinChannelRef" class="public-channel-list-div">
-			<ul class="public-channel-list">
+			<ul class="public-channel-list" v-if="this.ChannelList.length">
 				<li class="public-channel-list-item" v-for="(channel, index) in filteredChannelList" :key="channel.channelName">
 					<div class="public-channel-name">
 						<h4>{{ channel.channelName }}</h4>
@@ -55,19 +52,11 @@
                                 placeholder="password" 
                                 type="password" 
                                 autocomplete="off"
-                            > <!-- v-if="channel.password != null" -->
+                            >
                                 <p>{{ errorMSG[index] }}</p>
                         </form>
 						<div class="btn-div">
-                            <!-- <button
-                                v-if="channel.users.indexOf(user.id) != -1"
-                                class="open-btn"
-							    type="button" 
-                                name="button"
-							    @click="joinChannel(channel, this.password[index], index)"
-                            >
-							    Open
-                            </button> -->
+                            
 							<button
                                 class="joined-btn"
 							    type="button" 
@@ -76,18 +65,6 @@
                             >
 							    Join
                             </button>
-                            <!-- <button 
-                                v-if="channel.users.indexOf(user.id) != -1"
-                                class="delete-btn"
-							    type="button" 
-                                name="button"
-							    @click="leaveChannel(channel)"
-                            >
-							    Leave
-                            </button> -->
-							<!-- <button type="button" name="button" class="delete-btn" v-if="channel.owner === this.curenntUserId"
-							    @click="deleteChannel(channel, index)">Delete
-                            </button> -->
 						</div>
 					</div>
                     <div id="loader">
@@ -95,6 +72,7 @@
                     </div>
 			    </li>
 		    </ul>
+            <h4 v-else>There is no Public Channel to join</h4>
 		</div>
 	</div>
 </template>
@@ -148,6 +126,7 @@ export default defineComponent({
                 this.ChannelList = response.data.channels;
                 this.OwnersList = response.data.owners;
 				this.filteredChannelList = this.ChannelList.filter((channel) => channel.banList.indexOf(this.user.id) == -1 && channel.users.indexOf(this.user.id) == -1);
+                this.ChannelList = this.filteredChannelList;
             })
             .catch((e: Error) => {
                 console.log("Error: " + e);

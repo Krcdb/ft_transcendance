@@ -1,9 +1,6 @@
 <template id="">
 	<div class="channel-list-page">
 		<h2>Channels you joined</h2>
-		<div class="no-channel" v-if="this.ChannelList.length <= 0">
-			<h6>You haven't joined any channels</h6>
-		</div>
 		<div class="channel-list-container">
 			<input type="text"
 				placeholder="Search a channel..."
@@ -12,7 +9,7 @@
 			>
 		</div>
 		<div class="channel-list-div">
-			<ul class="channel-list">
+			<ul class="channel-list" v-if="this.ChannelList.length">
 				<li class="channel-list-item" v-for="(channel, index) in filteredChannelList" :key="channel.channelName">
 					<div class="channel-name">
 						<h4>{{ channel.channelName }}</h4>
@@ -44,13 +41,13 @@
                                 name="button"
 							    @click="joinChannel(channel, this.password[index], index)"
                             >
-							Open
+							    Open
                             </button>
                             <button 
                                 class="delete-btn"
 							    type="button" 
                                 name="button"
-							    @click="leaveChannel(channel)"
+							    @click="leaveChannel(channel, index)"
                             >
 							    Leave
                             </button>
@@ -63,6 +60,10 @@
                     </div>
 			    </li>
 		    </ul>
+            <div v-else>
+                <h4>You haven't join any Channel...</h4>
+                <h4>You can explore public channels, join a private channel or create one</h4>
+            </div>
 		</div>
 	</div>
 </template>
@@ -169,7 +170,8 @@ export default defineComponent({
 				this.isLoading[index] = false;
             });
         },
-        async leaveChannel(channel : Channel) {
+        async leaveChannel(channel : Channel, index: number) {
+            this.isLoading[index] = true;
             if (channel.users.indexOf(this.user.id) != -1) {
                 const data = {
                     user: this.user.id as number,
@@ -178,6 +180,8 @@ export default defineComponent({
                 await ChannelDataService.updateChannelUser(channel.channelName, data)
                 .then((response: ResponseData) => {
                     console.log(response.data.message);
+                    this.isLoading[index] = false;
+                    this.refreshChannelList();
                 })
                 .catch((e: Error) => {
                     console.log(e);
