@@ -16,12 +16,16 @@
 						<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`">
 					</div>
 					<div class="channel-owner">
-                        <p>Owner</p>
-                        <div class="mini-user-info" v-if="getOwnerByID(channel.owner)">
+                         <div class="mini-user-info" v-if="getOwnerByID(channel.owner)">
+                            <p>Owner</p>
                             <Avatar :user="getOwnerByID(channel.owner)" />
                             <router-link class="profile-link" :to="'/users/' + channel.owner">
                                 <h4>{{ getOwnerByID(channel.owner).userName }}</h4>
                             </router-link>
+                        </div>
+                        <div v-else>
+                            <h4>No Owner</h4>
+                            <p>The original owner left the channel</p>
                         </div>
 					</div>
                     <div class="property-tag">
@@ -108,7 +112,8 @@ export default defineComponent({
             .then((response : ResponseData) => {
                 this.ChannelList = response.data.channels;
                 this.OwnersList = response.data.owners;
-				this.filteredChannelList = response.data.channels;
+                this.filteredChannelList = this.ChannelList.filter((channel) => channel.banList.indexOf(this.user.id) == -1 && channel.kickList.indexOf(this.user.id) == -1);;
+                this.ChannelList = this.filteredChannelList;
             })
             .catch((e: Error) => {
                 console.log("Error: " + e);
@@ -219,9 +224,6 @@ img {
     width: 50px;
     height: 50px;
 }
-.mini-user-info h4 {
-    margin: 0;
-}
 .public-tag {
   background-color: #4bbd4b;
   font-weight: bold;
@@ -264,11 +266,10 @@ img {
 .channel-name img {
     width: 100px;
 }
-.channel-owner p {
+.channel-owner p,
+.channel-owner h4,
+.mini-user-info h4 {
     margin: 0;
-}
-.mini-user-info p{
-    margin: 10px;
 }
 .channel-list-page input[type="text"],
 .channel-list-page input[type="password"] {

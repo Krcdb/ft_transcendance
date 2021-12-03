@@ -48,6 +48,9 @@ class ChannelDataService {
     updateBanList(channelName: string, data: any) : Promise<any> {
         return http.post(`/channel/ban/${channelName}`, data);
     }
+    kickUser(channelName: string, data: any) : Promise<any> {
+        return http.post(`/channel/kick/${channelName}`, data);
+    }
     // DELETE
     deleteChannel(channelName : string) : Promise<any> {
         return http.delete(`/channel/${channelName}`);

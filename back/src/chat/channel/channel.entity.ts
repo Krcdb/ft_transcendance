@@ -28,4 +28,7 @@ export class Channel {
 
 	@Column("int", {nullable: true, array: true})
 	muteList: number[];
+	
+	@Column("int", {nullable: true, array: true})
+	kickList: number[];
 }

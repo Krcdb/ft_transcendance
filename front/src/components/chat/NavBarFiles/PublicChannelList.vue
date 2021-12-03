@@ -27,18 +27,18 @@
 						<h4>{{ channel.channelName }}</h4>
 						<img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`">
 					</div>
-					<div class="public-channel-owner" v-if="getOwnerByID(channel.owner)">
-                        <div class="mini-user-info">
+					<div class="public-channel-owner">
+                        <div class="mini-user-info" v-if="getOwnerByID(channel.owner)">
                             <p>Owner</p>
                             <Avatar :user="getOwnerByID(channel.owner)" />
                             <router-link class="profile-link" :to="'/users/' + channel.owner">
                                 <h4>{{ getOwnerByID(channel.owner).userName }}</h4>
                             </router-link>
                         </div>
-					</div>
-                    <div v-else class="public-channel-owner">
-                        <h4>No Owner</h4>
-                        <p>The original owner left the channel</p>
+                        <div v-else>
+                            <h4>No Owner</h4>
+                            <p>The original owner left the channel</p>
+                        </div>
 					</div>
                     <div class="property-tag">
                         <p class="public-tag" v-if="channel.isPublic">Public</p>
@@ -284,15 +284,11 @@ export default defineComponent({
 }
 .public-channel-name h4,
 .public-channel-owner p,
-.public-channel-owner h4,
-.mini-user-info h4  {
+.public-channel-owner h4 {
     margin: 0;
 }
 .public-channel-owner {
     width: 100px;
-}
-.mini-user-info p{
-    margin: 10px;
 }
 .channel-list-page input[type="text"],
 .channel-list-page input[type="password"] {

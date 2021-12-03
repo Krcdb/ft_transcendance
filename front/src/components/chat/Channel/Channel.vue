@@ -40,6 +40,12 @@
                         <router-link class="profile-link" :to="'/users/' + player.id">
                             <h4>{{ player.userName }}</h4>
                         </router-link>
+                        <div class="status-me" v-if="player.id == user.id">
+                            Me
+                        </div>
+                        <div class="status-friend" v-if="user.friends.indexOf(player.id) !== -1">
+                            Friend
+                        </div>
                     </div>
                     <div class="status-div">
                         <div class="status-owner" v-if="player.id == channel.owner">
@@ -70,27 +76,30 @@
                             Mute
                         </button>
                         <button
-                            class="mute-btn"
+                            class="unmute-btn"
                             v-else-if="channel.admins.indexOf(user.id) !== -1 && player.id != channel.owner && channel.muteList.indexOf(player.id) != -1"
                             @click="updateMute(player.id, false)"
                         >
                             Unmute
                         </button>
-                        <button
-                            class="ban-btn"
-                            v-if="user.id != player.id && channel.admins.indexOf(user.id) !== -1 && player.id != channel.owner && channel.banList.indexOf(player.id) == -1"
-                            @click="updateBan(player.id, true)"
-                        >
-                            Ban
-                        </button>
+                        <div class="ban-kick-div">
+                            <button
+                                class="ban-btn"
+                                v-if="user.id != player.id && channel.admins.indexOf(user.id) !== -1 && player.id != channel.owner && channel.banList.indexOf(player.id) == -1"
+                                @click="updateBan(player.id, true)"
+                            >
+                                Ban
+                            </button>
+                            <button
+                                class="kick-btn"
+                                v-if="user.id != player.id && channel.admins.indexOf(user.id) !== -1 && player.id != channel.owner && channel.banList.indexOf(player.id) == -1"
+                                @click="kickUser(player.id)"
+                            >
+                                Kick
+                            </button>
+                        </div>
                         <div class="status-mute" v-if="channel.muteList.indexOf(player.id) != -1 && channel.admins.indexOf(user.id) == -1">
                             Muted
-                        </div>
-                        <div class="status-me" v-if="player.id == user.id">
-                            Me
-                        </div>
-                        <div class="status-friend" v-if="user.friends.indexOf(player.id) !== -1">
-                            Friend
                         </div>
                     </div>
                     <div class="start-game">
@@ -252,10 +261,10 @@ export default defineComponent({
         async initChannel() {
             console.log("name: " + this.channel.channelName);
             console.log("user ID: " + this.user.id);
-            if (this.channel.banList.indexOf(this.user.id) != -1) {
-                this.$router.push("/chat");
-            }
-            else if (this.channel.users.indexOf(this.user.id) == -1) {
+            // if (this.channel.banList.indexOf(this.user.id) != -1) {
+            //     this.$router.push("/chat");
+            // }
+            if (this.channel.users.indexOf(this.user.id) == -1) {
                 const data = {
                     user: this.user.id as number,
                     toAdd: true,
@@ -263,6 +272,7 @@ export default defineComponent({
                 await ChannelDataService.updateChannelUser(this.channel.channelName, data)
                 .then((response: ResponseData) => {
                     console.log(response.data.message);
+                    socket.emit('updateChannel', this.channel.channelName);
                 })
                 .catch((e: Error) => {
                     console.log(e);
@@ -287,11 +297,11 @@ export default defineComponent({
                     console.log("SendMessage: " + response.data);
                     socket.emit('sendMessage', this.channel.channelName);
                     this.currentMessage.message = "";
-                    this.checkMessages(false);
+                    this.checkMessages();
                 })
                 .catch((e: Error) => {
                     console.log(e);
-                    this.checkMessages(false);
+                    this.checkMessages();
                 });
             }
         },
@@ -303,7 +313,9 @@ export default defineComponent({
             await ChannelDataService.updateChannelUser(this.channel.channelName, data)
             .then((response: ResponseData) => {
                 console.log(response.data.message);
-                this.$router.push("/Chat");
+                socket.emit('updateChannel', this.channel.channelName);
+                // if (userId == this.user.id)
+                    this.$router.push("/Chat");
             })
             .catch((e: Error) => {
                 console.log(e);
@@ -314,15 +326,13 @@ export default defineComponent({
                 user: playerId as number,
                 toAdd: toAdd as boolean,
             };
-            console.log("update admin");
-            console.log("data = ", data);
             return await ChannelDataService.updateAdmin(this.channel.channelName, data)
             .then((response: ResponseData) => {
-                console.log("Admin updated");
+                socket.emit('updateChannel', this.channel.channelName);
+
             })
             .catch((e: Error) => {
-                // console.log(e);
-                console.log("error update admin");
+                console.log(e);
             });
         },
         async updateMute(playerId: number, toAdd: boolean) {
@@ -330,13 +340,9 @@ export default defineComponent({
                 user: playerId as number,
                 toAdd: toAdd as boolean,
             };
-            console.log("update mute");
-            console.log("data = ", data);
-            return await ChannelDataService.updateMuteList(this.channel.channelName, data)
+            await ChannelDataService.updateMuteList(this.channel.channelName, data)
                 .then((response: ResponseData) => {
-                    console.log("Mute updated");
-                    console.log("response = ", response.data);
-                    // this.$router.go(0);
+                    socket.emit('updateChannel', this.channel.channelName);
                 })
                 .catch((e: Error) => {
                     console.log(e);
@@ -347,54 +353,75 @@ export default defineComponent({
                 user: playerId as number,
                 toAdd: toAdd as boolean,
             };
-            console.log("update ban");
-            console.log("data = ", data);
-            return await ChannelDataService.updateBanList(this.channel.channelName, data)
-                .then((response: ResponseData) => {
-                    console.log("Ban updated");
-                    console.log("response = ", response.data);
+            await ChannelDataService.updateBanList(this.channel.channelName, data)
+                .then(async (response: ResponseData) => {
+                    socket.emit('updateChannel', this.channel.channelName);
                 })
                 .catch((e: Error) => {
                     console.log("error ban");
                     console.log(e);
                 });
         },
+        async kickUser(playerId: number) {
+            const data = {
+                id: playerId as number,
+            };
+            await ChannelDataService.kickUser(this.channel.channelName, data)
+                .then(async (response: ResponseData) => {
+                    socket.emit('updateChannel', this.channel.channelName);
+                })
+                .catch((e: Error) => {
+                    console.log("error kick");
+                    console.log(e);
+                });
+        },
         async delay(ms: number) {
             return new Promise((resolve) => setTimeout(resolve, ms));
         },
-        async checkMessages(init: boolean) {
-            this.isLoading = true;
+        async checkMessages() {
             await this.getMessages();
-            if (!init) {
-                await this.getChannel(String(localStorage.getItem("channel-name")));
-            }
+            await this.getChannel(String(localStorage.getItem("channel-name")));
+            await this.getAllPlayersInChannel();
 
             let scrollBar = (this.$refs.ScrollBar) as any;
             if (scrollBar)
                 scrollBar.scrollTop = scrollBar.scrollHeight;
 
             console.log("Refresh messages");
-            this.isLoading = false;
         },
-        // async refreshChannel() {
-        //     // this.$router.go(0);
-        //     console.log("refresh...");
-        // },
+        async refreshChannel() {
+            await this.getChannel(String(localStorage.getItem("channel-name")));
+            await this.getAllPlayersInChannel();
+            await this.getBanList();
+            if (this.channel.banList.indexOf(this.user.id) != -1 || this.channel.kickList.indexOf(this.user.id) != -1 )
+                await this.leaveChannel();
+
+            console.log("Refresh channel");
+        },
+        notifyBanKick() {
+            console.log("You have been kicked or ban, please leave");
+        },
         async init() {
             this.isLoading = true;
             await this.getUser(Number(localStorage.getItem("user-id")));
-            await this.getChannel(String(localStorage.getItem("channel-name")));
+            await this.refreshChannel();
             await this.initChannel();
             await this.getMessages();
-            await this.getAllPlayersInChannel();
-            await this.checkMessages(true);
-            await this.getBanList();
+            await this.checkMessages();
             this.isLoading = false;
 
             socket.emit('JoinChannel', this.channel.channelName);
             socket.on('refreshChannelMessages', (uuid: string) => {
                 console.log('Init Socket ON: ' + uuid);
-                this.checkMessages(true);
+                this.checkMessages();
+            });
+            socket.on('refreshChannelInfo', (uuid: string) => {
+                console.log('Init Socket ON: ' + uuid);
+                this.refreshChannel();
+            });
+            socket.on('refreshNotifyOfBanKicks', (uuid: string) => {
+                console.log('Init Socket ON: ' + uuid);
+                this.notifyBanKick();
             });
         },
     },
@@ -436,7 +463,7 @@ export default defineComponent({
 .list-item-content {
     margin-left: 10px;
     text-align: initial;
-    width: 105px;
+    width: 150px;
     margin-right: auto;
 }
 [class|="status"] {
@@ -447,6 +474,8 @@ export default defineComponent({
 }
 .status-me {
     border: black solid 2px;
+    width: 50%;
+    text-align: center;
 }
 .status-owner {
     background-color: black;
@@ -459,6 +488,8 @@ export default defineComponent({
 .status-friend {
     background-color: #4bbd4b;
     color: white;
+    width: 50%;
+    text-align: center;
 }
 .status-mute {
     border: gray solid 2px;
@@ -515,9 +546,6 @@ export default defineComponent({
     resize: none;
     font-family: Avenir, Helvetica, Arial, sans-serif;
 }
-.send-btn {
-
-}
 .match-btn {
     background-color: white;
     color: black;
@@ -557,6 +585,12 @@ export default defineComponent({
     color: lightgray;
     background-color: grey;
 }
+.mute-btn {
+    background-color: #eda942;
+}
+.unmute-btn {
+    background-color: mediumseagreen;
+}
 .leave-btn,
 .ban-btn {
     background-color: #f44336;
@@ -568,5 +602,9 @@ export default defineComponent({
 .box-name {
     border-bottom:  1px solid black;
     width: 100%;
+}
+.ban-kick-div {
+    display: flex;
+    gap: 2px;
 }
 </style>

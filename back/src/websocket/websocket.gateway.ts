@@ -86,11 +86,20 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 		return this.channelService.refreshChannelMessages(this.server, socket, channelName);
 	}
 
-	// @SubscribeMessage('refreshChannel')
-	// async refreshChannel(s)
-
+	
 	@SubscribeMessage('refreshChannelMessages')
 	async refreshChannelMessages(socket: Socket, channelName: string) {
 		return this.channelService.refreshChannelMessages(this.server, socket, channelName);
+	}
+	
+	@SubscribeMessage('updateChannel')
+	async updateChannel(socket: Socket, channelName: string) {
+		console.log("SOCKET : CHANNEL : refreshChannelInfos");
+		return this.channelService.refreshChannelInfos(this.server, socket, channelName);
+	}
+
+	@SubscribeMessage('refreshChannelInfos')
+	async refreshChannelInfos(socket: Socket, channelName: string) {
+		return this.channelService.refreshChannelInfos(this.server, socket, channelName);
 	}
 }

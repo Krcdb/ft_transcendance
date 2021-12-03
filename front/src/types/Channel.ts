@@ -10,4 +10,5 @@ export default interface Channel {
 	users: number[];
 	banList: number[];
 	muteList: number[];
+	kickList: number[];
 }

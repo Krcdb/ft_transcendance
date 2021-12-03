@@ -50,25 +50,58 @@ export class ChannelController {
 	*/
 	@Post('/admin/:channelName')
 	async updateChannelAdmin(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) : Promise<any> {
-		if (updateChannelUserDto.toAdd)
-			return this.channelService.addUserAsAdmin(channelName, updateChannelUserDto.user);
-		else
-			return this.channelService.removeUserAsAdmin(channelName, updateChannelUserDto.user);
+		if (updateChannelUserDto.toAdd) {
+			await this.channelService.addUserAsAdmin(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User added to admins"
+			})
+		}
+		else {
+			await this.channelService.removeUserAsAdmin(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User removed from admins"
+			})
+		}
 	}
 	@Post('/mute/:channelName')
 	async updateChannelMuteList(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) :Promise<any> {
-		if (updateChannelUserDto.toAdd)
-			return this.channelService.addUserAsMuted(channelName, updateChannelUserDto.user);
-		else
-			return this.channelService.removeUserAsMuted(channelName, updateChannelUserDto.user);
+		if (updateChannelUserDto.toAdd) {
+			await this.channelService.addUserAsMuted(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User added to muted"
+			})
+		}
+		else {
+			await this.channelService.removeUserAsMuted(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User removed from muted"
+			})
+		}
 	}
 	@Post('/ban/:channelName')
 	async updateChannelBanList(@Res() res, @Param('channelName') channelName: string, @Body() updateChannelUserDto: UpdateChannelUserDto) :Promise<any> {
-		if (updateChannelUserDto.toAdd)
-			return this.channelService.addUserAsBanned(channelName, updateChannelUserDto.user);
-		else
-			return this.channelService.removeUserAsBanned(channelName, updateChannelUserDto.user);
+		if (updateChannelUserDto.toAdd) {
+			await this.channelService.addUserAsBanned(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User added to banned"
+			})
+		}
+		else {
+			await this.channelService.removeUserAsBanned(channelName, updateChannelUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User removed from banned"
+			})
+		}
 	}
+
+	@Post('/kick/:channelName')
+	async addUserAsKicked(@Res() res, @Param('channelName') channelName: string, @Body() idDto: IdDto) :Promise<any> {
+		await this.channelService.addUserAsKicked(channelName, idDto.id);
+		return res.status(HttpStatus.OK).json({
+			message: "User has been kikcked"
+		})
+	}
+
 
 	// @Public()
 	@Post('/update-user/:channelName')
@@ -145,7 +178,6 @@ export class ChannelController {
 	// @Public()
 	@Get('infos/:channelName')
 	async getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
-		console.log("calling find One");
 		return (await this.channelService.findOne(channelName));
 	}
 
