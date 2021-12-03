@@ -10,7 +10,6 @@ export declare class ChannelController {
     constructor(channelService: ChannelService);
     createChannel(res: any, createChannelDto: CreateChannelDto): Promise<any>;
     addChannelUser(res: any, channelName: string, UpdateChannelUserDto: UpdateChannelUserDto): Promise<void>;
-    UserJoinPrivateChannel(res: any, channelName: string, channelPasswordDto: ChannelPasswordDto): Promise<any>;
     findAllChannels(): Promise<Channel[]>;
     findAllPublicChannels(): Promise<ChannelsAndOwnersDto>;
     findAllUserChannels(userId: number): Promise<ChannelsAndOwnersDto>;

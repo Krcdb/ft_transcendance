@@ -51,28 +51,6 @@ let ChannelController = class ChannelController {
             }));
         }
     }
-    async UserJoinPrivateChannel(res, channelName, channelPasswordDto) {
-        console.log("Trying to join channel: " + channelName);
-        console.log("password : " + channelPasswordDto.password);
-        if (!await this.channelService.findOne(channelName)) {
-            return res.status(common_2.HttpStatus.CONFLICT).json({
-                message: "Channel does not exist.",
-                value: false,
-            });
-        }
-        else if (this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
-            return res.status(common_2.HttpStatus.OK).json({
-                message: "Joining channel",
-                value: true,
-            });
-        }
-        else {
-            return res.status(common_2.HttpStatus.CONFLICT).json({
-                message: "Password does not match",
-                value: false,
-            });
-        }
-    }
     async findAllChannels() {
         return (await this.channelService.findAll());
     }
@@ -98,7 +76,14 @@ let ChannelController = class ChannelController {
         return (false);
     }
     async canJoinChannel(res, channelName, channelPasswordDto) {
-        if (await this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
+        if (!await this.channelService.findOne(channelName)) {
+            return res.status(common_2.HttpStatus.NOT_FOUND).json({
+                message: "Channel doesn't exist",
+                value: false,
+            });
+        }
+        if (await this.channelService.hasPassword(channelName) == false
+            || await this.channelService.passwordMatch(channelName, channelPasswordDto.password) == true) {
             return res.status(common_2.HttpStatus.OK).json({
                 message: "Can join channel",
                 value: true,
@@ -106,7 +91,7 @@ let ChannelController = class ChannelController {
         }
         else {
             return res.status(common_2.HttpStatus.CONFLICT).json({
-                message: "Cannot join channel",
+                message: "Password does not match",
                 value: false,
             });
         }
@@ -135,16 +120,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, update_channel_users_dto_1.UpdateChannelUserDto]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "addChannelUser", null);
-__decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Post)(':channelName/join-private-channel'),
-    __param(0, (0, common_1.Res)()),
-    __param(1, (0, common_1.Param)('channelName')),
-    __param(2, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, channel_password_dto_1.ChannelPasswordDto]),
-    __metadata("design:returntype", Promise)
-], ChannelController.prototype, "UserJoinPrivateChannel", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.Get)(),
@@ -200,7 +175,7 @@ __decorate([
 ], ChannelController.prototype, "channelExist", null);
 __decorate([
     (0, public_decorator_1.Public)(),
-    (0, common_1.Get)(':channelName/can-join-channel'),
+    (0, common_1.Post)(':channelName/join-channel'),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Param)('channelName')),
     __param(2, (0, common_1.Body)()),

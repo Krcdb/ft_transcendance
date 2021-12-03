@@ -26,6 +26,10 @@ __decorate([
     __metadata("design:type", Boolean)
 ], Channel.prototype, "isPublic", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ default: false }),
+    __metadata("design:type", Boolean)
+], Channel.prototype, "isProtected", void 0);
+__decorate([
     (0, typeorm_1.Column)("int"),
     __metadata("design:type", Number)
 ], Channel.prototype, "owner", void 0);

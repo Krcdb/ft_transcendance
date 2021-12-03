@@ -19,6 +19,7 @@ declare const _default: {
         channelName: string;
         owner: number;
         password: any;
+        isProtected: boolean;
         isPublic: boolean;
         admins: number[];
         users: number[];
@@ -29,6 +30,7 @@ declare const _default: {
         channelName: string;
         owner: number;
         password: string;
+        isProtected: boolean;
         isPublic: boolean;
         admins: any[];
         users: number[];

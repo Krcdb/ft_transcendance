@@ -18,13 +18,13 @@
 				<input 
 					type="password"
 					id="password"
-					v-model="channel.password"
+					v-model="password"
 					autocomplete="on"
 				></label>
 			</div>
 			<div class="form-div">
 				<button type="button" class="join-btn"
-					@click="JoinPrivateChannel()">Join Channel
+					@click="JoinPrivateChannel(password)">Join Channel
 				</button>
 			</div>
 		</form>
@@ -48,25 +48,32 @@ export default defineComponent({
 		return {
 			channel: {} as Channel,
 			error: "" as string,
+			password: "" as string,
 		};
 	},
 	methods: {
-		JoinPrivateChannel() {
+		async JoinPrivateChannel(current_password: string) {
 			let data = {
-				password: this.channel.password,
+				password: current_password,
 			};
-			console.log("data = ", data);
-			ChannelDataService.JoinPrivateChannel(this.channel.channelName, data)
+			// console.log("data = ", data);
+			await ChannelDataService.canJoinChannel(this.channel.channelName, data)
 			.then((response : ResponseData) => {
-				console.log(response);
-				console.log("Can join channel !");
-				localStorage.setItem("channel-name", this.channel.channelName);
-				this.$router.push("/Channel/" + this.channel.channelName);
+				console.log("Password Match ? for " + current_password + " -> " + response.data.value);
+				// console.log(response);
+				if (response.data.value == true) {
+                    console.log(response.data.message);
+					localStorage.setItem("channel-name", this.channel.channelName);
+					this.$router.push("/Channel/" + this.channel.channelName);
+				}
+				else {
+					this.error = response.data.message;
+				}
 			})
-      .catch((e) => {
-					this.error =  e.response.data.message;
-          console.log("Error: " + e.response.data.message);
-      });
+      		.catch((e) => {
+				this.error =  e.response.data.message;
+          		console.log("Error: " + e.response.data.message);
+      		});
 		},
 	}
 });

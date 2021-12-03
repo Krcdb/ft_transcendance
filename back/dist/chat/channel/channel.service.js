@@ -30,6 +30,8 @@ let ChannelService = class ChannelService {
         channel.channelName = createChannelDto.channelName;
         channel.password = createChannelDto.password;
         channel.isPublic = createChannelDto.isPublic;
+        if (channel.password)
+            channel.isProtected = true;
         channel.owner = createChannelDto.owner;
         channel.messagesHistory = [];
         channel.admins = [];
@@ -161,12 +163,19 @@ let ChannelService = class ChannelService {
     }
     async passwordMatch(channelName, password) {
         const channel = await this.channelRepository.findOne(channelName);
+        console.log(password + " === " + channel.password);
         if (!channel)
             return (false);
         else if (!channel.password)
             return (true);
         else if (channel.password === password)
             return (true);
+        return (false);
+    }
+    async hasPassword(channelName) {
+        const channel = await this.channelRepository.findOne(channelName);
+        if (channel)
+            return (channel.isProtected);
         return (false);
     }
     async addSocketUser(socket, channelName) {

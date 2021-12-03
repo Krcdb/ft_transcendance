@@ -68,34 +68,7 @@ export class ChannelController {
 		}
 	}
 
-	// Nerver Used
-	@Public()
-	@Post(':channelName/join-private-channel')
-	async UserJoinPrivateChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) {
-		console.log("Trying to join channel: " + channelName);
-		console.log("password : " + channelPasswordDto.password);
-		if (!await this.channelService.findOne(channelName)) {
-			return res.status(HttpStatus.CONFLICT).json({
-				message: "Channel does not exist.",
-				value: false,
-			})
-		}
-		else if (this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
-			return res.status(HttpStatus.OK).json({
-				message: "Joining channel",
-				value: true,
-			})
-		}
-		else {
-			return res.status(HttpStatus.CONFLICT).json({
-				message: "Password does not match",
-				value: false,
-			})
-		}
-	}
-
-
-	// ------ //
+  // ------ //
   //  GET   //
   // ------ //
 	@Public()
@@ -142,21 +115,72 @@ export class ChannelController {
 		return (false);
 	}
 
+	// @Public()
+	// @Get(':channelName/can-join-channel')
+	// async canJoinChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) {
+	// 	if (await this.channelService.hasPassword(channelName) == false
+	// 	|| await this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
+	// 		console.log('youhou');
+	// 		return res.status(HttpStatus.OK).json({
+	// 			message: "Can join channel",
+	// 			value: true,
+	// 		})
+	// 	} else {
+	// 		return res.status(HttpStatus.CONFLICT).json({
+	// 			message: "Cannot join channel",
+	// 			value: false,
+	// 		})
+	// 	}
+	// }
+
 	@Public()
-	@Get(':channelName/can-join-channel')
-	async canJoinChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) {
-		if (await this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
+	@Post(':channelName/join-channel')
+	async canJoinChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) : Promise<any> {
+		if (!await this.channelService.findOne(channelName)) {
+			return res.status(HttpStatus.NOT_FOUND).json({
+				message: "Channel doesn't exist",
+				value: false,
+			})
+		}
+		if (await this.channelService.hasPassword(channelName) == false
+		|| await this.channelService.passwordMatch(channelName, channelPasswordDto.password) == true) {
 			return res.status(HttpStatus.OK).json({
 				message: "Can join channel",
 				value: true,
 			})
-		} else {
+		}
+		else {
 			return res.status(HttpStatus.CONFLICT).json({
-				message: "Cannot join channel",
+				message: "Password does not match",
 				value: false,
 			})
 		}
 	}
+
+	// @Public()
+	// @Post(':channelName/join-private-channel')
+	// async UserJoinPrivateChannel(@Res() res, @Param('channelName') channelName: string, @Body() channelPasswordDto: ChannelPasswordDto) {
+	// 	console.log("Trying to join channel: " + channelName);
+	// 	console.log("password : " + channelPasswordDto.password);
+	// 	if (!await this.channelService.findOne(channelName)) {
+	// 		return res.status(HttpStatus.NOT_FOUND).json({
+	// 			message: "Channel does not exist.",
+	// 			value: false,
+	// 		})
+	// 	}
+	// 	else if (this.channelService.passwordMatch(channelName, channelPasswordDto.password)) {
+	// 		return res.status(HttpStatus.OK).json({
+	// 			message: "Joining channel",
+	// 			value: true,
+	// 		})
+	// 	}
+	// 	else {
+	// 		return res.status(HttpStatus.CONFLICT).json({
+	// 			message: "Password does not match",
+	// 			value: false,
+	// 		})
+	// 	}
+	// }
 
 	// ------- //
 	//  DELETE //

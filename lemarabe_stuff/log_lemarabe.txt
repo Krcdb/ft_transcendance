@@ -36,6 +36,16 @@ _______________________________________________________________________
 * * * * * * * * * * * * * JOURNAL DE BORD * * * * * * * * * * * * * * * 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+[3 decembre]
+Fait en sorte que quand un utilisateur veux join un channel, qu'il soit
+public ou privé, tout passe par une meme fonction qui :
+- checke si le channel existe
+- si oui, checke si le channel est protected
+- si oui, envoie l'input de mdp dans le back pour verif
+- si c'est ok -> join le channel
+  si c'est non -> renvoie le message d'erreur approprié
++ Enlevé le champ de mot de passe pour les channels non protegés
+
 [18 novembre]
 J'ai pas mal fait de recherches sur les injections sql, pour l'instant
 je vois pas de vulnerabilité mais en meme temps j'ai pas reussi a faire

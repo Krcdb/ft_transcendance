@@ -33,6 +33,7 @@ export declare class ChannelService {
     getMessageHistory(channelName: string): Promise<number[]>;
     deleteOne(channelName: string): Promise<any>;
     passwordMatch(channelName: string, password: string): Promise<boolean>;
+    hasPassword(channelName: string): Promise<boolean>;
     addSocketUser(socket: Socket, channelName: string): Promise<void>;
     refreshChannelMessages(server: Server, socket: Socket, channelName: string): Promise<any>;
 }

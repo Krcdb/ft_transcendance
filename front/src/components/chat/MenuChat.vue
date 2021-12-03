@@ -38,8 +38,6 @@
 			</div>
 		-->
 		</div>
-
-
 		<!--
 		<ErrorChat
 		:error_message="'olala'"
@@ -48,20 +46,15 @@
 		:button_right="'retour'"
 		/>
 		-->
-
 	</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
 import ChannelDataService from "@/services/ChannelDataService";
 import ResponseData from "@/types/ResponseData";
-
 import User from "@/types/User";
 import Channel from "@/types/Channel";
-
-//import ErrorChat from "./Error.vue";
 
 export default defineComponent({
 	name: "menu-chat",

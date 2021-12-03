@@ -38,11 +38,8 @@ export default defineComponent({
         return {
             user: {} as User,
             userSelected: false,
-
             nbUsers: 0,
-
             navBarSelection: -1,
-
             currentChannel: {} as Channel, // current connected channel
         };
     },

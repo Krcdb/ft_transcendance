@@ -56,7 +56,6 @@
 </template>
 
 <script lang="ts">
-//import Vue from "vue";
 import { defineComponent } from "vue";
 import User from "@/types/User";
 import ChannelDataService from "@/services/ChannelDataService";
@@ -65,11 +64,7 @@ import ResponseData from "@/types/ResponseData";
 import Channel from "@/types/Channel";
 import Message from "@/types/ChatMessage";
 import MessageComponent from "./Message.vue";
-// import VueSocketIO from "vue-socket.io";
 import Avatar from "@/components/users/Avatar.vue";
-
-
-import VueSocketIO from 'vue-socket.io';
 import io from "socket.io-client";
 import SocketServices from "../../../services/SocketServices"
 

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div v-if="!userSelected">
-      <h4>Seclectionnez votre profile</h4>
+      <h4>Selectionnez votre profil</h4>
       <div class="no-user-created">
         <h4 class="warning" v-if="this.users.length <= 0">
           No user found, create user first

@@ -127,29 +127,19 @@ export default defineComponent({
             this.errorMSG[index] = "";
 			this.isLoading[index] = true;
 			await this.delay(1000);
-			console.log("Try to join channel, password: " + channel.password + " | current password: " + current_password);
-
+			// console.log("Try to join channel, password: " + channel.password + " | current password: " + current_password);
+            console.log('newt');
 			let data = {
                 password: current_password,
 			};
-
-			ChannelDataService.canJoinChannel(channel.channelName, data)
-			await ChannelDataService.getChannel(channel.channelName)
+			await ChannelDataService.canJoinChannel(channel.channelName, data)
 			.then((response : ResponseData) => {
-                console.log("Can join channel: " + response.data.password);
-				console.log("Password Match ?: " + response.data.password + " " + current_password);
-
-				this.delay(1000);
-
-				if (response.data.password == current_password) {
+                    if (response.data.value == true) {
+                        console.log(response.data.message);
                     localStorage.setItem("channel-name", channel.channelName);
 					this.$router.push("/Channel/" + channel.channelName);
 				} else {
-                    //
-					if (response.data.password == null)
-						this.errorMSG[index] = "This channel has no password";
-					else
-						this.errorMSG[index] = "Invalid password";
+                    this.errorMSG[index] = response.data.message;
 					this.isLoading[index] = false;
 				}
 			})

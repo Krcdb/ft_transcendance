@@ -11,6 +11,9 @@ export class Channel {
 	@Column({ default: true })
 	isPublic: boolean;
 
+	@Column({ default: false })
+	isProtected: boolean;
+
 	@Column("int")//, {nullable: true})
 	owner: number;
 	
