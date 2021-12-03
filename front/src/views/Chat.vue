@@ -2,17 +2,17 @@
 	<BurgerMenu />
     
     <!-- FOR USER SELECTION -->
-    <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
-    <PublicChannelList :user="user" v-if="this.userSelected"/>
+    <!-- <OwnerProfile @getUserSelected="HandleGetUserSelected"/>
+    <PublicChannelList :user="user" v-if="this.userSelected"/> -->
     
     <!-- NO USER SELECTION -->
-    <!-- <div v-if="isloading">
+    <div v-if="isloading">
         Loading...
     </div>
     <div v-else>
         <MyProfile :user="user" />
         <PublicChannelList :user="user" />
-    </div> -->
+    </div>
 
 </template>
 
