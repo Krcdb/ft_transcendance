@@ -35,8 +35,10 @@
 					<div class="pass-btn-div">
 						<!-- PASSWORD -->
                         <form class="password-input" v-if="channel.isProtected">
-                            <input v-model="password[index]" :id="`password-${index}`" placeholder="password" type="password" autocomplete="off"> <!-- v-if="channel.password != null" -->
+                            <input v-model="password[index]" :id="`password-${index}`" v-if="showPassword == false" type="password" placeholder="password" autocomplete="off" > <!-- v-if="channel.password != null" -->
+                            <input v-model="password[index]" :id="`password-${index}`" v-else type="text" placeholder="password" autocomplete="off" > <!-- v-if="channel.password != null" -->
                             <p>{{ errorMSG[index] }}</p>
+                            <input type="checkbox" @click="togglePasswordVisibility"> Show password 
                         </form>
 						<div class="btn-div">
 							<button 
@@ -73,6 +75,7 @@
 </template>
 
 <script lang="ts">
+/* eslint-disable */
 import { defineComponent, Ref } from "vue";
 import User from "@/types/User";
 import Channel from "@/types/Channel";
@@ -91,6 +94,7 @@ export default defineComponent({
 			errorMSG: [] as string[],
 			password: [] as string[],
 			isLoading: [] as boolean[],
+            showPassword: false
         };
     },
     props: {
@@ -178,6 +182,12 @@ export default defineComponent({
         getOwnerByID(ownerId: number): User {
            return (this.OwnersList[this.OwnersList.map(x => x.id).indexOf(ownerId)]);
         },
+        togglePasswordVisibility() {
+            if (this.showPassword == true)
+                this.showPassword = false;
+            else
+                this.showPassword = true;
+        }
     },
     mounted() {
         this.refreshChannelList();

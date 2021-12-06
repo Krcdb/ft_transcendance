@@ -5,3 +5,4 @@ back/dist/
 back/.dockerignore
 front/.dockerignore
 .gitignore
+lemarabe_stuff

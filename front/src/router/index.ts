@@ -47,7 +47,6 @@ const routes = [
         path: "/chat",
         name: "Chat",
         component: () => import("../views/Chat.vue"),
-        // component: () => import("../components/chat/NavBarFiles/PublicChannelList.vue"),
     },
     {
         path: "/profile",

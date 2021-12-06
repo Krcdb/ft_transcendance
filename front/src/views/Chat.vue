@@ -20,19 +20,15 @@
 /* eslint-disable */
 import { defineComponent } from "vue";
 import ResponseData from "@/types/ResponseData";
-
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
-
 import OwnerProfile from '@/components/chat/OwnerProfile.vue';
 import PublicChannelList from "@/components/chat/PublicChannelList.vue";
 import MyProfile from "@/components/chat/MyProfile.vue"
-
 import BurgerMenu from "@/components/chat/BurgerMenu/BurgerMenu.vue";
-
-
 import io from "socket.io-client";
 import SocketServices from "../services/SocketServices"
+
 const socket = io("http://localhost:3000", {
 	auth: {
 		token: localStorage.getItem('user-token'),

@@ -13,7 +13,7 @@ RUN npm install -g npm@latest \
 	&& npm i --save @nestjs/axios \
 	&& npm install --save-dev @types/passport-jwt \
 	&& npm install --save @nestjs/jwt passport-jwt \
-	&& npm install --save otplib qrcode \
+	&& npm install --save otplib qrcode bcrypt@latest \
 	&& npm install
 
 

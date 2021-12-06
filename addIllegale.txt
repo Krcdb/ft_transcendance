@@ -1,1 +1,0 @@
-curl -X POST -H Content-Type: application/json -d '{userName: illegale, id: 0}' https://localhost:3000/users

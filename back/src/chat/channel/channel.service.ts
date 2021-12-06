@@ -9,6 +9,7 @@ import { UsersService } from 'src/users/users.service';
 import { enumAchievements} from 'src/achievements/achievements';
 import { Socket, Server } from "socket.io";
 import { WebsocketService } from "src/websocket/websocket.service";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class ChannelService {
@@ -273,6 +274,13 @@ export class ChannelService {
 	//  	  JOIN CHANNEL 	 	  //
   	////////////////////////////////
 
+	async hasPassword(channelName: string) : Promise<boolean> {
+		const channel = await this.channelRepository.findOne(channelName);
+		if (channel)
+			return (channel.isProtected);
+		return (false);
+	}
+
 	async passwordMatch(channelName: string, password: string) : Promise<boolean> {
 		const channel = await this.channelRepository.findOne(channelName);
 		console.log(password + " === " + channel.password);
@@ -280,16 +288,11 @@ export class ChannelService {
 			return (false);
 		else if (!channel.password)
 			return (true);
-		else if (channel.password === password)
+		else if (await bcrypt.compare(password, channel.password) == true)
 			return (true);
 		return (false);
 	}
-	async hasPassword(channelName: string) : Promise<boolean> {
-		const channel = await this.channelRepository.findOne(channelName);
-		if (channel)
-			return (channel.isProtected);
-		return (false);
-	}
+	
 
   	////////////////////////////////
 	// 			 SOCKETS  		  //

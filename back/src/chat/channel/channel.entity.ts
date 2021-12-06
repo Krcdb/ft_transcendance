@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, BeforeInsert, AfterLoad } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 export class Channel {
@@ -34,4 +35,11 @@ export class Channel {
 	
 	@Column("int", {nullable: true, array: true})
 	kickList: number[];
+
+   	@BeforeInsert()
+   	async hashPassword() {
+		// console.log("Before hash, pwd = " + this.password);
+    	this.password = await bcrypt.hash(this.password, 10);
+		// console.log("Before hash, pwd = " + this.password);
+	}
 }
