@@ -12,8 +12,8 @@
       </div>
       <div clas="column">
         <div class="user-info">
-          <p>Victories: {{ victories }}</p>
-          <p>Losses: {{ losses }}</p>
+          <p><i class='bx bxs-trophy'></i> {{ victories }}</p>
+          <p><i class='bx bx-sad'></i> {{ losses }}</p>
           <p>Level: {{ user.ladderLevel }}</p>
           <br />
         </div>
@@ -126,6 +126,10 @@ export default defineComponent({
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
+}
+.user-info p {
+  font-size: 25px;
+  margin: 15px;
 }
 .user-status {
   display: flex;

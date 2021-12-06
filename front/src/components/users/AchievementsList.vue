@@ -88,6 +88,7 @@ export default defineComponent({
   max-width: 50px;
   padding: 15px 10px;
   display: flex;
+  justify-content: center;
   align-items: center;
 }
 [class|="achievement-img"] img {

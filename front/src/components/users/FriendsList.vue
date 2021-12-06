@@ -115,21 +115,17 @@ export default defineComponent({
   border: 2px solid rgba(0, 0, 0, 0.1);
   margin: 5px;
   align-items: center;
+  width: 155px;
 }
 .friend-item-content {
-  margin-right: 10px;
+  width: 80px;
 }
 .friends-list-div input[type="text"] {
   padding: 6px;
 }
 .user-status {
-  margin-right: 5px;
-}
-.user-status .online {
-  color: green;
-}
-.user-status .offline {
-  background-color: red;
+  margin-left: auto;
+  margin-right: auto;
 }
 .users-link {
   font-size: 14px;

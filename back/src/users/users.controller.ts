@@ -72,7 +72,7 @@ export class UsersController {
     const user = await this.usersService.setAvatar(id, `${file.filename}`);
     return res.status(HttpStatus.OK).json({
       message: "Avatar has been successfully uploaded",
-      user
+      user: user,
     })
   }
 

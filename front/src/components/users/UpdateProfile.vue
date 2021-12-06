@@ -109,9 +109,8 @@ export default defineComponent({
       const formData = new FormData();
       formData.append("avatar", this.file);
       UserDataService.uploadAvatar(this.user.id, formData)
-        .then(() => {
+        .then((response: ResponseData) => {
           this.$router.go(0);
-          // this.$router.push("/profile");
         })
         .catch((e: Error) => {
           console.log(e);
@@ -125,7 +124,6 @@ export default defineComponent({
         };
         UserDataService.turn2FAoff(data)
           .then((response: ResponseData) => {
-            // consolee.log
             this.checked = false;
           })
           .catch((e: Error) => {
@@ -144,8 +142,8 @@ export default defineComponent({
           .then(() => {
             this.msg = "";
             localStorage.setItem("user-name", this.newUserName);
-            this.$router.go(0);
-            // this.$router.push("/profile");
+            this.user.userName = this.newUserName;
+            this.newUserName = "";
           })
           .catch((error) => {
             this.msg = error.response.data.message;

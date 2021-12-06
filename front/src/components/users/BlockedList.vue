@@ -46,11 +46,11 @@ export default defineComponent({
 </script>
 
 <style scopped>
-.custom-select select {
+/* .custom-select select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   border: 0;
   padding: 5px;
-}
+} */
 </style>
