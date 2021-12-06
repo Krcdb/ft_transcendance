@@ -23,7 +23,7 @@
           <AchievementsList :userId="user.id" />
         </div>
         <div clas="column">
-          <MatchHistory :user="user" :matches="matches" />
+          <MatchHistory :user="user" :matches="matches" :players="players" />
         </div>
       </div>
     </div>
@@ -65,6 +65,7 @@ export default defineComponent({
   data() {
     return {
       matches: [] as Match[],
+      players: [] as User[],
       victories: {} as number,
       losses: {} as number,
     };
@@ -74,6 +75,7 @@ export default defineComponent({
       UserDataService.getMatchHistory(id)
         .then((response: ResponseData) => {
           this.matches = response.data.matches;
+          this.players = response.data.players;
           this.victories = response.data.victories;
           this.losses = response.data.losses;
         })

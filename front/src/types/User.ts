@@ -7,8 +7,6 @@ export default interface User {
   achievements: number[];
   friends: number[];
   blockedUsers: number[];
-  matchHistory: string[];
-  nbVictories: number;
-  nbLosses: number;
+  // : string[];
   ladderLevel: number;
 }

@@ -1,11 +1,11 @@
 <template>
   <div class="game-header">
-      <div :class="`player-one ${isYou(player1.id)}`">
+      <div :class="`box player-one ${isYou(player1.id)}`">
          <h1>{{ player1.userName }}</h1> 
           <Avatar :user="player1" />
       </div>
-        <h1>VS</h1>
-      <div :class="`player-two ${isYou(player2.id)}`">
+        <h1 class="box middle"><i class='bx bxs-zap'></i></h1>
+      <div :class="`box player-two ${isYou(player2.id)}`">
           <Avatar :user="player2" />
          <h1>{{ player2.userName }}</h1> 
 
@@ -48,13 +48,13 @@ export default defineComponent({
 <style scoped>
 .game-header {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    align-content: center;
-    gap: 20px;
 }
-[class|="player"] {
-    display: flex;
+
+.player-two,
+.player-one {
+  flex: 1;
+  display: flex;
+  min-width: -webkit-min-content;
 }
 .game-header img {
     width: 64px;
@@ -62,6 +62,14 @@ export default defineComponent({
     margin: 5px;
     border: 2px solid #ddd;
     border-radius: 100%;
+}
+.player-one {
+  justify-content: flex-end;
+  margin-right: 10px;
+}
+.player-two {
+  justify-content: flex-start;
+  margin-left: 10px;
 }
 .is-you {
     color: black;

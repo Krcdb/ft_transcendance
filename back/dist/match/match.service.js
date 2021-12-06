@@ -18,6 +18,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const match_entity_1 = require("./match.entity");
 const users_service_1 = require("../users/users.service");
+const achievements_1 = require("../achievements/achievements");
 let MatchService = class MatchService {
     constructor(matchRepository, usersService) {
         this.matchRepository = matchRepository;
@@ -59,11 +60,13 @@ let MatchService = class MatchService {
             ]
         });
         matches.sort((a, b) => (a.matchId > b.matchId ? -1 : 1));
-        const vicandlos = this.countVictoriesLosses(userId, matches);
+        const vicandlos = await this.countVictoriesLosses(userId, matches);
+        const players = await this.usersService.findAllPlayersMatchHistory(userId, matches);
         return {
             matches: matches,
-            victories: (await vicandlos).victories,
-            losses: (await vicandlos).losses,
+            players: players,
+            victories: vicandlos.victories,
+            losses: vicandlos.losses,
         };
     }
     async findOne(matchId) {
@@ -85,8 +88,8 @@ let MatchService = class MatchService {
             winnerId = tmp;
         }
         try {
-            await this.usersService.addMatchToHistory(match.playerOne, match);
-            await this.usersService.addMatchToHistory(match.playerTwo, match);
+            await this.usersService.setAchievementAsync(winnerId, achievements_1.enumAchievements.WIN_ONE_GAME);
+            await this.usersService.setAchievementAsync(loserId, achievements_1.enumAchievements.LOSE_ONE_GAME);
             await this.usersService.updateLadderLevel(winnerId, loserId);
         }
         catch (err) {

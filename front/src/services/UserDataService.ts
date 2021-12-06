@@ -27,10 +27,6 @@ class TutorialDataService {
     return http.get(`/game/user/${id}`);
   }
 
-  getPlayersMatchHistory(id: number): Promise<any> {
-    return http.get(`/users/${id}/players`);
-  }
-
   // AUTH
   login(data: any): Promise<any> {
     return http.get("/login", data);
@@ -88,20 +84,12 @@ class TutorialDataService {
   }
 
   // USER RELATIONS
-  addToFriends(id: number, data: any): Promise<any> {
+  updateFriends(id: number, data: any): Promise<any> {
     return http.post(`/users/${id}/friends`, data);
   }
 
-  addToBlocked(id: number, data: any): Promise<any> {
+  updateBlocked(id: number, data: any): Promise<any> {
     return http.post(`/users/${id}/block`, data);
-  }
-
-  removeFromFriends(id: number, data: any): Promise<any> {
-    return http.post(`/users/${id}/remove-friend`, data);
-  }
-
-  removeFromBlocked(id: number, data: any): Promise<any> {
-    return http.post(`/users/${id}/unblock`, data);
   }
 
   ////////////

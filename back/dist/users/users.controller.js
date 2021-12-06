@@ -22,8 +22,8 @@ const path_1 = require("path");
 const common_2 = require("@nestjs/common");
 const public_decorator_1 = require("../auth/utils/public.decorator");
 const update_userName_dto_1 = require("./dto/update-userName.dto");
-const id_dto_1 = require("./dto/id.dto");
 const achievements_1 = require("../achievements/achievements");
+const update_user_dto_1 = require("../chat/channel/dto/update-user.dto");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -64,26 +64,28 @@ let UsersController = class UsersController {
             user
         });
     }
-    async addFriend(res, id, idDto) {
-        const message = await this.usersService.addAsFriend(id, idDto.id);
-        return res.status(common_2.HttpStatus.OK).json({
-            message: message
-        });
+    async updateFriend(res, id, updateUserDto) {
+        if (updateUserDto.toAdd) {
+            const message = await this.usersService.addAsFriend(id, updateUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: message
+            });
+        }
+        else {
+            const message = await this.usersService.removeFromFriends(id, updateUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: message
+            });
+        }
     }
-    async addBlock(res, id, idDto) {
-        const message = await this.usersService.addAsBlocked(id, idDto.id);
-        return res.status(common_2.HttpStatus.OK).json({
-            message: message
-        });
-    }
-    async removeFriend(res, id, idDto) {
-        const message = await this.usersService.removeFromFriends(id, idDto.id);
-        return res.status(common_2.HttpStatus.OK).json({
-            message: message
-        });
-    }
-    async removeBlocked(res, id, idDto) {
-        const message = await this.usersService.removeFromBlocked(id, idDto.id);
+    async updateBlock(res, id, updateUserDto) {
+        let message;
+        if (updateUserDto.toAdd) {
+            message = await this.usersService.addAsBlocked(id, updateUserDto.user);
+        }
+        else {
+            message = await this.usersService.removeFromBlocked(id, updateUserDto.user);
+        }
         return res.status(common_2.HttpStatus.OK).json({
             message: message
         });
@@ -93,9 +95,6 @@ let UsersController = class UsersController {
     }
     async findOne(id) {
         return await this.usersService.findOne(id);
-    }
-    async findAllPlayers(id) {
-        return await this.usersService.findAllPlayersMatchHistory(id);
     }
     getAchievements(id) {
         return this.usersService.getAchievements(id);
@@ -174,36 +173,18 @@ __decorate([
     __param(1, (0, common_1.Param)('id')),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, id_dto_1.IdDto]),
+    __metadata("design:paramtypes", [Object, Number, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "addFriend", null);
+], UsersController.prototype, "updateFriend", null);
 __decorate([
     (0, common_1.Post)(':id/block'),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Param)('id')),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, id_dto_1.IdDto]),
+    __metadata("design:paramtypes", [Object, Number, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "addBlock", null);
-__decorate([
-    (0, common_1.Post)(':id/remove-friend'),
-    __param(0, (0, common_1.Res)()),
-    __param(1, (0, common_1.Param)('id')),
-    __param(2, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, id_dto_1.IdDto]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "removeFriend", null);
-__decorate([
-    (0, common_1.Post)(':id/unblock'),
-    __param(0, (0, common_1.Res)()),
-    __param(1, (0, common_1.Param)('id')),
-    __param(2, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number, id_dto_1.IdDto]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "removeBlocked", null);
+], UsersController.prototype, "updateBlock", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
@@ -217,14 +198,6 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findOne", null);
-__decorate([
-    (0, public_decorator_1.Public)(),
-    (0, common_1.Get)(':id/players'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "findAllPlayers", null);
 __decorate([
     (0, common_1.Get)(':id/achievements'),
     __param(0, (0, common_1.Param)('id')),

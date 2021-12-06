@@ -11,7 +11,7 @@
                 <CreateChannel :user="user"/>
             </div>
         </div>
-        <ChannelList :user="user"/>
+        <ChannelList @refreshChannel="refreshChannelList" :user="user"/>
 		<h2>Public Channels you could join</h2>
 		<div class="channel-search-div">
 			<input type="text"
@@ -44,7 +44,6 @@
                         <p class="public-tag" v-if="channel.isPublic">Public</p>
                     </div>
 					<div class="pass-btn-div">
-						<!-- PASSWORD -->
                         <form class="password-input" v-if="channel.isProtected">
                             <input 
                                 v-model="password[index]" 
@@ -84,13 +83,13 @@ import VueRouter from 'vue-router'
 import User from "@/types/User";
 import Channel from "@/types/Channel";
 
-import UserDataService from '@/services/UserDataService';
+// import UserDataService from '@/services/UserDataService';
 import ChannelDataService from '@/services/ChannelDataService';
 import ResponseData from "@/types/ResponseData";
 import Avatar from "@/components/users/Avatar.vue";
-import JoinPrivateChannel from "@/components/chat/NavBarFiles/JoinPrivateChannel.vue";
-import CreateChannel from "@/components/chat/NavBarFiles/CreateChannel.vue";
-import ChannelList from "@/components/chat/NavBarFiles/myChannelsList.vue";
+import JoinPrivateChannel from "@/components/chat/JoinPrivateChannel.vue";
+import CreateChannel from "@/components/chat/CreateChannel.vue";
+import ChannelList from "@/components/chat/myChannelsList.vue";
 
 export default defineComponent({
     name: "channel-list",
@@ -99,8 +98,6 @@ export default defineComponent({
             OwnersList: [] as User[],
             ChannelList: [] as Channel[],
 			filteredChannelList: [] as Channel[],
-            // curenntUserId: {} as number,
-            // isDeletingChannel: false,
 			search: "",
 			errorMSG: [] as string[],
 			password: [] as string[],
@@ -132,12 +129,8 @@ export default defineComponent({
                 console.log("Error: " + e);
             });
         },
-        async delay(ms: number) {
-            return new Promise( resolve => setTimeout(resolve, ms) );
-        },
         async deleteChannel(channel: Channel, index: number) {
             this.isLoading[index] = true;
-			await this.delay(500);
             ChannelDataService.deleteChannel(channel.channelName)
             .then((response : ResponseData) => {
                 console.log("Channel Successfully deleted");
@@ -156,17 +149,11 @@ export default defineComponent({
         async joinChannel(channel : Channel, current_password: string, index: number) {
             this.errorMSG[index] = "";
 			this.isLoading[index] = true;
-			// await this.delay(1000);
-			// console.log("Try to join channel, password: " + channel.password + " | current password: " + current_password);
 			let data = {
                 password: current_password,
 			};
 			await ChannelDataService.canJoinChannel(channel.channelName, data)
 			.then((response : ResponseData) => {
-                // console.log("Can join channel: " + response.data.password);
-				console.log("Password Match ? for " + current_password + " -> " + response.data.value);
-				// this.delay(1000);
-
                 if (response.data.value == true) {
                     console.log(response.data.message);
                     localStorage.setItem("channel-name", channel.channelName);
@@ -177,25 +164,9 @@ export default defineComponent({
 				}
 			})
             .catch((e) => {
-                // console.log("Error: " + e.response.data.message);
 				this.errorMSG[index] = "Error: " + e.response.data.message;
 				this.isLoading[index] = false;
             });
-        },
-        async leaveChannel(channel : Channel) {
-            if (channel.users.indexOf(this.user.id) != -1) {
-                const data = {
-                    user: this.user.id as number,
-                    toAdd: false,
-                };
-                await ChannelDataService.updateChannelUser(channel.channelName, data)
-                .then((response: ResponseData) => {
-                    console.log(response.data.message);
-                })
-                .catch((e: Error) => {
-                    console.log(e);
-                });
-            }
         },
         getOwnerByID(ownerId: number): User {
            return (this.OwnersList[this.OwnersList.map(x => x.id).indexOf(ownerId)]);

@@ -36,7 +36,11 @@ export default defineComponent({
             localStorage.setItem("user-name", response.data.userName);
             localStorage.setItem("user-id", response.data.id);
             localStorage.setItem("user-token", response.data.access_token);
-            this.$router.push("/");
+            console.log("isCreated = ", response.data.isCreated);
+            if (response.data.isCreated)
+              this.$router.push("/update-profile");
+            else
+              this.$router.push("/profile");
           } else {
             localStorage.setItem("user-id", response.data.id);
             this.$router.push("/2FLogin");

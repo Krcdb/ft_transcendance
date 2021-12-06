@@ -6,7 +6,7 @@ import { User } from '../../users/user.entity';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { ChannelsAndOwnersDto } from './dto/channels-and-owners';
 import { UsersService } from 'src/users/users.service';
-
+import { enumAchievements} from 'src/achievements/achievements';
 import { Socket, Server } from "socket.io";
 import { WebsocketService } from "src/websocket/websocket.service";
 
@@ -35,9 +35,10 @@ export class ChannelService {
 		channel.banList = [];
 		channel.muteList = [];
 		channel.kickList = [];
-		channel.users.push(createChannelDto.owner);
-		await this.usersService.addToChannelOwner(createChannelDto.owner, createChannelDto.channelName);
-		await this.usersService.addToChannelUsers(createChannelDto.owner, createChannelDto.channelName);
+		if (channel.isPublic)
+			await this.usersService.setAchievementAsync(createChannelDto.owner, enumAchievements.CREATE_PUBLIC_CHANNEL)
+		else
+			await this.usersService.setAchievementAsync(createChannelDto.owner, enumAchievements.CREATE_PRIVATE_CHANNEL)
 		return (await this.channelRepository.save(channel));
 	}
 

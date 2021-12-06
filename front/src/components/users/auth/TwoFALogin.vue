@@ -10,6 +10,7 @@
         required
         v-model="authcode"
         size="6"
+        v-on:keyup.enter="sendCode"
       />
     </div>
     <button @click="sendCode">Verify</button>
@@ -42,7 +43,7 @@ export default defineComponent({
             localStorage.setItem("user-name", response.data.userName);
             localStorage.setItem("user-id", response.data.id);
             localStorage.setItem("user-token", response.data.access_token);
-            this.$router.push("/");
+            this.$router.push("/profile");
           }
         })
         .catch((e) => {

@@ -31,18 +31,10 @@ let UsersService = class UsersService {
         const user = new user_entity_1.User();
         user.userName = createUserDto.userName;
         user.id = createUserDto.id;
-        user.matchHistory = [];
-        user.nbLosses = 0;
-        user.nbVictories = 0;
         user.ladderLevel = 10;
         user.achievements = [];
         user.friends = [];
         user.blockedUsers = [];
-        user.channelsUserIsOwner = [];
-        user.channelsUserIsAdmin = [];
-        user.channelsUserIsIn = [];
-        user.channelsUserIsBanned = [];
-        user.channelsUserIsMuted = [];
         return await this.usersRepository.save(user);
     }
     async setAchievementAsync(userId, achiev) {
@@ -64,21 +56,19 @@ let UsersService = class UsersService {
         });
         return users;
     }
-    async getPlayersInTab(playersIds) {
-        const users = [];
-        for (let i = 0; i < playersIds.length; i++) {
-            users.push(await this.findOne(playersIds[i]));
-        }
-        return users;
-    }
-    async findAllPlayersMatchHistory(userId) {
-        const matches = (await this.matchService.findAllWithUser(userId)).matches;
-        let usersIds = [];
-        matches.forEach((match) => usersIds.push(match.playerOne) && usersIds.push(match.playerTwo));
-        return (await this.getPlayersInTab(usersIds.filter((id) => id != userId)));
-    }
     async findOrCreate(id, userName) {
-        return await this.findOne(id) || await this.create({ "userName": userName, "id": id });
+        let user = await this.findOne(id);
+        if (!user || user == undefined) {
+            user = await this.create({ "userName": userName, "id": id });
+            return {
+                user: user,
+                isCreated: true,
+            };
+        }
+        return {
+            user: user,
+            isCreated: false,
+        };
     }
     async findAll() {
         return await this.usersRepository.find();
@@ -141,18 +131,15 @@ let UsersService = class UsersService {
         achievements.reverse();
         return achievements;
     }
-    async addMatchToHistory(userId, match) {
-        const user = await this.usersRepository.findOne(userId);
-        if (user.matchHistory.indexOf(match.matchId) == -1) {
-            user.matchHistory.push(match.matchId);
-            let newMatchHistory = [user.matchHistory[0]];
-            for (let i = 1; i < user.matchHistory.length; i++) {
-                if (user.matchHistory[i] != user.matchHistory[i - 1])
-                    newMatchHistory.push(user.matchHistory[i]);
-            }
-            user.matchHistory = newMatchHistory;
-            await this.usersRepository.save(user);
+    async findAllPlayersMatchHistory(userId, matches) {
+        const users = [];
+        for (let i = 0; i < matches.length; i++) {
+            if (matches[i].playerOne != userId)
+                users.push(await this.findOne(matches[i].playerOne));
+            else if (matches[i].playerTwo != userId)
+                users.push(await this.findOne(matches[i].playerTwo));
         }
+        return users;
     }
     async updateLadderLevel(winnerId, loserId) {
         const winner = await this.usersRepository.findOne(winnerId);
@@ -250,56 +237,6 @@ let UsersService = class UsersService {
             await this.usersRepository.save(user);
             return "Successfully Unblocked";
         }
-    }
-    async addToChannelUsers(userId, channelName) {
-        const user = await this.usersRepository.findOne(userId);
-        user.channelsUserIsIn.push(channelName);
-        await this.usersRepository.save(user);
-    }
-    async addToChannelOwner(userId, channelName) {
-        const user = await this.usersRepository.findOne(userId);
-        user.channelsUserIsOwner.push(channelName);
-        await this.usersRepository.save(user);
-    }
-    async addToChannelAdmins(userId, channelName) {
-        const user = await this.usersRepository.findOne(userId);
-        user.channelsUserIsAdmin.push(channelName);
-        await this.usersRepository.save(user);
-    }
-    async addToChannelBanned(userId, channelName) {
-        const user = await this.usersRepository.findOne(userId);
-        user.channelsUserIsBanned.push(channelName);
-        await this.usersRepository.save(user);
-    }
-    async addToChannelMuted(userId, channelName) {
-        const user = await this.usersRepository.findOne(userId);
-        user.channelsUserIsMuted.push(channelName);
-        await this.usersRepository.save(user);
-    }
-    async removeFromChannelUsers(userId, channelName) {
-        const user = await this.usersRepository.findOne(userId);
-        user.channelsUserIsIn.splice(user.channelsUserIsIn.indexOf(channelName), 1);
-        await this.usersRepository.save(user);
-    }
-    async removeFromChannelOwner(userId, channelName) {
-        const user = await this.usersRepository.findOne(userId);
-        user.channelsUserIsOwner.splice(user.channelsUserIsOwner.indexOf(channelName), 1);
-        await this.usersRepository.save(user);
-    }
-    async removeFromChannelAdmins(userId, channelName) {
-        const user = await this.usersRepository.findOne(userId);
-        user.channelsUserIsAdmin.splice(user.channelsUserIsAdmin.indexOf(channelName), 1);
-        await this.usersRepository.save(user);
-    }
-    async removeFromChannelBanned(userId, channelName) {
-        const user = await this.usersRepository.findOne(userId);
-        user.channelsUserIsBanned.splice(user.channelsUserIsBanned.indexOf(channelName), 1);
-        await this.usersRepository.save(user);
-    }
-    async removeFromChannelMuted(userId, channelName) {
-        const user = await this.usersRepository.findOne(userId);
-        user.channelsUserIsMuted.splice(user.channelsUserIsMuted.indexOf(channelName), 1);
-        await this.usersRepository.save(user);
     }
     async settwoFAuthSecret(secret, id) {
         return await this.usersRepository.update(id, {

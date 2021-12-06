@@ -15,5 +15,6 @@ export declare class TwoFAuthController {
         access_token: string;
         userName: string;
         id: number;
+        isCreated: boolean;
     }>;
 }

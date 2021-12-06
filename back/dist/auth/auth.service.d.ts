@@ -5,23 +5,27 @@ export declare class AuthService {
     private jwtService;
     private readonly usersService;
     constructor(jwtService: JwtService, usersService: UsersService);
-    login(user: User): Promise<{
-        id: number;
+    login(data: any): Promise<{
+        id: any;
         access_token?: undefined;
         userName?: undefined;
+        isCreated?: undefined;
     } | {
         access_token: string;
-        userName: string;
-        id: number;
+        userName: any;
+        id: any;
+        isCreated: any;
     }>;
     loginAuthenticate(user: User): Promise<{
         access_token: string;
         userName: string;
         id: number;
+        isCreated: boolean;
     }>;
     loginInvite(id: number): Promise<{
         access_token: string;
         userName: string;
         id: number;
+        isCreated: boolean;
     }>;
 }

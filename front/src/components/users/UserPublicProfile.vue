@@ -1,6 +1,7 @@
 <template>
   <div v-if="user.userName" class="edit-form">
-    <UserInfo :isFriend="isfriend" :user="user" />
+    <UserInfo v-if="!isblocked" :isFriend="isfriend" :user="user" />
+    <h4 v-else>{{ user.userName }}</h4>
     <div v-if="itsMe">
       <router-link to="/profile">
         <button>Got to your profile page</button>
@@ -13,27 +14,33 @@
           class="block-btn"
           @click="removeFromFriends"
         >
-          Remove from Friends
+          <i class='bx bxs-user-minus' ></i> Remove from Friends
         </button>
         <button
           v-if="!isfriend && !isblocked"
           class="friend-btn"
           @click="addToFriends"
         >
-          ＋ Add to Friends
+          <i class='bx bxs-user-plus'></i> Add to Friends
         </button>
         <button v-if="isblocked" class="block-btn" @click="removeFromBlocked">
           Unblock
         </button>
-        <button v-else class="block-btn" @click="addToBlocked">🚫 Block</button>
+        <button v-else class="block-btn" @click="addToBlocked">
+          <i class='bx bx-block'></i> Block
+        </button>
       </div>
       <router-link v-if="!isblocked" to="/chat">
-        <button class="chat-btn">Start a private chat</button>
+        <button class="chat-btn">
+          <i class='bx bx-chat'></i> Start a private chat
+        </button>
       </router-link>
-      <button v-if="!isblocked" class="match-btn" @click="startMatch">
-        Start a Match
-      </button>
     </div>
+    <router-link to="/users">
+      <button class="users-link">
+        <i class='bx bxs-user-account' ></i> See Other Users
+      </button>
+    </router-link>
     <p>{{ message }}</p>
   </div>
   <div v-else>
@@ -47,15 +54,6 @@ import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 import UserInfo from "./UserInfo.vue";
-import io from "socket.io-client";
-import SocketServices from "../../services/SocketServices"
-const socket = io("http://localhost:3000", {
-	auth: {
-		token: localStorage.getItem('user-token'),
-		userId: localStorage.getItem('user-id'),
-		page: "userpage"
-	}
-});
 
 export default defineComponent({
   name: "User",
@@ -72,15 +70,6 @@ export default defineComponent({
       message: "",
     };
   },
-  watch : {
-		'$route': {
-			handler: function() {
-				socket.offAny();
-			},
-			deep: true,
-			immediate: true,
-		},
-	},
   methods: {
     async getUser() {
       await UserDataService.get(Number(this.$route.params.id))
@@ -109,17 +98,16 @@ export default defineComponent({
     },
     async addToFriends() {
       let data = {
-        id: this.user.id,
+        user: this.user.id,
+        toAdd: true,
       };
-      await UserDataService.addToFriends(
+      await UserDataService.updateFriends(
         Number(localStorage.getItem("user-id")),
         data
       )
         .then((response: ResponseData) => {
           this.message = response.data.message;
-          if (this.userConnected.friends.indexOf(this.user.id) !== -1)
-            this.isfriend = true;
-          this.$router.go(0);
+          this.isfriend = true;
         })
         .catch((e: Error) => {
           // this.message = e;
@@ -128,9 +116,10 @@ export default defineComponent({
     },
     async addToBlocked() {
       let data = {
-        id: this.user.id,
+        user: this.user.id,
+        toAdd: true,
       };
-      await UserDataService.addToBlocked(
+      await UserDataService.updateBlocked(
         Number(localStorage.getItem("user-id")),
         data
       )
@@ -138,59 +127,49 @@ export default defineComponent({
           this.message = response.data.message;
           this.isblocked = true;
           this.isfriend = false;
-          this.$router.go(0);
         })
         .catch((e: Error) => {
-          // this.message = e;
           console.log(e);
         });
     },
     async removeFromFriends() {
       let data = {
-        id: this.user.id,
+        user: this.user.id,
+        toAdd: false,
       };
-      await UserDataService.removeFromFriends(
+      await UserDataService.updateFriends(
         Number(localStorage.getItem("user-id")),
         data
       )
         .then((response: ResponseData) => {
           this.message = response.data.message;
           this.isfriend = false;
-          this.$router.go(0);
         })
         .catch((e: Error) => {
-          // this.message = e;
           console.log(e);
         });
     },
     async removeFromBlocked() {
       let data = {
-        id: this.user.id,
+        user: this.user.id,
+        toAdd: false,
       };
-      await UserDataService.removeFromBlocked(
+      await UserDataService.updateBlocked(
         Number(localStorage.getItem("user-id")),
         data
       )
         .then((response: ResponseData) => {
           this.message = response.data.message;
           this.isblocked = false;
-          this.$router.go(0);
         })
         .catch((e: Error) => {
           // this.message = e;
           console.log(e);
         });
     },
-    async startMatch() {
-      socket.emit("matchUser", this.user.id);
-    }
   },
   mounted() {
-    console.log("here");
     this.getUser();
-		SocketServices.connectGlobalSocketNotif(socket);
-    // console.log("me ? ", this.itsMe);
-    // this.getConnectedUser();
   },
 });
 </script>
@@ -229,5 +208,8 @@ h4 {
 }
 .friend-status {
   margin-right: 5px;
+}
+.users-link {
+  background-color: grey;
 }
 </style>

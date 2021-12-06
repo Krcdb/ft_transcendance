@@ -23,18 +23,10 @@ export class UsersService {
       const user = new User();
       user.userName = createUserDto.userName;
       user.id = createUserDto.id;
-      user.matchHistory = [];
-      user.nbLosses = 0;
-      user.nbVictories = 0;
       user.ladderLevel = 10;
       user.achievements = [];
       user.friends = [];
       user.blockedUsers = [];
-      user.channelsUserIsOwner = [];
-      user.channelsUserIsAdmin = [];
-      user.channelsUserIsIn = [];
-      user.channelsUserIsBanned = [];
-      user.channelsUserIsMuted = [];
       return await this.usersRepository.save(user);
   }
 
@@ -67,71 +59,65 @@ export class UsersService {
     return users;
   }
   
-  async getPlayersInTab(playersIds: number[]): Promise<User[]> {
-    const users: User[] = [];
-    for (let i = 0; i < playersIds.length; i++) {
-      users.push(await this.findOne(playersIds[i]));
-    }
-    return users;
-  }
   
-  // Not classified **************************************************
-  async findAllPlayersMatchHistory(userId: number): Promise<User[]> {
-    const matches = (await this.matchService.findAllWithUser(userId)).matches;
-    let usersIds: number[] = [];
-    matches.forEach((match) =>
-        usersIds.push(match.playerOne) && usersIds.push(match.playerTwo)
-    );
-    return (await this.getPlayersInTab(usersIds.filter((id) => id != userId)));
-  }
-
   /////////////////////////////////////////
   // Recherche et gestion d'utilisateurs //
   /////////////////////////////////////////
-
-  async findOrCreate(id: number, userName: string) : Promise<User> {
-    return await this.findOne(id) || await this.create({"userName": userName, "id": id});
+  
+  async findOrCreate(id: number, userName: string) : Promise<any> {
+    let user = await this.findOne(id);
+    if (!user || user == undefined) {
+      user = await this.create({"userName": userName, "id": id});
+      return {
+        user: user,
+        isCreated: true,
+      }
+    }
+    return {
+      user: user,
+      isCreated: false,
+    }
   }
-
+  
   async findAll(): Promise<User[]> {
     return await this.usersRepository.find();
   }
-
+  
   async findOne(id: number): Promise<User> {
     const user = await this.usersRepository.findOne(id);
     return user;
   }
-
+  
   async remove(id: number): Promise<void> {
     await this.DeleteOldAvatarFile(id);
     await this.usersRepository.delete(id);
   }
-
+  
   async userExists(id: number): Promise<boolean> {
     const user = await this.usersRepository.findOne(id);
     if (user)
-      return true;
-      return false;
-    }
-    
-    async userNameAlreadyExists(name: string): Promise<boolean> {
-      const user = await this.usersRepository.findOne({ userName: name });
-      if (user)
-      return true;
-      return false;
+    return true;
+    return false;
+  }
+  
+  async userNameAlreadyExists(name: string): Promise<boolean> {
+    const user = await this.usersRepository.findOne({ userName: name });
+    if (user)
+    return true;
+    return false;
   }
   
   ///////////////////////
   // Gestion du profil //
   ///////////////////////
-
+  
   // AVATAR //
   async setAvatar(id: number, avatarUrl: string): Promise<User>  {
     this.DeleteOldAvatarFile(id);
     const tmp = await this.usersRepository.update(id, {avatar: avatarUrl});
     return this.setAchievementAsync(id, enumAchievements.UPLOAD_AVATAR);
   }
-
+  
   async getAvatar(id: number) : Promise<String>  {
     return await this.usersRepository.findOne(id).then((user) => { return user.avatar; });
   }
@@ -142,27 +128,27 @@ export class UsersService {
     {
       fs.unlink("avatars/" + myAvatar, (err) => {
         if (err) 
-          console.log(err);
+        console.log(err);
       });
     }
   }
-
+  
   async removeAvatar(id: number): Promise<void> {
     await this.DeleteOldAvatarFile(id);
     await this.usersRepository.update(id, {avatar: null});
   }
-
+  
   // Other //
   async updateUserName(id: number, updateUserNameDto: UpdateUserNameDto): Promise<User> {
     await this.usersRepository.update(id, {userName: updateUserNameDto.newUserName});
     return this.setAchievementAsync(id, enumAchievements.CHANGE_NAME);
   }
-
+  
   async updateLogState(id: number, isLog: boolean): Promise<User> {
     await this.usersRepository.update(id, {isActive: isLog});
     return await this.usersRepository.findOne(id);
   }
-
+  
   async getAchievements(id: number): Promise<AchievementsInterface[]> {
     const user = await this.usersRepository.findOne(id);
     let achievements: AchievementsInterface[] = [];
@@ -172,23 +158,19 @@ export class UsersService {
     achievements.reverse();
     return achievements;
   }
-
-
-  ///////////////////////////
-  // Historique des matchs //
-  ///////////////////////////
-
-  async addMatchToHistory(userId: number, match: Match) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-    if (user.matchHistory.indexOf(match.matchId) == -1) {
-      user.matchHistory.push(match.matchId);
-      let newMatchHistory: string[] = [user.matchHistory[0]];
-      for (let i = 1; i < user.matchHistory.length; i++) {
-        if (user.matchHistory[i] != user.matchHistory[i-1]) newMatchHistory.push(user.matchHistory[i]);
-      }
-      user.matchHistory = newMatchHistory
-      await this.usersRepository.save(user);
+  
+  ///////////////////
+  // Match History //
+  ///////////////////
+  async findAllPlayersMatchHistory(userId: number, matches: Match[]): Promise<User[]> {
+    const users: User[] = [];
+    for (let i = 0; i < matches.length; i++) {
+      if (matches[i].playerOne != userId)
+        users.push(await this.findOne(matches[i].playerOne));
+      else if (matches[i].playerTwo != userId)
+        users.push(await this.findOne(matches[i].playerTwo));
     }
+    return users;
   }
 
   async updateLadderLevel(winnerId: number, loserId: number) : Promise<void> {
@@ -303,64 +285,6 @@ export class UsersService {
       await this.usersRepository.save(user);
       return "Successfully Unblocked";
     }
-  }
-  
-  //////////////////////////
-  // Gestion des Channels //
-  //////////////////////////
-  
-  // Ajout de l'utilisateur
-  async addToChannelUsers(userId: number, channelName: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-		user.channelsUserIsIn.push(channelName);
-		await this.usersRepository.save(user);
-  }
-  async addToChannelOwner(userId: number, channelName: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-		user.channelsUserIsOwner.push(channelName);
-		await this.usersRepository.save(user);
-  }
-  async addToChannelAdmins(userId: number, channelName: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-		user.channelsUserIsAdmin.push(channelName);
-		await this.usersRepository.save(user);
-  }
-  async addToChannelBanned(userId: number, channelName: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-		user.channelsUserIsBanned.push(channelName);
-		await this.usersRepository.save(user);
-  }
-  async addToChannelMuted(userId: number, channelName: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-		user.channelsUserIsMuted.push(channelName);
-		await this.usersRepository.save(user);
-  }
-  
-  // Retrait de l'utilisateur
-  async removeFromChannelUsers(userId: number, channelName: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-    user.channelsUserIsIn.splice(user.channelsUserIsIn.indexOf(channelName), 1);
-    await this.usersRepository.save(user);
-  }
-  async removeFromChannelOwner(userId: number, channelName: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-    user.channelsUserIsOwner.splice(user.channelsUserIsOwner.indexOf(channelName), 1);
-    await this.usersRepository.save(user);
-  }
-  async removeFromChannelAdmins(userId: number, channelName: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-    user.channelsUserIsAdmin.splice(user.channelsUserIsAdmin.indexOf(channelName), 1);
-    await this.usersRepository.save(user);
-  }
-  async removeFromChannelBanned(userId: number, channelName: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-    user.channelsUserIsBanned.splice(user.channelsUserIsBanned.indexOf(channelName), 1);
-    await this.usersRepository.save(user);
-  }
-  async removeFromChannelMuted(userId: number, channelName: string) : Promise<void> {
-    const user = await this.usersRepository.findOne(userId);
-    user.channelsUserIsMuted.splice(user.channelsUserIsMuted.indexOf(channelName), 1);
-    await this.usersRepository.save(user);
   }
   
   //////////////////////////////////

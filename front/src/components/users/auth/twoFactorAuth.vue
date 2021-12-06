@@ -10,6 +10,7 @@
         required
         v-model="authcode"
         size="6"
+        v-on:keyup.enter="sendCode"
       />
     </div>
     <button @click="sendCode" class="btn btn-submit">
@@ -57,7 +58,7 @@ export default defineComponent({
       UserDataService.turn2FAon(data)
         .then(() => {
           this.error = "";
-          this.$router.push("/");
+          this.$router.push("/update-profile");
         })
         .catch((e) => {
           this.error = e.response.data.message;

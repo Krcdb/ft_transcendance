@@ -9,17 +9,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateChannelUserDto = void 0;
+exports.UpdateUserDto = void 0;
 const class_validator_1 = require("class-validator");
-class UpdateChannelUserDto {
+class UpdateUserDto {
 }
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
-], UpdateChannelUserDto.prototype, "user", void 0);
+], UpdateUserDto.prototype, "user", void 0);
 __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
-], UpdateChannelUserDto.prototype, "toAdd", void 0);
-exports.UpdateChannelUserDto = UpdateChannelUserDto;
+], UpdateUserDto.prototype, "toAdd", void 0);
+exports.UpdateUserDto = UpdateUserDto;
 //# sourceMappingURL=update-channel-users.dto.js.map

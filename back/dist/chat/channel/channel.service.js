@@ -18,6 +18,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const channel_entity_1 = require("./channel.entity");
 const users_service_1 = require("../../users/users.service");
+const achievements_1 = require("../../achievements/achievements");
 const websocket_service_1 = require("../../websocket/websocket.service");
 let ChannelService = class ChannelService {
     constructor(channelRepository, usersService, socketService) {
@@ -39,9 +40,10 @@ let ChannelService = class ChannelService {
         channel.banList = [];
         channel.muteList = [];
         channel.kickList = [];
-        channel.users.push(createChannelDto.owner);
-        await this.usersService.addToChannelOwner(createChannelDto.owner, createChannelDto.channelName);
-        await this.usersService.addToChannelUsers(createChannelDto.owner, createChannelDto.channelName);
+        if (channel.isPublic)
+            await this.usersService.setAchievementAsync(createChannelDto.owner, achievements_1.enumAchievements.CREATE_PUBLIC_CHANNEL);
+        else
+            await this.usersService.setAchievementAsync(createChannelDto.owner, achievements_1.enumAchievements.CREATE_PRIVATE_CHANNEL);
         return (await this.channelRepository.save(channel));
     }
     async findOne(channelName) {

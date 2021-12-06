@@ -23,12 +23,9 @@ import ResponseData from "@/types/ResponseData";
 
 import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
-import Channel from "@/types/Channel";
 
 import OwnerProfile from '@/components/chat/OwnerProfile.vue';
-import NavBar from "@/components/chat/NavBar.vue";
-import PublicChannelList from "@/components/chat/NavBarFiles/PublicChannelList.vue";
-import ChannelList from "@/components/chat/NavBarFiles/myChannelsList.vue";
+import PublicChannelList from "@/components/chat/PublicChannelList.vue";
 import MyProfile from "@/components/chat/MyProfile.vue"
 
 import BurgerMenu from "@/components/chat/BurgerMenu/BurgerMenu.vue";
@@ -51,17 +48,13 @@ export default defineComponent({
             user: {} as User,
             userSelected: false,
             nbUsers: 0,
-            navBarSelection: -1,
-            currentChannel: {} as Channel, // current connected channel
             isloading: {} as boolean,
         };
     },
     components: {
         OwnerProfile,
-        NavBar,
         PublicChannelList,
         BurgerMenu,
-        ChannelList,
         MyProfile,
     },
     methods: {
@@ -87,10 +80,6 @@ export default defineComponent({
             localStorage.setItem("user-id", String(this.user.id));
             localStorage.setItem("user-name", this.user.userName);
         },
-        SwitchNavBarSelection(value : number) {
-            this.navBarSelection = value;
-            console.log("Change NavBar Selection to: " + value);
-        },
         refreshConnectedUsers() {
             UserDataService.getAll()
             .then((response: ResponseData) => {
@@ -108,14 +97,9 @@ export default defineComponent({
             console.log("Refresh connected users: " + this.nbUsers);
         },
     },
-    setup() {
-        console.log("Setup Chat");
-    },
     mounted() {
 		SocketServices.connectGlobalSocketNotif(socket);
         this.getUser(Number(localStorage.getItem("user-id")));
-        // this.refreshConnectedUsers();
-        console.log("Mount chat !");
     }
 });
 </script>

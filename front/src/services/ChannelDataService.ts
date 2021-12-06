@@ -76,7 +76,7 @@ class ChannelDataService {
     }
 
     canJoinChannel(channelName: string, channelPassword: any) : Promise<any> {
-        return http.post(`channel/${channelName}/join-channel`, channelPassword);
+        return http.post(`channel/join-channel/${channelName}`, channelPassword);
     }
 
     // JoinPrivateChannel(channelName: string, channelPassword: any) : Promise<any> {

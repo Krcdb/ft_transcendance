@@ -46,10 +46,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import UserDataService from "@/services/UserDataService";
 import User from "@/types/User";
 import Match from "@/types/Match";
-import ResponseData from "@/types/ResponseData";
 import Avatar from "@/components/users/Avatar.vue";
 
 export default defineComponent({
@@ -64,25 +62,14 @@ export default defineComponent({
     },
     matches: {
       type: Object as () => Match[],
+      required: true,
     },
-  },
-  data() {
-    return {
-      // matches: [] as Match[],
-      players: [] as User[],
-    };
+    players: {
+      type: Object as () => User[],
+      required: true,
+    }
   },
   methods: {
-    async getPlayers(id: number) {
-      UserDataService.getPlayersMatchHistory(id)
-        .then((response: ResponseData) => {
-          this.players = response.data;
-          console.log("players = ", this.players.length);
-        })
-        .catch((e: Error) => {
-          console.log(e);
-        });
-    },
     getWinnerClass(scoreOne: number, scoreTwo: number): string {
       if (scoreOne > scoreTwo)
         return "winner";
@@ -93,9 +80,6 @@ export default defineComponent({
         return "me-player";
       return "";
     }
-  },
-  mounted() {
-    this.getPlayers(this.user.id);
   },
 });
 </script>

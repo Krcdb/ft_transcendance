@@ -58,7 +58,7 @@
         </div>
         <p>{{ msg }}</p>
         <router-link to="/profile">
-          <button class="discreet-button">Go back to Profile Page</button>
+          <button class="discreet-button">Go to Profile Page</button>
         </router-link>
       </div>
     </div>
@@ -110,7 +110,8 @@ export default defineComponent({
       formData.append("avatar", this.file);
       UserDataService.uploadAvatar(this.user.id, formData)
         .then(() => {
-          this.$router.push("/profile");
+          this.$router.go(0);
+          // this.$router.push("/profile");
         })
         .catch((e: Error) => {
           console.log(e);
@@ -143,7 +144,8 @@ export default defineComponent({
           .then(() => {
             this.msg = "";
             localStorage.setItem("user-name", this.newUserName);
-            this.$router.push("/profile");
+            this.$router.go(0);
+            // this.$router.push("/profile");
           })
           .catch((error) => {
             this.msg = error.response.data.message;

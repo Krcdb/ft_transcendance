@@ -30,18 +30,6 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "avatar", void 0);
 __decorate([
-    (0, typeorm_1.Column)("varchar", { nullable: true, array: true }),
-    __metadata("design:type", Array)
-], User.prototype, "matchHistory", void 0);
-__decorate([
-    (0, typeorm_1.Column)("int", { nullable: true }),
-    __metadata("design:type", Number)
-], User.prototype, "nbVictories", void 0);
-__decorate([
-    (0, typeorm_1.Column)("int", { nullable: true }),
-    __metadata("design:type", Number)
-], User.prototype, "nbLosses", void 0);
-__decorate([
     (0, typeorm_1.Column)("int", { nullable: true, default: 1000 }),
     __metadata("design:type", Number)
 ], User.prototype, "ladderLevel", void 0);
@@ -57,26 +45,6 @@ __decorate([
     (0, typeorm_1.Column)("int", { nullable: true, array: true }),
     __metadata("design:type", Array)
 ], User.prototype, "blockedUsers", void 0);
-__decorate([
-    (0, typeorm_1.Column)("varchar", { nullable: true, array: true }),
-    __metadata("design:type", Array)
-], User.prototype, "channelsUserIsOwner", void 0);
-__decorate([
-    (0, typeorm_1.Column)("varchar", { nullable: true, array: true }),
-    __metadata("design:type", Array)
-], User.prototype, "channelsUserIsAdmin", void 0);
-__decorate([
-    (0, typeorm_1.Column)("varchar", { nullable: true, array: true }),
-    __metadata("design:type", Array)
-], User.prototype, "channelsUserIsIn", void 0);
-__decorate([
-    (0, typeorm_1.Column)("varchar", { nullable: true, array: true }),
-    __metadata("design:type", Array)
-], User.prototype, "channelsUserIsBanned", void 0);
-__decorate([
-    (0, typeorm_1.Column)("varchar", { nullable: true, array: true }),
-    __metadata("design:type", Array)
-], User.prototype, "channelsUserIsMuted", void 0);
 __decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)

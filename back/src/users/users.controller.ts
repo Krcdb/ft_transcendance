@@ -10,6 +10,7 @@ import { Public } from 'src/auth/utils/public.decorator';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { IdDto } from './dto/id.dto';
 import { AchievementsInterface } from 'src/achievements/achievements';
+import { UpdateUserDto } from 'src/chat/channel/dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -77,38 +78,34 @@ export class UsersController {
 
   // -> add user as friend
   @Post(':id/friends')
-  async addFriend(@Res() res, @Param('id') id: number, @Body() idDto: IdDto) {
-    const message = await this.usersService.addAsFriend(id, idDto.id);
-    return res.status(HttpStatus.OK).json({
-      message: message
-    })
+  async updateFriend(@Res() res, @Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    if (updateUserDto.toAdd) {
+      const message = await this.usersService.addAsFriend(id, updateUserDto.user);
+      return res.status(HttpStatus.OK).json({
+        message: message
+      })
+    }
+    else {
+      const message = await this.usersService.removeFromFriends(id, updateUserDto.user);
+      return res.status(HttpStatus.OK).json({
+        message: message
+      })
+    }
   }
 
   @Post(':id/block')
-  async addBlock(@Res() res, @Param('id') id: number, @Body() idDto: IdDto) {
-    const message = await this.usersService.addAsBlocked(id, idDto.id);
+  async updateBlock(@Res() res, @Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    let message;
+    if (updateUserDto.toAdd) {
+      message = await this.usersService.addAsBlocked(id, updateUserDto.user);
+    }
+    else {
+      message = await this.usersService.removeFromBlocked(id, updateUserDto.user);
+    }
     return res.status(HttpStatus.OK).json({
       message: message
     })
   }
-
-  // -> remove user from friends
-  @Post(':id/remove-friend')
-  async removeFriend(@Res() res, @Param('id') id: number, @Body() idDto: IdDto) {
-    const message = await this.usersService.removeFromFriends(id, idDto.id);
-    return res.status(HttpStatus.OK).json({
-      message: message
-    })
-  }
-
-  @Post(':id/unblock')
-  async removeBlocked(@Res() res, @Param('id') id: number, @Body() idDto: IdDto) {
-    const message = await this.usersService.removeFromBlocked(id, idDto.id);
-    return res.status(HttpStatus.OK).json({
-      message: message
-    })
-  }
-
 
   // ------ // 
   //   GET  //
@@ -124,12 +121,6 @@ export class UsersController {
   @Get(':id')
   async findOne(@Param('id') id: number): Promise<User> {
     return await this.usersService.findOne(id);
-  }
-
-  @Public()
-  @Get(':id/players')
-  async findAllPlayers(@Param('id') id: number): Promise<User[]> {
-    return await this.usersService.findAllPlayersMatchHistory(id);
   }
 
   // -> get all achievements 

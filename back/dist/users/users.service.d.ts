@@ -14,9 +14,7 @@ export declare class UsersService {
     setAchievementAsync(userId: number, achiev: enumAchievements): Promise<User>;
     setAchievement(user: User, achiev: enumAchievements): void;
     getUsersInTab(usersIds: number[]): Promise<User[]>;
-    getPlayersInTab(playersIds: number[]): Promise<User[]>;
-    findAllPlayersMatchHistory(userId: number): Promise<User[]>;
-    findOrCreate(id: number, userName: string): Promise<User>;
+    findOrCreate(id: number, userName: string): Promise<any>;
     findAll(): Promise<User[]>;
     findOne(id: number): Promise<User>;
     remove(id: number): Promise<void>;
@@ -29,7 +27,7 @@ export declare class UsersService {
     updateUserName(id: number, updateUserNameDto: UpdateUserNameDto): Promise<User>;
     updateLogState(id: number, isLog: boolean): Promise<User>;
     getAchievements(id: number): Promise<AchievementsInterface[]>;
-    addMatchToHistory(userId: number, match: Match): Promise<void>;
+    findAllPlayersMatchHistory(userId: number, matches: Match[]): Promise<User[]>;
     updateLadderLevel(winnerId: number, loserId: number): Promise<void>;
     getFriends(id: number): Promise<User[]>;
     getBlocked(id: number): Promise<User[]>;
@@ -38,16 +36,6 @@ export declare class UsersService {
     removeFromFriends(userId: number, id: number): Promise<string>;
     addAsBlocked(userId: number, blockedId: number): Promise<string>;
     removeFromBlocked(userId: number, blockedId: number): Promise<string>;
-    addToChannelUsers(userId: number, channelName: string): Promise<void>;
-    addToChannelOwner(userId: number, channelName: string): Promise<void>;
-    addToChannelAdmins(userId: number, channelName: string): Promise<void>;
-    addToChannelBanned(userId: number, channelName: string): Promise<void>;
-    addToChannelMuted(userId: number, channelName: string): Promise<void>;
-    removeFromChannelUsers(userId: number, channelName: string): Promise<void>;
-    removeFromChannelOwner(userId: number, channelName: string): Promise<void>;
-    removeFromChannelAdmins(userId: number, channelName: string): Promise<void>;
-    removeFromChannelBanned(userId: number, channelName: string): Promise<void>;
-    removeFromChannelMuted(userId: number, channelName: string): Promise<void>;
     settwoFAuthSecret(secret: string, id: number): Promise<import("typeorm").UpdateResult>;
     turnOnTwoFAuth(id: number): Promise<import("typeorm").UpdateResult>;
     turnOffTwoFAuth(id: number): Promise<import("typeorm").UpdateResult>;

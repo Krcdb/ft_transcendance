@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Match } from './match.entity'
 import { UsersService } from 'src/users/users.service';
+import { enumAchievements } from 'src/achievements/achievements';
 
 
 @Injectable()
@@ -53,11 +54,13 @@ export class MatchService {
             ]
         });
         matches.sort((a: Match, b: Match) => (a.matchId > b.matchId ? -1 : 1));
-        const vicandlos = this.countVictoriesLosses(userId, matches);
+        const vicandlos = await this.countVictoriesLosses(userId, matches);
+        const players = await this.usersService.findAllPlayersMatchHistory(userId, matches);
         return {
             matches: matches,
-            victories: (await vicandlos).victories,
-            losses: (await vicandlos).losses,
+            players: players,
+            victories: vicandlos.victories,
+            losses: vicandlos.losses,
         };
     }
     async findOne(matchId: string): Promise<Match> {
@@ -84,10 +87,8 @@ export class MatchService {
             winnerId = tmp;
         }
         try {
-            await this.usersService.addMatchToHistory(match.playerOne, match);
-            await this.usersService.addMatchToHistory(match.playerTwo, match);
-            // await this.usersService.addVictory(winnerId);
-            // await this.usersService.addDefeat(loserId);
+            await this.usersService.setAchievementAsync(winnerId, enumAchievements.WIN_ONE_GAME)
+            await this.usersService.setAchievementAsync(loserId, enumAchievements.LOSE_ONE_GAME)
             await this.usersService.updateLadderLevel(winnerId, loserId);
         } catch(err) {
             console.log(err);

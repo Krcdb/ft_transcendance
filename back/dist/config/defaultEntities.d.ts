@@ -2,18 +2,10 @@ declare const _default: {
     User: {
         id: number;
         userName: string;
-        matchHistory: string[];
-        nbVictories: number;
-        nbLosses: number;
         ladderLevel: number;
         achievements: number[];
         friends: number[];
         blockedUsers: number[];
-        channelsUserIsOwner: string[];
-        channelsUserIsAdmin: string[];
-        channelsUserIsIn: string[];
-        channelsUserIsBanned: string[];
-        channelsUserIsMuted: any[];
     }[];
     Channel: ({
         channelName: string;

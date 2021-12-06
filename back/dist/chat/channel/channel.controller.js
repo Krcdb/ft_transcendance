@@ -18,7 +18,7 @@ const common_2 = require("@nestjs/common");
 const public_decorator_1 = require("../../auth/utils/public.decorator");
 const channel_service_1 = require("./channel.service");
 const create_channel_dto_1 = require("./dto/create-channel.dto");
-const update_channel_users_dto_1 = require("./dto/update-channel-users.dto");
+const update_user_dto_1 = require("./dto/update-user.dto");
 const channel_password_dto_1 = require("./dto/channel-password.dto");
 const user_entity_1 = require("../../users/user.entity");
 const id_dto_1 = require("../../users/dto/id.dto");
@@ -38,43 +38,64 @@ let ChannelController = class ChannelController {
             channel
         });
     }
-    async updateChannelAdmin(res, channelName, updateChannelUserDto) {
-        if (updateChannelUserDto.toAdd) {
-            await this.channelService.addUserAsAdmin(channelName, updateChannelUserDto.user);
+    async canJoinChannel(res, channelName, channelPasswordDto) {
+        if (!await this.channelService.findOne(channelName)) {
+            return res.status(common_2.HttpStatus.NOT_FOUND).json({
+                message: "Channel doesn't exist",
+                value: false,
+            });
+        }
+        if (await this.channelService.hasPassword(channelName) == false
+            || await this.channelService.passwordMatch(channelName, channelPasswordDto.password) == true) {
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "Can join channel",
+                value: true,
+            });
+        }
+        else {
+            return res.status(common_2.HttpStatus.CONFLICT).json({
+                message: "Password does not match",
+                value: false,
+            });
+        }
+    }
+    async updateChannelAdmin(res, channelName, updateUserDto) {
+        if (updateUserDto.toAdd) {
+            await this.channelService.addUserAsAdmin(channelName, updateUserDto.user);
             return res.status(common_2.HttpStatus.OK).json({
                 message: "User added to admins"
             });
         }
         else {
-            await this.channelService.removeUserAsAdmin(channelName, updateChannelUserDto.user);
+            await this.channelService.removeUserAsAdmin(channelName, updateUserDto.user);
             return res.status(common_2.HttpStatus.OK).json({
                 message: "User removed from admins"
             });
         }
     }
-    async updateChannelMuteList(res, channelName, updateChannelUserDto) {
-        if (updateChannelUserDto.toAdd) {
-            await this.channelService.addUserAsMuted(channelName, updateChannelUserDto.user);
+    async updateChannelMuteList(res, channelName, updateUserDto) {
+        if (updateUserDto.toAdd) {
+            await this.channelService.addUserAsMuted(channelName, updateUserDto.user);
             return res.status(common_2.HttpStatus.OK).json({
                 message: "User added to muted"
             });
         }
         else {
-            await this.channelService.removeUserAsMuted(channelName, updateChannelUserDto.user);
+            await this.channelService.removeUserAsMuted(channelName, updateUserDto.user);
             return res.status(common_2.HttpStatus.OK).json({
                 message: "User removed from muted"
             });
         }
     }
-    async updateChannelBanList(res, channelName, updateChannelUserDto) {
-        if (updateChannelUserDto.toAdd) {
-            await this.channelService.addUserAsBanned(channelName, updateChannelUserDto.user);
+    async updateChannelBanList(res, channelName, updateUserDto) {
+        if (updateUserDto.toAdd) {
+            await this.channelService.addUserAsBanned(channelName, updateUserDto.user);
             return res.status(common_2.HttpStatus.OK).json({
                 message: "User added to banned"
             });
         }
         else {
-            await this.channelService.removeUserAsBanned(channelName, updateChannelUserDto.user);
+            await this.channelService.removeUserAsBanned(channelName, updateUserDto.user);
             return res.status(common_2.HttpStatus.OK).json({
                 message: "User removed from banned"
             });
@@ -86,10 +107,10 @@ let ChannelController = class ChannelController {
             message: "User has been kikcked"
         });
     }
-    async addChannelUser(res, channelName, updateChannelUserDto) {
-        if (await this.channelService.findUserInChannel(channelName, updateChannelUserDto.user)) {
-            if (!updateChannelUserDto.toAdd) {
-                await this.channelService.userLeftChannel(channelName, updateChannelUserDto.user);
+    async addChannelUser(res, channelName, updateUserDto) {
+        if (await this.channelService.findUserInChannel(channelName, updateUserDto.user)) {
+            if (!updateUserDto.toAdd) {
+                await this.channelService.userLeftChannel(channelName, updateUserDto.user);
                 return res.status(common_2.HttpStatus.OK).json({
                     message: "User removed from channel"
                 });
@@ -98,9 +119,9 @@ let ChannelController = class ChannelController {
                 message: "User already in channel"
             });
         }
-        else if (updateChannelUserDto.toAdd) {
-            this.channelService.addUserAsUser(channelName, updateChannelUserDto.user);
-            console.log("newUser: " + updateChannelUserDto.user);
+        else if (updateUserDto.toAdd) {
+            this.channelService.addUserAsUser(channelName, updateUserDto.user);
+            console.log("newUser: " + updateUserDto.user);
             return (res.status(common_2.HttpStatus.CREATED).json({
                 message: `"User successfully added to channel !" + "channelName"`
             }));
@@ -133,27 +154,6 @@ let ChannelController = class ChannelController {
     async getBanList(channelName) {
         return (this.channelService.getBanListChannel(channelName));
     }
-    async canJoinChannel(res, channelName, channelPasswordDto) {
-        if (!await this.channelService.findOne(channelName)) {
-            return res.status(common_2.HttpStatus.NOT_FOUND).json({
-                message: "Channel doesn't exist",
-                value: false,
-            });
-        }
-        if (await this.channelService.hasPassword(channelName) == false
-            || await this.channelService.passwordMatch(channelName, channelPasswordDto.password) == true) {
-            return res.status(common_2.HttpStatus.OK).json({
-                message: "Can join channel",
-                value: true,
-            });
-        }
-        else {
-            return res.status(common_2.HttpStatus.CONFLICT).json({
-                message: "Password does not match",
-                value: false,
-            });
-        }
-    }
     async deleteChannel(channelName) {
         await this.channelService.deleteOne(channelName);
         return ("successfully deleted");
@@ -168,12 +168,21 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "createChannel", null);
 __decorate([
+    (0, common_1.Post)('join-channel/:channelName'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('channelName')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, channel_password_dto_1.ChannelPasswordDto]),
+    __metadata("design:returntype", Promise)
+], ChannelController.prototype, "canJoinChannel", null);
+__decorate([
     (0, common_1.Post)('/admin/:channelName'),
     __param(0, (0, common_1.Res)()),
     __param(1, (0, common_1.Param)('channelName')),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, update_channel_users_dto_1.UpdateChannelUserDto]),
+    __metadata("design:paramtypes", [Object, String, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "updateChannelAdmin", null);
 __decorate([
@@ -182,7 +191,7 @@ __decorate([
     __param(1, (0, common_1.Param)('channelName')),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, update_channel_users_dto_1.UpdateChannelUserDto]),
+    __metadata("design:paramtypes", [Object, String, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "updateChannelMuteList", null);
 __decorate([
@@ -191,7 +200,7 @@ __decorate([
     __param(1, (0, common_1.Param)('channelName')),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, update_channel_users_dto_1.UpdateChannelUserDto]),
+    __metadata("design:paramtypes", [Object, String, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "updateChannelBanList", null);
 __decorate([
@@ -209,7 +218,7 @@ __decorate([
     __param(1, (0, common_1.Param)('channelName')),
     __param(2, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, update_channel_users_dto_1.UpdateChannelUserDto]),
+    __metadata("design:paramtypes", [Object, String, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "addChannelUser", null);
 __decorate([
@@ -266,15 +275,6 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "getBanList", null);
-__decorate([
-    (0, common_1.Post)(':channelName/join-channel'),
-    __param(0, (0, common_1.Res)()),
-    __param(1, (0, common_1.Param)('channelName')),
-    __param(2, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String, channel_password_dto_1.ChannelPasswordDto]),
-    __metadata("design:returntype", Promise)
-], ChannelController.prototype, "canJoinChannel", null);
 __decorate([
     (0, common_1.Delete)(':channelName'),
     __param(0, (0, common_1.Param)('channelName')),

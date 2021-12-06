@@ -73,13 +73,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import VueRouter from 'vue-router'
-
+import { defineComponent, Ref } from "vue";
 import User from "@/types/User";
 import Channel from "@/types/Channel";
-
-import UserDataService from '@/services/UserDataService';
 import ChannelDataService from '@/services/ChannelDataService';
 import ResponseData from "@/types/ResponseData";
 import Avatar from "@/components/users/Avatar.vue";
@@ -119,12 +115,8 @@ export default defineComponent({
                 console.log("Error: " + e);
             });
         },
-        async delay(ms: number) {
-            return new Promise( resolve => setTimeout(resolve, ms) );
-        },
         async deleteChannel(channel: Channel, index: number) {
             this.isLoading[index] = true;
-			await this.delay(500);
             ChannelDataService.deleteChannel(channel.channelName)
             .then((response : ResponseData) => {
                 console.log("Channel Successfully deleted");
@@ -143,8 +135,6 @@ export default defineComponent({
         async joinChannel(channel : Channel, current_password: string, index: number) {
             this.errorMSG[index] = "";
 			this.isLoading[index] = true;
-			await this.delay(1000);
-			// console.log("Try to join channel, password: " + channel.password + " | current password: " + current_password);
 			let data = {
                 password: current_password,
 			};
@@ -176,6 +166,8 @@ export default defineComponent({
                 .then((response: ResponseData) => {
                     console.log(response.data.message);
                     this.isLoading[index] = false;
+                    // this.$router.go(0);
+                    this.$emit("refreshChannel");
                     this.refreshChannelList();
                 })
                 .catch((e: Error) => {
@@ -188,7 +180,6 @@ export default defineComponent({
         },
     },
     mounted() {
-        // this.curenntUserId = Number(localStorage.getItem("user-id"));
         this.refreshChannelList();
     },
 });

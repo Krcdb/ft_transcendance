@@ -1,6 +1,6 @@
 import { IsNumber, IsBoolean } from 'class-validator';
 
-export class UpdateChannelUserDto {
+export class UpdateUserDto {
     @IsNumber()
     user: number;
 

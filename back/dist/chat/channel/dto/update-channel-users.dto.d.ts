@@ -1,4 +1,4 @@
-export declare class UpdateChannelUserDto {
+export declare class UpdateUserDto {
     user: number;
     toAdd: boolean;
 }
