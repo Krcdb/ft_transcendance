@@ -283,7 +283,7 @@ export class ChannelService {
 
 	async passwordMatch(channelName: string, password: string) : Promise<boolean> {
 		const channel = await this.channelRepository.findOne(channelName);
-		console.log(password + " === " + channel.password);
+		// console.log(password + " === " + channel.password);
 		if (!channel)
 			return (false);
 		else if (!channel.password)
