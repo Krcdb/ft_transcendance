@@ -16,6 +16,7 @@
             >
 			     Back to channels list <i class='bx bx-exit'></i>
             </button></router-link>
+            <UpdatePassword v-if="channel.owner == user.id" :channel="channel" :user="user" />
             <div class="ban-list" v-if="channel.banList.length && channel.admins.indexOf(user.id) !== -1">
                 <select id="mon_select"  @change="onChange">
                     <option>Banned users</option>
@@ -159,7 +160,8 @@ import Message from "@/types/ChatMessage";
 import MessageComponent from "./Message.vue";
 import Avatar from "@/components/users/Avatar.vue";
 import io from "socket.io-client";
-import SocketServices from "../../../services/SocketServices"
+import SocketServices from "../../../services/SocketServices";
+import UpdatePassword from "@/components/chat/Channel/UpdatePassword.vue";
 
 const socket = io("http://localhost:3000", {
 	auth: {
@@ -185,6 +187,7 @@ export default defineComponent({
     components: {
         MessageComponent,
         Avatar,
+        UpdatePassword,
     },
     watch : {
 		'$route': {

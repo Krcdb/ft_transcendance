@@ -39,7 +39,8 @@ export class Channel {
    	@BeforeInsert()
    	async hashPassword() {
 		// console.log("Before hash, pwd = " + this.password);
-    	this.password = await bcrypt.hash(this.password, 10);
+			if (this.password)
+    		this.password = await bcrypt.hash(this.password, 10);
 		// console.log("Before hash, pwd = " + this.password);
 	}
 }

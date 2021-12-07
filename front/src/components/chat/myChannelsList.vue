@@ -35,10 +35,14 @@
 					<div class="pass-btn-div">
 						<!-- PASSWORD -->
                         <form class="password-input" v-if="channel.isProtected">
-                            <input v-model="password[index]" :id="`password-${index}`" v-if="showPassword == false" type="password" placeholder="password" autocomplete="off" > <!-- v-if="channel.password != null" -->
-                            <input v-model="password[index]" :id="`password-${index}`" v-else type="text" placeholder="password" autocomplete="off" > <!-- v-if="channel.password != null" -->
+                            <input v-model="password[index]" :id="`password-${index}`" v-if="showPassword == false" type="password" placeholder="password" autocomplete="off" >
+                            <input v-model="password[index]" :id="`password-${index}`" v-else type="text" placeholder="password" autocomplete="off">
+                            <label class="eye-checkbox">
+                                <input type="checkbox" @change="togglePasswordVisibility"/>
+                                <i class="fas fa-eye checked"></i>
+                                <i class="fas fa-eye-slash unchecked"></i>
+                            </label>
                             <p>{{ errorMSG[index] }}</p>
-                            <input type="checkbox" @click="togglePasswordVisibility"> Show password 
                         </form>
 						<div class="btn-div">
 							<button 
@@ -94,7 +98,7 @@ export default defineComponent({
 			errorMSG: [] as string[],
 			password: [] as string[],
 			isLoading: [] as boolean[],
-            showPassword: false
+            showPassword: false as boolean,
         };
     },
     props: {
@@ -183,10 +187,7 @@ export default defineComponent({
            return (this.OwnersList[this.OwnersList.map(x => x.id).indexOf(ownerId)]);
         },
         togglePasswordVisibility() {
-            if (this.showPassword == true)
-                this.showPassword = false;
-            else
-                this.showPassword = true;
+            this.showPassword = !this.showPassword;
         }
     },
     mounted() {
@@ -284,5 +285,22 @@ img {
 }
 .pass-btn-div {
     width: 240px;
+}
+.eye-checkbox {
+    margin-left: 5px;
+    color: gray;
+}
+.eye-checkbox input[type="checkbox"],
+.eye-checkbox .checked {
+    display: none;
+}
+.eye-checkbox input[type="checkbox"]:checked ~ .checked
+{
+    display: inline-block;
+}
+ 
+.eye-checkbox input[type="checkbox"]:checked ~ .unchecked
+{
+    display: none;
 }
 </style>

@@ -11,7 +11,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Channel = void 0;
 const typeorm_1 = require("typeorm");
+const bcrypt = require("bcrypt");
 let Channel = class Channel {
+    async hashPassword() {
+        if (this.password)
+            this.password = await bcrypt.hash(this.password, 10);
+    }
 };
 __decorate([
     (0, typeorm_1.PrimaryColumn)({ unique: true }),
@@ -57,6 +62,12 @@ __decorate([
     (0, typeorm_1.Column)("int", { nullable: true, array: true }),
     __metadata("design:type", Array)
 ], Channel.prototype, "kickList", void 0);
+__decorate([
+    (0, typeorm_1.BeforeInsert)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], Channel.prototype, "hashPassword", null);
 Channel = __decorate([
     (0, typeorm_1.Entity)()
 ], Channel);

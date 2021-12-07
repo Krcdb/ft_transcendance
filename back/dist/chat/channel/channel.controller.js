@@ -22,6 +22,7 @@ const update_user_dto_1 = require("./dto/update-user.dto");
 const channel_password_dto_1 = require("./dto/channel-password.dto");
 const user_entity_1 = require("../../users/user.entity");
 const id_dto_1 = require("../../users/dto/id.dto");
+const update_password_dto_1 = require("./dto/update-password.dto");
 let ChannelController = class ChannelController {
     constructor(channelService) {
         this.channelService = channelService;
@@ -32,6 +33,7 @@ let ChannelController = class ChannelController {
                 message: "Channel already exists"
             });
         }
+        console.log("after check");
         const channel = await this.channelService.create(createChannelDto);
         return res.status(common_2.HttpStatus.CREATED).json({
             message: "Channel has been created successfully",
@@ -45,7 +47,7 @@ let ChannelController = class ChannelController {
                 value: false,
             });
         }
-        if (await this.channelService.hasPassword(channelName) == false
+        else if (await this.channelService.hasPassword(channelName) == false
             || await this.channelService.passwordMatch(channelName, channelPasswordDto.password) == true) {
             return res.status(common_2.HttpStatus.OK).json({
                 message: "Can join channel",
@@ -106,6 +108,20 @@ let ChannelController = class ChannelController {
         return res.status(common_2.HttpStatus.OK).json({
             message: "User has been kikcked"
         });
+    }
+    async updateChannelPassword(res, channelName, updatePasswordDto) {
+        if (updatePasswordDto.toAdd) {
+            await this.channelService.addPassword(channelName, updatePasswordDto.password);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "Password added to Channel"
+            });
+        }
+        else {
+            await this.channelService.removePassword(channelName);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "Password removed from Channel"
+            });
+        }
     }
     async addChannelUser(res, channelName, updateUserDto) {
         if (await this.channelService.findUserInChannel(channelName, updateUserDto.user)) {
@@ -212,6 +228,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, id_dto_1.IdDto]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "addUserAsKicked", null);
+__decorate([
+    (0, common_1.Post)('/password/:channelName'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('channelName')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, update_password_dto_1.UpdatePasswordDto]),
+    __metadata("design:returntype", Promise)
+], ChannelController.prototype, "updateChannelPassword", null);
 __decorate([
     (0, common_1.Post)('/update-user/:channelName'),
     __param(0, (0, common_1.Res)()),

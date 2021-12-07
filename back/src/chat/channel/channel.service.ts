@@ -25,9 +25,11 @@ export class ChannelService {
 	async create(createChannelDto: CreateChannelDto): Promise <Channel> {
 		const channel = new Channel();
 		channel.channelName = createChannelDto.channelName;
-		channel.password = createChannelDto.password;
+		if (createChannelDto.password && createChannelDto.password != undefined)
+			channel.password = createChannelDto.password;
 		channel.isPublic = createChannelDto.isPublic;
-		if (channel.password)
+		channel.isProtected = false;
+		if (channel.password && channel.password != undefined)
 			channel.isProtected = true;
 		channel.owner = createChannelDto.owner;
 		channel.messagesHistory = [];
@@ -123,7 +125,7 @@ export class ChannelService {
 
 	/////////////////////////////////////////
 	//  Gestion des listes d'utilisateurs  //
-  	/////////////////////////////////////////
+  /////////////////////////////////////////
 
 	async getUsersinChannel(channelName: string): Promise<User[]> {
 		const channel = await this.channelRepository.findOne(channelName);
@@ -234,17 +236,28 @@ export class ChannelService {
 		}
 	}
 	
-	// Changement d'owner  // (owner ne peut pas etre null)
-	// async changeOwner(channelName: string, newOwnerId: number) : Promise<void> {
-	// 	const channel = await this.channelRepository.findOne(channelName);
-	// 	await this.usersService.removeFromChannelOwner(channel.owner, channelName);
-	// 	await this.usersService.addToChannelOwner(newOwnerId, channelName);
-	// 	await this.channelRepository.update(channelName, {owner: newOwnerId});
-	// }
+	//////////////////////////
+	//  Gestion du password //
+  //////////////////////////
 
-  	////////////////////////////////
+	async addPassword(channelName: string, password: string): Promise<any> {
+		const channel = await this.channelRepository.findOne(channelName);
+		if (password && password != undefined) {
+			channel.isProtected = true;
+			channel.password = password;
+			return await this.channelRepository.save(channel);
+		}
+	}
+
+	async removePassword(channelName: string): Promise<any> {
+		const channel = await this.channelRepository.findOne(channelName);
+		channel.isProtected = false;
+		channel.password = null;
+		return await this.channelRepository.save(channel);
+	}
+  ////////////////////////////////
 	//  Gestion de l'historique   //
-  	////////////////////////////////
+  ////////////////////////////////
 
 	async addMessageToHistory(channelName: string, messageId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
@@ -283,11 +296,13 @@ export class ChannelService {
 
 	async passwordMatch(channelName: string, password: string) : Promise<boolean> {
 		const channel = await this.channelRepository.findOne(channelName);
-		// console.log(password + " === " + channel.password);
+		console.log("my password = ", password);
 		if (!channel)
 			return (false);
 		else if (!channel.password)
 			return (true);
+		else if (!password || password == undefined)
+			return (false);
 		else if (await bcrypt.compare(password, channel.password) == true)
 			return (true);
 		return (false);

@@ -33,11 +33,13 @@ export declare class ChannelService {
     removeUserAsAdmin(channelName: string, userId: number): Promise<any>;
     removeUserAsMuted(channelName: string, userId: number): Promise<any>;
     removeUserAsBanned(channelName: string, userId: number): Promise<any>;
+    addPassword(channelName: string, password: string): Promise<any>;
+    removePassword(channelName: string): Promise<any>;
     addMessageToHistory(channelName: string, messageId: number): Promise<void>;
     getMessageHistory(channelName: string): Promise<number[]>;
     deleteOne(channelName: string): Promise<any>;
-    passwordMatch(channelName: string, password: string): Promise<boolean>;
     hasPassword(channelName: string): Promise<boolean>;
+    passwordMatch(channelName: string, password: string): Promise<boolean>;
     addSocketUser(socket: Socket, channelName: string): Promise<void>;
     refreshChannelMessages(server: Server, socket: Socket, channelName: string): Promise<any>;
     refreshChannelInfos(server: Server, socket: Socket, channelName: string): Promise<any>;

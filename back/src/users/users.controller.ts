@@ -8,9 +8,8 @@ import { extname } from  'path';
 import { HttpStatus } from '@nestjs/common';
 import { Public } from 'src/auth/utils/public.decorator';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
-import { IdDto } from './dto/id.dto';
 import { AchievementsInterface } from 'src/achievements/achievements';
-import { UpdateUserDto } from 'src/chat/channel/dto/update-user.dto';
+import { UpdateUserDto } from '../chat/channel/dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {

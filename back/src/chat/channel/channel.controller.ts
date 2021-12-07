@@ -10,6 +10,7 @@ import { ChannelPasswordDto } from './dto/channel-password.dto';
 import { ChannelsAndOwnersDto } from './dto/channels-and-owners';
 import { User } from 'src/users/user.entity';
 import { IdDto } from 'src/users/dto/id.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Controller('channel')
 export class ChannelController {
@@ -29,6 +30,7 @@ export class ChannelController {
 				message: "Channel already exists"
 			})
 		}
+		console.log("after check");
 		const channel = await this.channelService.create(createChannelDto);
 		return res.status(HttpStatus.CREATED).json({
 			message: "Channel has been created successfully",
@@ -45,7 +47,7 @@ export class ChannelController {
 				value: false,
 			})
 		}
-		if (await this.channelService.hasPassword(channelName) == false
+		else if (await this.channelService.hasPassword(channelName) == false
 		|| await this.channelService.passwordMatch(channelName, channelPasswordDto.password) == true) {
 			return res.status(HttpStatus.OK).json({
 				message: "Can join channel",
@@ -113,6 +115,23 @@ export class ChannelController {
 			message: "User has been kikcked"
 		})
 	}
+
+	@Post('/password/:channelName')
+	async updateChannelPassword(@Res() res, @Param('channelName') channelName: string, @Body() updatePasswordDto: UpdatePasswordDto) :Promise<any> {
+		if (updatePasswordDto.toAdd) {
+			await this.channelService.addPassword(channelName, updatePasswordDto.password);
+			return res.status(HttpStatus.OK).json({
+				message: "Password added to Channel"
+			})
+		}
+		else {
+			await this.channelService.removePassword(channelName);
+			return res.status(HttpStatus.OK).json({
+				message: "Password removed from Channel"
+			})
+		}
+	}
+
 
 
 	// @Public()

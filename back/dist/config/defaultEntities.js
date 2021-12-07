@@ -113,8 +113,8 @@ exports.default = {
         {
             channelName: 'SecretClub',
             owner: 300,
-            password: 'FishyFin',
-            isProtected: true,
+            password: null,
+            isProtected: false,
             isPublic: false,
             admins: [],
             users: [300, 301, 302],

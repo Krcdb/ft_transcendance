@@ -7,7 +7,7 @@ declare const _default: {
         friends: number[];
         blockedUsers: number[];
     }[];
-    Channel: ({
+    Channel: {
         channelName: string;
         owner: number;
         password: any;
@@ -19,19 +19,7 @@ declare const _default: {
         muteList: any[];
         kickList: any[];
         messagesHistory: number[];
-    } | {
-        channelName: string;
-        owner: number;
-        password: string;
-        isProtected: boolean;
-        isPublic: boolean;
-        admins: any[];
-        users: number[];
-        banList: any[];
-        muteList: any[];
-        kickList: any[];
-        messagesHistory: number[];
-    })[];
+    }[];
     Message: {
         id: number;
         channelName: string;

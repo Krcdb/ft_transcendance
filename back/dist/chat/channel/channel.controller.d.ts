@@ -6,6 +6,7 @@ import { ChannelPasswordDto } from './dto/channel-password.dto';
 import { ChannelsAndOwnersDto } from './dto/channels-and-owners';
 import { User } from 'src/users/user.entity';
 import { IdDto } from 'src/users/dto/id.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 export declare class ChannelController {
     private readonly channelService;
     constructor(channelService: ChannelService);
@@ -15,6 +16,7 @@ export declare class ChannelController {
     updateChannelMuteList(res: any, channelName: string, updateUserDto: UpdateUserDto): Promise<any>;
     updateChannelBanList(res: any, channelName: string, updateUserDto: UpdateUserDto): Promise<any>;
     addUserAsKicked(res: any, channelName: string, idDto: IdDto): Promise<any>;
+    updateChannelPassword(res: any, channelName: string, updatePasswordDto: UpdatePasswordDto): Promise<any>;
     addChannelUser(res: any, channelName: string, updateUserDto: UpdateUserDto): Promise<void>;
     findAllChannels(): Promise<Channel[]>;
     findAllPublicChannels(): Promise<ChannelsAndOwnersDto>;

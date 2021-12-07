@@ -14,13 +14,14 @@
 				></label>
 				</div>
 				<div class="form-div">
-				<label for="create-password">Password
-				<input 
-					type="password"
-					id="create-password"
-					autocomplete="off"
-					v-model="this.channel.password"
-				></label>
+					<label for="create-password">Password </label>
+				  <input v-if="showPassword == false" v-model="this.channel.password" id="create-password"  type="password" autocomplete="off" >
+          <input v-else v-model="this.channel.password" id="create-password" type="text" autocomplete="off" >
+					<label class="eye-checkbox">
+              <input type="checkbox" @change="togglePasswordVisibility"/>
+              <i class="fas fa-eye checked"></i>
+              <i class="fas fa-eye-slash unchecked"></i>
+        	</label>
 				</div>
 				<div class="form-div">
 				<label for="public-channel">Public Channel
@@ -41,11 +42,6 @@
 		</div>
 	</div>
 	<div class="messages">
-		<!-- <div class="" v-if="isLoading">
-			<div class="spinner-border" role="status">
-				<span class="sr-only"></span>
-			</div>
-		</div> -->
 		<div class="error-message"
 		v-if="this.state == 1">
 			<p>{{ error }}</p>
@@ -74,7 +70,8 @@ export default defineComponent({
 			channel: {} as CreateChannel,
 			error: {} as string,
 			state: 0,
-			isLoading: false,
+			isLoading: false as boolean,
+			showPassword: false as boolean,
 		}
 	},
   props: {
@@ -84,6 +81,9 @@ export default defineComponent({
       },
   },
 	methods: {
+		togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
 		async delay(ms: number) {
 			return new Promise( resolve => setTimeout(resolve, ms) );
 		},
@@ -163,5 +163,22 @@ h4 {
 .form-div p {
 	margin: 0;
 	font-size: 12px;
+}
+.eye-checkbox {
+    margin-left: 5px;
+		color: gray;
+}
+.eye-checkbox input[type="checkbox"],
+.eye-checkbox .checked {
+    display: none;
+}
+.eye-checkbox input[type="checkbox"]:checked ~ .checked
+{
+    display: inline-block;
+}
+ 
+.eye-checkbox input[type="checkbox"]:checked ~ .unchecked
+{
+    display: none;
 }
 </style>
