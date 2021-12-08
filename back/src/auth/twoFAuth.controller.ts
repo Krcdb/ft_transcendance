@@ -3,7 +3,6 @@ import {
     Post,
     Res,
     Body,
-    UnauthorizedException, 
     HttpCode,
     BadRequestException,
   } from '@nestjs/common';

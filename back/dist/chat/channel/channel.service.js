@@ -219,19 +219,34 @@ let ChannelService = class ChannelService {
             return await this.channelRepository.save(channel);
         }
     }
-    async addPassword(channelName, password) {
+    async updatePassword(channelName, password, newPassword) {
         const channel = await this.channelRepository.findOne(channelName);
-        if (password && password != undefined) {
-            channel.isProtected = true;
-            channel.password = password;
-            return await this.channelRepository.save(channel);
+        let matching = true;
+        if (channel.isProtected)
+            matching = await this.passwordMatch(channelName, password);
+        if (!matching)
+            throw new common_1.BadRequestException("Password doesn't match");
+        if (matching && newPassword && newPassword != undefined) {
+            console.log("password updated");
+            return await this.channelRepository.save({
+                channelName: channelName,
+                isProtected: true,
+                password: await bcrypt.hash(newPassword, 10),
+            });
         }
+        return await this.channelRepository.findOne(channelName);
     }
-    async removePassword(channelName) {
-        const channel = await this.channelRepository.findOne(channelName);
-        channel.isProtected = false;
-        channel.password = null;
-        return await this.channelRepository.save(channel);
+    async removePassword(channelName, password) {
+        const match = await this.passwordMatch(channelName, password);
+        if (match) {
+            console.log("password removed");
+            return await this.channelRepository.save({
+                channelName: channelName,
+                isProtected: false,
+                password: null,
+            });
+        }
+        return await this.channelRepository.findOne(channelName);
     }
     async addMessageToHistory(channelName, messageId) {
         const channel = await this.channelRepository.findOne(channelName);

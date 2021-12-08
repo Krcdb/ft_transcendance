@@ -110,16 +110,31 @@ let ChannelController = class ChannelController {
         });
     }
     async updateChannelPassword(res, channelName, updatePasswordDto) {
+        console.log("dto = ", updatePasswordDto);
         if (updatePasswordDto.toAdd) {
-            await this.channelService.addPassword(channelName, updatePasswordDto.password);
-            return res.status(common_2.HttpStatus.OK).json({
-                message: "Password added to Channel"
-            });
+            try {
+                const channel = await this.channelService.updatePassword(channelName, updatePasswordDto.currentPassword, updatePasswordDto.newPassword);
+                return res.status(common_2.HttpStatus.OK).json({
+                    message: "Password updated",
+                    channel: channel,
+                });
+            }
+            catch (error) {
+                console.log("--------");
+                console.log(error.response.statusCode);
+                console.log(error.response.message);
+                console.log(error.response.error);
+                console.log("--------");
+                return res.status(error.response.statusCode).json({
+                    message: error.response.message,
+                });
+            }
         }
         else {
-            await this.channelService.removePassword(channelName);
+            const channel = await this.channelService.removePassword(channelName, updatePasswordDto.currentPassword);
             return res.status(common_2.HttpStatus.OK).json({
-                message: "Password removed from Channel"
+                message: "Password removed from Channel",
+                channel: channel,
             });
         }
     }

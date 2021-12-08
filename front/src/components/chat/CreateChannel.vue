@@ -15,13 +15,13 @@
 				</div>
 				<div class="form-div">
 					<label for="create-password">Password </label>
-				  <input v-if="showPassword == false" v-model="this.channel.password" id="create-password"  type="password" autocomplete="off" >
-          <input v-else v-model="this.channel.password" id="create-password" type="text" autocomplete="off" >
+				 	<input v-if="showPassword == false" v-model="this.channel.password" id="create-password"  type="password" autocomplete="off" >
+          			<input v-else v-model="this.channel.password" id="create-password" type="text" autocomplete="off" >
 					<label class="eye-checkbox">
-              <input type="checkbox" @change="togglePasswordVisibility"/>
-              <i class="fas fa-eye checked"></i>
-              <i class="fas fa-eye-slash unchecked"></i>
-        	</label>
+						<input type="checkbox" @change="togglePasswordVisibility"/>
+						<i class="fas fa-eye checked"></i>
+						<i class="fas fa-eye-slash unchecked"></i>
+					</label>
 				</div>
 				<div class="form-div">
 				<label for="public-channel">Public Channel

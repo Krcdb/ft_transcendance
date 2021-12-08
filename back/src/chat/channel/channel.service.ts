@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
@@ -10,6 +10,7 @@ import { enumAchievements} from 'src/achievements/achievements';
 import { Socket, Server } from "socket.io";
 import { WebsocketService } from "src/websocket/websocket.service";
 import * as bcrypt from 'bcrypt';
+import { match } from 'assert';
 
 @Injectable()
 export class ChannelService {
@@ -238,26 +239,42 @@ export class ChannelService {
 	
 	//////////////////////////
 	//  Gestion du password //
-  //////////////////////////
+	//////////////////////////
 
-	async addPassword(channelName: string, password: string): Promise<any> {
+	async updatePassword(channelName: string, password: string, newPassword: string): Promise<Channel> {
 		const channel = await this.channelRepository.findOne(channelName);
-		if (password && password != undefined) {
-			channel.isProtected = true;
-			channel.password = password;
-			return await this.channelRepository.save(channel);
+		let matching: boolean = true;
+		if (channel.isProtected)
+			matching = await this.passwordMatch(channelName, password);
+		if (!matching)
+			throw new BadRequestException("Password doesn't match");
+		if (matching && newPassword && newPassword != undefined) {
+			console.log("password updated");
+			return await this.channelRepository.save({
+				channelName: channelName,
+				isProtected: true,
+				password: await bcrypt.hash(newPassword, 10),
+			});
 		}
+		return await this.channelRepository.findOne(channelName);
 	}
 
-	async removePassword(channelName: string): Promise<any> {
-		const channel = await this.channelRepository.findOne(channelName);
-		channel.isProtected = false;
-		channel.password = null;
-		return await this.channelRepository.save(channel);
+	async removePassword(channelName: string, password: string): Promise<Channel> {
+		const match = await this.passwordMatch(channelName, password);
+		if (match) {
+			console.log("password removed");
+			return await this.channelRepository.save({
+			channelName: channelName,
+			isProtected: false,
+			password: null,
+			});
+		}
+		return await this.channelRepository.findOne(channelName);
 	}
-  ////////////////////////////////
+
+	////////////////////////////////
 	//  Gestion de l'historique   //
-  ////////////////////////////////
+	////////////////////////////////
 
 	async addMessageToHistory(channelName: string, messageId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);

@@ -1,22 +1,26 @@
 <template>
     <div class="channel-component" v-if="!isLoading">
         <div class="player-list">
-            <button 
-                class="leave-btn"
-			    type="button" 
-                name="button"
-			    @click="leaveChannel()"
-            >
-			    Leave
-            </button>
-            <router-link to="/Chat"><button 
-                class="back-btn"
-			    type="button" 
-                name="button"
-            >
-			     Back to channels list <i class='bx bx-exit'></i>
-            </button></router-link>
-            <UpdatePassword v-if="channel.owner == user.id" :channel="channel" :user="user" />
+            <div class="channel-btn">
+                <button 
+                    class="leave-btn"
+                    type="button" 
+                    name="button"
+                    @click="leaveChannel()"
+                >
+                    Leave
+                </button>
+                <router-link to="/Chat"><button 
+                    class="back-btn"
+                    type="button" 
+                    name="button"
+                >
+                    Back to channels list <i class='bx bx-exit'></i>
+                </button></router-link>
+                <button v-if="channel.owner == user.id" class="reveal-btn" @click="revealPassword">
+                        Update Channel Password
+                </button>
+            </div>
             <div class="ban-list" v-if="channel.banList.length && channel.admins.indexOf(user.id) !== -1">
                 <select id="mon_select"  @change="onChange">
                     <option>Banned users</option>
@@ -29,6 +33,9 @@
                      {{ banuser.userName }}
                     </option>
                 </select>
+            </div>
+            <div id="update-password">
+                <UpdatePassword v-if="channel.owner == user.id" :channel="channel" :user="user" />
             </div>
             <ul>
                 <li class="player-list-item" v-for="player in filteredPlayerList" :key="player.id">
@@ -259,9 +266,6 @@ export default defineComponent({
         async initChannel() {
             console.log("name: " + this.channel.channelName);
             console.log("user ID: " + this.user.id);
-            // if (this.channel.banList.indexOf(this.user.id) != -1) {
-            //     this.$router.push("/chat");
-            // }
             if (this.channel.users.indexOf(this.user.id) == -1) {
                 const data = {
                     user: this.user.id as number,
@@ -312,8 +316,7 @@ export default defineComponent({
             .then((response: ResponseData) => {
                 console.log(response.data.message);
                 socket.emit('updateChannel', this.channel.channelName);
-                // if (userId == this.user.id)
-                    this.$router.push("/Chat");
+                this.$router.push("/Chat");
             })
             .catch((e: Error) => {
                 console.log(e);
@@ -422,15 +425,40 @@ export default defineComponent({
                 this.notifyBanKick();
             });
         },
+        revealPassword() {
+            var x = document.getElementById('update-password');
+            if (x && x.style.display == "none") {
+                x.style.display = "block";
+            } else if (x && x.style.display == "block") {
+                x.style.display = "none";
+            }
+            else if (x) {
+                x.style.display = "block";
+            }
+
+        },
     },
     mounted() {
 		SocketServices.connectGlobalSocketNotif(socket);
+        this.revealPassword();
         this.init();
     },
 });
 </script>
 
 <style scoped>
+.channel-btn {
+    display: flex;
+    width: 350px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.reveal-btn {
+    color:black;
+    background-color: lightgray;
+    margin: auto;
+    margin: 10px;
+}
 .channel-component {
     display: flex;
     justify-content: space-evenly;
@@ -604,5 +632,8 @@ export default defineComponent({
 .ban-kick-div {
     display: flex;
     gap: 2px;
+}
+#update-password {
+    display: none;
 }
 </style>
