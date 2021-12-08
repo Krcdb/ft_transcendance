@@ -15,6 +15,7 @@
         <li><router-link to="/Play">Play</router-link></li>
         <li><router-link to="/chat" :user="user">Chat</router-link></li>
         <li><router-link to="/users">Users</router-link></li>
+        <li v-if="user && user.isWebsiteAdmin"><router-link to="/admin">Admin</router-link></li>
         <li class="user-login">
           <router-link
             v-if="user && user.userName"

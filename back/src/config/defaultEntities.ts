@@ -7,6 +7,51 @@ export default {
             achievements: [],
             friends: [],
             blockedUsers: [],
+            isWebsiteOwner: true,
+            isWebsiteAdmin: true,
+        },
+        //////////////////////
+        /// WEBSITE ADMINS ///
+        //////////////////////
+        {
+            id: 40277,
+            userName: 'Vvaucoul',
+            ladderLevel: 1,
+            achievements: [],
+            friends: [],
+            blockedUsers: [],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: true,
+        },
+        {
+            id: 56613,
+            userName: 'Memartin',
+            ladderLevel: 1,
+            achievements: [],
+            friends: [],
+            blockedUsers: [],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: true,
+        },
+        {
+            id: 57576,
+            userName: 'Schene',
+            ladderLevel: 1,
+            achievements: [],
+            friends: [],
+            blockedUsers: [],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: true,
+        },
+        {
+            id: 64232,
+            userName: 'Lemarabe',
+            ladderLevel: 1,
+            achievements: [],
+            friends: [],
+            blockedUsers: [],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: true,
         },
         ////////////
         /// CATS ///
@@ -18,6 +63,8 @@ export default {
             achievements: [18, 8, 14, 11, 5, 13, 16, 15, 6, 9, 20, 7, 19, 17, 12, 2, 10, 4, 3, 1],
             friends: [101, 102],
             blockedUsers: [200, 201, 202],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: false,
         },
         {
             id: 101,
@@ -26,6 +73,8 @@ export default {
             achievements: [19, 11, 2],
             friends: [100, 102],
             blockedUsers: [200, 201, 202],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: false,
         },
         {
             id: 102,
@@ -34,6 +83,8 @@ export default {
             achievements: [20, 2, 13],
             friends: [100, 101],
             blockedUsers: [200, 201, 202],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: false,
         },
         ////////////
         /// DOGS ///
@@ -45,6 +96,8 @@ export default {
             achievements: [20, 9, 18],
             friends: [201, 202],
             blockedUsers: [100, 101, 102],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: false,
         },
         {
             id: 201,
@@ -53,6 +106,8 @@ export default {
             achievements: [14, 10, 2],
             friends: [200, 202],
             blockedUsers: [100, 101, 102],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: false,
         },
         {
             id: 202,
@@ -61,6 +116,8 @@ export default {
             achievements: [19, 17, 13],
             friends: [200, 201],
             blockedUsers: [100, 101, 102],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: false,
         },
         //////////////
         /// FISHES ///
@@ -72,6 +129,8 @@ export default {
             achievements: [14, 12, 4],
             friends: [301, 302],
             blockedUsers: [],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: false,
         },
         {
             id: 301,
@@ -80,6 +139,8 @@ export default {
             achievements: [17, 18, 13],
             friends: [300, 302],
             blockedUsers: [],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: false,
         },
         {
             id: 302,
@@ -88,6 +149,8 @@ export default {
             achievements: [14, 10, 8],
             friends: [300, 301],
             blockedUsers: [],
+            isWebsiteOwner: false,
+            isWebsiteAdmin: false,
         }
     ],
     ////////////////

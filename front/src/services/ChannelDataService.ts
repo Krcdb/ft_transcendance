@@ -1,8 +1,7 @@
 /* eslint-disable */
 import http from "@/http-common";
-import Channel from "@/types/Channel";
+// import Channel from "@/types/Channel";
 import CreateChannel from "@/types/CreateChannel";
-// import { CreateChannelDto } f
 
 class ChannelDataService {
 

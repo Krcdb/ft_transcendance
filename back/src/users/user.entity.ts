@@ -39,6 +39,11 @@ export class User {
   @Column("int", {nullable: true, array: true})
   blockedUsers: number[];
 
+  @Column("bool", { default: false })
+  isWebsiteOwner: boolean;
+
+  @Column("bool", { default: false })
+  isWebsiteAdmin: boolean;
   
     // -------------------------- //
     // TWO FACTOR AUTHENTICATION  //

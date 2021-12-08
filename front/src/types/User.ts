@@ -7,6 +7,7 @@ export default interface User {
   achievements: number[];
   friends: number[];
   blockedUsers: number[];
-  // : string[];
+  isWebsiteOwner: boolean;
+  isWebsiteAdmin: boolean;
   ladderLevel: number;
 }
