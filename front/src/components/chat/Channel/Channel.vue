@@ -23,7 +23,7 @@
             </div>
             <div class="ban-list" v-if="channel.banList.length && channel.admins.indexOf(user.id) !== -1">
                 <select id="mon_select"  @change="onChange">
-                    <option>Banned users</option>
+                    <option>Unban an users</option>
                     <option
                         class="blocked-item"
                         v-for="banuser in banList"
@@ -635,5 +635,11 @@ export default defineComponent({
 }
 #update-password {
     display: none;
+}
+#mon_select {
+    font-size: 15px;
+    background-color: #f44336;
+    color: white;
+    padding: 5px;
 }
 </style>
