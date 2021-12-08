@@ -10,4 +10,5 @@ export declare class Channel {
     banList: number[];
     muteList: number[];
     kickList: number[];
+    hashPassword(): Promise<void>;
 }

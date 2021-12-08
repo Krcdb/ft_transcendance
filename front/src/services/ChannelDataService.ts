@@ -50,6 +50,9 @@ class ChannelDataService {
     kickUser(channelName: string, data: any) : Promise<any> {
         return http.post(`/channel/kick/${channelName}`, data);
     }
+    updatePassword(channelName: string, data: any): Promise<any> {
+        return http.post(`/channel/password/${channelName}`, data);
+    }
     // DELETE
     deleteChannel(channelName : string) : Promise<any> {
         return http.delete(`/channel/${channelName}`);

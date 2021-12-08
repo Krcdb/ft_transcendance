@@ -14,13 +14,14 @@
 				></label>
 			</div>
 			<div class="form-div">
-				<label for="password">Password
-				<input 
-					type="password"
-					id="password"
-					v-model="password"
-					autocomplete="off"
-				></label>
+				<label for="password">Password </label>
+          <input v-if="showPassword == false" v-model="password" id="password"  type="password" autocomplete="off" >
+          <input v-else v-model="password" id="password" type="text" autocomplete="off" >
+					<label class="eye-checkbox">
+              <input type="checkbox" @change="togglePasswordVisibility"/>
+              <i class="fas fa-eye checked"></i>
+              <i class="fas fa-eye-slash unchecked"></i>
+          </label>
 			</div>
 			<div class="form-div">
 				<button type="button" class="join-btn"
@@ -50,6 +51,7 @@ export default defineComponent({
 			channel: {} as Channel,
 			error: "" as string,
 			password: "" as string,
+			showPassword: false as boolean,
 		};
 	},
 	props: {
@@ -59,6 +61,9 @@ export default defineComponent({
 		},
 	},
 	methods: {
+		togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
 		async getChannel(name: string) {
 			console.log("getChannels private ");
 			await ChannelDataService.getChannel(name)
@@ -74,7 +79,7 @@ export default defineComponent({
 				password: current_password,
 			};
 			// console.log("data = ", data);
-			// console.log(this.joinChannel.channelName);
+			console.log(this.joinChannel.channelName);
 			await ChannelDataService.canJoinChannel(this.joinChannel.channelName, data)
 			.then((response : ResponseData) => {
 				console.log("Password Match ? for " + current_password + " -> " + response.data.value);
@@ -112,5 +117,22 @@ h4 {
 }
 .error-message {
 	color: red;
+}
+.eye-checkbox {
+    margin-left: 5px;
+		color: gray;
+}
+.eye-checkbox input[type="checkbox"],
+.eye-checkbox .checked {
+    display: none;
+}
+.eye-checkbox input[type="checkbox"]:checked ~ .checked
+{
+    display: inline-block;
+}
+ 
+.eye-checkbox input[type="checkbox"]:checked ~ .unchecked
+{
+    display: none;
 }
 </style>

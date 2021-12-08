@@ -3,7 +3,7 @@ import { User } from './user.entity';
 import { UsersService } from './users.service';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { AchievementsInterface } from 'src/achievements/achievements';
-import { UpdateUserDto } from 'src/chat/channel/dto/update-user.dto';
+import { UpdateUserDto } from '../chat/channel/dto/update-user.dto';
 export declare class UsersController {
     private readonly usersService;
     constructor(usersService: UsersService);

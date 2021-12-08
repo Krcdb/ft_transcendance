@@ -52,7 +52,7 @@
                                 type="password" 
                                 autocomplete="off"
                             >
-                                <p>{{ errorMSG[index] }}</p>
+                            <p class="error-message">{{ errorMSG[index] }}</p>
                         </form>
 						<div class="btn-div">
                             
@@ -296,5 +296,9 @@ export default defineComponent({
 }
 .pass-btn-div {
     width: 240px;
+}
+.error-message {
+    margin: 0;
+    color: #f44336;
 }
 </style>

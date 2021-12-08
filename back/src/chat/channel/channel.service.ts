@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Channel } from './channel.entity';
@@ -10,6 +10,7 @@ import { enumAchievements} from 'src/achievements/achievements';
 import { Socket, Server } from "socket.io";
 import { WebsocketService } from "src/websocket/websocket.service";
 import * as bcrypt from 'bcrypt';
+import { match } from 'assert';
 
 @Injectable()
 export class ChannelService {
@@ -25,9 +26,11 @@ export class ChannelService {
 	async create(createChannelDto: CreateChannelDto): Promise <Channel> {
 		const channel = new Channel();
 		channel.channelName = createChannelDto.channelName;
-		channel.password = createChannelDto.password;
+		if (createChannelDto.password && createChannelDto.password != undefined)
+			channel.password = createChannelDto.password;
 		channel.isPublic = createChannelDto.isPublic;
-		if (channel.password)
+		channel.isProtected = false;
+		if (channel.password && channel.password != undefined)
 			channel.isProtected = true;
 		channel.owner = createChannelDto.owner;
 		channel.messagesHistory = [];
@@ -123,7 +126,7 @@ export class ChannelService {
 
 	/////////////////////////////////////////
 	//  Gestion des listes d'utilisateurs  //
-  	/////////////////////////////////////////
+  /////////////////////////////////////////
 
 	async getUsersinChannel(channelName: string): Promise<User[]> {
 		const channel = await this.channelRepository.findOne(channelName);
@@ -234,17 +237,44 @@ export class ChannelService {
 		}
 	}
 	
-	// Changement d'owner  // (owner ne peut pas etre null)
-	// async changeOwner(channelName: string, newOwnerId: number) : Promise<void> {
-	// 	const channel = await this.channelRepository.findOne(channelName);
-	// 	await this.usersService.removeFromChannelOwner(channel.owner, channelName);
-	// 	await this.usersService.addToChannelOwner(newOwnerId, channelName);
-	// 	await this.channelRepository.update(channelName, {owner: newOwnerId});
-	// }
+	//////////////////////////
+	//  Gestion du password //
+	//////////////////////////
 
-  	////////////////////////////////
+	async updatePassword(channelName: string, password: string, newPassword: string): Promise<Channel> {
+		const channel = await this.channelRepository.findOne(channelName);
+		let matching: boolean = true;
+		if (channel.isProtected)
+			matching = await this.passwordMatch(channelName, password);
+		if (!matching)
+			throw new BadRequestException("Password doesn't match");
+		if (matching && newPassword && newPassword != undefined) {
+			console.log("password updated");
+			return await this.channelRepository.save({
+				channelName: channelName,
+				isProtected: true,
+				password: await bcrypt.hash(newPassword, 10),
+			});
+		}
+		return await this.channelRepository.findOne(channelName);
+	}
+
+	async removePassword(channelName: string, password: string): Promise<Channel> {
+		const match = await this.passwordMatch(channelName, password);
+		if (match) {
+			console.log("password removed");
+			return await this.channelRepository.save({
+			channelName: channelName,
+			isProtected: false,
+			password: null,
+			});
+		}
+		return await this.channelRepository.findOne(channelName);
+	}
+
+	////////////////////////////////
 	//  Gestion de l'historique   //
-  	////////////////////////////////
+	////////////////////////////////
 
 	async addMessageToHistory(channelName: string, messageId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
@@ -283,11 +313,13 @@ export class ChannelService {
 
 	async passwordMatch(channelName: string, password: string) : Promise<boolean> {
 		const channel = await this.channelRepository.findOne(channelName);
-		console.log(password + " === " + channel.password);
+		console.log("my password = ", password);
 		if (!channel)
 			return (false);
 		else if (!channel.password)
 			return (true);
+		else if (!password || password == undefined)
+			return (false);
 		else if (await bcrypt.compare(password, channel.password) == true)
 			return (true);
 		return (false);

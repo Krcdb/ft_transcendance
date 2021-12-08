@@ -10,6 +10,9 @@ import { ChannelPasswordDto } from './dto/channel-password.dto';
 import { ChannelsAndOwnersDto } from './dto/channels-and-owners';
 import { User } from 'src/users/user.entity';
 import { IdDto } from 'src/users/dto/id.dto';
+import { UpdatePasswordDto } from 'src/chat/channel/dto/update-password.dto';
+import { channel } from 'diagnostics_channel';
+import { catchError } from 'rxjs';
 
 @Controller('channel')
 export class ChannelController {
@@ -29,6 +32,7 @@ export class ChannelController {
 				message: "Channel already exists"
 			})
 		}
+		console.log("after check");
 		const channel = await this.channelService.create(createChannelDto);
 		return res.status(HttpStatus.CREATED).json({
 			message: "Channel has been created successfully",
@@ -45,7 +49,7 @@ export class ChannelController {
 				value: false,
 			})
 		}
-		if (await this.channelService.hasPassword(channelName) == false
+		else if (await this.channelService.hasPassword(channelName) == false
 		|| await this.channelService.passwordMatch(channelName, channelPasswordDto.password) == true) {
 			return res.status(HttpStatus.OK).json({
 				message: "Can join channel",
@@ -61,7 +65,7 @@ export class ChannelController {
 	}
 
 	@Post('/admin/:channelName')
-	async updateChannelAdmin(@Res() res, @Param('channelName') channelName: string, @Body() updateUserDto: UpdateUserDto) : Promise<any> {
+	async updateChannelAdmin(@Res() res, @Param('channelName') channelName: string, @Body() updateUserDto: UpdateUserDto): Promise<any> {
 		if (updateUserDto.toAdd) {
 			await this.channelService.addUserAsAdmin(channelName, updateUserDto.user);
 			return res.status(HttpStatus.OK).json({
@@ -76,7 +80,7 @@ export class ChannelController {
 		}
 	}
 	@Post('/mute/:channelName')
-	async updateChannelMuteList(@Res() res, @Param('channelName') channelName: string, @Body() updateUserDto: UpdateUserDto) :Promise<any> {
+	async updateChannelMuteList(@Res() res, @Param('channelName') channelName: string, @Body() updateUserDto: UpdateUserDto): Promise<any> {
 		if (updateUserDto.toAdd) {
 			await this.channelService.addUserAsMuted(channelName, updateUserDto.user);
 			return res.status(HttpStatus.OK).json({
@@ -91,7 +95,7 @@ export class ChannelController {
 		}
 	}
 	@Post('/ban/:channelName')
-	async updateChannelBanList(@Res() res, @Param('channelName') channelName: string, @Body() updateUserDto: UpdateUserDto) :Promise<any> {
+	async updateChannelBanList(@Res() res, @Param('channelName') channelName: string, @Body() updateUserDto: UpdateUserDto): Promise<any> {
 		if (updateUserDto.toAdd) {
 			await this.channelService.addUserAsBanned(channelName, updateUserDto.user);
 			return res.status(HttpStatus.OK).json({
@@ -107,13 +111,44 @@ export class ChannelController {
 	}
 
 	@Post('/kick/:channelName')
-	async addUserAsKicked(@Res() res, @Param('channelName') channelName: string, @Body() idDto: IdDto) :Promise<any> {
+	async addUserAsKicked(@Res() res, @Param('channelName') channelName: string, @Body() idDto: IdDto): Promise<any> {
 		await this.channelService.addUserAsKicked(channelName, idDto.id);
 		return res.status(HttpStatus.OK).json({
 			message: "User has been kikcked"
 		})
 	}
 
+	@Post('/password/:channelName')
+	async updateChannelPassword(@Res() res, @Param('channelName') channelName: string, @Body() updatePasswordDto: UpdatePasswordDto): Promise<any> {
+		console.log("dto = ", updatePasswordDto);
+		if (updatePasswordDto.toAdd) {
+			try {
+				const channel = await this.channelService.updatePassword(channelName, updatePasswordDto.currentPassword, updatePasswordDto.newPassword);
+				return res.status(HttpStatus.OK).json({
+					message: "Password updated",
+					channel: channel,
+				})
+			}
+			catch (error: any) {
+				console.log("--------");
+				console.log(error.response.statusCode);
+				console.log(error.response.message);
+				console.log(error.response.error);
+				console.log("--------");
+				return res.status(error.response.statusCode).json({
+					message: error.response.message,
+				})				
+			}
+			
+		}
+		else {
+			const channel = await this.channelService.removePassword(channelName, updatePasswordDto.currentPassword);
+			return res.status(HttpStatus.OK).json({
+				message: "Password removed from Channel",
+				channel: channel,
+			})
+		}
+	}
 
 	// @Public()
 	@Post('/update-user/:channelName')

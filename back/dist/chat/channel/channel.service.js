@@ -20,6 +20,7 @@ const channel_entity_1 = require("./channel.entity");
 const users_service_1 = require("../../users/users.service");
 const achievements_1 = require("../../achievements/achievements");
 const websocket_service_1 = require("../../websocket/websocket.service");
+const bcrypt = require("bcrypt");
 let ChannelService = class ChannelService {
     constructor(channelRepository, usersService, socketService) {
         this.channelRepository = channelRepository;
@@ -29,9 +30,11 @@ let ChannelService = class ChannelService {
     async create(createChannelDto) {
         const channel = new channel_entity_1.Channel();
         channel.channelName = createChannelDto.channelName;
-        channel.password = createChannelDto.password;
+        if (createChannelDto.password && createChannelDto.password != undefined)
+            channel.password = createChannelDto.password;
         channel.isPublic = createChannelDto.isPublic;
-        if (channel.password)
+        channel.isProtected = false;
+        if (channel.password && channel.password != undefined)
             channel.isProtected = true;
         channel.owner = createChannelDto.owner;
         channel.messagesHistory = [];
@@ -216,6 +219,35 @@ let ChannelService = class ChannelService {
             return await this.channelRepository.save(channel);
         }
     }
+    async updatePassword(channelName, password, newPassword) {
+        const channel = await this.channelRepository.findOne(channelName);
+        let matching = true;
+        if (channel.isProtected)
+            matching = await this.passwordMatch(channelName, password);
+        if (!matching)
+            throw new common_1.BadRequestException("Password doesn't match");
+        if (matching && newPassword && newPassword != undefined) {
+            console.log("password updated");
+            return await this.channelRepository.save({
+                channelName: channelName,
+                isProtected: true,
+                password: await bcrypt.hash(newPassword, 10),
+            });
+        }
+        return await this.channelRepository.findOne(channelName);
+    }
+    async removePassword(channelName, password) {
+        const match = await this.passwordMatch(channelName, password);
+        if (match) {
+            console.log("password removed");
+            return await this.channelRepository.save({
+                channelName: channelName,
+                isProtected: false,
+                password: null,
+            });
+        }
+        return await this.channelRepository.findOne(channelName);
+    }
     async addMessageToHistory(channelName, messageId) {
         const channel = await this.channelRepository.findOne(channelName);
         channel.messagesHistory.push(messageId);
@@ -233,21 +265,23 @@ let ChannelService = class ChannelService {
             return (true);
         return (false);
     }
-    async passwordMatch(channelName, password) {
-        const channel = await this.channelRepository.findOne(channelName);
-        console.log(password + " === " + channel.password);
-        if (!channel)
-            return (false);
-        else if (!channel.password)
-            return (true);
-        else if (channel.password === password)
-            return (true);
-        return (false);
-    }
     async hasPassword(channelName) {
         const channel = await this.channelRepository.findOne(channelName);
         if (channel)
             return (channel.isProtected);
+        return (false);
+    }
+    async passwordMatch(channelName, password) {
+        const channel = await this.channelRepository.findOne(channelName);
+        console.log("my password = ", password);
+        if (!channel)
+            return (false);
+        else if (!channel.password)
+            return (true);
+        else if (!password || password == undefined)
+            return (false);
+        else if (await bcrypt.compare(password, channel.password) == true)
+            return (true);
         return (false);
     }
     async addSocketUser(socket, channelName) {
