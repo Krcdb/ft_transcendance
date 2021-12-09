@@ -1,7 +1,7 @@
 /* eslint-disable */
 import http from "@/http-common";
 
-class TutorialDataService {
+class UserDataService {
   /////////
   // GET //
   /////////
@@ -92,6 +92,10 @@ class TutorialDataService {
     return http.post(`/users/${id}/block`, data);
   }
 
+  setUserAsAdmin(id: number): Promise<any> {
+    return http.post(`/users/${id}/admin`);
+  }
+
   ////////////
   // DELETE //
   ////////////
@@ -104,4 +108,4 @@ class TutorialDataService {
   }
 }
 
-export default new TutorialDataService();
+export default new UserDataService();

@@ -106,6 +106,11 @@ export class UsersController {
     })
   }
 
+  // @Post(':id/admin')
+  // async setUserAsAdmin(@Param('id') id: number) {
+  //   return await this.usersService.setAsAdmin(id);
+  // }
+
   // ------ // 
   //   GET  //
   // ------ // 

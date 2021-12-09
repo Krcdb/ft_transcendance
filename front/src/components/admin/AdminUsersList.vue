@@ -28,6 +28,7 @@
             <div v-if="user.isActive" id="online-circle"></div>
             <div v-else id="offline-circle"></div>
           </div>
+          <button class="deletebtn" type="button" @click="deleteUser(user.id)"> Delete </button>
         </li>
       </ul>
     </div>
@@ -76,6 +77,20 @@ export default defineComponent({
         user.userName.toLowerCase().includes(this.keyword.toLowerCase())
       );
     },
+
+    // A REPRENDRE @Leila
+    deleteUser(userId: number) {
+      UserDataService.delete(userId).then((response: ResponseData) => {
+        console.log("User successfully deleted");
+      })
+      .catch((e: Error) => {
+        console.log(e.message);
+      })
+    }, 
+    // setAsAdmin(userId: number) {
+    //   if (this.currentUser.isWebsiteOwner)
+
+    // }
   },
   mounted() {
     UserDataService.get(Number(localStorage.getItem("user-id")))

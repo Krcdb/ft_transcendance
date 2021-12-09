@@ -17,8 +17,8 @@
               <h4>{{ channel.channelName }}</h4>
               <img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`">
             </router-link>
-            <button class="deletebtn" type="button" @click="deleteChannel(channel.channelName)"> Delete </button>
           </div>
+          <button class="deletebtn" type="button" @click="deleteChannel(channel.channelName)"> Delete </button>
           <div class="public-status" v-if="channel.isPublic"> <i class="fas fa-eye"></i> </div>
           <div class="private-status" v-else> <i class="far fa-eye-slash"></i> </div>
           <div class="protected-status" v-if="channel.isProtected"> <i class="fas fa-lock"></i> </div>
@@ -92,6 +92,10 @@ h3 {
   max-width: 400px;
   margin: auto;
 }
+.list-wrapper input[type="text"] {
+  padding: 6px;
+  font-size: 17px;
+}
 .profile-link {
   color: black;
   text-decoration: none;
@@ -113,12 +117,30 @@ h3 {
   align-items: center;
 }
 .list-item-content {
+  display: flex;
   margin-left: 20px;
   margin-right: auto;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
 }
-.list-wrapper input[type="text"] {
-  padding: 6px;
-  font-size: 17px;
+.channel-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.channel-list-item {
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-evenly;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 10px;
+    width: 100%;
 }
 .channel-status {
   margin-left: 5%;
@@ -157,22 +179,5 @@ h3 {
   color: white;
   padding: 5px;
   border-radius: 10px;
-}
-.channel-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.channel-list-item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    margin: 5px;
-    padding: 10px;
-    width: 70%;
 }
 </style>
