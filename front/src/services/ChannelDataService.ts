@@ -41,6 +41,9 @@ class ChannelDataService {
     updateAdmin(channelName: string, data: any) : Promise<any> {
         return http.post(`/channel/admin/${channelName}`, data);
     }
+    updateOwner(channelName: string, data: any) : Promise<any> {
+        return http.post(`/channel/owner/${channelName}`, data);
+    }
     updateMuteList(channelName: string, data: any) : Promise<any> {
         return http.post(`/channel/mute/${channelName}`, data);
     }

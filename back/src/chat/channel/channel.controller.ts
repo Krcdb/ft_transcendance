@@ -79,6 +79,24 @@ export class ChannelController {
 			})
 		}
 	}
+
+	@Post('/owner/:channelName')
+	async updateChannelOwner(@Res() res, @Param('channelName') channelName: string, @Body() updateUserDto: UpdateUserDto): Promise<any> {
+		if (updateUserDto.toAdd) {
+			await this.channelService.addUserAsOwner(channelName, updateUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User added as Owner"
+			})
+		}
+		else {
+			await this.channelService.removeUserAsOwner(channelName, updateUserDto.user);
+			return res.status(HttpStatus.OK).json({
+				message: "User removed as Owner"
+			})
+		}
+	}
+
+
 	@Post('/mute/:channelName')
 	async updateChannelMuteList(@Res() res, @Param('channelName') channelName: string, @Body() updateUserDto: UpdateUserDto): Promise<any> {
 		if (updateUserDto.toAdd) {

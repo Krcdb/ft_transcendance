@@ -56,19 +56,33 @@
                         </div>
                     </div>
                     <div class="status-div">
-                        <div class="status-owner" v-if="player.id == channel.owner">
+                        <div class="status-owner" v-if="!user.isWebsiteAdmin && player.id == channel.owner">
                             Owner
                         </div>
                         <button
+                            class="add-owner-btn"
+                            v-if="user.isWebsiteAdmin && !channel.owner"
+                            @click="updateOwner(player.id, true)"
+                        >
+                            + Owner
+                        </button>
+                        <button
+                            class="remove-owner-btn"
+                            v-else-if="user.isWebsiteAdmin && player.id == channel.owner"
+                            @click="updateOwner(player.id, false)"
+                        >
+                            - owner
+                        </button>
+                        <button
                             class="add-admin-btn"
-                            v-if="user.id !== player.id && channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) == -1 && player.id != channel.owner"
+                            v-if="(user.isWebsiteAdmin || ( user.id !== player.id && channel.admins.indexOf(user.id) !== -1)) && (channel.admins.indexOf(player.id) == -1 && player.id != channel.owner)"
                             @click="updateAdmin(player.id, true)"
                         >
                             + Admin
                         </button>
                         <button
                             class="remove-admin-btn"
-                            v-else-if="user.id !== player.id && channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) !== -1 && player.id != channel.owner"
+                            v-else-if="(user.isWebsiteAdmin || ( user.id !== player.id && channel.admins.indexOf(user.id) !== -1)) && (channel.admins.indexOf(player.id) !== -1 && player.id != channel.owner)"
                             @click="updateAdmin(player.id, false)"
                         >
                             - Admin
@@ -131,7 +145,9 @@
             </ul>
         </div>
         <!-- v-if="channel.muteList.indexOf(user.id) == -1" -->
-        <div v-if="channel.muteList && channel.muteList.indexOf(user.id) == -1" class="send-message-area">
+        <div v-if="channel.users.indexOf(user.id) == -1" class="send-message-area">
+        </div>
+        <div v-else-if="channel.muteList && channel.muteList.indexOf(user.id) == -1" class="send-message-area">
             <textarea
             placeholder="Type your message here ..."
             v-model="currentMessage"
@@ -332,6 +348,20 @@ export default defineComponent({
                 toAdd: toAdd as boolean,
             };
             return await ChannelDataService.updateAdmin(this.channel.channelName, data)
+            .then((response: ResponseData) => {
+                socket.emit('updateChannel', this.channel.channelName);
+
+            })
+            .catch((e: Error) => {
+                console.log(e);
+            });
+        },
+        async updateOwner(playerId: number, toAdd: boolean) {
+            const data = {
+                user: playerId as number,
+                toAdd: toAdd as boolean,
+            };
+            return await ChannelDataService.updateOwner(this.channel.channelName, data)
             .then((response: ResponseData) => {
                 socket.emit('updateChannel', this.channel.channelName);
 

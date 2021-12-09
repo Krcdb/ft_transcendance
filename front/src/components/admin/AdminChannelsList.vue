@@ -11,13 +11,13 @@
         @input="searchhandler"
       />
       <ul class="channel-list">
-        <li class="channel-list-item" v-for="channel in channels" :key="channel.channelName">
+        <li class="channel-list-item" v-for="channel in filteredChannels" :key="channel.channelName">
           <div class="list-item-content">
             <router-link class="channel-link" :to="'/Channel/' + channel.channelName">
               <h4>{{ channel.channelName }}</h4>
               <img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`">
             </router-link>
-            <button class="deletebtn" type="button" @click="deleteChannel(channel.channelName)"> Delete </button>
+            <button class="deletebtn" type="button" @click="deleteChannel(channel)"> Delete </button>
           </div>
           <div class="public-status" v-if="channel.isPublic"> <i class="fas fa-eye"></i> </div>
           <div class="private-status" v-else> <i class="far fa-eye-slash"></i> </div>
@@ -44,8 +44,6 @@ export default defineComponent({
   data() {
     return {
       channels: [] as Channel[],
-      // admins: [] as Channel[],
-    //   owner: {} as Channel,
       filteredChannels: [] as Channel[],
       keyword: "",
     };
@@ -55,21 +53,27 @@ export default defineComponent({
       ChannelDataService.getAllChannels().then((response: ResponseData) => {
         this.channels = response.data;
         this.channels.sort((a, b) => (a.channelName > b.channelName ? 1 : -1));
-        // if (localStorage.getItem("channel-name"))
-        //   localStorage.removeItem("channel-name");
+        this.filteredChannels = this.channels;
       })
       .catch((e: Error) => {
         console.log(e);
       });
     },
+    async deleteChannel(channel: Channel) {
+            ChannelDataService.deleteChannel(channel.channelName)
+            .then((response : ResponseData) => {
+                console.log("Channel Successfully deleted");
+                this.retrieveChannels();
+            })
+            .catch((e: Error) => {
+                console.log("Error: " + e);
+            });
+        },
     searchhandler() {
       this.filteredChannels = this.channels.filter((channel) =>
         channel.channelName.toLowerCase().includes(this.keyword.toLowerCase())
       );
     },
-    deleteChannel(channelName: string) {
-      ChannelDataService.deleteChannel(channelName);
-    }
   },
   async mounted() {
     await this.retrieveChannels();

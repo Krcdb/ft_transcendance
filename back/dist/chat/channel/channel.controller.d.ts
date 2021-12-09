@@ -12,6 +12,7 @@ export declare class ChannelController {
     createChannel(res: any, createChannelDto: CreateChannelDto): Promise<any>;
     canJoinChannel(res: any, channelName: string, channelPasswordDto: ChannelPasswordDto): Promise<any>;
     updateChannelAdmin(res: any, channelName: string, updateUserDto: UpdateUserDto): Promise<any>;
+    updateChannelOwner(res: any, channelName: string, updateUserDto: UpdateUserDto): Promise<any>;
     updateChannelMuteList(res: any, channelName: string, updateUserDto: UpdateUserDto): Promise<any>;
     updateChannelBanList(res: any, channelName: string, updateUserDto: UpdateUserDto): Promise<any>;
     addUserAsKicked(res: any, channelName: string, idDto: IdDto): Promise<any>;

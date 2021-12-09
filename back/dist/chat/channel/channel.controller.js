@@ -75,6 +75,20 @@ let ChannelController = class ChannelController {
             });
         }
     }
+    async updateChannelOwner(res, channelName, updateUserDto) {
+        if (updateUserDto.toAdd) {
+            await this.channelService.addUserAsOwner(channelName, updateUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "User added as Owner"
+            });
+        }
+        else {
+            await this.channelService.removeUserAsOwner(channelName, updateUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "User removed as Owner"
+            });
+        }
+    }
     async updateChannelMuteList(res, channelName, updateUserDto) {
         if (updateUserDto.toAdd) {
             await this.channelService.addUserAsMuted(channelName, updateUserDto.user);
@@ -232,6 +246,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "updateChannelAdmin", null);
+__decorate([
+    (0, common_1.Post)('/owner/:channelName'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('channelName')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, update_user_dto_1.UpdateUserDto]),
+    __metadata("design:returntype", Promise)
+], ChannelController.prototype, "updateChannelOwner", null);
 __decorate([
     (0, common_1.Post)('/mute/:channelName'),
     __param(0, (0, common_1.Res)()),
