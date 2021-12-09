@@ -197,13 +197,27 @@ export class ChannelController {
 
 	// @Public()
 	@Get('infos/:channelName')
-	async getChannelInfos(@Param('channelName') channelName: string) : Promise<Channel> {
-		return (await this.channelService.findOne(channelName));
+	async getChannelInfos(@Res() res, @Param('channelName') channelName: string) : Promise<any> {
+		const channel = await this.channelService.findOne(channelName);
+		if (channel) {
+			return res.status(HttpStatus.OK).json({
+				message: "Channel found",
+				channel: channel,
+			})
+		}
+		else {
+			return res.status(HttpStatus.NOT_FOUND).json({
+				message: "Channel doesn't exist",
+				channel: channel,
+			})
+		}
 	}
 
 	@Get('users/:channelName')
-	async getUsersinChannel(@Param('channelName') channelName: string) : Promise<User[]> {
-		return (await this.channelService.getUsersinChannel(channelName));
+	async getUsersinChannel(@Param('channelName') channelName: string) : Promise<any> {
+		const channel = await this.channelService.findOne(channelName);
+		if (channel)
+			return (await this.channelService.getUsersinChannel(channelName));
 	}
 
 	// @Public()
@@ -223,8 +237,10 @@ export class ChannelController {
 	}
 
 	@Get('banlist/:channelName')
-	async getBanList(@Param('channelName') channelName: string) : Promise<User[]> {
-		return (this.channelService.getBanListChannel(channelName));
+	async getBanList(@Param('channelName') channelName: string) : Promise<any> {
+		const channel = await this.channelService.findOne(channelName);
+		if (channel)
+			return (this.channelService.getBanListChannel(channelName));
 	}
 
 

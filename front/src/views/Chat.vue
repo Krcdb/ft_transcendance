@@ -26,16 +26,16 @@ import OwnerProfile from '@/components/chat/OwnerProfile.vue';
 import PublicChannelList from "@/components/chat/PublicChannelList.vue";
 import MyProfile from "@/components/chat/MyProfile.vue"
 import BurgerMenu from "@/components/chat/BurgerMenu/BurgerMenu.vue";
-import io from "socket.io-client";
-import SocketServices from "../services/SocketServices"
+// import io from "socket.io-client";
+// import SocketServices from "../services/SocketServices"
 
-const socket = io("http://localhost:3000", {
-	auth: {
-		token: localStorage.getItem('user-token'),
-		userId: localStorage.getItem('user-id'),
-		page: "chat"
-	}
-});
+// const socket = io("http://localhost:3000", {
+// 	auth: {
+// 		token: localStorage.getItem('user-token'),
+// 		userId: localStorage.getItem('user-id'),
+// 		page: "chat"
+// 	}
+// });
 
 export default defineComponent({
     name: "chat",
@@ -94,7 +94,7 @@ export default defineComponent({
         },
     },
     mounted() {
-		SocketServices.connectGlobalSocketNotif(socket);
+		// SocketServices.connectGlobalSocketNotif(socket);
         this.getUser(Number(localStorage.getItem("user-id")));
     }
 });

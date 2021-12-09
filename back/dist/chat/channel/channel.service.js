@@ -114,7 +114,7 @@ let ChannelService = class ChannelService {
     }
     async userIsBan(channelName, userId) {
         const channel = await this.findOne(channelName);
-        if (channel.banList.indexOf(userId) != -1)
+        if (channel && channel.banList.indexOf(userId) != -1)
             return (true);
         return (false);
     }

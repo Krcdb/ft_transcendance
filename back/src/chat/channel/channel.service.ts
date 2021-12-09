@@ -119,7 +119,7 @@ export class ChannelService {
 
 	async userIsBan(channelName: string, userId: number) : Promise<boolean> {
 		const channel = await this.findOne(channelName);
-		if (channel.banList.indexOf(userId) != -1)
+		if (channel && channel.banList.indexOf(userId) != -1)
 			return (true);
 		return (false);
 	}

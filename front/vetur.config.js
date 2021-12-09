@@ -4,6 +4,9 @@ module.exports = {
 	// **optional** default: `{}`
 	// override vscode settings
 	// Notice: It only affects the settings used by Vetur.
+	devServer: {
+		host: 'localhost'
+  },
 	settings: {
 	  "vetur.useWorkspaceDependencies": true,
 	  "vetur.experimental.templateInterpolationService": true

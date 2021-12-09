@@ -150,7 +150,7 @@ export default defineComponent({
 			.then((response : ResponseData) => {
                     if (response.data.value == true) {
                         console.log(response.data.message);
-                    localStorage.setItem("channel-name", channel.channelName);
+                    localStorage.setItem("channel-pwd", current_password);
 					this.$router.push("/Channel/" + channel.channelName);
 				} else {
                     this.errorMSG[index] = response.data.message;
