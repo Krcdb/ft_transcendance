@@ -113,7 +113,7 @@ export default defineComponent({
 				.then((response: ResponseData) => {
 					console.log("create Channel");
 					this.state = 2;
-					localStorage.setItem("channel-name", this.channel.channelName);
+					localStorage.setItem("channel-pwd", this.channel.password);
 					this.$router.push("/Channel/" + this.channel.channelName);
 					this.isLoading = false;
 				})

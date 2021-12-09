@@ -85,6 +85,7 @@ export default defineComponent({
 					.then((response: ResponseData) => {
 						console.log("Password has been updated");
 						console.log("message -> ", response.data.message);
+						localStorage.setItem("channel-pwd", this.password);
 						this.$router.go(0);
 					})
 					.catch((e: Error) => {

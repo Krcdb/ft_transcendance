@@ -23,7 +23,7 @@
             </div>
             <div class="ban-list" v-if="channel.banList.length && channel.admins.indexOf(user.id) !== -1">
                 <select id="mon_select"  @change="onChange">
-                    <option>Banned users</option>
+                    <option>Unban an users</option>
                     <option
                         class="blocked-item"
                         v-for="banuser in banList"
@@ -56,19 +56,33 @@
                         </div>
                     </div>
                     <div class="status-div">
-                        <div class="status-owner" v-if="player.id == channel.owner">
+                        <div class="status-owner" v-if="!user.isWebsiteAdmin && player.id == channel.owner">
                             Owner
                         </div>
                         <button
+                            class="add-owner-btn"
+                            v-if="user.isWebsiteAdmin && !channel.owner"
+                            @click="updateOwner(player.id, true)"
+                        >
+                            + Owner
+                        </button>
+                        <button
+                            class="remove-owner-btn"
+                            v-else-if="user.isWebsiteAdmin && player.id == channel.owner"
+                            @click="updateOwner(player.id, false)"
+                        >
+                            - owner
+                        </button>
+                        <button
                             class="add-admin-btn"
-                            v-if="user.id !== player.id && channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) == -1 && player.id != channel.owner"
+                            v-if="(user.isWebsiteAdmin || ( user.id !== player.id && channel.admins.indexOf(user.id) !== -1)) && (channel.admins.indexOf(player.id) == -1 && player.id != channel.owner)"
                             @click="updateAdmin(player.id, true)"
                         >
                             + Admin
                         </button>
                         <button
                             class="remove-admin-btn"
-                            v-else-if="user.id !== player.id && channel.admins.indexOf(user.id) !== -1 && channel.admins.indexOf(player.id) !== -1 && player.id != channel.owner"
+                            v-else-if="(user.isWebsiteAdmin || ( user.id !== player.id && channel.admins.indexOf(user.id) !== -1)) && (channel.admins.indexOf(player.id) !== -1 && player.id != channel.owner)"
                             @click="updateAdmin(player.id, false)"
                         >
                             - Admin
@@ -131,10 +145,12 @@
             </ul>
         </div>
         <!-- v-if="channel.muteList.indexOf(user.id) == -1" -->
-        <div v-if="channel.muteList && channel.muteList.indexOf(user.id) == -1" class="send-message-area">
+        <div v-if="channel.users.indexOf(user.id) == -1" class="send-message-area">
+        </div>
+        <div v-else-if="channel.muteList && channel.muteList.indexOf(user.id) == -1" class="send-message-area">
             <textarea
             placeholder="Type your message here ..."
-            v-model="currentMessage.message"
+            v-model="currentMessage"
             ></textarea>
             <button
                 type="button"
@@ -187,8 +203,8 @@ export default defineComponent({
             user: {} as User,
             channel: {} as Channel,
             Messages: [] as Message[],
-            currentMessage: {} as Message,
-            isLoading: {} as boolean,
+            currentMessage: "" as string,
+            isLoading: true as boolean,
         };
     },
     components: {
@@ -219,7 +235,8 @@ export default defineComponent({
             await ChannelDataService.getAllUsersInChannel(this.channel.channelName)
             .then((response: ResponseData) => {
                 this.playerList = response.data;
-                this.filteredPlayerList = this.playerList.filter((player) => this.user.blockedUsers.indexOf(player.id) == -1);
+                if (this.playerList)
+                    this.filteredPlayerList = this.playerList.filter((player) => this.user.blockedUsers.indexOf(player.id) == -1);
             })
             .catch((e: Error) => {
                 console.log(e);
@@ -243,16 +260,40 @@ export default defineComponent({
                 console.log(e);
             });
         },
-        async getChannel(name: string) {
-            console.log("getChannels");
-            await ChannelDataService.getChannel(name)
+        async getChannel() {
+            // console.log("getChannels");
+            await ChannelDataService.getChannel(String(this.$route.params.channelName))
             .then((response: ResponseData) => {
                 console.log("response = ", response.data);
-                this.channel = response.data;
+                this.channel = response.data.channel;
             })
             .catch((e: Error) => {
-                console.log(e);
+                // console.log(e);
+                this.$router.push("/Chat");
             });
+        },
+        async checkAccess() {
+            if (this.user.isWebsiteAdmin)
+                return ;
+            else if (this.channel.users.indexOf(this.user.id) == -1) {
+                this.$router.push("/Chat");
+            }
+            else if (this.channel.banList && (this.channel.banList.indexOf(this.user.id) != -1 || this.channel.kickList.indexOf(this.user.id) != -1 ))
+                await this.leaveChannel();
+            else if (this.channel.isProtected) {
+                let data = {
+                    password: localStorage.getItem("channel-pwd") as string,
+                };
+                await ChannelDataService.canJoinChannel(this.channel.channelName, data)
+                .then((response: ResponseData) => {
+                    if (!response.data.value)
+                        this.$router.push("/Chat");
+                })
+                .catch((e) => {
+          		    console.log("Error: " + e.response.data.message);
+                    this.$router.push("/Chat");
+      		    });
+            }
         },
         async getMessages() {
             await ChannelDataService.getMessagesFromChannel(this.channel.channelName)
@@ -263,47 +304,26 @@ export default defineComponent({
                 console.log(e);
             });
         },
-        async initChannel() {
-            console.log("name: " + this.channel.channelName);
-            console.log("user ID: " + this.user.id);
-            if (this.channel.users.indexOf(this.user.id) == -1) {
-                const data = {
-                    user: this.user.id as number,
-                    toAdd: true,
-                };
-                await ChannelDataService.updateChannelUser(this.channel.channelName, data)
-                .then((response: ResponseData) => {
-                    console.log(response.data.message);
-                    socket.emit('updateChannel', this.channel.channelName);
-                })
-                .catch((e: Error) => {
-                    console.log(e);
-                });
-            }
-            this.currentMessage.id = 0;
-            this.currentMessage.owner = this.user.id;
-            this.currentMessage.message = "";
-        },
         async SendMessage() {
-            console.log("Message = ", this.currentMessage);
+            // console.log("Message = ", this.currentMessage);
             const data = {
-                owner: this.currentMessage.owner as number,
-                message: this.currentMessage.message as string,
+                owner: this.user.id as number,
+                message: this.currentMessage as string,
             };
-            if (this.currentMessage.message != "") {
+            console.log(data);
+            console.log("to -> ", this.channel.channelName);
+            if (this.currentMessage != "") {
                 await ChannelDataService.sendMessageToChannel(
                     this.channel.channelName,
                     data
                 )
                 .then((response: ResponseData) => {
-                    console.log("SendMessage: " + response.data);
+                    // console.log("SendMessage: " + response.data);
+                    this.currentMessage = "";
                     socket.emit('sendMessage', this.channel.channelName);
-                    this.currentMessage.message = "";
-                    this.checkMessages();
                 })
                 .catch((e: Error) => {
                     console.log(e);
-                    this.checkMessages();
                 });
             }
         },
@@ -314,7 +334,7 @@ export default defineComponent({
             };
             await ChannelDataService.updateChannelUser(this.channel.channelName, data)
             .then((response: ResponseData) => {
-                console.log(response.data.message);
+                // console.log(response.data.message);
                 socket.emit('updateChannel', this.channel.channelName);
                 this.$router.push("/Chat");
             })
@@ -328,6 +348,20 @@ export default defineComponent({
                 toAdd: toAdd as boolean,
             };
             return await ChannelDataService.updateAdmin(this.channel.channelName, data)
+            .then((response: ResponseData) => {
+                socket.emit('updateChannel', this.channel.channelName);
+
+            })
+            .catch((e: Error) => {
+                console.log(e);
+            });
+        },
+        async updateOwner(playerId: number, toAdd: boolean) {
+            const data = {
+                user: playerId as number,
+                toAdd: toAdd as boolean,
+            };
+            return await ChannelDataService.updateOwner(this.channel.channelName, data)
             .then((response: ResponseData) => {
                 socket.emit('updateChannel', this.channel.channelName);
 
@@ -359,7 +393,7 @@ export default defineComponent({
                     socket.emit('updateChannel', this.channel.channelName);
                 })
                 .catch((e: Error) => {
-                    console.log("error ban");
+                    // console.log("error ban");
                     console.log(e);
                 });
         },
@@ -372,7 +406,7 @@ export default defineComponent({
                     socket.emit('updateChannel', this.channel.channelName);
                 })
                 .catch((e: Error) => {
-                    console.log("error kick");
+                    // console.log("error kick");
                     console.log(e);
                 });
         },
@@ -381,48 +415,38 @@ export default defineComponent({
         },
         async checkMessages() {
             await this.getMessages();
-            await this.getChannel(String(localStorage.getItem("channel-name")));
             await this.getAllPlayersInChannel();
 
             let scrollBar = (this.$refs.ScrollBar) as any;
             if (scrollBar)
                 scrollBar.scrollTop = scrollBar.scrollHeight;
 
-            console.log("Refresh messages");
+            // console.log("Refresh messages");
         },
         async refreshChannel() {
-            await this.getChannel(String(localStorage.getItem("channel-name")));
+            await this.getChannel();
             await this.getAllPlayersInChannel();
             await this.getBanList();
-            if (this.channel.banList.indexOf(this.user.id) != -1 || this.channel.kickList.indexOf(this.user.id) != -1 )
-                await this.leaveChannel();
-
-            console.log("Refresh channel");
-        },
-        notifyBanKick() {
-            console.log("You have been kicked or ban, please leave");
+            await this.checkAccess();
+            
+            // console.log("Refresh channel");
         },
         async init() {
             this.isLoading = true;
             await this.getUser(Number(localStorage.getItem("user-id")));
             await this.refreshChannel();
-            await this.initChannel();
             await this.getMessages();
             await this.checkMessages();
             this.isLoading = false;
 
             socket.emit('JoinChannel', this.channel.channelName);
             socket.on('refreshChannelMessages', (uuid: string) => {
-                console.log('Init Socket ON: ' + uuid);
+                // console.log('Init Socket ON: ' + uuid);
                 this.checkMessages();
             });
             socket.on('refreshChannelInfo', (uuid: string) => {
-                console.log('Init Socket ON: ' + uuid);
+                // console.log('Init Socket ON: ' + uuid);
                 this.refreshChannel();
-            });
-            socket.on('refreshNotifyOfBanKicks', (uuid: string) => {
-                console.log('Init Socket ON: ' + uuid);
-                this.notifyBanKick();
             });
         },
         revealPassword() {
@@ -635,5 +659,11 @@ export default defineComponent({
 }
 #update-password {
     display: none;
+}
+#mon_select {
+    font-size: 15px;
+    background-color: #f44336;
+    color: white;
+    padding: 5px;
 }
 </style>

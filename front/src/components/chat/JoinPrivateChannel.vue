@@ -68,29 +68,41 @@ export default defineComponent({
 			console.log("getChannels private ");
 			await ChannelDataService.getChannel(name)
 			.then((response: ResponseData) => {
-				this.channel = response.data;
+				this.channel = response.data.channel;
 			})
 			.catch((e: Error) => {
 				console.log(e);
 			});
 		},
+		async addUserChannel(channel : Channel) {
+      const data = {
+          user: this.userId as number,
+          toAdd: true,
+      };
+      await ChannelDataService.updateChannelUser(this.channel.channelName, data)
+      .then((response: ResponseData) => {
+          console.log("add user = ", response.data.message);
+      })
+      .catch((e: Error) => {
+          console.log(e);
+      });
+    },
 		async JoinPrivateChannel(current_password: string) {
 			let data = {
 				password: current_password,
 			};
-			// console.log("data = ", data);
-			console.log(this.joinChannel.channelName);
-			await ChannelDataService.canJoinChannel(this.joinChannel.channelName, data)
-			.then((response : ResponseData) => {
-				console.log("Password Match ? for " + current_password + " -> " + response.data.value);
-				// console.log(response);
-				if (response.data.value == true) {
-                    console.log(response.data.message);
-					localStorage.setItem("channel-name", this.joinChannel.channelName);
-					this.$router.push("/Channel/" + this.joinChannel.channelName);
-				}
-				else {
-					this.error = response.data.message;
+			await this.getChannel(this.joinChannel.channelName);
+			await ChannelDataService.canJoinChannel(this.channel.channelName, data)
+			.then(async (response : ResponseData) => {
+          if (response.data.value == true) {
+            console.log(response.data.message);
+            if (this.channel.users.indexOf(this.userId) == -1) {
+              await this.addUserChannel(this.channel);
+            }
+            localStorage.setItem("channel-pwd", current_password);
+						this.$router.push("/Channel/" + this.channel.channelName);
+				} else {
+          console.log(response.data.message);
 				}
 			})
       		.catch((e) => {

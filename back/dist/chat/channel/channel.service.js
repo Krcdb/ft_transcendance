@@ -114,7 +114,7 @@ let ChannelService = class ChannelService {
     }
     async userIsBan(channelName, userId) {
         const channel = await this.findOne(channelName);
-        if (channel.banList.indexOf(userId) != -1)
+        if (channel && channel.banList.indexOf(userId) != -1)
             return (true);
         return (false);
     }
@@ -159,9 +159,17 @@ let ChannelService = class ChannelService {
     async addUserAsAdmin(channelName, userId) {
         const channel = await this.channelRepository.findOne(channelName);
         if (channel.admins.indexOf(userId) == -1) {
-            console.log(userId, "added to admin");
             channel.admins.push(userId);
-            console.log("return add admin");
+            return await this.channelRepository.save(channel);
+        }
+        return;
+    }
+    async addUserAsOwner(channelName, userId) {
+        const channel = await this.channelRepository.findOne(channelName);
+        if (!channel.owner) {
+            channel.owner = userId;
+            if (channel.admins.indexOf(userId) == -1)
+                channel.admins.push(userId);
             return await this.channelRepository.save(channel);
         }
         return;
@@ -198,10 +206,16 @@ let ChannelService = class ChannelService {
     async removeUserAsAdmin(channelName, userId) {
         const channel = await this.channelRepository.findOne(channelName);
         if (channel.admins.indexOf(userId) != -1) {
-            console.log("removed from admins");
             channel.admins.splice(channel.admins.indexOf(userId), 1);
             return await this.channelRepository.save(channel);
         }
+    }
+    async removeUserAsOwner(channelName, userId) {
+        const channel = await this.channelRepository.findOne(channelName);
+        channel.owner = null;
+        if (channel.admins.indexOf(userId) != -1)
+            channel.admins.splice(channel.admins.indexOf(userId), 1);
+        return await this.channelRepository.save(channel);
     }
     async removeUserAsMuted(channelName, userId) {
         const channel = await this.channelRepository.findOne(channelName);

@@ -6,6 +6,8 @@ declare const _default: {
         achievements: number[];
         friends: number[];
         blockedUsers: number[];
+        isWebsiteOwner: boolean;
+        isWebsiteAdmin: boolean;
     }[];
     Channel: {
         channelName: string;

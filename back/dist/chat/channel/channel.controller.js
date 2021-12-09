@@ -75,6 +75,20 @@ let ChannelController = class ChannelController {
             });
         }
     }
+    async updateChannelOwner(res, channelName, updateUserDto) {
+        if (updateUserDto.toAdd) {
+            await this.channelService.addUserAsOwner(channelName, updateUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "User added as Owner"
+            });
+        }
+        else {
+            await this.channelService.removeUserAsOwner(channelName, updateUserDto.user);
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "User removed as Owner"
+            });
+        }
+    }
     async updateChannelMuteList(res, channelName, updateUserDto) {
         if (updateUserDto.toAdd) {
             await this.channelService.addUserAsMuted(channelName, updateUserDto.user);
@@ -167,11 +181,25 @@ let ChannelController = class ChannelController {
     async findAllUserChannels(userId) {
         return (await this.channelService.findAllUserChannels(userId));
     }
-    async getChannelInfos(channelName) {
-        return (await this.channelService.findOne(channelName));
+    async getChannelInfos(res, channelName) {
+        const channel = await this.channelService.findOne(channelName);
+        if (channel) {
+            return res.status(common_2.HttpStatus.OK).json({
+                message: "Channel found",
+                channel: channel,
+            });
+        }
+        else {
+            return res.status(common_2.HttpStatus.NOT_FOUND).json({
+                message: "Channel doesn't exist",
+                channel: channel,
+            });
+        }
     }
     async getUsersinChannel(channelName) {
-        return (await this.channelService.getUsersinChannel(channelName));
+        const channel = await this.channelService.findOne(channelName);
+        if (channel)
+            return (await this.channelService.getUsersinChannel(channelName));
     }
     getChannelHistory(channelName) {
         return (this.channelService.getMessageHistory(channelName));
@@ -183,7 +211,9 @@ let ChannelController = class ChannelController {
         return (false);
     }
     async getBanList(channelName) {
-        return (this.channelService.getBanListChannel(channelName));
+        const channel = await this.channelService.findOne(channelName);
+        if (channel)
+            return (this.channelService.getBanListChannel(channelName));
     }
     async deleteChannel(channelName) {
         await this.channelService.deleteOne(channelName);
@@ -216,6 +246,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "updateChannelAdmin", null);
+__decorate([
+    (0, common_1.Post)('/owner/:channelName'),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('channelName')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, update_user_dto_1.UpdateUserDto]),
+    __metadata("design:returntype", Promise)
+], ChannelController.prototype, "updateChannelOwner", null);
 __decorate([
     (0, common_1.Post)('/mute/:channelName'),
     __param(0, (0, common_1.Res)()),
@@ -282,9 +321,10 @@ __decorate([
 ], ChannelController.prototype, "findAllUserChannels", null);
 __decorate([
     (0, common_1.Get)('infos/:channelName'),
-    __param(0, (0, common_1.Param)('channelName')),
+    __param(0, (0, common_1.Res)()),
+    __param(1, (0, common_1.Param)('channelName')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], ChannelController.prototype, "getChannelInfos", null);
 __decorate([

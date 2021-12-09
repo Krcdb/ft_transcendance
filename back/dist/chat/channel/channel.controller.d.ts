@@ -4,7 +4,6 @@ import { CreateChannelDto } from './dto/create-channel.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChannelPasswordDto } from './dto/channel-password.dto';
 import { ChannelsAndOwnersDto } from './dto/channels-and-owners';
-import { User } from 'src/users/user.entity';
 import { IdDto } from 'src/users/dto/id.dto';
 import { UpdatePasswordDto } from 'src/chat/channel/dto/update-password.dto';
 export declare class ChannelController {
@@ -13,6 +12,7 @@ export declare class ChannelController {
     createChannel(res: any, createChannelDto: CreateChannelDto): Promise<any>;
     canJoinChannel(res: any, channelName: string, channelPasswordDto: ChannelPasswordDto): Promise<any>;
     updateChannelAdmin(res: any, channelName: string, updateUserDto: UpdateUserDto): Promise<any>;
+    updateChannelOwner(res: any, channelName: string, updateUserDto: UpdateUserDto): Promise<any>;
     updateChannelMuteList(res: any, channelName: string, updateUserDto: UpdateUserDto): Promise<any>;
     updateChannelBanList(res: any, channelName: string, updateUserDto: UpdateUserDto): Promise<any>;
     addUserAsKicked(res: any, channelName: string, idDto: IdDto): Promise<any>;
@@ -21,10 +21,10 @@ export declare class ChannelController {
     findAllChannels(): Promise<Channel[]>;
     findAllPublicChannels(): Promise<ChannelsAndOwnersDto>;
     findAllUserChannels(userId: number): Promise<ChannelsAndOwnersDto>;
-    getChannelInfos(channelName: string): Promise<Channel>;
-    getUsersinChannel(channelName: string): Promise<User[]>;
+    getChannelInfos(res: any, channelName: string): Promise<any>;
+    getUsersinChannel(channelName: string): Promise<any>;
     getChannelHistory(channelName: string): Promise<number[]>;
     channelExist(channelName: string): Promise<any>;
-    getBanList(channelName: string): Promise<User[]>;
+    getBanList(channelName: string): Promise<any>;
     deleteChannel(channelName: string): Promise<string>;
 }

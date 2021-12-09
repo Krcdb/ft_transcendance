@@ -46,6 +46,14 @@ __decorate([
     __metadata("design:type", Array)
 ], User.prototype, "blockedUsers", void 0);
 __decorate([
+    (0, typeorm_1.Column)("bool", { default: false }),
+    __metadata("design:type", Boolean)
+], User.prototype, "isWebsiteOwner", void 0);
+__decorate([
+    (0, typeorm_1.Column)("bool", { default: false }),
+    __metadata("design:type", Boolean)
+], User.prototype, "isWebsiteAdmin", void 0);
+__decorate([
     (0, typeorm_1.Column)({ nullable: true }),
     __metadata("design:type", String)
 ], User.prototype, "twoFAuthSecret", void 0);

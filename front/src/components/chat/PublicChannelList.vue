@@ -146,6 +146,20 @@ export default defineComponent({
 			this.filteredChannelList = await this.ChannelList.filter((channel) =>
 			  channel.channelName.toLowerCase().includes(this.search.toLowerCase()));
 		},
+        async addUserChannel(channel : Channel) {
+            const data = {
+                user: this.user.id as number,
+                toAdd: true,
+            };
+            await ChannelDataService.updateChannelUser(channel.channelName, data)
+            .then((response: ResponseData) => {
+                console.log("add user = ", response.data.message);
+                // socket.emit('updateChannel', channel.channelName);
+            })
+            .catch((e: Error) => {
+                console.log(e);
+            });
+        },
         async joinChannel(channel : Channel, current_password: string, index: number) {
             this.errorMSG[index] = "";
 			this.isLoading[index] = true;
@@ -153,10 +167,13 @@ export default defineComponent({
                 password: current_password,
 			};
 			await ChannelDataService.canJoinChannel(channel.channelName, data)
-			.then((response : ResponseData) => {
+			.then(async (response : ResponseData) => {
                 if (response.data.value == true) {
                     console.log(response.data.message);
-                    localStorage.setItem("channel-name", channel.channelName);
+                    if (channel.users.indexOf(this.user.id) == -1) {
+                        await this.addUserChannel(channel);
+                    }
+                    // localStorage.setItem("channel-name", channel.channelName);
 					this.$router.push("/Channel/" + channel.channelName);
 				} else {
                     this.errorMSG[index] = response.data.message;

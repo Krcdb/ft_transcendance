@@ -61,8 +61,6 @@
                             >
 							    Leave
                             </button>
-							<button type="button" name="button" class="delete-btn" v-if="channel.owner === user.id"
-							@click="deleteChannel(channel, index)">Delete</button>
 						</div>
 					</div>
                     <div id="loader">
@@ -123,19 +121,6 @@ export default defineComponent({
                 console.log("Error: " + e);
             });
         },
-        async deleteChannel(channel: Channel, index: number) {
-            this.isLoading[index] = true;
-            ChannelDataService.deleteChannel(channel.channelName)
-            .then((response : ResponseData) => {
-                console.log("Channel Successfully deleted");
-                this.refreshChannelList();
-                this.isLoading[index] = false;
-            })
-            .catch((e: Error) => {
-                console.log("Error: " + e);
-                this.isLoading[index] = false;
-            });
-        },
 		async searchhandler() {
 			this.filteredChannelList = await this.ChannelList.filter((channel) =>
 			  channel.channelName.toLowerCase().includes(this.search.toLowerCase()));
@@ -150,7 +135,7 @@ export default defineComponent({
 			.then((response : ResponseData) => {
                     if (response.data.value == true) {
                         console.log(response.data.message);
-                    localStorage.setItem("channel-name", channel.channelName);
+                    localStorage.setItem("channel-pwd", current_password);
 					this.$router.push("/Channel/" + channel.channelName);
 				} else {
                     this.errorMSG[index] = response.data.message;

@@ -26,11 +26,13 @@ export declare class ChannelService {
     addUserAsUser(channelName: string, userId: number): Promise<void>;
     userLeftChannel(channelName: string, userId: number): Promise<void>;
     addUserAsAdmin(channelName: string, userId: number): Promise<any>;
+    addUserAsOwner(channelName: string, userId: number): Promise<any>;
     addUserAsMuted(channelName: string, userId: number): Promise<any>;
     addUserAsBanned(channelName: string, userId: number): Promise<any>;
     addUserAsKicked(channelName: string, userId: number): Promise<any>;
     removeUserAsUser(channelName: string, userId: number): Promise<any>;
     removeUserAsAdmin(channelName: string, userId: number): Promise<any>;
+    removeUserAsOwner(channelName: string, userId: number): Promise<any>;
     removeUserAsMuted(channelName: string, userId: number): Promise<any>;
     removeUserAsBanned(channelName: string, userId: number): Promise<any>;
     updatePassword(channelName: string, password: string, newPassword: string): Promise<Channel>;
