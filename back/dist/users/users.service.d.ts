@@ -26,6 +26,7 @@ export declare class UsersService {
     removeAvatar(id: number): Promise<void>;
     updateUserName(id: number, updateUserNameDto: UpdateUserNameDto): Promise<User>;
     updateLogState(id: number, isLog: boolean): Promise<User>;
+    updateGameState(id: number, isInGame: boolean): Promise<User>;
     getAchievements(id: number): Promise<AchievementsInterface[]>;
     findAllPlayersMatchHistory(userId: number, matches: Match[]): Promise<User[]>;
     updateLadderLevel(winnerId: number, loserId: number): Promise<void>;

@@ -2,6 +2,7 @@ export declare class User {
     id: number;
     userName: string;
     isActive: boolean;
+    inGame: boolean;
     avatar: string;
     ladderLevel: number;
     achievements: number[];

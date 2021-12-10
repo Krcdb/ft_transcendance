@@ -501,7 +501,7 @@ export default defineComponent({
     position: absolute;
     height: 18px;
     width: 18px;
-    background-color: rgb(240, 62, 62);
+    background-color: rgb(123, 237, 95);
     background-color: white;
     border-radius: 50%;
     z-index: 1;
@@ -518,6 +518,37 @@ export default defineComponent({
     height: 14px;
     width: 14px;
     background-color: rgb(123, 237, 95);
+    border-radius: 50%;
+    z-index: 2;
+    pointer-events: none;
+    margin-left: -30px;
+    left: 30px;
+    z-index: 3;
+    transform: translate(2px, 2px);
+}
+
+.round-circle-ingame {
+    display: inline-block;
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    background-color: rgb(0, 150, 255);
+    background-color: white;
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: none;
+    margin-left: -30px;
+    left: 30px;
+    z-index: 3;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.round-circle-sub-ingame {
+    display: inline-block;
+    position: absolute;
+    height: 14px;
+    width: 14px;
+    background-color: rgb(0, 150, 255);
     border-radius: 50%;
     z-index: 2;
     pointer-events: none;

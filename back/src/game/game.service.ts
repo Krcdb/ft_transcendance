@@ -62,6 +62,15 @@ export class GameService {
 		}
 	}
 
+	async findSpectateMatch(socket: Socket, userId: number) {
+		for (const game of this.games) {
+			console.log("check game");
+			if (game[1].player1.id === userId || game[1].player2.id === userId) {
+				socket.emit("navigateSpectateMatch", game[1].uuid);
+			}
+		}
+	}
+
 	async playerLeaveMatchmaking(socket: Socket) {
 		await this.removeFromQueue(socket.data.user);
 	}
@@ -92,9 +101,11 @@ export class GameService {
 		socket.join(uuid);
 		if (game.player1.id === socket.data.user?.id) {
 			game.player1Ready = true;
+			await this.usersService.updateGameState(socket.data.user?.id, true);
 		}
 		if (game.player2.id === socket.data.user?.id) {
 			game.player2Ready = true;
+			await this.usersService.updateGameState(socket.data.user?.id, true);
 		}
 		if (game.started)
 			return ;
@@ -111,7 +122,6 @@ export class GameService {
 
 		game.intervalRef = setInterval(async () => {
 			game.gameLoop(this.socketService.server);
-			// console.log("Game = ", game);
 			if (game.started && match.state !== GameState.IN_PROGRESS) {
 				match.state = GameState.IN_PROGRESS;
 				console.log("state -> in progress");
@@ -128,13 +138,19 @@ export class GameService {
 		}, 1000 / game.options.FPS);
 	}
 
-	cancelGame(game: Game) {
-
+	async cancelGame(game: Game) {
+		await this.usersService.updateGameState(game.player1.id, false);
+		await this.usersService.updateGameState(game.player2.id, false);
+		this.games.delete(game.uuid);
 	}
 
-	matchDone(game: Game) {
+	async matchDone(game: Game) {
 		console.log("match done");
-		this.matchService.updateUsersAfterGame(game.uuid);
+		
+		await this.usersService.updateGameState(game.player1.id, false);
+		await this.usersService.updateGameState(game.player2.id, false);
+
+		await this.matchService.updateUsersAfterGame(game.uuid);
 		this.games.delete(game.uuid);
 	}
 

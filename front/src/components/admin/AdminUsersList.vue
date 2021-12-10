@@ -24,8 +24,9 @@
           <div class="me-status" v-if="user.id == currentUser.id">Me</div>
           <div class="admin-status" v-if="user.isWebsiteAdmin">Admin</div>
           <div class="owner-status" v-if="user.isWebsiteOwner">Owner</div>
-          <div class="user-status">
-            <div v-if="user.isActive" id="online-circle"></div>
+          <div class="user-status">       
+            <div v-if="user.inGame" id="ingame-circle"></div>
+            <div v-else-if="user.isActive" id="online-circle"></div>
             <div v-else id="offline-circle"></div>
           </div>
           <button class="deletebtn" type="button" @click="deleteUser(user.id)"> Delete </button>

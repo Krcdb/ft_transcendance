@@ -122,6 +122,10 @@ let UsersService = class UsersService {
         await this.usersRepository.update(id, { isActive: isLog });
         return await this.usersRepository.findOne(id);
     }
+    async updateGameState(id, isInGame) {
+        await this.usersRepository.update(id, { inGame: isInGame });
+        return await this.usersRepository.findOne(id);
+    }
     async getAchievements(id) {
         const user = await this.usersRepository.findOne(id);
         let achievements = [];

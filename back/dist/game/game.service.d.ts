@@ -21,12 +21,13 @@ export declare class GameService {
     logger: Logger;
     constructor(socketService: WebsocketService, matchService: MatchService, matchRepository: Repository<Match>, usersService: UsersService);
     checkMatchmaking(): void;
+    findSpectateMatch(socket: Socket, userId: number): Promise<void>;
     playerLeaveMatchmaking(socket: Socket): Promise<void>;
     playerLeaveMatch(socket: Socket, uuid: string): Promise<void>;
     playerReady(socket: Socket, uuid: string): Promise<void>;
     createGame(game: Game, match: Match): Promise<void>;
-    cancelGame(game: Game): void;
-    matchDone(game: Game): void;
+    cancelGame(game: Game): Promise<void>;
+    matchDone(game: Game): Promise<void>;
     matchUser(socket: Socket, player2Id: string): Promise<void>;
     matchPlayers(player1: User, player2: User, bonus: boolean): Promise<void>;
     searchGame(socket: Socket, bonus: boolean): Promise<void>;

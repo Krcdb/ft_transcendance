@@ -66,6 +66,14 @@ let GameService = GameService_1 = class GameService {
             }
         }
     }
+    async findSpectateMatch(socket, userId) {
+        for (const game of this.games) {
+            console.log("check game");
+            if (game[1].player1.id === userId || game[1].player2.id === userId) {
+                socket.emit("navigateSpectateMatch", game[1].uuid);
+            }
+        }
+    }
     async playerLeaveMatchmaking(socket) {
         await this.removeFromQueue(socket.data.user);
     }
@@ -85,7 +93,7 @@ let GameService = GameService_1 = class GameService {
         }
     }
     async playerReady(socket, uuid) {
-        var _a, _b;
+        var _a, _b, _c, _d;
         const game = await this.games.get(uuid);
         if (!game) {
             console.log(`game not found in playerReady`);
@@ -95,9 +103,11 @@ let GameService = GameService_1 = class GameService {
         socket.join(uuid);
         if (game.player1.id === ((_a = socket.data.user) === null || _a === void 0 ? void 0 : _a.id)) {
             game.player1Ready = true;
+            await this.usersService.updateGameState((_b = socket.data.user) === null || _b === void 0 ? void 0 : _b.id, true);
         }
-        if (game.player2.id === ((_b = socket.data.user) === null || _b === void 0 ? void 0 : _b.id)) {
+        if (game.player2.id === ((_c = socket.data.user) === null || _c === void 0 ? void 0 : _c.id)) {
             game.player2Ready = true;
+            await this.usersService.updateGameState((_d = socket.data.user) === null || _d === void 0 ? void 0 : _d.id, true);
         }
         if (game.started)
             return;
@@ -127,11 +137,16 @@ let GameService = GameService_1 = class GameService {
             }
         }, 1000 / game.options.FPS);
     }
-    cancelGame(game) {
+    async cancelGame(game) {
+        await this.usersService.updateGameState(game.player1.id, false);
+        await this.usersService.updateGameState(game.player2.id, false);
+        this.games.delete(game.uuid);
     }
-    matchDone(game) {
+    async matchDone(game) {
         console.log("match done");
-        this.matchService.updateUsersAfterGame(game.uuid);
+        await this.usersService.updateGameState(game.player1.id, false);
+        await this.usersService.updateGameState(game.player2.id, false);
+        await this.matchService.updateUsersAfterGame(game.uuid);
         this.games.delete(game.uuid);
     }
     async matchUser(socket, player2Id) {

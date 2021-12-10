@@ -30,6 +30,7 @@ let WebsocketGateway = class WebsocketGateway {
     async handleConnection(socket) {
         const user = await this.usersService.findOne(socket.handshake.auth.userId);
         if (!user) {
+            console.log("probleme handle connect");
             this.handleDisconnect(socket);
         }
         else {
@@ -41,7 +42,7 @@ let WebsocketGateway = class WebsocketGateway {
     handleDisconnect(socket) {
         this.gameService.removeFromQueue(socket.data.user);
         socket.disconnect();
-        console.log(`${socket.data.user} disconnected`);
+        console.log(`${socket.data.user.userName} disconnected`);
     }
     async searchGame(socket, payload) {
         return this.gameService.searchGame(socket, payload);
@@ -60,6 +61,9 @@ let WebsocketGateway = class WebsocketGateway {
     }
     async matchUser(socket, payload) {
         return this.gameService.matchUser(socket, payload);
+    }
+    async findSpectateMatch(socket, payload) {
+        return this.gameService.findSpectateMatch(socket, payload);
     }
     async userJoinChannel(socket, channelName) {
         console.log("SOCKET : CHANNEL : User Join Channel");
@@ -121,6 +125,12 @@ __decorate([
     __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
     __metadata("design:returntype", Promise)
 ], WebsocketGateway.prototype, "matchUser", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('findSpectateMatch'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [socket_io_1.Socket, Object]),
+    __metadata("design:returntype", Promise)
+], WebsocketGateway.prototype, "findSpectateMatch", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('JoinChannel'),
     __metadata("design:type", Function),

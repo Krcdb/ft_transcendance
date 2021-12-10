@@ -40,7 +40,8 @@
             <ul>
                 <li class="player-list-item" v-for="player in filteredPlayerList" :key="player.id">
                     <div class="user-state">
-                        <div v-if="player.isActive" id="online-circle"></div>
+                        <div v-if="player.inGame" id="ingame-circle"></div>
+                        <div v-else-if="player.isActive" id="online-circle"></div>
                         <div v-else id="offline-circle"></div>
                     </div>
                     <Avatar :user="player" />
@@ -125,7 +126,7 @@
                         </div>
                     </div>
                     <div class="start-game">
-                        <button v-if="player.id != user.id && player.isActive" class="match-btn" @click="startMatch(player.id)">
+                        <button v-if="player.id != user.id && player.isActive && !player.inGame" class="match-btn" @click="startMatch(player.id)">
                             <i class='bx bx-joystick'></i>
                         </button>
                     </div>

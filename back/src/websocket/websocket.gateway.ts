@@ -25,18 +25,21 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 	async handleConnection(socket: Socket) {
 		const user = await this.usersService.findOne(socket.handshake.auth.userId);
 		if (!user) {
+			console.log("probleme handle connect");
 			this.handleDisconnect(socket);
 		}
 		else {
 			socket.data.user = user;
 			socket.data.page = socket.handshake.auth.page;
+			//this.websocketService.handleConnectionStatus(socket);
 		}
 	};
 
 	handleDisconnect(socket: Socket) {
 		this.gameService.removeFromQueue(socket.data.user);
+		//this.websocketService.handleDisconnectionStatus(socket);
 		socket.disconnect();
-		console.log(`${socket.data.user} disconnected`);
+		console.log(`${socket.data.user.userName} disconnected`);
 	}
 
 	// Match
@@ -65,12 +68,16 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 	async playerLeaveMatchmaking(socket: Socket) {
 		return this.gameService.playerLeaveMatchmaking(socket);
 	}
-
+ 
 	@SubscribeMessage('matchUser')
 	async matchUser(socket: Socket, payload: any) {
 		return this.gameService.matchUser(socket, payload);
 	}
 
+	@SubscribeMessage('findSpectateMatch')
+	async findSpectateMatch(socket: Socket, payload: any) {
+		return this.gameService.findSpectateMatch(socket, payload);
+	}
 	// Chat
 
 	@SubscribeMessage('JoinChannel')

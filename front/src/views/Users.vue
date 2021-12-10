@@ -22,8 +22,14 @@
             Friend
           </div>
           <div class="me-status" v-if="user.id == currentId">Me</div>
+          <div class="spectate-game" v-if="user.id != currentId && user.isActive && user.inGame" >
+            <button class="spectate-btn" @click="spectateMatch(user.id)">
+              <i class='bx bx-glasses-alt'></i>
+            </button>
+          </div>
           <div class="user-status">
-            <div v-if="user.isActive" id="online-circle"></div>
+            <div v-if="user.inGame" id="ingame-circle"></div>
+            <div v-else-if="user.isActive" id="online-circle"></div>
             <div v-else id="offline-circle"></div>
           </div>
         </li>
@@ -39,6 +45,7 @@ import User from "@/types/User";
 import ResponseData from "@/types/ResponseData";
 import Avatar from "@/components/users/Avatar.vue";
 import io from "socket.io-client";
+import router from '@/router';
 import SocketServices from "../services/SocketServices"
 const socket = io("http://localhost:3000", {
 	auth: {
@@ -87,6 +94,10 @@ export default defineComponent({
           console.log(e);
         });
     },
+    async spectateMatch(id: number) {
+      console.log(`try spectate ${id}`)
+      socket.emit("findSpectateMatch", id);
+    },
     searchhandler() {
       this.filteredUsers = this.users.filter((user) =>
         user.userName.toLowerCase().includes(this.keyword.toLowerCase())
@@ -95,6 +106,10 @@ export default defineComponent({
   },
   mounted() {
     SocketServices.connectGlobalSocketNotif(socket);
+    socket.on("navigateSpectateMatch", (uuid: string) => {
+			console.log("spectate match found | uuid : ", uuid);
+			router.push("/game/" + uuid);
+    });
     this.currentId = Number(localStorage.getItem("user-id"));
     this.retrieveusers();
   },
@@ -165,5 +180,23 @@ h3 {
   font-weight: bold;
   color: white;
   padding: 5px;
+}
+.spectate-game {
+    width: 50px;
+}
+.spectate-btn {
+    background-color: white;
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+.spectate-btn i {
+    border: solid black 2px;
+    border-radius: 100%;
+    padding: 5px;
+    margin-right: 5px;
+    font-size: 25px;
+    /* width: 25px; */
+    /* height: 25px; */
 }
 </style>
