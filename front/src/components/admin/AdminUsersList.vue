@@ -1,5 +1,5 @@
 <template>
-  <div class="list row">
+  <div class="list">
     <div class="list-wrapper">
       <h3>Users List</h3>
       <input
@@ -8,27 +8,27 @@
         v-model="keyword"
         @input="searchhandler"
       />
-      <ul class="list">
+      <ul>
         <li class="list-item" v-for="user in users" :key="user.id">
-          <div class="list-img">
+            <!-- <img src="@/assets/avatar.png"> -->
             <Avatar :user="user" />
-          </div>
           <div class="list-item-content">
             <router-link class="profile-link" :to="'/users/' + user.id">
               <h4>{{ user.userName }}</h4>
             </router-link>
+            <div class="status-me" v-if="user.id == currentUser.id">Me</div>
           </div>
-          <div class="friend-status" v-if="currentUser.friends.indexOf(user.id) != -1">
-            Friend
+          <div class="status-div">
+            <div class="status-owner" v-if="user.isWebsiteOwner">Owner</div>
+            <div class="status-admin" v-else-if="user.isWebsiteAdmin">Admin</div>
+            <button class="ban-btn" v-if="user.id != currentUser.id && !user.isWebsiteOwner">
+              Ban
+            </button>
           </div>
-          <div class="me-status" v-if="user.id == currentUser.id">Me</div>
-          <div class="admin-status" v-if="user.isWebsiteAdmin">Admin</div>
-          <div class="owner-status" v-if="user.isWebsiteOwner">Owner</div>
           <div class="user-status">
             <div v-if="user.isActive" id="online-circle"></div>
             <div v-else id="offline-circle"></div>
           </div>
-          <button class="deletebtn" type="button" @click="deleteUser(user.id)"> Delete </button>
         </li>
       </ul>
     </div>
@@ -106,9 +106,35 @@ export default defineComponent({
 </script>
 
 <style scopped>
-.list-img img {
+.list-item img {
   width: 64px;
   height: 64px;
+}
+.list-item-content {
+  width: 90px;
+  text-align: initial;
+}
+.list-item-content h4 {
+  margin: 0;
+}
+[class|="status"] {
+    font-size: 15px;
+    padding: 5px;
+    margin-block: 2px;
+    font-weight: bold;
+}
+.status-me {
+    border: black solid 2px;
+    width: 30px;
+    text-align: center;
+}
+.status-owner {
+    background-color: black;
+    color: white;
+}
+.status-admin {
+    background-color: gray;
+    color: white;
 }
 h3 {
   font-size: 30px;
@@ -158,28 +184,14 @@ h3 {
 .user-status .offline {
   background-color: red;
 }
-.friend-status {
-  background-color: #4bbd4b;
+.ban-btn {
+  margin: 0;
+  font-size: 15px;
   font-weight: bold;
-  color: white;
   padding: 5px;
-}
-.me-status {
-  background-color: black;
-  font-weight: bold;
-  color: white;
-  padding: 5px;
-}
-.admin-status {
-  background-color: #2d9feb;
-  font-weight: bold;
-  color: white;
-  padding: 5px;
-}
-.owner-status {
-  background-color: darkblue;
-  font-weight: bold;
-  color: white;
-  padding: 5px;
+  width: 50px;
+  border-radius: 10px;
+  margin-block: 2px;
+  background-color: #f44336;
 }
 </style>

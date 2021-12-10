@@ -225,7 +225,6 @@ img {
 }
 .channel-list-item {
     display: flex;
-    justify-content: center;
     align-items: center;
     flex-wrap: wrap;
     justify-content: space-evenly;

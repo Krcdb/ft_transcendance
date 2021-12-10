@@ -24,14 +24,10 @@ export default defineComponent({
 <style scopped>
 .flex-container {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .flex-child {
   flex: 1;
-  border: 2px solid yellow;
-}  
-
-.flex-child:first-child {
-  margin-right: 20px;
 }
 </style>

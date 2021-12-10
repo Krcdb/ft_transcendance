@@ -322,8 +322,9 @@ export default defineComponent({
                     this.currentMessage = "";
                     socket.emit('sendMessage', this.channel.channelName);
                 })
-                .catch((e: Error) => {
-                    console.log(e);
+                .catch((e) => {
+                    if (e.response.status == 404)
+                        this.$router.push("/Chat");
                 });
             }
         },
