@@ -50,6 +50,13 @@ ul {
   border-radius: 50%;
   margin: 2px;
 }
+#ingame-circle {
+  background: #0096ff;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin: 2px;
+}
 #offline-circle {
   background: #ff0000;
   width: 10px;

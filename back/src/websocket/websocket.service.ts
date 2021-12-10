@@ -1,11 +1,19 @@
-import { Injectable} from "@nestjs/common";
+import { Injectable, forwardRef, Inject} from "@nestjs/common";
 import { Server, Socket} from "socket.io";
 
 import { Channel } from 'src/chat/channel/channel.entity';
+import { UsersService } from "src/users/users.service";
+import { GameService } from "src/game/game.service";
 
 @Injectable()
 export class WebsocketService {
 	server: Server;
+
+	constructor(
+		@Inject(forwardRef(() => GameService))
+		private readonly gameService: GameService,
+		@Inject(forwardRef(() => UsersService))
+		private readonly usersService: UsersService){}
 
 	async deleteOldSocket(userId: number, page: string) {
 		console.log(`socket disconnect all non ${page}`);
@@ -21,6 +29,18 @@ export class WebsocketService {
 			}
     	}
 		return null;
+	}
+
+	async handleConnectionStatus(socket: Socket) {
+		await this.usersService.updateLogState(socket.data.user?.id, true);
+		await this.usersService.updateGameState(socket.data.user, false);
+		console.log("connect status");
+	}
+
+	async handleDisconnectionStatus(socket: Socket) {
+		await this.usersService.updateLogState(socket.data.user?.id, false);
+		await this.usersService.updateGameState(socket.data.user, false);
+		console.log("discconnect status");
 	}
 
 	async getSocketFromUserId(userId: number, page: string) {

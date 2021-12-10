@@ -16,6 +16,9 @@ export class User {
   @Column({ default: false })
   isActive: boolean;
 
+  @Column({ default: false })
+  inGame: boolean;
+
   @Column({nullable: true})
   avatar: string;
 

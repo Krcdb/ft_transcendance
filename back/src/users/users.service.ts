@@ -148,6 +148,11 @@ export class UsersService {
     await this.usersRepository.update(id, {isActive: isLog});
     return await this.usersRepository.findOne(id);
   }
+
+  async updateGameState(id: number, isInGame: boolean): Promise<User> {
+    await this.usersRepository.update(id, {inGame: isInGame});
+    return await this.usersRepository.findOne(id);
+  }
   
   async getAchievements(id: number): Promise<AchievementsInterface[]> {
     const user = await this.usersRepository.findOne(id);

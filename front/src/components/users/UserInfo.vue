@@ -3,7 +3,8 @@
     <div class="user-status">
       <h4>{{ user.userName }}</h4>
       <div class="friend-status" v-if="isFriend">Friend</div>
-      <div v-if="user.isActive" id="online-circle"></div>
+      <div v-if="user.inGame" id="ingame-circle"></div>
+      <div v-else-if="user.isActive" id="online-circle"></div>
       <div v-else id="offline-circle"></div>
     </div>
     <div class="row">

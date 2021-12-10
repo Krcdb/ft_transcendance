@@ -25,7 +25,8 @@
             </router-link>
           </div>
           <div class="user-status">
-            <div v-if="user.isActive" id="online-circle"></div>
+            <div v-if="user.inGame" id="ingame-circle"></div>
+            <div v-else-if="user.isActive" id="online-circle"></div>
             <div v-else id="offline-circle"></div>
           </div>
         </li>
