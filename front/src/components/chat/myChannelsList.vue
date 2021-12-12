@@ -133,17 +133,15 @@ export default defineComponent({
 			};
 			await ChannelDataService.canJoinChannel(channel.channelName, data)
 			.then((response : ResponseData) => {
-                    if (response.data.value == true) {
-                        console.log(response.data.message);
+                if (response.data.value == true) {
                     localStorage.setItem("channel-pwd", current_password);
-					this.$router.push("/Channel/" + channel.channelName);
+                    this.$router.push("/Channel/" + channel.channelName);
 				} else {
                     this.errorMSG[index] = response.data.message;
-					this.isLoading[index] = false;
+                    this.isLoading[index] = false;
 				}
 			})
             .catch((e: any) => {
-                console.log("Error: " + e.response.data.message);
 				this.errorMSG[index] = "Error: " + e.response.data.message;
 				this.isLoading[index] = false;
             });
@@ -157,9 +155,7 @@ export default defineComponent({
                 };
                 await ChannelDataService.updateChannelUser(channel.channelName, data)
                 .then((response: ResponseData) => {
-                    console.log(response.data.message);
                     this.isLoading[index] = false;
-                    // this.$router.go(0);
                     this.$emit("refreshChannel");
                     this.refreshChannelList();
                 })

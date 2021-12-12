@@ -104,14 +104,8 @@ export default defineComponent({
 					owner: this.user.id as number,
 				};
 
-				console.log("CreateChannel: " + this.channel.channelName);
-				console.log("public: " + this.channel.isPublic);
-				console.log("password: " + this.channel.password);
-				console.log("owner: " + this.user.userName);
-
 				ChannelDataService.createChannel(data)
 				.then((response: ResponseData) => {
-					console.log("create Channel");
 					this.state = 2;
 					localStorage.setItem("channel-pwd", this.channel.password);
 					this.$router.push("/Channel/" + this.channel.channelName);

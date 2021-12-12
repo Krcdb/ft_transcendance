@@ -133,12 +133,10 @@ export default defineComponent({
             this.isLoading[index] = true;
             ChannelDataService.deleteChannel(channel.channelName)
             .then((response : ResponseData) => {
-                console.log("Channel Successfully deleted");
                 this.refreshChannelList();
                 this.isLoading[index] = false;
             })
             .catch((e: Error) => {
-                console.log("Error: " + e);
                 this.isLoading[index] = false;
             });
         },
@@ -153,7 +151,6 @@ export default defineComponent({
             };
             await ChannelDataService.updateChannelUser(channel.channelName, data)
             .then((response: ResponseData) => {
-                console.log("add user = ", response.data.message);
                 // socket.emit('updateChannel', channel.channelName);
             })
             .catch((e: Error) => {
@@ -169,11 +166,9 @@ export default defineComponent({
 			await ChannelDataService.canJoinChannel(channel.channelName, data)
 			.then(async (response : ResponseData) => {
                 if (response.data.value == true) {
-                    console.log(response.data.message);
                     if (channel.users.indexOf(this.user.id) == -1) {
                         await this.addUserChannel(channel);
                     }
-                    // localStorage.setItem("channel-name", channel.channelName);
 					this.$router.push("/Channel/" + channel.channelName);
 				} else {
                     this.errorMSG[index] = response.data.message;

@@ -80,11 +80,8 @@ export default defineComponent({
 					newPassword: this.password as string,
 					toAdd: toAdd as boolean,
 				};
-				console.log("data = ", data);
 				await ChannelDataService.updatePassword(this.channel.channelName, data)
 					.then((response: ResponseData) => {
-						console.log("Password has been updated");
-						console.log("message -> ", response.data.message);
 						localStorage.setItem("channel-pwd", this.password);
 						this.$router.go(0);
 					})

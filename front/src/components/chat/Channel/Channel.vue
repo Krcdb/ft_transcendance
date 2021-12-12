@@ -6,6 +6,7 @@
                     class="leave-btn"
                     type="button" 
                     name="button"
+                    v-if="channel.users.indexOf(user.id) != -1"
                     @click="leaveChannel()"
                 >
                     Leave
@@ -16,6 +17,14 @@
                     name="button"
                 >
                     Back to channels list <i class='bx bx-exit'></i>
+                </button></router-link>
+                <router-link to="/admin"><button 
+                    class="admin-btn"
+                    type="button" 
+                    name="button"
+                    v-if="user.isWebsiteAdmin"
+                >
+                    Go to Admin Page<i class='bx bx-exit'></i>
                 </button></router-link>
                 <button v-if="channel.owner == user.id" class="reveal-btn" @click="revealPassword">
                         Update Channel Password
@@ -57,12 +66,9 @@
                         </div>
                     </div>
                     <div class="status-div">
-                        <div class="status-owner" v-if="!user.isWebsiteAdmin && player.id == channel.owner">
-                            Owner
-                        </div>
                         <button
                             class="add-owner-btn"
-                            v-if="user.isWebsiteAdmin && !channel.owner"
+                            v-if="user.isWebsiteAdmin && channel.owner == null"
                             @click="updateOwner(player.id, true)"
                         >
                             + Owner
@@ -74,6 +80,9 @@
                         >
                             - owner
                         </button>
+                        <div class="status-owner" v-else-if="player.id == channel.owner">
+                            Owner
+                        </div>
                         <button
                             class="add-admin-btn"
                             v-if="(user.isWebsiteAdmin || ( user.id !== player.id && channel.admins.indexOf(user.id) !== -1)) && (channel.admins.indexOf(player.id) == -1 && player.id != channel.owner)"
@@ -249,7 +258,7 @@ export default defineComponent({
                 this.banList = response.data;
             })
             .catch((e: Error) => {
-                console.log(e);
+                (e);
             });
         },
         async getUser(id: number) {
@@ -262,14 +271,11 @@ export default defineComponent({
             });
         },
         async getChannel() {
-            // console.log("getChannels");
             await ChannelDataService.getChannel(String(this.$route.params.channelName))
             .then((response: ResponseData) => {
-                console.log("response = ", response.data);
                 this.channel = response.data.channel;
             })
             .catch((e: Error) => {
-                // console.log(e);
                 this.$router.push("/Chat");
             });
         },
@@ -306,20 +312,17 @@ export default defineComponent({
             });
         },
         async SendMessage() {
-            // console.log("Message = ", this.currentMessage);
             const data = {
                 owner: this.user.id as number,
                 message: this.currentMessage as string,
             };
-            console.log(data);
-            console.log("to -> ", this.channel.channelName);
+            (data);
             if (this.currentMessage != "") {
                 await ChannelDataService.sendMessageToChannel(
                     this.channel.channelName,
                     data
                 )
                 .then((response: ResponseData) => {
-                    // console.log("SendMessage: " + response.data);
                     this.currentMessage = "";
                     socket.emit('sendMessage', this.channel.channelName);
                 })
@@ -336,7 +339,6 @@ export default defineComponent({
             };
             await ChannelDataService.updateChannelUser(this.channel.channelName, data)
             .then((response: ResponseData) => {
-                // console.log(response.data.message);
                 socket.emit('updateChannel', this.channel.channelName);
                 this.$router.push("/Chat");
             })
@@ -352,7 +354,6 @@ export default defineComponent({
             return await ChannelDataService.updateAdmin(this.channel.channelName, data)
             .then((response: ResponseData) => {
                 socket.emit('updateChannel', this.channel.channelName);
-
             })
             .catch((e: Error) => {
                 console.log(e);
@@ -366,7 +367,6 @@ export default defineComponent({
             return await ChannelDataService.updateOwner(this.channel.channelName, data)
             .then((response: ResponseData) => {
                 socket.emit('updateChannel', this.channel.channelName);
-
             })
             .catch((e: Error) => {
                 console.log(e);
@@ -395,7 +395,6 @@ export default defineComponent({
                     socket.emit('updateChannel', this.channel.channelName);
                 })
                 .catch((e: Error) => {
-                    // console.log("error ban");
                     console.log(e);
                 });
         },
@@ -408,7 +407,6 @@ export default defineComponent({
                     socket.emit('updateChannel', this.channel.channelName);
                 })
                 .catch((e: Error) => {
-                    // console.log("error kick");
                     console.log(e);
                 });
         },
@@ -422,16 +420,12 @@ export default defineComponent({
             let scrollBar = (this.$refs.ScrollBar) as any;
             if (scrollBar)
                 scrollBar.scrollTop = scrollBar.scrollHeight;
-
-            // console.log("Refresh messages");
         },
         async refreshChannel() {
             await this.getChannel();
             await this.getAllPlayersInChannel();
             await this.getBanList();
             await this.checkAccess();
-            
-            // console.log("Refresh channel");
         },
         async init() {
             this.isLoading = true;
@@ -443,11 +437,9 @@ export default defineComponent({
 
             socket.emit('JoinChannel', this.channel.channelName);
             socket.on('refreshChannelMessages', (uuid: string) => {
-                // console.log('Init Socket ON: ' + uuid);
                 this.checkMessages();
             });
             socket.on('refreshChannelInfo', (uuid: string) => {
-                // console.log('Init Socket ON: ' + uuid);
                 this.refreshChannel();
             });
         },
@@ -461,7 +453,6 @@ export default defineComponent({
             else if (x) {
                 x.style.display = "block";
             }
-
         },
     },
     mounted() {
@@ -629,6 +620,7 @@ export default defineComponent({
     border-radius: 10px;
     margin-block: 2px;
 }
+.admin-btn,
 .add-admin-btn {
     color: grey;
     background-color: lightgray;

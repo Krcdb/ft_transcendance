@@ -80,9 +80,6 @@ export default defineComponent({
           toAdd: true,
       };
       await ChannelDataService.updateChannelUser(this.channel.channelName, data)
-      .then((response: ResponseData) => {
-          console.log("add user = ", response.data.message);
-      })
       .catch((e: Error) => {
           console.log(e);
       });
@@ -95,14 +92,12 @@ export default defineComponent({
 			await ChannelDataService.canJoinChannel(this.channel.channelName, data)
 			.then(async (response : ResponseData) => {
           if (response.data.value == true) {
-            console.log(response.data.message);
             if (this.channel.users.indexOf(this.userId) == -1) {
               await this.addUserChannel(this.channel);
             }
             localStorage.setItem("channel-pwd", current_password);
 						this.$router.push("/Channel/" + this.channel.channelName);
 				} else {
-          console.log(response.data.message);
 				}
 			})
       		.catch((e) => {

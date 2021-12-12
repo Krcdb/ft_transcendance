@@ -32,7 +32,6 @@ export class ChannelController {
 				message: "Channel already exists"
 			})
 		}
-		console.log("after check");
 		const channel = await this.channelService.create(createChannelDto);
 		return res.status(HttpStatus.CREATED).json({
 			message: "Channel has been created successfully",
@@ -138,7 +137,6 @@ export class ChannelController {
 
 	@Post('/password/:channelName')
 	async updateChannelPassword(@Res() res, @Param('channelName') channelName: string, @Body() updatePasswordDto: UpdatePasswordDto): Promise<any> {
-		console.log("dto = ", updatePasswordDto);
 		if (updatePasswordDto.toAdd) {
 			try {
 				const channel = await this.channelService.updatePassword(channelName, updatePasswordDto.currentPassword, updatePasswordDto.newPassword);
@@ -148,11 +146,6 @@ export class ChannelController {
 				})
 			}
 			catch (error: any) {
-				console.log("--------");
-				console.log(error.response.statusCode);
-				console.log(error.response.message);
-				console.log(error.response.error);
-				console.log("--------");
 				return res.status(error.response.statusCode).json({
 					message: error.response.message,
 				})				
@@ -184,7 +177,6 @@ export class ChannelController {
 		}
 		else if (updateUserDto.toAdd) {
 			this.channelService.addUserAsUser(channelName, updateUserDto.user);
-			console.log("newUser: " + updateUserDto.user);
 			return (
 				res.status(HttpStatus.CREATED).json ({
 					message: `"User successfully added to channel !" + "channelName"`
@@ -247,8 +239,6 @@ export class ChannelController {
 	// @Public()
 	@Get('channel-exist/:channelName')
 	async channelExist(@Param('channelName') channelName: string) : Promise<any> {
-		console.log("checking channel: " + channelName);
-
 		if (await this.channelService.findOne(channelName))
 			return (true);
 		return (false);

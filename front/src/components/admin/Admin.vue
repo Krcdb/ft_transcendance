@@ -7,14 +7,12 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Avatar from "@/components/users/Avatar.vue";
 import AdminChannelsList from "@/components/admin/AdminChannelsList.vue";
 import AdminUsersList from "@/components/admin/AdminUsersList.vue";
 
 export default defineComponent({
   name: "administration",
   components: {
-    // Avatar,
     AdminChannelsList,
     AdminUsersList,
   },

@@ -36,7 +36,6 @@ export default defineComponent({
             localStorage.setItem("user-name", response.data.userName);
             localStorage.setItem("user-id", response.data.id);
             localStorage.setItem("user-token", response.data.access_token);
-            console.log("isCreated = ", response.data.isCreated);
             if (response.data.isCreated)
               this.$router.push("/update-profile");
             else

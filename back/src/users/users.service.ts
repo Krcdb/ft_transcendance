@@ -58,7 +58,21 @@ export class UsersService {
     });
     return users;
   }
-  
+
+  async updateAdmin(userId: number, toAdd: boolean) {
+    if (toAdd) {
+      return this.usersRepository.save({
+        id: userId,
+        isWebsiteAdmin: true,
+      })
+    }
+    else {
+      return this.usersRepository.save({
+        id: userId,
+        isWebsiteAdmin: false,
+      })
+    }
+  }
   
   /////////////////////////////////////////
   // Recherche et gestion d'utilisateurs //
@@ -128,7 +142,7 @@ export class UsersService {
     {
       fs.unlink("avatars/" + myAvatar, (err) => {
         if (err) 
-        console.log(err);
+          console.log(err);
       });
     }
   }

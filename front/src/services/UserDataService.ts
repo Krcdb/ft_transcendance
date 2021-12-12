@@ -59,11 +59,11 @@ class UserDataService {
   }
 
   updateUserName(id: number, data: any) : Promise<any>{
-    return http.post(`/users/${id}`, data);
+    return http.post(`/users/name/${id}`, data);
   }
 
   uploadAvatar(id: number, avatar: FormData): Promise<any> {
-    return http.post(`/users/${id}/avatar`, avatar);
+    return http.post(`/users/avatar/${id}`, avatar);
   }
 
   // AUTH
@@ -85,15 +85,15 @@ class UserDataService {
 
   // USER RELATIONS
   updateFriends(id: number, data: any): Promise<any> {
-    return http.post(`/users/${id}/friends`, data);
+    return http.post(`/users/friends/${id}`, data);
   }
 
   updateBlocked(id: number, data: any): Promise<any> {
-    return http.post(`/users/${id}/block`, data);
+    return http.post(`/users/block/${id}`, data);
   }
 
-  setUserAsAdmin(id: number): Promise<any> {
-    return http.post(`/users/${id}/admin`);
+  updateWebsiteAdmin(data: any): Promise<any> {
+    return http.post(`/users/admin`, data);
   }
 
   ////////////

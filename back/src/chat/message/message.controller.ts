@@ -22,7 +22,6 @@ export class MessageController {
 	async postMessageOnChannel(@Param('channelName') channelName: string,
 		@Res() res, @Body() createMessageDto: CreateMessageDto) {
 		const msg = await this.messageService.create(createMessageDto, channelName);
-		console.log("msg = ", msg);
 		if (msg == null || msg == undefined)
 			return res.status(HttpStatus.NOT_FOUND).json({
 				message: "Couldn't find channel with given name" });

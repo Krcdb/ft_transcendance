@@ -64,7 +64,6 @@ export class GameService {
 
 	async findSpectateMatch(socket: Socket, userId: number) {
 		for (const game of this.games) {
-			console.log("check game");
 			if (game[1].player1.id === userId || game[1].player2.id === userId) {
 				socket.emit("navigateSpectateMatch", game[1].uuid);
 			}
@@ -77,8 +76,6 @@ export class GameService {
 
 	async playerLeaveMatch(socket: Socket, uuid: string) {
 		const game = this.games.get(uuid);
-		console.log("uuid = ", uuid);
-		// console.log("game = ", game);
 		if (!game) {
 			console.log("game not found in playerLeaveMatch");
 			return ;
@@ -124,7 +121,6 @@ export class GameService {
 			game.gameLoop(this.socketService.server);
 			if (game.started && match.state !== GameState.IN_PROGRESS) {
 				match.state = GameState.IN_PROGRESS;
-				console.log("state -> in progress");
 			  	await this.matchRepository.update(match.matchId, { state: match.state });
 			}
 			if (game.player1Score !== match.scorePlayerOne || game.player2Score !== match.scorePlayerTwo) {

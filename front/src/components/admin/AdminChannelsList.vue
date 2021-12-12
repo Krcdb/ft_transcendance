@@ -66,7 +66,6 @@ export default defineComponent({
     async deleteChannel(channel: Channel) {
             ChannelDataService.deleteChannel(channel.channelName)
             .then((response : ResponseData) => {
-                console.log("Channel Successfully deleted");
                 this.retrieveChannels();
             })
             .catch((e: Error) => {

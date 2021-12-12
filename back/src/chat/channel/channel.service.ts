@@ -142,7 +142,6 @@ export class ChannelService {
 	async addUserAsUser(channelName: string, userId: number) : Promise<void> {
 		const channel = await this.channelRepository.findOne(channelName);
 		channel.users.push(userId);
-		console.log("user added to ", channelName);
 		await this.channelRepository.save(channel);
 	}
 
@@ -151,20 +150,16 @@ export class ChannelService {
 		let index = channel.users.indexOf(userId);
 		if (index != -1) {
 			channel.users.splice(index, 1);
-			console.log("user", userId, " removed from users in ", channelName);
 			index = channel.kickList.indexOf(userId);
 			if (index != -1) {
 				channel.kickList.splice(index, 1);
-				console.log("user", userId, " removed from kick in ", channelName);
 			}
 			index = channel.admins.indexOf(userId);
 			if (index != -1) {
 				channel.admins.splice(index, 1);
-				console.log("user", userId, " removed from admin in ", channelName);
 			}
 			if (channel.owner == userId) {
 				channel.owner = null;
-				console.log("owner left...");
 			}
 			await this.channelRepository.save(channel);
 		}
@@ -194,7 +189,6 @@ export class ChannelService {
 		const channel = await this.channelRepository.findOne(channelName);
 		if (channel.muteList.indexOf(userId) == -1 && channel.owner != userId) {
 			channel.muteList.push(userId);
-			console.log(userId, "has been muted in", channelName);
 			return await this.channelRepository.save(channel);
 		}
 	}
@@ -202,7 +196,6 @@ export class ChannelService {
 		const channel = await this.channelRepository.findOne(channelName);
 		if (channel.banList.indexOf(userId) == -1 && channel.owner != userId) {
 			channel.banList.push(userId);
-			console.log(userId, "has been banned from", channelName);
 			return await this.channelRepository.save(channel);
 		}
 	}
@@ -211,7 +204,6 @@ export class ChannelService {
 		const channel = await this.channelRepository.findOne(channelName);
 		if (channel.kickList.indexOf(userId) == -1 && channel.owner != userId) {
 			channel.kickList.push(userId);
-			console.log(userId, "has been kicked from", channelName);
 			return await this.channelRepository.save(channel);
 		}
 	}
@@ -243,7 +235,6 @@ export class ChannelService {
 		const channel = await this.channelRepository.findOne(channelName);
 		if (channel.muteList.indexOf(userId) != -1) {
 			channel.muteList.splice(channel.muteList.indexOf(userId), 1);
-			console.log(userId, "has been unmute in", channelName);
 			return await this.channelRepository.save(channel);
 		}
 	}
@@ -251,7 +242,6 @@ export class ChannelService {
 		const channel = await this.channelRepository.findOne(channelName);
 		if (channel.banList.indexOf(userId) != -1) {
 			channel.banList.splice(channel.banList.indexOf(userId), 1);
-			console.log(userId, "has been unbanned from", channelName);
 			return await this.channelRepository.save(channel);
 		}
 	}
@@ -268,7 +258,6 @@ export class ChannelService {
 		if (!matching)
 			throw new BadRequestException("Password doesn't match");
 		if (matching && newPassword && newPassword != undefined) {
-			console.log("password updated");
 			return await this.channelRepository.save({
 				channelName: channelName,
 				isProtected: true,
@@ -281,7 +270,6 @@ export class ChannelService {
 	async removePassword(channelName: string, password: string): Promise<Channel> {
 		const match = await this.passwordMatch(channelName, password);
 		if (match) {
-			console.log("password removed");
 			return await this.channelRepository.save({
 			channelName: channelName,
 			isProtected: false,

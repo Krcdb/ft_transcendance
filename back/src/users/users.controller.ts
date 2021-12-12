@@ -10,6 +10,7 @@ import { Public } from 'src/auth/utils/public.decorator';
 import { UpdateUserNameDto } from './dto/update-userName.dto';
 import { AchievementsInterface } from 'src/achievements/achievements';
 import { UpdateUserDto } from '../chat/channel/dto/update-user.dto';
+import { UV_FS_O_FILEMAP } from 'constants';
 
 @Controller('users')
 export class UsersController {
@@ -31,17 +32,26 @@ export class UsersController {
     if (await this.usersService.userNameAlreadyExists(createUserDto.userName)){
       return res.status(HttpStatus.CONFLICT).json({
           message: "User Name is already taken"
-      })
-  }
-    const user = await this.usersService.create(createUserDto);
-    return res.status(HttpStatus.CREATED).json({
+        })
+      }
+      const user = await this.usersService.create(createUserDto);
+      return res.status(HttpStatus.CREATED).json({
         message: "User has been created successfully",
         user
-    })
-}
+      })
+    }
+    
+  @Post('admin')
+  async updateAdmin(@Res() res, @Body() updateUserDto: UpdateUserDto) {
+    if (updateUserDto.user && await this.usersService.updateAdmin(updateUserDto.user, updateUserDto.toAdd)) {
+        return res.status(HttpStatus.OK).json({
+          message: "Admin updated"
+      })
+    }
+  }
 
   // -> update user name
-  @Post(':id')
+  @Post('name/:id')
   async updateUserName(@Res() res, @Param('id') id: number, @Body() updateUserNameDto: UpdateUserNameDto): Promise<User> {
     if (await this.usersService.userNameAlreadyExists(updateUserNameDto.newUserName)) {
       return res.status(HttpStatus.CONFLICT).json({
@@ -56,7 +66,7 @@ export class UsersController {
   }
 
   // -> add / replace avatar picture
-  @Post(':id/avatar')
+  @Post('avatar/:id')
   @UseInterceptors(FileInterceptor('avatar',
   {
     storage: diskStorage({
@@ -76,7 +86,7 @@ export class UsersController {
   }
 
   // -> add user as friend
-  @Post(':id/friends')
+  @Post('friends/:id')
   async updateFriend(@Res() res, @Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     if (updateUserDto.toAdd) {
       const message = await this.usersService.addAsFriend(id, updateUserDto.user);
@@ -92,7 +102,7 @@ export class UsersController {
     }
   }
 
-  @Post(':id/block')
+  @Post('block/:id')
   async updateBlock(@Res() res, @Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     let message;
     if (updateUserDto.toAdd) {
@@ -106,10 +116,6 @@ export class UsersController {
     })
   }
 
-  // @Post(':id/admin')
-  // async setUserAsAdmin(@Param('id') id: number) {
-  //   return await this.usersService.setAsAdmin(id);
-  // }
 
   // ------ // 
   //   GET  //

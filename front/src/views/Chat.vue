@@ -67,10 +67,7 @@ export default defineComponent({
         },
         HandleGetUserSelected: function(value : User) {
             this.user = value;
-            console.log("Handle get user: " + this.user.userName);
             this.userSelected = true;
-
-            console.log("Switch user");
 
             // TMP debug with user
             localStorage.setItem("user-id", String(this.user.id));
@@ -90,7 +87,6 @@ export default defineComponent({
             .catch((e: Error) => {
                 console.log("Error: " + e);
             });
-            console.log("Refresh connected users: " + this.nbUsers);
         },
     },
     mounted() {

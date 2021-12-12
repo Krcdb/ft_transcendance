@@ -11,18 +11,15 @@ const apiClient: AxiosInstance = axios.create({
 
 apiClient.interceptors.request.use(
   (request) => {
-    // console.log("request");
     return request;
   },
   (error) => {
-    // console.log("intercept request error");
     return Promise.reject(error);
   }
 );
 
 apiClient.interceptors.response.use(
   (response: ResponseData) => {
-    // console.log("response");
     return response;
   },
   (error) => {
@@ -32,7 +29,6 @@ apiClient.interceptors.response.use(
         window.location.href = "/login";
       }
     }
-    // console.log("intercept response error");
     return Promise.reject(error);
   }
 );

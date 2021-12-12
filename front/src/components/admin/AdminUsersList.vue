@@ -9,8 +9,7 @@
         @input="searchhandler"
       />
       <ul>
-        <li class="list-item" v-for="user in users" :key="user.id">
-            <!-- <img src="@/assets/avatar.png"> -->
+        <li class="list-item" v-for="user in filteredUsers" :key="user.id">
             <Avatar :user="user" />
           <div class="list-item-content">
             <router-link class="profile-link" :to="'/users/' + user.id">
@@ -19,11 +18,25 @@
             <div class="status-me" v-if="user.id == currentUser.id">Me</div>
           </div>
           <div class="status-div">
-            <div class="status-owner" v-if="user.isWebsiteOwner">Owner</div>
-            <div class="status-admin" v-else-if="user.isWebsiteAdmin">Admin</div>
-            <button class="ban-btn" v-if="user.id != currentUser.id && !user.isWebsiteOwner">
-              Ban
-            </button>
+              <div class="status-owner" v-if="user.isWebsiteOwner">Owner</div>
+              <div class="status-admin" v-else-if="!currentUser.isWebsiteOwner && user.isWebsiteAdmin && !user.isWebsiteOwner">Admin</div>
+              <button
+                class="add-admin-btn"
+                @click="updateUserAdmin(user.id, true)"
+                v-if="currentUser.isWebsiteOwner && user.id != currentUser.id && !user.isWebsiteAdmin"
+              >
+              + Admin
+              </button>
+              <button
+                class="remove-admin-btn"
+                @click="updateUserAdmin(user.id, false)"
+                v-if="currentUser.isWebsiteOwner && user.id != currentUser.id && user.isWebsiteAdmin"
+              >
+              - Admin
+              </button>
+              <button class="ban-btn" v-if="user.id != currentUser.id && !user.isWebsiteOwner">
+                Ban
+              </button>
           </div>
           <div class="user-status">
             <div v-if="user.isActive" id="online-circle"></div>
@@ -50,23 +63,17 @@ export default defineComponent({
   data() {
     return {
       users: [] as User[],
-      // admins: [] as User[],
-      owner: {} as User,
       filteredUsers: [] as User[],
       keyword: "",
       currentUser: {} as User,
     };
   },
   methods: {
-    retrieveUsers() {
-      UserDataService.getAll().then((response: ResponseData) => {
-        for (let i in response.data)
-        {
-          this.users.push(response.data[i]);
-          if (response.data[i].isWebsiteOwner == true)
-            this.owner = response.data[i];
-        }
-        this.users.sort((a, b) => (a.userName > b.userName ? 1 : -1));
+    async retrieveUsers() {
+      return await UserDataService.getAll()
+      .then((response: ResponseData) => {
+        this.users = response.data;
+        this.filteredUsers = this.users.sort((a, b) => (a.userName > b.userName ? 1 : -1));
       })
       .catch((e: Error) => {
         console.log(e);
@@ -79,7 +86,7 @@ export default defineComponent({
     },
 
     // A REPRENDRE @Leila
-    deleteUser(userId: number) {
+    async deleteUser(userId: number) {
       UserDataService.delete(userId).then((response: ResponseData) => {
         console.log("User successfully deleted");
       })
@@ -87,10 +94,17 @@ export default defineComponent({
         console.log(e.message);
       })
     }, 
-    // setAsAdmin(userId: number) {
-    //   if (this.currentUser.isWebsiteOwner)
-
-    // }
+    async updateUserAdmin(userId: number, toAdd: boolean) {
+      const data = {
+        user: userId as number,
+        toAdd: toAdd as boolean,
+      };
+      await UserDataService.updateWebsiteAdmin(data)
+      .catch((e: Error) => {
+        console.log(e.message);
+      })
+      return await this.retrieveUsers();
+    }
   },
   mounted() {
     UserDataService.get(Number(localStorage.getItem("user-id")))
@@ -117,9 +131,10 @@ export default defineComponent({
 .list-item-content h4 {
   margin: 0;
 }
-[class|="status"] {
+.status-div [class|="status"] {
     font-size: 15px;
     padding: 5px;
+    width: 70px;
     margin-block: 2px;
     font-weight: bold;
 }
@@ -184,14 +199,27 @@ h3 {
 .user-status .offline {
   background-color: red;
 }
-.ban-btn {
+.status-div {
+  width: 80px;
+}
+.status-div button {
   margin: 0;
   font-size: 15px;
   font-weight: bold;
   padding: 5px;
-  width: 50px;
+  width: 100%;
   border-radius: 10px;
   margin-block: 2px;
+}
+.status-div .add-admin-btn {
+  background-color: beige;
+  color: gray;
+}
+.status-div .remove-admin-btn {
+  background-color: gray;
+  color: beige;
+}
+.ban-btn {
   background-color: #f44336;
 }
 </style>
