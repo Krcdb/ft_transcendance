@@ -10,5 +10,6 @@ export default interface User {
   blockedUsers: number[];
   isWebsiteOwner: boolean;
   isWebsiteAdmin: boolean;
+  isPermaBan: boolean;
   ladderLevel: number;
 }

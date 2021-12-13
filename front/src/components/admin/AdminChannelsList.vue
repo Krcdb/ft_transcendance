@@ -66,14 +66,14 @@ export default defineComponent({
       });
     },
     async deleteChannel(channel: Channel) {
-            ChannelDataService.deleteChannel(channel.channelName)
-            .then((response : ResponseData) => {
-                this.retrieveChannels();
-            })
-            .catch((e: Error) => {
-                console.log("Error: " + e);
-            });
-        },
+      ChannelDataService.deleteChannel(channel.channelName)
+      .then((response : ResponseData) => {
+          this.retrieveChannels();
+      })
+      .catch((e: Error) => {
+          console.log("Error: " + e);
+      });
+    },
     searchhandler() {
       this.filteredChannels = this.channels.filter((channel) =>
         channel.channelName.toLowerCase().includes(this.keyword.toLowerCase())

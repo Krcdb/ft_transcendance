@@ -38,8 +38,19 @@
               >
               - Admin
               </button>
-              <button class="ban-btn" v-if="user.id != currentUser.id && !user.isWebsiteOwner">
-                Ban
+              <button 
+                class="ban-btn"
+                @click="banUser(user.id)"
+                v-if="user.id != currentUser.id && !user.isWebsiteOwner && user.isPermaBan == false"
+              >
+              Ban
+              </button>
+              <button
+                class="unban-btn"
+                @click="unbanUser(user.id)"
+                v-if="user.id != currentUser.id && !user.isWebsiteOwner && user.isPermaBan"
+              >
+              Unban
               </button>
           </div>
           <div class="user-status">
@@ -88,15 +99,23 @@ export default defineComponent({
         user.userName.toLowerCase().includes(this.keyword.toLowerCase())
       );
     },
-
-    // A REPRENDRE @Leila
-    async deleteUser(userId: number) {
-      UserDataService.delete(userId).then((response: ResponseData) => {
-        console.log("User successfully deleted");
+    async banUser(userId: number) {
+      UserDataService.banFromSite(userId).then((response: ResponseData) => {
+        console.log("User successfully banned");
       })
       .catch((e: Error) => {
         console.log(e.message);
       })
+      return await this.retrieveUsers();
+    },
+    async unbanUser(userId: number) {
+      UserDataService.unbanFromSite(userId).then((response: ResponseData) => {
+        console.log("User successfully unbanned");
+      })
+      .catch((e: Error) => {
+        console.log(e.message);
+      })
+      return await this.retrieveUsers();
     }, 
     async updateUserAdmin(userId: number, toAdd: boolean) {
       const data = {
@@ -110,15 +129,15 @@ export default defineComponent({
       return await this.retrieveUsers();
     }
   },
-  mounted() {
+  async mounted() {
     UserDataService.get(Number(localStorage.getItem("user-id")))
     .then((response: ResponseData) => {
       this.currentUser = response.data;
-      this.retrieveUsers();
     })
     .catch((e: Error) => {
       console.log(e);
     });
+    await this.retrieveUsers();
   },
 });
 </script>
@@ -231,5 +250,8 @@ h2 {
 }
 .ban-btn {
   background-color: #f44336;
+}
+.unban-btn {
+  background-color: mediumseagreen;
 }
 </style>

@@ -29,17 +29,16 @@ export class UsersController {
             message: "User already exists"
         })
     }
-    if (await this.usersService.userNameAlreadyExists(createUserDto.userName)){
+    if (await this.usersService.userNameAlreadyExists(createUserDto.userName))
       return res.status(HttpStatus.CONFLICT).json({
           message: "User Name is already taken"
         })
-      }
-      const user = await this.usersService.create(createUserDto);
-      return res.status(HttpStatus.CREATED).json({
-        message: "User has been created successfully",
-        user
-      })
-    }
+    const user = await this.usersService.create(createUserDto);
+    return res.status(HttpStatus.CREATED).json({
+      message: "User has been created successfully",
+      user
+    })
+  }
     
   @Post('admin')
   async updateAdmin(@Res() res, @Body() updateUserDto: UpdateUserDto) {
@@ -102,6 +101,7 @@ export class UsersController {
     }
   }
 
+  // -> block an user
   @Post('block/:id')
   async updateBlock(@Res() res, @Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     let message;
@@ -116,12 +116,25 @@ export class UsersController {
     })
   }
 
+  // -> ban the user from the site
+  @Post('ban/:id')
+  async banFromSite(@Param('id') id: number): Promise<void> {
+    return await this.usersService.banFromSite(id);
+  }
+
+  // -> unban the user from the site
+  @Post('unban/:id')
+  async unbanFromSite(@Param('id') id: number): Promise<void> {
+    return await this.usersService.unbanFromSite(id);
+  }
+
 
   // ------ // 
   //   GET  //
   // ------ // 
 
   // -> get all users
+  // @Public()
   @Get()
   async findAll(): Promise<User[]> {
     return await this.usersService.findAll();

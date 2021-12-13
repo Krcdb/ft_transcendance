@@ -47,6 +47,9 @@ export class User {
 
   @Column("bool", { default: false })
   isWebsiteAdmin: boolean;
+
+  @Column("bool", { default: false})
+  isPermaBan: boolean;
   
     // -------------------------- //
     // TWO FACTOR AUTHENTICATION  //

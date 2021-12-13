@@ -32,6 +32,11 @@ export default defineComponent({
     try {
       UserDataService.get42Token(String(this.$route.query.code))
         .then((response: ResponseData) => {
+          if (response.data.message) {
+            this.state = "error";
+            this.error = response.data.message;
+            return;
+          }
           if (response.data.access_token) {
             localStorage.setItem("user-name", response.data.userName);
             localStorage.setItem("user-id", response.data.id);
@@ -48,6 +53,7 @@ export default defineComponent({
         .catch((e: Error) => {
           localStorage.removeItem("user-token");
           this.state = "error";
+          this.error = e.message;
           console.log(e);
         });
       this.state = "loggedIn";

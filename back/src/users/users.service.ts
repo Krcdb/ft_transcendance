@@ -30,7 +30,6 @@ export class UsersService {
       return await this.usersRepository.save(user);
   }
 
-
   ///////////
   // Utils //
   ///////////
@@ -106,11 +105,21 @@ export class UsersService {
     await this.DeleteOldAvatarFile(id);
     await this.usersRepository.delete(id);
   }
+
+  async banFromSite(id: number) : Promise<void> {
+    await this.usersRepository.update(id, {
+      "isPermaBan": true,
+      "isWebsiteAdmin": false
+    });
+  }
+  async unbanFromSite(id: number) : Promise<void> {
+    await this.usersRepository.update(id, {"isPermaBan": false});
+  }
   
   async userExists(id: number): Promise<boolean> {
     const user = await this.usersRepository.findOne(id);
     if (user)
-    return true;
+      return true;
     return false;
   }
   

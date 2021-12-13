@@ -11,11 +11,14 @@ export class AuthService {
   ) {}
 
   async login(data: any) {
-    if (data.user.isTwoFAuthEnabled) {
+    if (data.user.isPermaBan == true)
+      return {
+        message: 'You are banned from this site'
+      };
+    if (data.user.isTwoFAuthEnabled)
       return {
         id: data.user.id,
       };
-    }
     const payload = { name: data.user.userName, sub: data.user.id };
     await this.usersService.updateLogState(data.user.id, true);
     return {

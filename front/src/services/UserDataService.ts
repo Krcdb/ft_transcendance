@@ -96,9 +96,18 @@ class UserDataService {
     return http.post(`/users/admin`, data);
   }
 
+  banFromSite(id: number): Promise<any> {
+    return http.post(`/users/ban/${id}`);
+  }
+
+  unbanFromSite(id: number): Promise<any> {
+    return http.post(`/users/unban/${id}`);
+  }
+
   ////////////
   // DELETE //
   ////////////
+
   delete(id: number): Promise<any> {
     return http.delete(`/users/${id}`);
   }

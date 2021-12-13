@@ -2,13 +2,14 @@ export default {
     User: [
         {
             id: 0,
-            userName: 'Illegal',
+            userName: 'Webmaster',
             ladderLevel: 1,
             achievements: [],
             friends: [],
             blockedUsers: [],
             isWebsiteOwner: true,
             isWebsiteAdmin: true,
+            isPermaBan: false,
         },
         //////////////////////
         /// WEBSITE ADMINS ///
@@ -22,6 +23,7 @@ export default {
             blockedUsers: [],
             isWebsiteOwner: false,
             isWebsiteAdmin: true,
+            isPermaBan: false,
         },
         {
             id: 56613,
@@ -32,6 +34,7 @@ export default {
             blockedUsers: [],
             isWebsiteOwner: false,
             isWebsiteAdmin: true,
+            isPermaBan: false,
         },
         {
             id: 57576,
@@ -42,6 +45,7 @@ export default {
             blockedUsers: [],
             isWebsiteOwner: false,
             isWebsiteAdmin: true,
+            isPermaBan: false,
         },
         {
             id: 64232,
@@ -52,6 +56,7 @@ export default {
             blockedUsers: [],
             isWebsiteOwner: false,
             isWebsiteAdmin: true,
+            isPermaBan: false,
         },
         ////////////
         /// CATS ///
@@ -65,6 +70,7 @@ export default {
             blockedUsers: [200, 201, 202],
             isWebsiteOwner: false,
             isWebsiteAdmin: false,
+            isPermaBan: false,
         },
         {
             id: 101,
@@ -75,6 +81,7 @@ export default {
             blockedUsers: [200, 201, 202],
             isWebsiteOwner: false,
             isWebsiteAdmin: false,
+            isPermaBan: false,
         },
         {
             id: 102,
@@ -85,6 +92,7 @@ export default {
             blockedUsers: [200, 201, 202],
             isWebsiteOwner: false,
             isWebsiteAdmin: false,
+            isPermaBan: false,
         },
         ////////////
         /// DOGS ///
@@ -98,6 +106,7 @@ export default {
             blockedUsers: [100, 101, 102],
             isWebsiteOwner: false,
             isWebsiteAdmin: false,
+            isPermaBan: false,
         },
         {
             id: 201,
@@ -108,6 +117,7 @@ export default {
             blockedUsers: [100, 101, 102],
             isWebsiteOwner: false,
             isWebsiteAdmin: false,
+            isPermaBan: false,
         },
         {
             id: 202,
@@ -118,6 +128,7 @@ export default {
             blockedUsers: [100, 101, 102],
             isWebsiteOwner: false,
             isWebsiteAdmin: false,
+            isPermaBan: false,
         },
         //////////////
         /// FISHES ///
@@ -131,6 +142,7 @@ export default {
             blockedUsers: [],
             isWebsiteOwner: false,
             isWebsiteAdmin: false,
+            isPermaBan: false,
         },
         {
             id: 301,
@@ -141,6 +153,7 @@ export default {
             blockedUsers: [],
             isWebsiteOwner: false,
             isWebsiteAdmin: false,
+            isPermaBan: false,
         },
         {
             id: 302,
@@ -151,6 +164,7 @@ export default {
             blockedUsers: [],
             isWebsiteOwner: false,
             isWebsiteAdmin: false,
+            isPermaBan: false,
         }
     ],
     ////////////////
