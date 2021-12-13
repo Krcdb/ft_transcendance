@@ -5,7 +5,7 @@ import { getConnection } from 'typeorm';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {cors: true});
-  app.enableCors({ });
+  // app.enableCors({ });
   await app.listen(3000);
   await loadDefaults(getConnection());
   console.log(`Application is running on: ${await app.getUrl()}`);

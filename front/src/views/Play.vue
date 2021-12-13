@@ -1,17 +1,26 @@
 <template>
-  	<div class="play">
+  	<div class="play" v-if="!inQueue">
     	<h1>&#8593; W  &#8595; S </h1>
     	<br />
-		<button class="button" v-on:click="findMatch">Find a match</button>
-		<button class="button" v-on:click="findMatchBonus">Find a match with bonus</button>
+			<button class="button" v-on:click="findMatch">Find a match</button>
+			<button class="button" v-on:click="findMatchBonus">Find a match with bonus</button>
   	</div>
+		<div class="queue" v-else>
+			You are in the queue, a match will start as soon as we find another player
+			<div id="loader">
+          <div id="loader-wheel"></div>
+      </div>
+		</div>
+		<RuleSet />
 </template>
 
 <script lang="ts">
 /* eslint-disable */
 import { defineComponent } from "vue";
 import io from "socket.io-client";
-import SocketServices from "../services/SocketServices"
+import SocketServices from "../services/SocketServices";
+import RuleSet from "@/components/game/ruleset.vue";
+
 const socket = io("http://localhost:3000", {
 	auth: {
 		token: localStorage.getItem('user-token'),
@@ -23,9 +32,11 @@ const socket = io("http://localhost:3000", {
 export default defineComponent({
 	data() {
     	return {
-			inQueue: false as boolean,
-			
+				inQueue: false as boolean,
     	};
+	},
+	components: {	
+		RuleSet,
 	},
 	methods: {
 		findMatch: function() {
@@ -66,6 +77,16 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.play {
+	height: 300px;
+}
+.queue {
+	height: 300px;
+	display: flex;
+	flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;;
+}
 img {
   max-width: 50%;
   height: auto;
@@ -74,5 +95,8 @@ canvas {
   background: #2e2d2d;
   display: block;
   margin: 0 auto;
+}
+.rule-set {
+	margin-top: 50px;
 }
 </style>

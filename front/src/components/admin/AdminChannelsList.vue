@@ -1,9 +1,16 @@
 <template>
   <div class="list row">
     <div class="list-wrapper">
-      <h1>Channels List</h1>
-      <p> <i class="fas fa-eye"></i> Public / Private <i class="far fa-eye-slash"></i> </p>
-      <p> <i class="fas fa-lock"></i> Protected / Not Protected <i class="fas fa-lock-open"></i> </p>
+      <h2>Channels List</h2>
+      <div class="explanation">
+        <p><i class='bx bx-bulb'></i>You can:</p>
+        <p>- Watch all channels even the one you didn't joined</p>
+        <p>- Set and Unset admin and owner of channels </p>
+        <p>- Destroy permanently channels</p>
+        <br />
+        <p> <i class="fas fa-eye"></i> Public    <i class="far fa-eye-slash"></i> Private</p>
+        <p> <i class="fas fa-lock"></i> Password protected    <i class="fas fa-lock-open"></i> Not Protected </p>
+      </div>
       <input
         type="text"
         placeholder="Search an channel..."
@@ -15,17 +22,12 @@
               <div class="public-channel-name">
                 <h4>{{ channel.channelName }}</h4>
                 <img :src="`https://avatars.dicebear.com/api/jdenticon/${channel.channelName}.svg`">
-                <!-- <img src="@/assets/avatar.png"> -->
               </div>
               <div class="admin-btn-div">
                 <router-link class="channel-link" :to="'/Channel/' + channel.channelName"><button class="openbtn" type="button"> Open </button></router-link>
-                <button class="delete-btn" type="button" @click="deleteChannel(channel)"> Delete </button>
+                <button class="delete-btn" type="button" @click="deleteChannel(channel)"> Destroy </button>
               </div>
               <div class="channel-icon">
-                <!-- <div class="public-status" v-if="channel.isPublic">👁</div>
-                <div class="private-status" v-else> 👁</div>
-                <div class="protected-status" v-if="channel.isProtected">🔐</div>
-                <div class="public-status" v-else> 🔓 </div> -->
                 <div class="public-status" v-if="channel.isPublic"> <i class="fas fa-eye"></i> </div>
                 <div class="private-status" v-else> <i class="far fa-eye-slash"></i> </div>
                 <div class="protected-status" v-if="channel.isProtected"> <i class="fas fa-lock"></i> </div>
@@ -85,6 +87,18 @@ export default defineComponent({
 </script>
 
 <style scopped>
+h2 {
+  margin: 0;
+}
+.explanation {
+  border: solid lightgray 5px;
+  background-color: lightgray;
+  padding: 10px;
+  margin: 10px;
+}
+.explanation p {
+  margin: 0;
+} 
 .public-channel-name img {
   width: 100px;
 }

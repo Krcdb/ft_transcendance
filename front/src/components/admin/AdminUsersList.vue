@@ -1,7 +1,11 @@
 <template>
   <div class="list">
     <div class="list-wrapper">
-      <h3>Users List</h3>
+      <h2>Users List</h2>
+      <div class="explanation">
+        <p v-if="currentUser.isWebsiteOwner"><i class='bx bx-bulb'></i>You can set and Unset Website Admin </p>
+        <p><i class='bx bx-bulb'></i> You can Ban and Unban users from Website (except Owner)</p>
+      </div>
       <input
         type="text"
         placeholder="Search an user..."
@@ -120,6 +124,18 @@ export default defineComponent({
 </script>
 
 <style scopped>
+h2 {
+  margin: 0;
+}
+.explanation {
+  border: solid lightgray 5px;
+  background-color: lightgray;
+  padding: 10px;
+  margin: 10px;
+}
+.explanation p {
+  margin: 0;
+} 
 .list-item img {
   width: 64px;
   height: 64px;
@@ -150,12 +166,6 @@ export default defineComponent({
 .status-admin {
     background-color: gray;
     color: white;
-}
-h3 {
-  font-size: 30px;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
 }
 .list-wrapper {
   max-width: 400px;

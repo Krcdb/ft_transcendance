@@ -1,4 +1,5 @@
 <template>
+  <h1>Welcome to the Website Admin Page !</h1>
   <div class="administration flex-container">
     <AdminUsersList class="flex-child" />
     <AdminChannelsList class="flex-child" />

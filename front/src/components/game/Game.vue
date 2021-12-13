@@ -5,6 +5,7 @@
 			<GameHeader :player1="player1" :player2="player2" />
 			<canvas id="game-canvas"></canvas>
 			<h1>&#8593; W  &#8595; S</h1>
+			<RuleSet />
 		</div>
     	<div v-if="state === 'finished'">
 			<h1>Match done</h1>
@@ -25,13 +26,13 @@ import { Game } from "./classes/Game";
 import { GameDataUpdate, GameOptionsInterface } from "@/types/Game"
 import Match from "@/types/Match"
 import MatchDataService from "@/services/MatchServices"
-import http from "@/http-common";
 import io from "socket.io-client";
 import ResponseData from "../../types/ResponseData";
 import UserDataService from "../../services/UserDataService";
 import User from "@/types/User";
 import GameFinished from "@/components/game/GameFinished.vue";
 import GameHeader from "@/components/game/GameHeader.vue";
+import RuleSet from "@/components/game/ruleset.vue";
 
 const socket = io("http://localhost:3000", {
 	auth: {
@@ -60,6 +61,7 @@ export default defineComponent({
 	components: {
 		GameFinished,
 		GameHeader,
+		RuleSet,
 	},
 	watch : {
 		'$route': {
