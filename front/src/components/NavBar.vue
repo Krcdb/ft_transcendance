@@ -49,7 +49,7 @@ export default defineComponent({
       UserDataService.get(id)
         .then((response: ResponseData) => {
           this.user = response.data;
-          if (!this.user) logout();
+          if (!this.user || this.user.isPermaBan) logout();
         })
         .catch((e: Error) => {
           console.log(e);

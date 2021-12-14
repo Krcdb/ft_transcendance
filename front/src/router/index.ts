@@ -34,6 +34,11 @@ const routes = [
         component: () => import("../components/users/auth/TwoFALogin.vue"),
     },
     {
+        path: "/ban",
+        name: "ban",
+        component: () => import("../components/users/auth/Ban.vue"),
+    },
+    {
         path: "/play",
         name: "Play",
         component: () => import("../views/Play.vue"),
@@ -103,7 +108,8 @@ router.beforeEach((to, from, next) => {
         to.path !== "/login" &&
         to.path !== "/auth/42" &&
         to.path !== "/illegal-login" &&
-        to.path !== "/2FLogin"
+        to.path !== "/2FLogin" &&
+        to.path !== "/ban"
     )
     next({ path: "/login"});
     else {

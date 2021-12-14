@@ -1,7 +1,7 @@
 <template>
   <div class="list">
     <div class="list-wrapper">
-      <h2>Users List</h2>
+      <h2>Users</h2>
       <div class="explanation">
         <p v-if="currentUser.isWebsiteOwner"><i class='bx bx-bulb'></i>You can set and Unset Website Admin </p>
         <p><i class='bx bx-bulb'></i> You can Ban and Unban users from Website (except Owner)</p>
@@ -13,7 +13,7 @@
         @input="searchhandler"
       />
       <ul>
-        <li class="list-item" v-for="user in filteredUsers" :key="user.id">
+        <li :class="`list-item ${banClass(user)}`" v-for="user in filteredUsers" :key="user.id">
             <Avatar :user="user" />
           <div class="list-item-content">
             <router-link class="profile-link" :to="'/users/' + user.id">
@@ -27,7 +27,7 @@
               <button
                 class="add-admin-btn"
                 @click="updateUserAdmin(user.id, true)"
-                v-if="currentUser.isWebsiteOwner && user.id != currentUser.id && !user.isWebsiteAdmin"
+                v-if="currentUser.isWebsiteOwner && user.id != currentUser.id && !user.isWebsiteAdmin && !user.isPermaBan"
               >
               + Admin
               </button>
@@ -100,22 +100,24 @@ export default defineComponent({
       );
     },
     async banUser(userId: number) {
-      UserDataService.banFromSite(userId).then((response: ResponseData) => {
+      UserDataService.banFromSite(userId)
+      .then(async (response: ResponseData) => {
         console.log("User successfully banned");
+        await this.retrieveUsers();
       })
       .catch((e: Error) => {
         console.log(e.message);
       })
-      return await this.retrieveUsers();
     },
     async unbanUser(userId: number) {
-      UserDataService.unbanFromSite(userId).then((response: ResponseData) => {
+      UserDataService.unbanFromSite(userId)
+      .then(async (response: ResponseData) => {
         console.log("User successfully unbanned");
+        await this.retrieveUsers();
       })
       .catch((e: Error) => {
         console.log(e.message);
       })
-      return await this.retrieveUsers();
     }, 
     async updateUserAdmin(userId: number, toAdd: boolean) {
       const data = {
@@ -126,7 +128,12 @@ export default defineComponent({
       .catch((e: Error) => {
         console.log(e.message);
       })
-      return await this.retrieveUsers();
+      await this.retrieveUsers();
+    },
+    banClass(user: User): string {
+      if (user.isPermaBan)
+        return "ban";
+      return "";
     }
   },
   async mounted() {
@@ -177,6 +184,7 @@ h2 {
     border: black solid 2px;
     width: 30px;
     text-align: center;
+    font-weight: bold;
 }
 .status-owner {
     background-color: black;
@@ -209,6 +217,10 @@ h2 {
   padding-top: 5px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   align-items: center;
+}
+.ban {
+  background-color: #eb7171;
+  border-radius: 10px;
 }
 .list-item-content {
   margin-left: 20px;

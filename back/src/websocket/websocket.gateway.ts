@@ -39,7 +39,7 @@ export class WebsocketGateway implements OnGatewayInit, OnGatewayConnection, OnG
 		this.gameService.removeFromQueue(socket.data.user);
 		//this.websocketService.handleDisconnectionStatus(socket);
 		socket.disconnect();
-		console.log(`${socket.data.user.userName} disconnected`);
+		// console.log(`${socket.data.user.userName} disconnected`);
 	}
 
 	// Match

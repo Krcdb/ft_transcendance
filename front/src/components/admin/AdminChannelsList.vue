@@ -1,7 +1,7 @@
 <template>
   <div class="list row">
     <div class="list-wrapper">
-      <h2>Channels List</h2>
+      <h2>Channels</h2>
       <div class="explanation">
         <p><i class='bx bx-bulb'></i>You can:</p>
         <p>- Watch all channels even the one you didn't joined</p>

@@ -34,10 +34,11 @@ export default defineComponent({
         .then((response: ResponseData) => {
           if (response.data.message) {
             this.state = "error";
+            this.$router.push("/ban");
             this.error = response.data.message;
             return;
           }
-          if (response.data.access_token) {
+          else if (response.data.access_token) {
             localStorage.setItem("user-name", response.data.userName);
             localStorage.setItem("user-id", response.data.id);
             localStorage.setItem("user-token", response.data.access_token);
