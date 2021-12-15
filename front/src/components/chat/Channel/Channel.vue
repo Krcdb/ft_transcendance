@@ -292,10 +292,10 @@ export default defineComponent({
                     password: localStorage.getItem("channel-pwd") as string,
                 };
                 await ChannelDataService.canJoinChannel(this.channel.channelName, data)
-                .then((response: ResponseData) => {
-                    if (!response.data.value)
-                        this.$router.push("/Chat");
-                })
+                // .then((response: ResponseData) => {
+                //     if (!response.data.value)
+                //         this.$router.push("/Chat");
+                // })
                 .catch((e) => {
           		    console.log("Error: " + e.response.data.message);
                     this.$router.push("/Chat");

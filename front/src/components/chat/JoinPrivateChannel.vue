@@ -91,17 +91,14 @@ export default defineComponent({
 			await this.getChannel(this.joinChannel.channelName);
 			await ChannelDataService.canJoinChannel(this.channel.channelName, data)
 			.then(async (response : ResponseData) => {
-          if (response.data.value == true) {
-            if (this.channel.users.indexOf(this.userId) == -1) {
-              await this.addUserChannel(this.channel);
-            }
-            localStorage.setItem("channel-pwd", current_password);
-						this.$router.push("/Channel/" + this.channel.channelName);
-				} else {
-				}
+        if (this.channel.users.indexOf(this.userId) == -1) {
+          await this.addUserChannel(this.channel);
+        }
+        localStorage.setItem("channel-pwd", current_password);
+				this.$router.push("/Channel/" + this.channel.channelName);
 			})
       		.catch((e) => {
-				this.error =  e.response.data.message;
+							this.error =  e.response.data.message;
           		console.log("Error: " + e.response.data.message);
       		});
 		},

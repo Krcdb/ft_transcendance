@@ -133,13 +133,9 @@ export default defineComponent({
 			};
 			await ChannelDataService.canJoinChannel(channel.channelName, data)
 			.then((response : ResponseData) => {
-                if (response.data.value == true) {
-                    localStorage.setItem("channel-pwd", current_password);
-                    this.$router.push("/Channel/" + channel.channelName);
-				} else {
-                    this.errorMSG[index] = response.data.message;
-                    this.isLoading[index] = false;
-				}
+                localStorage.setItem("channel-pwd", current_password);
+                this.$router.push("/Channel/" + channel.channelName);
+
 			})
             .catch((e: any) => {
 				this.errorMSG[index] = "Error: " + e.response.data.message;

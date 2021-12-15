@@ -45,20 +45,17 @@ export class ChannelController {
 		if (!await this.channelService.findOne(channelName)) {
 			return res.status(HttpStatus.NOT_FOUND).json({
 				message: "Channel doesn't exist",
-				value: false,
 			})
 		}
 		else if (await this.channelService.hasPassword(channelName) == false
 		|| await this.channelService.passwordMatch(channelName, channelPasswordDto.password) == true) {
 			return res.status(HttpStatus.OK).json({
 				message: "Can join channel",
-				value: true,
 			})
 		}
 		else {
 			return res.status(HttpStatus.CONFLICT).json({
 				message: "Password does not match",
-				value: false,
 			})
 		}
 	}

@@ -165,15 +165,10 @@ export default defineComponent({
 			};
 			await ChannelDataService.canJoinChannel(channel.channelName, data)
 			.then(async (response : ResponseData) => {
-                if (response.data.value == true) {
-                    if (channel.users.indexOf(this.user.id) == -1) {
-                        await this.addUserChannel(channel);
-                    }
-					this.$router.push("/Channel/" + channel.channelName);
-				} else {
-                    this.errorMSG[index] = response.data.message;
-					this.isLoading[index] = false;
-				}
+                if (channel.users.indexOf(this.user.id) == -1) {
+                    await this.addUserChannel(channel);
+                }
+				this.$router.push("/Channel/" + channel.channelName);
 			})
             .catch((e) => {
 				this.errorMSG[index] = "Error: " + e.response.data.message;
