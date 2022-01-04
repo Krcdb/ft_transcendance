@@ -5,8 +5,9 @@
 			<li><i class='bx bxs-right-arrow'></i> You play a match online with another player.</li>
 			<li><i class='bx bxs-right-arrow'></i> You control an in game paddle that you can move up and down with the W and S key on your keyboard</li>
 			<li><i class='bx bxs-right-arrow'></i> You goal is to always returned the ball to the other player, if you don't you loose the point.</li>
-			<li><i class='bx bxs-right-arrow'></i> the first player to have the number of point decided at the start of the game win.</li>
+			<li><i class='bx bxs-right-arrow'></i> the first player to have 5 points win.</li>
 			<li><i class='bx bxs-right-arrow'></i> A match stop automatically if one of the user leave the game.</li>
+			<li><i class='bx bxs-right-arrow'></i> Bonus : BLUE -> Speedu up | GREEN -> Increase the size of your paddle | RED -> Decrease the size of the opponant paddle | PURPLE -> Reflect</li>
 		</ul>
 	</div>
 </template>

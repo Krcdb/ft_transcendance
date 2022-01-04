@@ -23,7 +23,7 @@
 /* eslint-disable */
 import { defineComponent } from "vue";
 import { Game } from "./classes/Game";
-import { GameDataUpdate, GameOptionsInterface } from "@/types/Game"
+import { GameOptionsInterface } from "@/types/Game"
 import Match from "@/types/Match"
 import MatchDataService from "@/services/MatchServices"
 import io from "socket.io-client";

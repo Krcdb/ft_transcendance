@@ -4,6 +4,14 @@ export enum GameState {
 	FINISHED,
 }
 
+export enum BonusType {
+	NONE = 0,
+	SPEED,
+	PLUS,
+	MINUS,
+	REFLECT
+}
+
 export class GameOptionsInterface {
 	FPS: number | undefined
 	CANVAS_WIDTH: number | undefined
@@ -25,14 +33,17 @@ export class GameDataUpdate {
 	player1: {
 		x: number
 		y: number
+		height: number
 		score: number
 	} | undefined
 	player2: {
 		x: number
 		y: number
+		height: number
 		score: number
 	} | undefined
 	bonus: {
+		type: number
 		x: number
 		y: number
 	} | undefined

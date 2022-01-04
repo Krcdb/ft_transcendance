@@ -19,4 +19,8 @@ export class Paddle {
 	setY(y: number) {
 	  this.y = y;
 	}
+
+	setHeight(h: number) {
+		this.height = h;
+	}
 }

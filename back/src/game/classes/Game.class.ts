@@ -15,6 +15,14 @@ export interface GameOptionsInterface {
 	BONUS_SIZE: number;
 }
 
+export enum BonusType {
+	NONE = 0,
+	SPEED,
+	PLUS,
+	MINUS,
+	REFLECT
+}
+
 enum Keys {
 	W_KEY = 87,
 	S_KEY = 83
@@ -40,6 +48,8 @@ export class Game {
 	bonusX: number = -20;
 	bonusY: number = -20;
 	bonusPresent: boolean = false;
+	bonusType: BonusType = BonusType.NONE;
+	bonusYVel: number = 2;
 
 
 	player1Score: number;
@@ -116,14 +126,17 @@ export class Game {
 		  	player1: {
 				x: this.p1.x,
 				y: this.p1.y,
+				height: this.p1.height,
 				score: this.player1Score,
 		  	},
 		 	player2: {
 				x: this.p2.x,
 				y: this.p2.y,
+				height: this.p2.height,
 				score: this.player2Score,
 			},
 			bonus: {
+				type: this.bonusType,
 				x: this.bonusX,
 				y: this.bonusY,
 			}
@@ -180,6 +193,12 @@ export class Game {
 		console.log("reset");
 		this.paused = true;
 
+		this.p1UpKeyPressed = false;
+		this.p1DownKeyPressed = false;
+
+		this.p2UpKeyPressed = false;
+		this.p2DownKeyPressed = false;
+		
     	setTimeout(() => {
       		this.paused = false;
 		}, 2000);
@@ -187,13 +206,17 @@ export class Game {
 		this.bonusX = -20;
 		this.bonusY = -20;
 		this.bonusPresent = false;
+		this.bonusType = BonusType.NONE;
 
 		this.ball.speed = 4;
 
+		this.p1.setHeight(this.options.PADDLE_HEIGHT);
 		this.p1.setXY(
 			this.options.PADDLE_MARGIN,
 			this.height / 2 - this.options.PADDLE_HEIGHT / 2,
 		);
+		
+		this.p2.setHeight(this.options.PADDLE_HEIGHT);
 		this.p2.setXY(
 			this.width - this.options.PADDLE_WIDTH - this.options.PADDLE_MARGIN,
 			this.height / 2 - this.options.PADDLE_HEIGHT / 2,
@@ -219,7 +242,7 @@ export class Game {
 		let bounceAngle: number;
 		if (this.ball.xVel < 0 && this.ball.x <= this.p1.x + this.p1.width) {
 			if (this.ball.y >= this.p1.y && this.ball.y + this.ball.size <= this.p1.y + this.p1.height) {
-				normalizedRelativeY = ((this.p1.y + (this.options.PADDLE_HEIGHT / 2)) - (this.ball.y + (this.options.BALL_SIZE / 2))) / (this.options.PADDLE_HEIGHT / 2);
+				normalizedRelativeY = ((this.p1.y + (this.p1.height / 2)) - (this.ball.y + (this.options.BALL_SIZE / 2))) / (this.p1.height / 2);
 				bounceAngle = normalizedRelativeY * ((Math.PI * 5) / 12);
 				this.ball.yVel = -Math.sin(bounceAngle);
 				this.ball.xVel = Math.cos(bounceAngle);
@@ -227,7 +250,7 @@ export class Game {
 		}
 		if (this.ball.xVel > 0 && this.ball.x + this.ball.size >= this.p2.x) {
 			if (this.ball.y >= this.p2.y && this.ball.y + this.ball.size <= this.p2.y + this.p2.height) {
-				normalizedRelativeY = ((this.p2.y + (this.options.PADDLE_HEIGHT / 2)) - (this.ball.y + (this.options.BALL_SIZE / 2))) / (this.options.PADDLE_HEIGHT / 2);
+				normalizedRelativeY = ((this.p2.y + (this.p2.height / 2)) - (this.ball.y + (this.options.BALL_SIZE / 2))) / (this.p2.height / 2);
 				bounceAngle = normalizedRelativeY * ((Math.PI * 5) / 12);
 				this.ball.yVel = -Math.sin(bounceAngle);
 				this.ball.xVel = -Math.cos(bounceAngle);
@@ -236,23 +259,59 @@ export class Game {
 	}
 
 	spawnBonus() {
+		this.bonusType = Math.floor(Math.random() * 4) + 1;
 		this.bonusX = Math.floor(Math.random() * 200) + 250;
 		this.bonusY = Math.floor(Math.random() * 300) + 50;
-		console.log(`bonus spawn | x : ${this.bonusX} | y : ${this.bonusY}`);
+		console.log(`bonus spawn | x : ${this.bonusX} | y : ${this.bonusY} | bonus type : ${this.bonusType}`);
 	}
 	
 	resolveBonus() {
-		this.ball.speed += 2;
+		if (this.bonusType == BonusType.SPEED) {
+			if (this.ball.speed < 10)
+				this.ball.speed += 2;
+		}
+		else if (this.bonusType == BonusType.PLUS) {
+			if (this.ball.xVel > 0 && this.p1.height <= this.options.PADDLE_HEIGHT) {
+				this.p1.height += 20;
+				this.p1.y -= 10;
+				if (this.p1.y <= this.options.PADDLE_MARGIN)
+					this.p1.y = this.options.PADDLE_MARGIN;
+				else if (this.p1.y + this.p1.height >= this.options.CANVAS_HEIGHT - this.options.PADDLE_MARGIN)
+					this.p1.y = this.p1.height + this.options.PADDLE_MARGIN;
+			}
+			else if (this.ball.xVel < 0 && this.p2.height <= this.options.PADDLE_HEIGHT) {
+				this.p2.height += 20;
+				this.p2.y -= 10;
+				if (this.p2.y <= this.options.PADDLE_MARGIN)
+					this.p2.y = this.options.PADDLE_MARGIN;
+				else if (this.p2.y + this.p2.height >= this.options.CANVAS_HEIGHT - this.options.PADDLE_MARGIN)
+					this.p2.y = this.p2.height + this.options.PADDLE_MARGIN;
+			}
+		}
+		else if (this.bonusType == BonusType.MINUS) {
+			if (this.ball.xVel < 0 && this.p1.height >= this.options.PADDLE_HEIGHT) {
+				this.p1.height -= 20;
+				this.p1.y += 10;
+			}
+			else if (this.ball.xVel > 0 && this.p2.height >= this.options.PADDLE_HEIGHT) {
+				this.p2.height -= 20;
+				this.p2.y += 10;
+			}
+		}
+		else if (this.bonusType == BonusType.REFLECT) {
+			this.ball.xVel = -this.ball.xVel;
+		}
 	}
 
 	bonusSpawnCollision() {
 		if (!this.bonusPresent) {
 			this.bonusPresent = true;
 			setTimeout(() => {
-				this.spawnBonus();
-		  }, 2000);
+				if (!this.paused)
+					this.spawnBonus();
+			}, 2000);
 		}
-		if (this.bonusX > 0) {
+		if (this.bonusType != BonusType.NONE) {
 			if ((this.ball.x + (this.options.BALL_SIZE / 2)) >= this.bonusX &&
 			(this.ball.x + (this.options.BALL_SIZE / 2)) <= (this.bonusX + this.options.BONUS_SIZE) &&
 			(this.ball.y + (this.options.BALL_SIZE / 2)) >= this.bonusY &&
@@ -261,8 +320,14 @@ export class Game {
 				this.bonusPresent = false;
 				this.bonusX = -20;
 				this.bonusY = -20;
+				this.bonusType = BonusType.NONE;
 				console.log(`bonus spawn hit`);
 			}
+		}
+		if (this.bonusPresent) {
+			if (this.bonusY <= this.options.PADDLE_MARGIN || this.bonusY + this.options.BONUS_SIZE >= this.options.CANVAS_HEIGHT - this.options.PADDLE_MARGIN)
+				this.bonusYVel = -this.bonusYVel;
+			this.bonusY += this.bonusYVel;
 		}
 	}
 
@@ -293,14 +358,17 @@ export class Game {
 		  	player1: {
 				x: this.p1.x,
 				y: this.p1.y,
+				height: this.p1.height,
 				score: this.player1Score,
 		  	},
 		 	player2: {
 				x: this.p2.x,
 				y: this.p2.y,
+				height: this.p2.height,
 				score: this.player2Score,
 			},
 			bonus: {
+				type: this.bonusType,
 				x: this.bonusX,
 				y: this.bonusY,
 			}

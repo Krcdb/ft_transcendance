@@ -26,6 +26,10 @@ export class Paddle {
 		this.y = y;
 	}
 
+	setHeight(h: any) {
+		this.height = h;
+	}
+
 	draw(context: any){
         context.fillStyle = "#fff";
         context.fillRect(this.x, this.y, this.width, this.height);

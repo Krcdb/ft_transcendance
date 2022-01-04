@@ -71,9 +71,12 @@ export class Game {
 		this.player1Score = Number(data.player1?.score);
 		this.player2Score = Number(data.player2?.score);
 		this.player1.setXY(data.player1?.x, data.player1?.y);
+		this.player1.setHeight(data.player1?.height);
 		this.player2.setXY(data.player2?.x, data.player2?.y);
+		this.player2.setHeight(data.player2?.height);
 		this.ball.setXY(data.ball?.x, data.ball?.y);
 		this.bonus.setXY(data.bonus?.x, data.bonus?.y);
+		this.bonus.setType(data.bonus?.type);
 		this.draw();
 		if (this.playerSide !== "spectate") {
 			if (Game.keysPressed[Keys.W_KEY])
