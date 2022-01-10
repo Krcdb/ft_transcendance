@@ -1,12 +1,16 @@
 <template id="burger">
 
     <!-- boxicons Css -->
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    -->
-
-    <!-- boxicons Css -->
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <div class="burger-menu">
+
+
+        <div class="AchievementsList" v-if="this.dataLoaded == true && this.AchievementsInit == true">
+            <AchievementsList
+            :displayAchievements="this.displayAchievements"
+            :userId="this.user.id"
+            :parentOpened="this.menuOpened"/>
+        </div>
 
         <div class="sidebar">
             <div class="logo-details">
@@ -26,6 +30,7 @@
                 </li>
             -->
                 <li class="element">
+                    <!-- Play -->
                     <router-link :to="'/Play/'">
                         <i class='bx bx-grid-alt'></i>
                         <span class="links_name">Dashboard</span>
@@ -34,6 +39,7 @@
                 </li>
 
                 <li class="element">
+                    <!-- Profile -->
                     <router-link to="/profile">
                         <i class='bx bx-user' ></i>
                         <span class="links_name">Profile</span>
@@ -45,7 +51,7 @@
                     <span class="round-circle" v-if="this.nbNotifications >= 0">
                         <p>{{ this.nbNotifications }}</p>
                     </span>
-                    <router-link to="#">
+                    <router-link to="">
                         <i class='bx bx-chat' ></i>
                         <span class="links_name">Messages</span>
                     </router-link>
@@ -56,7 +62,9 @@
                     <span class="round-circle" v-if="this.nbAchievements >= 0">
                         <p>{{ this.nbAchievements }}</p>
                     </span>
-                    <router-link to="#">
+                    <router-link to=""
+                    @click="this.displayAchievements = (this.displayAchievements == 1 ? 0 : 1),
+                    this.AchievementsInit = true">
                         <i class='bx bx-trophy' ></i>
                         <span class="links_name">Achievements</span>
                     </router-link>
@@ -94,7 +102,6 @@
 
             </ul>
         </div>
-
     </div>
 </template>
 
@@ -108,20 +115,46 @@ import UserDataService from "@/services/UserDataService";
 import ResponseData from "@/types/ResponseData";
 import Avatar from "@/components/users/Avatar.vue";
 
+import Achievements from "@/types/Achievements";
+
+import PrivateMessage from "./PrivateMessage.vue";
+import AchievementsList from "./AchievementsList.vue";
+
+
 export default defineComponent({
     name: "burger-menu",
     data() {
         return {
             user: {} as User,
             FriendList: [] as User[],
+            menuOpened: false,
+
+            dataLoaded: false,
+
             nbNotifications: 0,
             nbAchievements: 0,
+
+            AchievementsInit: false,
+            displayAchievements: 0,
+			achievements: [] as Achievements[],
         };
     },
     components: {
         Avatar,
+        PrivateMessage,
+        AchievementsList,
     },
     methods: {
+		async getAchievements(id: number) {
+			UserDataService.getAchievements(id)
+			.then((response: ResponseData) => {
+				this.achievements = response.data;
+				this.nbAchievements = this.achievements.length;
+			})
+			.catch((e: Error) => {
+				console.log(e);
+			});
+		},
         async getUser(id: number) {
             await UserDataService.get(id)
             .then((response: ResponseData) => {
@@ -148,6 +181,7 @@ export default defineComponent({
             console.log("UserID: " + Number(localStorage.getItem("user-id")));
             await this.getUser(Number(localStorage.getItem("user-id")));
             await this.getFriends(Number(localStorage.getItem("user-id")));
+			await this.getAchievements(Number(localStorage.getItem("user-id")));
             console.log("Friend list: " + this.FriendList);
         },
         initMenuBurger() {
@@ -159,6 +193,7 @@ export default defineComponent({
             closeBtn.addEventListener("click", () =>{
                 sidebar.classList.toggle("open");
                 menuBtnChange();//calling the function(optional)
+                this.menuOpened == true ? this.menuOpened = false : this.menuOpened = true;
             });
 
             /*
@@ -171,12 +206,14 @@ export default defineComponent({
             document.getElementById('btn');
             // following are the code to change sidebar button(optional)
             function menuBtnChange() {
-                if(sidebar.classList.contains("open")){
-                    closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");//replacing the iocns class
-                }else {
-                    closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");//replacing the iocns class
+                if (sidebar.classList.contains("open")) {
+                    closeBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+                } else {
+                    closeBtn.classList.replace("bx-menu-alt-right", "bx-menu");
                 }
             }
+
+            this.dataLoaded = true;
         },
     },
     mounted() {
@@ -522,6 +559,7 @@ export default defineComponent({
     transition: all 0.25s ease;
     text-align: center;
     overflow-y: scroll;
+    overflow-x: hidden;
     scroll-behavior: smooth;
 }
 
