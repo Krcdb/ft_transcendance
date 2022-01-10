@@ -1,6 +1,10 @@
 <template id="burger">
 
     <!-- boxicons Css -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    -->
+
+    <!-- boxicons Css -->
     <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
     <div class="burger-menu">
 
@@ -10,19 +14,25 @@
                 <div class="logo_name">Transcendence</div>
                 <i class='bx bx-menu' id="btn" ></i>
             </div>
+
+
             <ul class="nav-list">
+            <hr class="hr_element">
+                <!--
                 <li class="element">
                     <i class='bx bx-search' ></i>
                     <input class="search-bar" type="text" placeholder="Search...">
                     <span class="tooltip">Search</span>
                 </li>
+            -->
                 <li class="element">
-                    <router-link to="#">
+                    <router-link :to="'/Play/'">
                         <i class='bx bx-grid-alt'></i>
                         <span class="links_name">Dashboard</span>
                     </router-link>
                     <span class="tooltip">Dashboard</span>
                 </li>
+
                 <li class="element">
                     <router-link to="/profile">
                         <i class='bx bx-user' ></i>
@@ -59,25 +69,26 @@
                     </router-link>
                     <span class="tooltip">Settings</span>
                 </li>
+                <!--
                 <li class="li_log_out">
                     <i class='bx bx-log-out' id="log_out" ></i>
                 </li>
-
-                <hr class="element">
+                -->
+                <hr class="hr_element">
 
                 <span class="sep_friends">
                     <i class='bx bxs-user-circle'></i>
                 </span>
 
                 <div class="friend_list">
-                    <li v-for="friend in FriendList"  :key="friend" class="element">
+                    <li v-for="friend in FriendList"  :key="friend" class="element" on>
                         <span :class='friend.isActive ? "round-circle-online" : "round-circle-offline"'></span>
                         <span :class='friend.isActive ? "round-circle-sub-online" : "round-circle-sub-offline"'></span>
-                    <router-link to="#">
+                    <router-link :to="'/users/' + friend.id">
                         <Avatar :user="friend" class="friend_image"/>
                         <span class="links_name">{{ friend.userName }}</span>
                     </router-link>
-                    <span class="tooltip">{{ friend.userName }}</span>
+                        <span class="tooltip">{{ friend.userName }}</span>
                     </li>
                 </div>
 
@@ -143,17 +154,19 @@ export default defineComponent({
 
             let sidebar = document.querySelector(".sidebar") as any;
             let closeBtn = document.querySelector("#btn") as any;
-            let searchBtn = document.querySelector(".bx-search") as any;
+            //let searchBtn = document.querySelector(".bx-search") as any;
 
             closeBtn.addEventListener("click", () =>{
                 sidebar.classList.toggle("open");
                 menuBtnChange();//calling the function(optional)
             });
 
+            /*
             searchBtn.addEventListener("click", () =>{ // Sidebar open when you click on the search iocn
                 sidebar.classList.toggle("open");
                 menuBtnChange(); //calling the function(optional)
             });
+            */
 
             document.getElementById('btn');
             // following are the code to change sidebar button(optional)
@@ -234,6 +247,7 @@ export default defineComponent({
     text-align: center;
     cursor: pointer;
     transition: all 0.25s ease;
+    left: calc(78px / 2);
 }
 .sidebar.open .logo-details #btn{
     text-align: right;
@@ -365,6 +379,7 @@ export default defineComponent({
     background: #1d1b31;
     transition: all 0.25s ease;
     overflow: hidden;
+    z-index: 4;
 }
 .sidebar.open li.li_log_out{
     width: 250px;
@@ -446,17 +461,29 @@ export default defineComponent({
     z-index: 1;
     pointer-events: none;
     margin-left: -30px;
-
     left: 30px;
     z-index: 3;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3);
 }
 .round-circle p {
+    position: absolute;
+    margin: 0;
     color: #fff;
     font-weight: 500;
     font-family: "Poppins" , sans-serif;
     font-size: 12px;
     text-align: center;
+    padding-left: 5px;
+    margin-top: 0px;
+}
+
+.hr_element {
+    display: block;
+    position: relative;
+    width: calc(100% + 78px / 2);
+    margin: 0;
+    left: calc(-78px / 2);
+    transform: translateY(-50%);
 }
 
 /* Friends Separator */
@@ -473,7 +500,7 @@ export default defineComponent({
     margin-left: 0px;
 
     position: absolute;
-    top: 50%;
+    top: 450px;
     right: 0;
     transform: translateY(-50%);
     font-size: 22px;
@@ -485,13 +512,22 @@ export default defineComponent({
 /* Friends list */
 
 .friend_list {
-    margin-top: 78px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 500px;
+    left: -22px;
+    width: calc(100% + 50px / 2);
+    margin-top: calc(78px * 2 / 1.5);
     transition: all 0.25s ease;
     text-align: center;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
 }
 
 .friend_image {
     border-radius: 12px;
+    margin-left: 25px;
 }
 
 /* Friends status */
@@ -591,5 +627,7 @@ export default defineComponent({
 .search-bar {
     max-width: 150px;
 }
+
+
 
 </style>
