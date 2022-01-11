@@ -204,11 +204,12 @@ export class UsersService {
   async updateLadderLevel(winnerId: number, loserId: number) : Promise<void> {
     const winner = await this.usersRepository.findOne(winnerId);
     const loser = await this.usersRepository.findOne(loserId);
-    if (winner.ladderLevel < loser.ladderLevel)
-    {
-      await this.usersRepository.update(winnerId, { ladderLevel: loser.ladderLevel });
-      await this.usersRepository.update(loserId, { ladderLevel: winner.ladderLevel });
-    }
+    var newLoserLevel = loser.ladderLevel - 5;
+    if (newLoserLevel < 0)
+      newLoserLevel = 0;
+    var newWinnerLevel = winner.ladderLevel + 10;
+    await this.usersRepository.update(winnerId, { ladderLevel: newWinnerLevel });
+    await this.usersRepository.update(loserId, { ladderLevel: newLoserLevel });
   }
   
   //////////////////////////////////
