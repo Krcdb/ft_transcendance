@@ -5,12 +5,21 @@
     <div class="burger-menu">
 
 
-        <div class="AchievementsList" v-if="this.dataLoaded == true && this.AchievementsInit == true">
+        <div class="AchievementsList" v-if="this.dataLoaded === true && this.AchievementsInit === true">
             <AchievementsList
             :displayAchievements="this.displayAchievements"
             :userId="this.user.id"
             :parentOpened="this.menuOpened"/>
         </div>
+
+        <div class="PrivateMessage" v-if="this.dataLoaded === true && this.PrivateMessagesInit === true">
+			<PrivateMessage
+			:displayPrivateMessages="this.displayPrivateMessages"
+			:userId="this.user.id"
+			:parentOpened="this.menuOpened"
+			/>
+        </div>
+
 
         <div class="sidebar">
             <div class="logo-details">
@@ -48,10 +57,16 @@
                 </li>
                 <li class="element">
                     <!-- Notifications -->
+					<!--
                     <span class="round-circle" v-if="this.nbNotifications >= 0">
                         <p>{{ this.nbNotifications }}</p>
                     </span>
-                    <router-link to="">
+					-->
+                    <router-link to=""
+					@click="this.displayPrivateMessages = (this.displayPrivateMessages === true ? false : true),
+					this.displayAchievements = false,
+					this.PrivateMessagesInit = true
+					">
                         <i class='bx bx-chat' ></i>
                         <span class="links_name">Messages</span>
                     </router-link>
@@ -63,7 +78,8 @@
                         <p>{{ this.nbAchievements }}</p>
                     </span>
                     <router-link to=""
-                    @click="this.displayAchievements = (this.displayAchievements == 1 ? 0 : 1),
+                    @click="this.displayAchievements = (this.displayAchievements === true ? false : true),
+					this.displayPrivateMessages = false,
                     this.AchievementsInit = true">
                         <i class='bx bx-trophy' ></i>
                         <span class="links_name">Achievements</span>
@@ -89,7 +105,7 @@
                 </span>
 
                 <div class="friend_list">
-                    <li v-for="friend in FriendList"  :key="friend" class="element" on>
+                    <li v-for="friend in FriendList"  :key="friend" class="element">
                         <span :class='friend.isActive ? "round-circle-online" : "round-circle-offline"'></span>
                         <span :class='friend.isActive ? "round-circle-sub-online" : "round-circle-sub-offline"'></span>
                     <router-link :to="'/users/' + friend.id">
@@ -135,8 +151,11 @@ export default defineComponent({
             nbAchievements: 0,
 
             AchievementsInit: false,
-            displayAchievements: 0,
+            displayAchievements: false,
 			achievements: [] as Achievements[],
+
+			PrivateMessagesInit: false,
+			displayPrivateMessages: false,
         };
     },
     components: {

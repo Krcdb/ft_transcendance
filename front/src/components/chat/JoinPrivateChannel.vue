@@ -4,7 +4,7 @@
 		<form>
 			<div class="form-div">
 				<label for="chanel-name" >Channel Name
-				<input 
+				<input
 					type="text"
 					required
 					minlength="1"
@@ -62,8 +62,8 @@ export default defineComponent({
 	},
 	methods: {
 		togglePasswordVisibility() {
-      this.showPassword = !this.showPassword;
-    },
+			this.showPassword = !this.showPassword;
+		},
 		async getChannel(name: string) {
 			console.log("getChannels private ");
 			await ChannelDataService.getChannel(name)
@@ -75,15 +75,15 @@ export default defineComponent({
 			});
 		},
 		async addUserChannel(channel : Channel) {
-      const data = {
-          user: this.userId as number,
-          toAdd: true,
-      };
-      await ChannelDataService.updateChannelUser(this.channel.channelName, data)
-      .catch((e: Error) => {
-          console.log(e);
-      });
-    },
+			const data = {
+				user: this.userId as number,
+				toAdd: true,
+			};
+			await ChannelDataService.updateChannelUser(this.channel.channelName, data)
+			.catch((e: Error) => {
+				console.log(e);
+			});
+		},
 		async JoinPrivateChannel(current_password: string) {
 			let data = {
 				password: current_password,
@@ -91,16 +91,16 @@ export default defineComponent({
 			await this.getChannel(this.joinChannel.channelName);
 			await ChannelDataService.canJoinChannel(this.channel.channelName, data)
 			.then(async (response : ResponseData) => {
-        if (this.channel.users.indexOf(this.userId) == -1) {
-          await this.addUserChannel(this.channel);
-        }
-        localStorage.setItem("channel-pwd", current_password);
+				if (this.channel.users.indexOf(this.userId) == -1) {
+					await this.addUserChannel(this.channel);
+				}
+				localStorage.setItem("channel-pwd", current_password);
 				this.$router.push("/Channel/" + this.channel.channelName);
 			})
-      		.catch((e) => {
-							this.error =  e.response.data.message;
-          		console.log("Error: " + e.response.data.message);
-      		});
+			.catch((e) => {
+				this.error =  e.response.data.message;
+				console.log("Error: " + e.response.data.message);
+			});
 		},
 	}
 });
@@ -134,7 +134,7 @@ h4 {
 {
     display: inline-block;
 }
- 
+
 .eye-checkbox input[type="checkbox"]:checked ~ .unchecked
 {
     display: none;

@@ -50,7 +50,7 @@ export default defineComponent({
 			required: true,
 		},
 		displayAchievements: {
-			type: Number,
+			type: Boolean,
 			required: true,
 		},
 		parentOpened: {
@@ -93,7 +93,8 @@ export default defineComponent({
 	margin-top: 200px;
 	z-index: 1;
 	width: 256px;
-	height: calc(100% - 48%);
+	//height: calc(100% - 48%);
+	height: 450px;
 	opacity: 1;
 	text-align: center;
 	scroll-behavior: smooth;
